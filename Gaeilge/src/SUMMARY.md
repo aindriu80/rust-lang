@@ -1,8 +1,8 @@
 # The Rust Programming Language
 
 [An Teanga Ríomhchláraithe Rust](title-page.md)
-[Foreword](foreword.md)
-[Introduction](ch00-00-introduction.md)
+[Réamhfhocal](foreword.md)
+[Réamhrá](ch00-00-introduction.md)
 
 ## Getting started
 

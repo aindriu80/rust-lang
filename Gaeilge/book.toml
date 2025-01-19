@@ -1,6 +1,11 @@
 [book]
 authors = ["Aindriú Mac Giolla Eoin"]
-language = "en"
+language = "ga"
 multilingual = false
 src = "src"
 title = "An Teanga Ríomhchláraithe Rust"
+
+[output.html]
+additional-css = ["./theme/ferris.css", "../theme/2018-edition.css", "../theme/semantic-notes.css", "../theme/listing.css"]
+additional-js = ["./theme/ferris.js"]
+git-repository-url = "https://github.com/aindriu80/rust-lang/book"
