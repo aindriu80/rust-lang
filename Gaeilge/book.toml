@@ -1,0 +1,6 @@
+[book]
+authors = ["Aindriú Mac Giolla Eoin"]
+language = "en"
+multilingual = false
+src = "src"
+title = "An Teanga Ríomhchláraithe Rust"
