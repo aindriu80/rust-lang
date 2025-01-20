@@ -30,10 +30,10 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="./theme/ferris.css">
-        <link rel="stylesheet" href="../theme/2018-edition.css">
-        <link rel="stylesheet" href="../theme/semantic-notes.css">
-        <link rel="stylesheet" href="../theme/listing.css">
+        <link rel="stylesheet" href="src/css/ferris.css">
+        <link rel="stylesheet" href="src/css/2018-edition.css">
+        <link rel="stylesheet" href="src/css/semantic-notes.css">
+        <link rel="stylesheet" href="src/css/listing.css">
 
 
         <!-- Provide site root to javascript -->
@@ -217,15 +217,15 @@ ginearálta. Mar sin tumadh isteach, bí réidh le foghlaim - agus fáilte romha
 Rust</a> ar fáil i bhformáid chlóite agus ríomhleabhair ó <a href="https://nostarch.com/">No Starch
 Press</a>.</p>
 </blockquote>
-<p>Fáilte go dtí <em>The Rust Programming Language</em>, leabhar tosaigh faoi mheirge.
+<p>Fáilte go dtí <em>The Rust Programming Language</em>, leabhar tosaigh faoi Rust.
 Cuidíonn teanga ríomhchláraithe Rust leat bogearraí níos tapúla agus níos iontaofa a scríobh.
 Is minic a bhíonn contrárthachtaí ag eirgeanamaíocht ardleibhéil agus rialú ísealleibhéil sa ríomhchlárú
-dearadh teanga; Tugann meirge dúshlán don choinbhleacht sin. Trí chothromú cumhachtach
+dearadh teanga; Tugann Rust dúshlán don choinbhleacht sin. Trí chothromú cumhachtach
 cumas teicniúil agus taithí iontach forbróra, tugann Rust an rogha duit
 chun sonraí íseal-leibhéil a rialú (cosúil le húsáid chuimhne) gan aon stró
 a bhaineann go traidisiúnta le rialú den sórt sin.</p>
-<h2 id="cé-dó-a-bhfuil-meirge"><a class="header" href="#cé-dó-a-bhfuil-meirge">Cé dó a bhfuil meirge</a></h2>
-<p>Tá meirge oiriúnach do go leor daoine ar chúiseanna éagsúla. Breathnaímid ar roinnt de
+<h2 id="cé-dó-a-bhfuil-rust"><a class="header" href="#cé-dó-a-bhfuil-rust">Cé dó a bhfuil Rust</a></h2>
+<p>Tá Rust oiriúnach do go leor daoine ar chúiseanna éagsúla. Breathnaímid ar roinnt de
 na grúpaí is tábhachtaí.</p>
 <h3 id="foirne-forbróirí"><a class="header" href="#foirne-forbróirí">Foirne Forbróirí</a></h3>
 <p>Is uirlis tháirgiúil é Rust chun comhoibriú i measc foirne móra de
@@ -243,7 +243,7 @@ spleáchais a thiomsú, agus a bhainistiú gan phian agus comhsheasmhach ar fud 
 éiceachóras.</li>
 <li>Cinntíonn an uirlis formáidithe Rustfmt stíl códaithe chomhsheasmhach trasna
 fhorbróirí.</li>
-<li>Cumhachtaíonn an t-anailíseoir meirge Timpeallacht Chomhtháite Forbartha (IDE)
+<li>Cumhachtaíonn an t-anailíseoir Rust Timpeallacht Chomhtháite Forbartha (IDE)
 comhtháthú chun cód a chomhlánú agus teachtaireachtaí earráide inlíne.</li>
 </ul>
 <p>Trí úsáid a bhaint as na huirlisí seo agus uirlisí eile in éiceachóras Rust, is féidir le forbróirí a bheith
@@ -263,11 +263,11 @@ bithfhaisnéisíocht, innill chuardaigh, feidhmchláir Internet of Things, meais
 foghlama, agus fiú codanna móra de bhrabhsálaí gréasáin Firefox.</p>
 <h3 id="forbróirí-foinse-oscailte"><a class="header" href="#forbróirí-foinse-oscailte">Forbróirí Foinse Oscailte</a></h3>
 <p>Tá Rust ann do dhaoine atá ag iarraidh teanga ríomhchláraithe Rust a thógáil, pobail,
-uirlisí forbróra, agus leabharlanna. Ba bhreá linn go gcuirfeá leis an Meirge
+uirlisí forbróra, agus leabharlanna. Ba bhreá linn go gcuirfeá leis an Rust
 teanga.</p>
 <h3 id="daoine-a-bhfuil-luach-acu-ar-luas-agus-ar-chobhsaíocht"><a class="header" href="#daoine-a-bhfuil-luach-acu-ar-luas-agus-ar-chobhsaíocht">Daoine a bhfuil Luach acu ar Luas agus ar Chobhsaíocht</a></h3>
-<p>Tá meirge ann do dhaoine ar mian leo luas agus seasmhacht i dteanga. De réir luais, táimid
-Ciallaíonn sé cé chomh tapa agus is féidir le cód meirge rith agus an luas a ligeann Rust duit
+<p>Tá Rust ann do dhaoine ar mian leo luas agus seasmhacht i dteanga. De réir luais, táimid
+Ciallaíonn sé cé chomh tapa agus is féidir le cód Rust rith agus an luas a ligeann Rust duit
 cláir a scríobh. Cinntíonn seiceálacha an tiomsaitheora Rust cobhsaíocht trí ghné
 breiseanna agus athfhachtóirí. Tá sé seo i gcodarsnacht leis an gcód oidhreachta brittle i
 teangacha gan na seiceálacha seo, ar minic go mbíonn eagla ar fhorbróirí iad a mhodhnú. Le
@@ -278,7 +278,7 @@ cód a bheith cód tapa chomh maith.</p>
 níl anseo ach cuid de na páirtithe leasmhara is mó. Tríd is tríd, Rust is fearr
 is é an uaillmhian deireadh a chur leis na comhbhabhtálacha a bhfuil glactha ag ríomhchláraitheoirí leo
 blianta trí shábháilteacht <em>agus</em> táirgiúlacht, luas <em>agus</em> eirgeanamaíocht a sholáthar. Tabhair
-Déan iarracht meirge agus féach an n-oibríonn a roghanna duit.</p>
+Déan iarracht Rust agus féach an n-oibríonn a roghanna duit.</p>
 <h2 id="cé-leis-an-leabhar-seo"><a class="header" href="#cé-leis-an-leabhar-seo">Cé Leis an Leabhar Seo</a></h2>
 <p>Glacann an leabhar seo leis go bhfuil cód scríofa agat i dteanga ríomhchlárúcháin eile ach
 ní dhéanann sé aon toimhde faoi cé acu. Rinneamar iarracht an t-ábhar a dhéanamh
@@ -322,7 +322,7 @@ Tá an loighic ceart. I gCaibidil 12, tógfaimid ár gcur i bhfeidhm féin ar fh
 feidhmiúlacht ón uirlis líne ordaithe <code>grep</code> a chuardaíonn téacs
 laistigh de chomhaid. Chun seo, bainfimid úsáid as go leor de na coincheapa a phléamar sa
 caibidlí roimhe seo.</p>
-<p>I gCaibidil 13 déantar iniúchadh ar dhúnadh agus iterators: gnéithe Meirge a thagann as
+<p>I gCaibidil 13 déantar iniúchadh ar dhúnadh agus iterators: gnéithe Rust a thagann as
 teangacha ríomhchlárúcháin feidhme. I gCaibidil 14, scrúdóimid lasta níos mó
 doimhneacht agus labhair faoi na cleachtais is fearr chun do leabharlanna a roinnt le daoine eile.
 Pléann Caibidil 15 leideanna cliste a sholáthraíonn an leabharlann chaighdeánach agus an
@@ -335,7 +335,7 @@ an tsamhail concurrency éadrom a thacaíonn siad.</p>
 prionsabail a bhféadfadh cur amach a bheith agat orthu.</p>
 <p>Is tagairt í Caibidil 19 do phatrúin agus meaitseáil patrún, atá cumhachtach
 bealaí chun smaointe a chur in iúl ar fud na gclár Rust. I gCaibidil 20 tá a
-smorgasbord ard-ábhair spéise, lena n-áirítear meirge neamhshábháilte, macraí, agus
+smorgasbord ard-ábhair spéise, lena n-áirítear Rust neamhshábháilte, macraí, agus
 níos mó faoi shaolréanna, tréithe, cineálacha, feidhmeanna agus dúnta.</p>
 <p>I gCaibidil 21, cuirfimid tionscadal i gcrích ina gcuirfimid leibhéal íseal i bhfeidhm
 freastalaí gréasáin ilshnáithe!</p>
@@ -344,8 +344,8 @@ níos mó formáid tagartha. Clúdaíonn Aguisín A eochairfhocail Rust, Aguisí
 clúdaíonn sé oibreoirí agus siombailí Rust, clúdaíonn Aguisín C tréithe in-díorthaithe
 a sholáthraíonn an leabharlann chaighdeánach, clúdaíonn Aguisín D roinnt forbairtí úsáideacha
 uirlisí, agus míníonn Aguisín E eagráin Rust. In Aguisín F, is féidir leat a fháil
-aistriúcháin ar an leabhar, agus in Aguisín G clúdóidh muid conas a dhéantar Meirge agus
-cad é meirge oíche.</p>
+aistriúcháin ar an leabhar, agus in Aguisín G clúdóidh muid conas a dhéantar Rust agus
+cad é Rust oíche.</p>
 <p>Níl aon bhealach mícheart leis an leabhar seo a léamh: más mian leat dul ar aghaidh, téigh chuige!
 Seans go mbeidh ort léim siar chuig caibidlí níos luaithe má bhíonn taithí agat ar aon cheann díobh
 mearbhall. Ach déan cibé rud a oibríonn duit.</p>
@@ -367,9 +367,115 @@ earráid. Cabhróidh Ferris leat freisin idirdhealú a dhéanamh ar chód nach b
 <h2 id="cód-foinse"><a class="header" href="#cód-foinse">Cód Foinse</a></h2>
 <p>Is féidir na comhaid foinse óna gineadh an leabhar seo a fháil ar
 <a href="https://github.com/rust-lang/book/tree/main/src">GitHub</a>.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="hello-world"><a class="header" href="#hello-world">Hello, World!</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="tús-a-chur-leis"><a class="header" href="#tús-a-chur-leis">Tús a chur leis</a></h1>
+<p>Cuirimis tús le do thuras Rust! Tá go leor le foghlaim, ach tosaíonn gach turas
+áit éigin. Sa chaibidil seo, pléifimid:</p>
+<ul>
+<li>Suiteáil Rust ar Linux, macOS, agus Windows</li>
+<li>Ag scríobh clár a phriontálann <code>Hello, world!</code></li>
+<li>Ag baint úsáide as <code>cargo</code>, bainisteoir pacáiste Rust agus córas tógála</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="suiteáil"><a class="header" href="#suiteáil">Suiteáil</a></h2>
+<p>Is é an chéad chéim ná Rust a shuiteáil. Déanfaimid Rust a íoslódáil trí 'rustup', a
+uirlis líne ordaithe chun leaganacha Rust agus uirlisí gaolmhara a bhainistiú. Beidh ort
+Nasc Idirlín le haghaidh soghluaiste íoslódáil.</p>
+<blockquote>
+<p>Nóta: Más fearr leat gan <code>rustup</code> a úsáid ar chúis éigin, féach le do thoil an
+<a href="https://forge.rust-lang.org/infra/other-installation-methods.html">leathanach Modhanna Eile Suiteála Rust</a> le haghaidh tuilleadh roghanna.</p>
+</blockquote>
+<p>Suiteáil na céimeanna seo a leanas an leagan cobhsaí is déanaí den tiomsaitheoir Rust.
+Cinntíonn cobhsaíocht Rust go bhfuil na samplaí go léir sa leabhar a
+leanfaidh tiomsú ar aghaidh ag tiomsú le leaganacha Rust níos nuaí. D'fhéadfadh an t-aschur
+difríocht beagán idir leaganacha mar is minic a fheabhsaíonn Rust teachtaireachtaí earráide agus
+rabhaidh. I bhfocail eile, aon leagan níos nuaí, cobhsaí de Rust a shuiteáil tú ag baint úsáide as
+ba chóir go n-oibreodh na céimeanna seo mar a bheifí ag súil leis le hábhar an leabhair seo.</p>
+<blockquote>
+<h3 id="nodaireacht-líne-ordú"><a class="header" href="#nodaireacht-líne-ordú">Nodaireacht Líne Ordú</a></h3>
+<p>Sa chaibidil seo agus tríd an leabhar, taispeánfaimid roinnt orduithe a úsáidtear sa
+teirminéal. Tosaíonn línte ar chóir duit a chur isteach i teirminéal le <code>$</code>. tu
+ní gá an carachtar <code>$</code> a chlóscríobh; is é an leid líne ordaithe a thaispeántar do
+cuir in iúl tús gach ordú. Línte nach dtosaíonn le <code>$</code> de ghnáth
+taispeáin aschur an ordaithe roimhe seo. Ina theannta sin, PowerShell-shonrach
+úsáidfidh samplaí <code>&gt;</code> seachas <code>$</code>.</p>
+</blockquote>
+<h3 id="suiteáil-rustup-ar-linux-nó-macos"><a class="header" href="#suiteáil-rustup-ar-linux-nó-macos">Suiteáil <code>rustup</code> ar Linux nó macOS</a></h3>
+<p>Má tá Linux nó macOS á úsáid agat, oscail teirminéal agus cuir isteach an t-ordú seo a leanas:</p>
+<pre><code class="language-consól">$ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+</code></pre>
+<p>Íoslódálann an t-ordú script agus cuireann sé tús le suiteáil an <code>rustup</code>
+uirlis, a shuiteálann an leagan cobhsaí is déanaí de Rust. Seans go dtabharfar leid thú
+le haghaidh do phasfhocal. Má éiríonn leis an suiteáil, feicfear an líne seo a leanas:</p>
+<pre><code class="language-téacs">Tá Rust suiteáilte anois. Go hiontach!
+</code></pre>
+<p>Beidh <em>linker</em> ag teastáil uait freisin, ar clár é a úsáideann Rust chun páirt a ghlacadh ann
+aschuir tiomsaithe i gcomhad amháin. Is dócha go bhfuil ceann agat cheana féin. Má fhaigheann tú
+earráidí nascóirí, ba cheart duit tiomsaitheoir C a shuiteáil, lena n-áireofar de ghnáth a
+nascóir. Tá tiomsaitheoir C úsáideach freisin toisc go mbraitheann roinnt pacáistí Rust coitianta
+C cód agus beidh tiomsaitheoir C de dhíth.</p>
+<p>Ar macOS, is féidir leat tiomsaitheoir C a fháil trí:</p>
+<pre><code class="language-consól">$ xcode-select --install
+</code></pre>
+<p>Ba cheart go ginearálta d'úsáideoirí Linux GCC nó Clang a shuiteáil, de réir a gcuid
+doiciméadú dáileacháin. Mar shampla, má úsáideann tú Ubuntu, is féidir leat a shuiteáil
+an pacáiste <code>build-essential</code>.</p>
+<h3 id="suiteáil-rustup-ar-windows"><a class="header" href="#suiteáil-rustup-ar-windows">Suiteáil <code>rustup</code> ar Windows</a></h3>
+<p>Ar Windows, téigh chuig [https://www.rust-lang.org/tools/install][install] agus lean
+Treoracha le haghaidh suiteáil Rust. Ag pointe éigin sa suiteáil, déanfaidh tú
+a spreagadh chun Visual Studio a shuiteáil. Soláthraíonn sé seo nascóir agus an dúchais
+leabharlanna ag teastáil chun cláir a thiomsú. Má theastaíonn tuilleadh cabhrach uait leis an gcéim seo, féach
+<a href="https://rust-lang.github.io/rustup/installation/windows-msvc.html"> https://rust-lang.github.io/rustup/installation/windows-msvc.html</a></p>
+<p>Úsáideann an chuid eile den leabhar seo orduithe a oibríonn sa dá <em>cmd.exe</em> agus PowerShell.
+Má tá difríochtaí sonracha ann, míneoimid cé acu ba cheart a úsáid.</p>
+<h3 id="fabhtcheartú"><a class="header" href="#fabhtcheartú">Fabhtcheartú</a></h3>
+<p>Chun seiceáil an bhfuil Rust suiteáilte i gceart agat, oscail sliogán agus cuir isteach é seo
+líne:</p>
+<pre><code class="language-consól">$ rustc --version
+</code></pre>
+<p>Ba cheart duit uimhir an leagain a fheiceáil, hash a thiomnú agus dáta geallta a dhéanamh ar a dhéanaí
+leagan cobhsaí atá eisithe, san fhormáid seo a leanas:</p>
+<pre><code class="language-téacs">rustc x.y.z (abcabcabc bbbb-mm-dd)
+</code></pre>
+<p>Má fheiceann tú an fhaisnéis seo, tá tú tar éis Rust a shuiteáil go rathúil! Mura ndéanann tú
+féach an fhaisnéis seo, seiceáil go bhfuil Rust i do athróg córais <code>% PATH%</code> mar
+leanas.</p>
+<p>I Windows CMD, bain úsáid as:</p>
+<pre><code class="language-consól">&gt; echo %PATH%
+</code></pre>
+<p>I PowerShell, bain úsáid as:</p>
+<pre><code class="language-bhlaosc cumhachta">&gt; echo $env:Path
+</code></pre>
+<p>I Linux agus macOS, bain úsáid as:</p>
+<pre><code class="language-consól">$ echo $PATH
+</code></pre>
+<p>Má tá sé sin ceart agus nach bhfuil Rust fós ag obair, tá roinnt cinn ann
+áiteanna inar féidir leat cabhair a fháil. Faigh amach conas dul i dteagmháil le Rustaceans eile (a
+leasainm amaideach a dtugaimid orainn féin) ar [an leathanach pobail][community].</p>
+<h3 id="nuashonrú-agus-díshuiteáil"><a class="header" href="#nuashonrú-agus-díshuiteáil">Nuashonrú agus Díshuiteáil</a></h3>
+<p>Nuair a bheidh Rust suiteáilte trí <code>rustup</code>, déantar nuashonrú go leagan nua-eisithe
+éasca. Ó do bhlaosc, rith an script nuashonraithe seo a leanas:</p>
+<pre><code class="language-consól">$ rustup update
+</code></pre>
+<p>Chun Rust agus <code>rustup</code> a dhíshuiteáil, rith an script díshuiteála seo a leanas ó do
+sliogán:</p>
+<pre><code class="language-consól">$ rustup self uninstall
+</code></pre>
+<h3 id="doiciméadúchán-Áitiúil"><a class="header" href="#doiciméadúchán-Áitiúil">Doiciméadúchán Áitiúil</a></h3>
+<p>Cuimsíonn suiteáil Rust cóip áitiúil de na doiciméid mar sin freisin
+gur féidir leat é a léamh as líne. Rith <code>rustup doc</code> chun an doiciméadú áitiúil a oscailt
+i do bhrabhsálaí.</p>
+<p>Am ar bith a sholáthraíonn an leabharlann chaighdeánach cineál nó feidhm agus ní bhíonn
+cinnte cad a dhéanann sé nó conas é a úsáid, bain úsáid as an comhéadan ríomhchlárú feidhmchlár
+(API) doiciméadú a fháil amach!</p>
+<h3 id="eagarthóirí-téacs-agus-timpeallachtaí-forbartha-comhtháite"><a class="header" href="#eagarthóirí-téacs-agus-timpeallachtaí-forbartha-comhtháite">Eagarthóirí Téacs agus Timpeallachtaí Forbartha Comhtháite</a></h3>
+<p>Ní dhéanann an leabhar seo aon boinn tuisceana faoi na huirlisí a úsáideann tú chun cód Rust a scríobh.
+Gheobhaidh beagnach aon eagarthóir téacs an jab! Mar sin féin, tá go leor eagarthóirí téacs agus
+tá tacaíocht ionsuite ag timpeallachtaí forbartha comhtháite (IDEanna) do Rust. tu
+Is féidir teacht i gcónaí ar liosta cothrom reatha de go leor eagarthóirí agus IDE ar <a href="https://www.rust-lang.org/tools">na huirlisí
+leathanach</a> ar shuíomh Gréasáin Rust.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="dia-duit-a-dhomhanda"><a class="header" href="#dia-duit-a-dhomhanda">Dia duit, a Dhomhanda!</a></h2>
+<p>Anois go bhfuil Rust suiteáilte agat, tá sé in am do chéad chlár Rust a scríobh.
+Tá sé traidisiúnta agus tú ag foghlaim teanga nua clár beag a scríobh
+priontaí an téacs <code>Dia duit, domhan!</code> ar an scáileán, mar sin déanfaimid an rud céanna anseo!</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="hello-cargo"><a class="header" href="#hello-cargo">Hello, Cargo!</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="programming-a-guessing-game"><a class="header" href="#programming-a-guessing-game">Programming a Guessing Game</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="common-programming-concepts"><a class="header" href="#common-programming-concepts">Common Programming Concepts</a></h1>
@@ -526,7 +632,7 @@ earráid. Cabhróidh Ferris leat freisin idirdhealú a dhéanamh ar chód nach b
         <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="./theme/ferris.js"></script>
+        <script src="src/css/ferris.js"></script>
 
         <script>
         window.addEventListener('load', function() {

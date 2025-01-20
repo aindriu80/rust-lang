@@ -29,10 +29,10 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="./theme/ferris.css">
-        <link rel="stylesheet" href="../theme/2018-edition.css">
-        <link rel="stylesheet" href="../theme/semantic-notes.css">
-        <link rel="stylesheet" href="../theme/listing.css">
+        <link rel="stylesheet" href="src/css/ferris.css">
+        <link rel="stylesheet" href="src/css/2018-edition.css">
+        <link rel="stylesheet" href="src/css/semantic-notes.css">
+        <link rel="stylesheet" href="src/css/listing.css">
 
 
         <!-- Provide site root to javascript -->
@@ -165,15 +165,15 @@
 Rust</a> ar fáil i bhformáid chlóite agus ríomhleabhair ó <a href="https://nostarch.com/">No Starch
 Press</a>.</p>
 </blockquote>
-<p>Fáilte go dtí <em>The Rust Programming Language</em>, leabhar tosaigh faoi mheirge.
+<p>Fáilte go dtí <em>The Rust Programming Language</em>, leabhar tosaigh faoi Rust.
 Cuidíonn teanga ríomhchláraithe Rust leat bogearraí níos tapúla agus níos iontaofa a scríobh.
 Is minic a bhíonn contrárthachtaí ag eirgeanamaíocht ardleibhéil agus rialú ísealleibhéil sa ríomhchlárú
-dearadh teanga; Tugann meirge dúshlán don choinbhleacht sin. Trí chothromú cumhachtach
+dearadh teanga; Tugann Rust dúshlán don choinbhleacht sin. Trí chothromú cumhachtach
 cumas teicniúil agus taithí iontach forbróra, tugann Rust an rogha duit
 chun sonraí íseal-leibhéil a rialú (cosúil le húsáid chuimhne) gan aon stró
 a bhaineann go traidisiúnta le rialú den sórt sin.</p>
-<h2 id="cé-dó-a-bhfuil-meirge"><a class="header" href="#cé-dó-a-bhfuil-meirge">Cé dó a bhfuil meirge</a></h2>
-<p>Tá meirge oiriúnach do go leor daoine ar chúiseanna éagsúla. Breathnaímid ar roinnt de
+<h2 id="cé-dó-a-bhfuil-rust"><a class="header" href="#cé-dó-a-bhfuil-rust">Cé dó a bhfuil Rust</a></h2>
+<p>Tá Rust oiriúnach do go leor daoine ar chúiseanna éagsúla. Breathnaímid ar roinnt de
 na grúpaí is tábhachtaí.</p>
 <h3 id="foirne-forbróirí"><a class="header" href="#foirne-forbróirí">Foirne Forbróirí</a></h3>
 <p>Is uirlis tháirgiúil é Rust chun comhoibriú i measc foirne móra de
@@ -191,7 +191,7 @@ spleáchais a thiomsú, agus a bhainistiú gan phian agus comhsheasmhach ar fud 
 éiceachóras.</li>
 <li>Cinntíonn an uirlis formáidithe Rustfmt stíl códaithe chomhsheasmhach trasna
 fhorbróirí.</li>
-<li>Cumhachtaíonn an t-anailíseoir meirge Timpeallacht Chomhtháite Forbartha (IDE)
+<li>Cumhachtaíonn an t-anailíseoir Rust Timpeallacht Chomhtháite Forbartha (IDE)
 comhtháthú chun cód a chomhlánú agus teachtaireachtaí earráide inlíne.</li>
 </ul>
 <p>Trí úsáid a bhaint as na huirlisí seo agus uirlisí eile in éiceachóras Rust, is féidir le forbróirí a bheith
@@ -211,11 +211,11 @@ bithfhaisnéisíocht, innill chuardaigh, feidhmchláir Internet of Things, meais
 foghlama, agus fiú codanna móra de bhrabhsálaí gréasáin Firefox.</p>
 <h3 id="forbróirí-foinse-oscailte"><a class="header" href="#forbróirí-foinse-oscailte">Forbróirí Foinse Oscailte</a></h3>
 <p>Tá Rust ann do dhaoine atá ag iarraidh teanga ríomhchláraithe Rust a thógáil, pobail,
-uirlisí forbróra, agus leabharlanna. Ba bhreá linn go gcuirfeá leis an Meirge
+uirlisí forbróra, agus leabharlanna. Ba bhreá linn go gcuirfeá leis an Rust
 teanga.</p>
 <h3 id="daoine-a-bhfuil-luach-acu-ar-luas-agus-ar-chobhsaíocht"><a class="header" href="#daoine-a-bhfuil-luach-acu-ar-luas-agus-ar-chobhsaíocht">Daoine a bhfuil Luach acu ar Luas agus ar Chobhsaíocht</a></h3>
-<p>Tá meirge ann do dhaoine ar mian leo luas agus seasmhacht i dteanga. De réir luais, táimid
-Ciallaíonn sé cé chomh tapa agus is féidir le cód meirge rith agus an luas a ligeann Rust duit
+<p>Tá Rust ann do dhaoine ar mian leo luas agus seasmhacht i dteanga. De réir luais, táimid
+Ciallaíonn sé cé chomh tapa agus is féidir le cód Rust rith agus an luas a ligeann Rust duit
 cláir a scríobh. Cinntíonn seiceálacha an tiomsaitheora Rust cobhsaíocht trí ghné
 breiseanna agus athfhachtóirí. Tá sé seo i gcodarsnacht leis an gcód oidhreachta brittle i
 teangacha gan na seiceálacha seo, ar minic go mbíonn eagla ar fhorbróirí iad a mhodhnú. Le
@@ -226,7 +226,7 @@ cód a bheith cód tapa chomh maith.</p>
 níl anseo ach cuid de na páirtithe leasmhara is mó. Tríd is tríd, Rust is fearr
 is é an uaillmhian deireadh a chur leis na comhbhabhtálacha a bhfuil glactha ag ríomhchláraitheoirí leo
 blianta trí shábháilteacht <em>agus</em> táirgiúlacht, luas <em>agus</em> eirgeanamaíocht a sholáthar. Tabhair
-Déan iarracht meirge agus féach an n-oibríonn a roghanna duit.</p>
+Déan iarracht Rust agus féach an n-oibríonn a roghanna duit.</p>
 <h2 id="cé-leis-an-leabhar-seo"><a class="header" href="#cé-leis-an-leabhar-seo">Cé Leis an Leabhar Seo</a></h2>
 <p>Glacann an leabhar seo leis go bhfuil cód scríofa agat i dteanga ríomhchlárúcháin eile ach
 ní dhéanann sé aon toimhde faoi cé acu. Rinneamar iarracht an t-ábhar a dhéanamh
@@ -270,7 +270,7 @@ Tá an loighic ceart. I gCaibidil 12, tógfaimid ár gcur i bhfeidhm féin ar fh
 feidhmiúlacht ón uirlis líne ordaithe <code>grep</code> a chuardaíonn téacs
 laistigh de chomhaid. Chun seo, bainfimid úsáid as go leor de na coincheapa a phléamar sa
 caibidlí roimhe seo.</p>
-<p>I gCaibidil 13 déantar iniúchadh ar dhúnadh agus iterators: gnéithe Meirge a thagann as
+<p>I gCaibidil 13 déantar iniúchadh ar dhúnadh agus iterators: gnéithe Rust a thagann as
 teangacha ríomhchlárúcháin feidhme. I gCaibidil 14, scrúdóimid lasta níos mó
 doimhneacht agus labhair faoi na cleachtais is fearr chun do leabharlanna a roinnt le daoine eile.
 Pléann Caibidil 15 leideanna cliste a sholáthraíonn an leabharlann chaighdeánach agus an
@@ -283,7 +283,7 @@ an tsamhail concurrency éadrom a thacaíonn siad.</p>
 prionsabail a bhféadfadh cur amach a bheith agat orthu.</p>
 <p>Is tagairt í Caibidil 19 do phatrúin agus meaitseáil patrún, atá cumhachtach
 bealaí chun smaointe a chur in iúl ar fud na gclár Rust. I gCaibidil 20 tá a
-smorgasbord ard-ábhair spéise, lena n-áirítear meirge neamhshábháilte, macraí, agus
+smorgasbord ard-ábhair spéise, lena n-áirítear Rust neamhshábháilte, macraí, agus
 níos mó faoi shaolréanna, tréithe, cineálacha, feidhmeanna agus dúnta.</p>
 <p>I gCaibidil 21, cuirfimid tionscadal i gcrích ina gcuirfimid leibhéal íseal i bhfeidhm
 freastalaí gréasáin ilshnáithe!</p>
@@ -292,8 +292,8 @@ níos mó formáid tagartha. Clúdaíonn Aguisín A eochairfhocail Rust, Aguisí
 clúdaíonn sé oibreoirí agus siombailí Rust, clúdaíonn Aguisín C tréithe in-díorthaithe
 a sholáthraíonn an leabharlann chaighdeánach, clúdaíonn Aguisín D roinnt forbairtí úsáideacha
 uirlisí, agus míníonn Aguisín E eagráin Rust. In Aguisín F, is féidir leat a fháil
-aistriúcháin ar an leabhar, agus in Aguisín G clúdóidh muid conas a dhéantar Meirge agus
-cad é meirge oíche.</p>
+aistriúcháin ar an leabhar, agus in Aguisín G clúdóidh muid conas a dhéantar Rust agus
+cad é Rust oíche.</p>
 <p>Níl aon bhealach mícheart leis an leabhar seo a léamh: más mian leat dul ar aghaidh, téigh chuige!
 Seans go mbeidh ort léim siar chuig caibidlí níos luaithe má bhíonn taithí agat ar aon cheann díobh
 mearbhall. Ach déan cibé rud a oibríonn duit.</p>
@@ -378,7 +378,7 @@ earráid. Cabhróidh Ferris leat freisin idirdhealú a dhéanamh ar chód nach b
         <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script src="./theme/ferris.js"></script>
+        <script src="src/css/ferris.js"></script>
 
 
     </div>

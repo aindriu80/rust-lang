@@ -6,6 +6,6 @@ src = "src"
 title = "An Teanga Ríomhchláraithe Rust"
 
 [output.html]
-additional-css = ["./theme/ferris.css", "../theme/2018-edition.css", "../theme/semantic-notes.css", "../theme/listing.css"]
-additional-js = ["./theme/ferris.js"]
+additional-css = ["src/css/ferris.css", "src/css/2018-edition.css", "src/css/semantic-notes.css", "src/css/listing.css"]
+additional-js = ["src/css/ferris.js"]
 git-repository-url = "https://github.com/aindriu80/rust-lang/book"
