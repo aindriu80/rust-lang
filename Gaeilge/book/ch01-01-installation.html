@@ -180,16 +180,16 @@ teirminéal. Tosaíonn línte ar chóir duit a chur isteach i teirminéal le <co
 ní gá an carachtar <code>$</code> a chlóscríobh; is é an leid líne ordaithe a thaispeántar do
 cuir in iúl tús gach ordú. Línte nach dtosaíonn le <code>$</code> de ghnáth
 taispeáin aschur an ordaithe roimhe seo. Ina theannta sin, PowerShell-shonrach
-úsáidfidh samplaí <code>&gt;</code> seachas <code>$</code>.</p>
+úsáidfidh <code>&gt;</code> samplaí seachas <code>$</code>.</p>
 </blockquote>
 <h3 id="suiteáil-rustup-ar-linux-nó-macos"><a class="header" href="#suiteáil-rustup-ar-linux-nó-macos">Suiteáil <code>rustup</code> ar Linux nó macOS</a></h3>
 <p>Má tá Linux nó macOS á úsáid agat, oscail teirminéal agus cuir isteach an t-ordú seo a leanas:</p>
-<pre><code class="language-consól">$ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+<pre><code class="language-console">$ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
 </code></pre>
 <p>Íoslódálann an t-ordú script agus cuireann sé tús le suiteáil an <code>rustup</code>
 uirlis, a shuiteálann an leagan cobhsaí is déanaí de Rust. Seans go dtabharfar leid thú
 le haghaidh do phasfhocal. Má éiríonn leis an suiteáil, feicfear an líne seo a leanas:</p>
-<pre><code class="language-téacs">Tá Rust suiteáilte anois. Go hiontach!
+<pre><code class="language-text">Rust is installed now. Great!
 </code></pre>
 <p>Beidh <em>linker</em> ag teastáil uait freisin, ar clár é a úsáideann Rust chun páirt a ghlacadh ann
 aschuir tiomsaithe i gcomhad amháin. Is dócha go bhfuil ceann agat cheana féin. Má fhaigheann tú
@@ -197,51 +197,51 @@ earráidí nascóirí, ba cheart duit tiomsaitheoir C a shuiteáil, lena n-áire
 nascóir. Tá tiomsaitheoir C úsáideach freisin toisc go mbraitheann roinnt pacáistí Rust coitianta
 C cód agus beidh tiomsaitheoir C de dhíth.</p>
 <p>Ar macOS, is féidir leat tiomsaitheoir C a fháil trí:</p>
-<pre><code class="language-consól">$ xcode-select --install
+<pre><code class="language-console">$ xcode-select --install
 </code></pre>
 <p>Ba cheart go ginearálta d'úsáideoirí Linux GCC nó Clang a shuiteáil, de réir a gcuid
 doiciméadú dáileacháin. Mar shampla, má úsáideann tú Ubuntu, is féidir leat a shuiteáil
 an pacáiste <code>build-essential</code>.</p>
 <h3 id="suiteáil-rustup-ar-windows"><a class="header" href="#suiteáil-rustup-ar-windows">Suiteáil <code>rustup</code> ar Windows</a></h3>
-<p>Ar Windows, téigh chuig [https://www.rust-lang.org/tools/install][install] agus lean
+<p>Ar Windows, téigh chuig <a href="https://www.rust-lang.org/tools/install">https://www.rust-lang.org/tools/install</a> agus lean
 Treoracha le haghaidh suiteáil Rust. Ag pointe éigin sa suiteáil, déanfaidh tú
 a spreagadh chun Visual Studio a shuiteáil. Soláthraíonn sé seo nascóir agus an dúchais
 leabharlanna ag teastáil chun cláir a thiomsú. Má theastaíonn tuilleadh cabhrach uait leis an gcéim seo, féach
-<a href="https://rust-lang.github.io/rustup/installation/windows-msvc.html"> https://rust-lang.github.io/rustup/installation/windows-msvc.html</a></p>
+<a href="https://rust-lang.github.io/rustup/installation/windows-msvc.html">https://rust-lang.github.io/rustup/installation/windows-msvc.html</a></p>
 <p>Úsáideann an chuid eile den leabhar seo orduithe a oibríonn sa dá <em>cmd.exe</em> agus PowerShell.
 Má tá difríochtaí sonracha ann, míneoimid cé acu ba cheart a úsáid.</p>
 <h3 id="fabhtcheartú"><a class="header" href="#fabhtcheartú">Fabhtcheartú</a></h3>
 <p>Chun seiceáil an bhfuil Rust suiteáilte i gceart agat, oscail sliogán agus cuir isteach é seo
 líne:</p>
-<pre><code class="language-consól">$ rustc --version
+<pre><code class="language-console">$ rustc --version
 </code></pre>
 <p>Ba cheart duit uimhir an leagain a fheiceáil, hash a thiomnú agus dáta geallta a dhéanamh ar a dhéanaí
 leagan cobhsaí atá eisithe, san fhormáid seo a leanas:</p>
-<pre><code class="language-téacs">rustc x.y.z (abcabcabc bbbb-mm-dd)
+<pre><code class="language-text">rustc x.y.z (abcabcabc bbbb-mm-ll)
 </code></pre>
 <p>Má fheiceann tú an fhaisnéis seo, tá tú tar éis Rust a shuiteáil go rathúil! Mura ndéanann tú
 féach an fhaisnéis seo, seiceáil go bhfuil Rust i do athróg córais <code>% PATH%</code> mar
 leanas.</p>
 <p>I Windows CMD, bain úsáid as:</p>
-<pre><code class="language-consól">&gt; echo %PATH%
+<pre><code class="language-console">&gt; echo %PATH%
 </code></pre>
 <p>I PowerShell, bain úsáid as:</p>
-<pre><code class="language-bhlaosc cumhachta">&gt; echo $env:Path
+<pre><code class="language-powershell">&gt; echo $env:Path
 </code></pre>
 <p>I Linux agus macOS, bain úsáid as:</p>
-<pre><code class="language-consól">$ echo $PATH
+<pre><code class="language-console">$ echo $PATH
 </code></pre>
 <p>Má tá sé sin ceart agus nach bhfuil Rust fós ag obair, tá roinnt cinn ann
 áiteanna inar féidir leat cabhair a fháil. Faigh amach conas dul i dteagmháil le Rustaceans eile (a
-leasainm amaideach a dtugaimid orainn féin) ar [an leathanach pobail][community].</p>
+leasainm amaideach a dtugaimid orainn féin) ar <a href="https://www.rust-lang.org/community">an leathanach pobail</a>.</p>
 <h3 id="nuashonrú-agus-díshuiteáil"><a class="header" href="#nuashonrú-agus-díshuiteáil">Nuashonrú agus Díshuiteáil</a></h3>
 <p>Nuair a bheidh Rust suiteáilte trí <code>rustup</code>, déantar nuashonrú go leagan nua-eisithe
 éasca. Ó do bhlaosc, rith an script nuashonraithe seo a leanas:</p>
-<pre><code class="language-consól">$ rustup update
+<pre><code class="language-console">$ rustup update
 </code></pre>
 <p>Chun Rust agus <code>rustup</code> a dhíshuiteáil, rith an script díshuiteála seo a leanas ó do
 sliogán:</p>
-<pre><code class="language-consól">$ rustup self uninstall
+<pre><code class="language-console">$ rustup self uninstall
 </code></pre>
 <h3 id="doiciméadúchán-Áitiúil"><a class="header" href="#doiciméadúchán-Áitiúil">Doiciméadúchán Áitiúil</a></h3>
 <p>Cuimsíonn suiteáil Rust cóip áitiúil de na doiciméid mar sin freisin
@@ -250,12 +250,6 @@ i do bhrabhsálaí.</p>
 <p>Am ar bith a sholáthraíonn an leabharlann chaighdeánach cineál nó feidhm agus ní bhíonn
 cinnte cad a dhéanann sé nó conas é a úsáid, bain úsáid as an comhéadan ríomhchlárú feidhmchlár
 (API) doiciméadú a fháil amach!</p>
-<h3 id="eagarthóirí-téacs-agus-timpeallachtaí-forbartha-comhtháite"><a class="header" href="#eagarthóirí-téacs-agus-timpeallachtaí-forbartha-comhtháite">Eagarthóirí Téacs agus Timpeallachtaí Forbartha Comhtháite</a></h3>
-<p>Ní dhéanann an leabhar seo aon boinn tuisceana faoi na huirlisí a úsáideann tú chun cód Rust a scríobh.
-Gheobhaidh beagnach aon eagarthóir téacs an jab! Mar sin féin, tá go leor eagarthóirí téacs agus
-tá tacaíocht ionsuite ag timpeallachtaí forbartha comhtháite (IDEanna) do Rust. tu
-Is féidir teacht i gcónaí ar liosta cothrom reatha de go leor eagarthóirí agus IDE ar <a href="https://www.rust-lang.org/tools">na huirlisí
-leathanach</a> ar shuíomh Gréasáin Rust.</p>
 
                     </main>
 

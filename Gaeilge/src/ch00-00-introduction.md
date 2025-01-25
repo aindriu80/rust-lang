@@ -1,6 +1,6 @@
 # Réamhrá
 
-> Nóta: Is ionann an t-eagrán seo den leabhar agus [An Teanga Ríomhchláraithe 
+> Nóta: Is ionann an t-eagrán seo den leabhar agus [An Teanga Ríomhchláraithe
 > Rust][nsprust] ar fáil i bhformáid chlóite agus ríomhleabhair ó [No Starch
 > Press][nsp].
 
@@ -34,12 +34,12 @@ loighic seachas dul ar thóir fabhtanna.
 Tugann Rust uirlisí forbróra comhaimseartha chuig saol ríomhchláraithe na gcóras freisin:
 
 - Déanann lasta, an bainisteoir spleáchais agus an uirlis tógála atá san áireamh, cur leis,
- spleáchais a thiomsú, agus a bhainistiú gan phian agus comhsheasmhach ar fud na Rust
- éiceachóras.
+  spleáchais a thiomsú, agus a bhainistiú gan phian agus comhsheasmhach ar fud na Rust
+  éiceachóras.
 - Cinntíonn an uirlis formáidithe Rustfmt stíl códaithe chomhsheasmhach trasna
- fhorbróirí.
+  fhorbróirí.
 - Cumhachtaíonn an t-anailíseoir Rust Timpeallacht Chomhtháite Forbartha (IDE)
- comhtháthú chun cód a chomhlánú agus teachtaireachtaí earráide inlíne.
+  comhtháthú chun cód a chomhlánú agus teachtaireachtaí earráide inlíne.
 
 Trí úsáid a bhaint as na huirlisí seo agus uirlisí eile in éiceachóras Rust, is féidir le forbróirí a bheith
 táirgiúil agus cód leibhéal córais á scríobh.
@@ -119,9 +119,9 @@ foghlaimeoir ar fearr leis gach mionsonra a fhoghlaim sula mbogann tú ar aghaid
 b'fhéidir gur mhaith leat gan bacadh le Caibidil 2 agus dul díreach go dtí Caibidil 3, ag filleadh ar Caibidil
 2 nuair is mian leat oibriú ar thionscadal ag cur na sonraí atá foghlamtha agat i bhfeidhm.
 
-Pléann Caibidil 5 struchtúir agus modhanna, agus clúdaíonn Caibidil 6 enums, `match`
-nathanna cainte, agus an tógáil sreabhadh rialaithe `má ligtear duit. Bainfidh tú úsáid as struchtúir agus
-enums a dhéanamh cineálacha saincheaptha i Rust.
+Caibideal 5 pléann sé struchtúir agus modhanna, agus clúdaíonn Caibideal 6 éumanna, abairtí `match`,
+agus an tógáil sreafa rialaithe `if let`. Úsáidfidh tú struchtúir agus
+éumanna chun cineálacha saincheaptha a chruthú i Rust.
 
 I gCaibidil 7, foghlaimeoidh tú faoi chóras modúil Rust agus faoi rialacha príobháideachais
 chun do chód agus a Chomhéadan Poiblí um Chlárú Feidhmchláir a eagrú
@@ -181,14 +181,11 @@ agus sampla randamach a rith, ní fhéadfaidh sé a thiomsú! Bí cinnte go léa
 téacs mórthimpeall féachaint an bhfuil sé i gceist an sampla a bhfuil tú ag iarraidh a rith a rith
 earráid. Cabhróidh Ferris leat freisin idirdhealú a dhéanamh ar chód nach bhfuil i gceist a bheith ag obair:
 
-
-
-| Ferris                                                                                                              | Brí                                                    |
-| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| <img src="img/ferris/does_not_compile.svg" class="ferris-explain" alt="Ferris le comhartha ceiste"/>                | Ní thiomsaíonn an cód seo!                             |
-| <img src="img/ferris/panics.svg" class="ferris-explain" alt="Ferris ag caitheamh a lámha"/>                         | Caoileann an cód seo!                                  |
-| <img src="img/ferris/not_desired_behavior.svg" class="ferris-explain" alt="Ferris le crúb amháin suas, shrugging"/> | Ní tháirgeann an cód seo an t-iompar atá ag teastáil.  |
-
+| Ferris                                                                                                              | Brí                                                   |
+| ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| <img src="img/ferris/does_not_compile.svg" class="ferris-explain" alt="Ferris le comhartha ceiste"/>                | Ní thiomsaíonn an cód seo!                            |
+| <img src="img/ferris/panics.svg" class="ferris-explain" alt="Ferris ag caitheamh a lámha"/>                         | Caoileann an cód seo!                                 |
+| <img src="img/ferris/not_desired_behavior.svg" class="ferris-explain" alt="Ferris le crúb amháin suas, shrugging"/> | Ní tháirgeann an cód seo an t-iompar atá ag teastáil. |
 
 I bhformhór na gcásanna, beidh muid tú a threorú chuig an leagan ceart d'aon chód sin ní thiomsaíonn.
 

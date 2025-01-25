@@ -1,7 +1,7 @@
 # Réamhfhocal
 
 Ní raibh sé chomh soiléir i gcónaí, ach tá teanga ríomhchláraithe Rust go bunúsach
-faoi ​​_empowerment_: is cuma cén cineál cód atá á scríobh agat anois, a Rust
+faoi _cumhachtú_ : is cuma cén cineál cód atá á scríobh agat anois, a Rust
 a chumasaíonn duit dul i bhfad níos faide, chun clár a dhéanamh go muiníneach i raon níos leithne de
 fearainn ná mar a rinne tú roimhe seo.
 

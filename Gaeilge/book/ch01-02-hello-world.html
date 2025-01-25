@@ -163,6 +163,143 @@
 <p>Anois go bhfuil Rust suiteáilte agat, tá sé in am do chéad chlár Rust a scríobh.
 Tá sé traidisiúnta agus tú ag foghlaim teanga nua clár beag a scríobh
 priontaí an téacs <code>Dia duit, domhan!</code> ar an scáileán, mar sin déanfaimid an rud céanna anseo!</p>
+<blockquote>
+<p>Nóta: Glacann an leabhar seo le cur amach bunúsach ar an líne ordaithe. Déanann Rust
+níl aon éileamh ar d'eagarthóireacht nó d'uirlisiú nó cá bhfuil cónaí ar do chód, mar sin de
+más fearr leat timpeallacht forbartha comhtháite (IDE) a úsáid ina ionad
+an líne ordaithe, bíodh leisce ort an IDE is fearr leat a úsáid. Tá roinnt IDEanna anois
+méid na tacaíochta Rust; seiceáil doiciméadú an IDE le haghaidh sonraí.
+tá an Rust fhoireann ag díriú ar thacaíocht iontach IDE a chumasú trí <code>rust-analyzer</code>. Féach
+<a href="appendix-04-useful-development-tools.html">Aguisín D</a><!-- neamhaird --> le haghaidh tuilleadh sonraí.</p>
+</blockquote>
+<h3 id="eolaire-tionscadal-á-chruthú"><a class="header" href="#eolaire-tionscadal-á-chruthú">Eolaire Tionscadal á Chruthú</a></h3>
+<p>Tosóidh tú trí eolaire a dhéanamh chun do chód Rust a stóráil. Is cuma
+go Rust áit a bhfuil cónaí ar do chód, ach do na cleachtaí agus na tionscadail sa leabhar seo,
+molaimid eolaire <em>tionscadail</em> a dhéanamh i do eolaire baile agus gach rud a choimeád
+do thionscadail ann.</p>
+<p>Oscail teirminéal agus cuir isteach na horduithe seo a leanas chun eolaire <em>tionscadail</em> a dhéanamh
+agus eolaire don "Dia duit, an domhan!" tionscadal laistigh den eolaire <em>tionscadail</em>.</p>
+<p>Le haghaidh Linux, macOS, agus PowerShell ar Windows, cuir isteach é seo:</p>
+<pre><code class="language-console">$ mkdir ~/tionscadail
+$ cd ~/tionscadail
+$ mkdir hello_world
+$ cd hello_world
+</code></pre>
+<p>I gcás Windows CMD, cuir isteach é seo:</p>
+<pre><code class="language-cmd">&gt; mkdir "%USERPROFILE%\tionscadail"
+&gt; cd /d "%USERPROFILE%\tionscadail"
+&gt; mkdir hello_world
+&gt; cd hello_world
+</code></pre>
+<h3 id="clár-rust-á-scríobh-agus-á-rith"><a class="header" href="#clár-rust-á-scríobh-agus-á-rith">Clár Rust á Scríobh agus á Rith</a></h3>
+<p>Ansin, déan comhad foinse nua agus glaoigh air <em>main.rs</em>. Comhaid Rust deireadh i gcónaí le
+an síneadh <em>.rs</em>. Má tá níos mó ná focal amháin in úsáid agat i d’ainm comhaid, beidh an
+Is é an gnás foscór a úsáid chun iad a scaradh. Mar shampla, úsáid
+<em>hello_world.rs</em> seachas <em>helloworld.rs</em>.</p>
+<p>Anois oscail an comhad <em>main.rs</em> a chruthaigh tú díreach agus cuir isteach an cód i Liostú 1-1.</p>
+<Listing number="1-1" file-name="main.rs" caption="Clár a phriontálann `Dia duit, a shaoghail!`">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    println!("Dia duit, domhan!");
+}</code></pre></pre>
+</Listing>
+<p>Sábháil an comhad agus téigh ar ais go dtí do fhuinneog teirminéil sa
+_~/tionscadail/hello_world eolaire. Ar Linux nó macOS, cuir isteach an méid seo a leanas
+orduithe chun an comhad a thiomsú agus a rith:</p>
+<pre><code class="language-consól">$ rustc main.rs
+$ ./main
+Dia duit, domhan!
+</code></pre>
+<p>Ar Windows, cuir isteach an t-ordú <code>.\main.exe</code> in ionad <code>./main</code>:</p>
+<pre><code class="language-powershell">&gt; rustc main.rs
+&gt; .\main.exe
+Dia duit, domhan!
+</code></pre>
+<p>beag beann ar do chóras oibriúcháin, ba chóir an teaghrán <code>Dia duit, a Dhomhan!</code> a phriontáil go dtí
+an teirminéal. Mura bhfeiceann tú an t-aschur seo, féach ar ais chuig an
+<a href="ch01-01-installation.html#troubleshooting">“Fabhtcheartú”</a><!-- neamhaird a dhéanamh ar --> cuid den Suiteáil
+alt le haghaidh bealaí chun cabhair a fháil.</p>
+<p>Má rinne <code>Dia duit, a domhan!</code> cló, comhghairdeas! Tá Rust scríofa agat go hoifigiúil
+clár. Déanann sé sin ríomhchláraitheoir Rust duit - fáilte romhat!</p>
+<h3 id="anatamaíocht-chlár-rust"><a class="header" href="#anatamaíocht-chlár-rust">Anatamaíocht Chlár Rust</a></h3>
+<p>Déanaimis athbhreithniú ar seo "Dia duit, a domhan!" clár go mion. Seo chugaibh an chéad píosa
+an puzal:</p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+
+}</code></pre></pre>
+<p>Sainmhíníonn na línte seo feidhm darb ainm <code>main</code>. Tá an fheidhm <code>main</code> speisialta: é
+i gcónaí ar an gcéad chód a ritheann i ngach clár inrite Rust. Anseo, an
+dearbhaíonn an chéad líne feidhm darb ainm <code>main</code> nach bhfuil paraiméadair agus tuairisceáin ann
+faic. Dá mbeadh paraiméadair ann, rachadh siad laistigh de na lúibíní <code>()</code>.</p>
+<p>Tá corp na feidhme fillte i <code>{}</code>. Éilíonn Rust lúibíní curly timpeall ar fad
+comhlachtaí feidhm. Is stíl mhaith é an lúibín cuartha tosaigh a chur ar an gcéanna
+líne mar dhearbhú feidhme, ag cur spás amháin eatarthu.</p>
+<blockquote>
+<p>Nóta: Más mian leat cloí le stíl chaighdeánach ar fud na dtionscadal Rust, is féidir leat
+bain úsáid as uirlis uathfhormáidithe ar a dtugtar <code>rustfmt</code> chun do chód a fhormáidiú in a
+stíl ar leith (tuilleadh ar <code>rustfmt</code> in
+<a href="appendix-04-useful-development-tools.html">Aguisín D</a><!-- neamhaird a dhéanamh -->). Tá an uirlis seo curtha san áireamh ag foireann Rust
+leis an dáileadh caighdeánach Rust, mar is é <code>rustc</code>, mar sin ba chóir go mbeadh sé cheana féin
+suiteáilte ar do ríomhaire!</p>
+</blockquote>
+<p>Tá an cód seo a leanas i gcorp na <code>main</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("Dia duit, a domhan!");
+<span class="boring">}</span></code></pre></pre>
+<p>Déanann an líne seo an obair ar fad sa chlár beag seo: priontaí sí téacs chuig an
+scáileán. Tá ceithre shonraí tábhachtacha le tabhairt faoi deara anseo.</p>
+<p>Ar dtús, glaonn <code>println!</code> macra Rust. Dá mba rud é gur ghlaoigh sé feidhm ina hionad, is é
+chuirfí isteach mar <code>println</code> (gan an <code>!</code>). Pléifimid macraí Rust in
+níos mó sonraí i gCaibidil 20. Faoi láthair, ní gá duit ach fios a bheith agat go n-úsáideann tú <code>!</code>
+Ciallaíonn sé sin go bhfuil tú ag glaoch ar mhacra in ionad gnáthfheidhm agus na macraí sin
+ná lean na rialacha céanna le feidhmeanna i gcónaí.</p>
+<p>Ar an dara dul síos, feiceann tú an teaghrán <code>"Dia duit, domhan!"</code>. Gabhaimid an teaghrán seo mar argóint
+go <code>println!</code>, agus clóitear an teaghrán go dtí an scáileán.</p>
+<p>Sa tríú háit, deireadh muid an líne le leathstad (<code>;</code>), a léiríonn go bhfuil sé seo
+tá deireadh le cur in iúl agus tá an chéad cheann eile réidh le tosú. An chuid is mó de na línte de chód Rust
+deireadh le leathstad.</p>
+<h3 id="is-céimeanna-ar-leith-iad-tiomsú-agus-rith"><a class="header" href="#is-céimeanna-ar-leith-iad-tiomsú-agus-rith">Is Céimeanna ar Leith iad Tiomsú agus Rith</a></h3>
+<p>Tá clár nuachruthaithe díreach á rith agat, mar sin déanaimis scrúdú ar gach céim sa
+próiseas.</p>
+<p>Sula ritheann tú clár Rust, ní mór duit é a thiomsú ag baint úsáide as an tiomsaitheoir Rust trí
+an t-ordú <code>rustc</code> a iontráil agus ainm do chomhaid foinse a thabhairt dó, mar
+seo:</p>
+<pre><code class="language-console">$ rustc main.rs
+</code></pre>
+<p>Má tá cúlra C nó C++ agat, tabharfaidh tú faoi deara go bhfuil sé seo cosúil le <code>gc</code>
+nó <code>clang</code>. Tar éis a thiomsú go rathúil, aschuir Rust inrite dénártha.</p>
+<p>Ar Linux, macOS, agus PowerShell ar Windows, is féidir leat an inrite a fheiceáil le
+ag dul isteach an t-ordú <code>ls</code> i do bhlaosc:</p>
+<pre><code class="language-console">$ ls
+main  main.rs
+</code></pre>
+<p>Ar Linux agus macOS, feicfidh tú dhá chomhad. Le PowerShell ar Windows, déanfaidh tú
+féach ar na trí chomhad chéanna a d'fheicfeá ag baint úsáide as CMD. Le CMD ar Windows, tú
+chuirfeadh sé seo a leanas isteach:</p>
+<pre><code class="language-cmd">&gt; dir /B %= deir an rogha /B gan ach ainmneacha na gcomhad a thaispeáint =%
+main.exe
+main.pdb
+main.rs
+</code></pre>
+<p>Taispeánann sé seo an comhad cód foinse leis an síneadh <em>.rs</em>, an comhad inrite
+(<em>main.exe</em> ar Windows, ach <em>main</em> ar gach ardán eile), agus, nuair a úsáid
+Windows, comhad ina bhfuil faisnéis dífhabhtaithe leis an iarmhír <em>.pdb</em>.
+As seo, ritheann tú an comhad <em>main</em> nó <em>main.exe</em>, mar seo:</p>
+<pre><code class="language-console">$ ./main # or .\main.exe ar Windows
+</code></pre>
+<p>Más é do <em>main.rs</em> do "Dia duit, domhan!" clár, priontaí an líne seo <code>Dia duit, domhan!</code> chuig do chríochfort.</p>
+<p>Má tá níos mó eolas agat ar theanga dhinimiciúil, mar Ruby, Python, nó
+JavaScript, seans nach bhfuil tú cleachta le clár a thiomsú agus a rith mar
+céimeanna ar leith. Is teanga tiomsaithe <em>roimh-ama</em> é Rust, rud a chiallaíonn gur féidir leat
+clár a thiomsú agus an inrite a thabhairt do dhuine eile, agus is féidir leo é a rith
+fiú gan Rust a bheith suiteáilte. Má thugann tú <em>.rb</em>, <em>.py</em>, nó
+<em>.js</em>, ní mór cur i bhfeidhm Ruby, Python nó JavaScript a bheith acu
+suiteáilte (faoi seach). Ach sna teangacha sin, níl uait ach ordú amháin chun
+do chlár a thiomsú agus a rith. Is malairt-uaire é gach rud i ndearadh teanga.</p>
+<p>Tá sé ceart go leor ach le <code>rustc</code> a thiomsú do chláir shimplí, ach mar do thionscadal
+fás, beidh tú ag iarraidh na roghanna go léir a bhainistiú agus é a dhéanamh éasca do chuid a roinnt
+cód. Ansin, cuirfimid an uirlis lasta in aithne duit, a chabhróidh leat scríobh
+cláir Rust domhan fíor.</p>
 
                     </main>
 
