@@ -372,7 +372,7 @@ earráid. Cabhróidh Ferris leat freisin idirdhealú a dhéanamh ar chód nach b
 áit éigin. Sa chaibidil seo, pléifimid:</p>
 <ul>
 <li>Suiteáil Rust ar Linux, macOS, agus Windows</li>
-<li>Ag scríobh clár a phriontálann <code>Hello, world!</code></li>
+<li>Ag scríobh clár a phriontálann <code>Dia duit, ar domhan!</code></li>
 <li>Ag baint úsáide as <code>cargo</code>, bainisteoir pacáiste Rust agus córas tógála</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h2 id="suiteáil"><a class="header" href="#suiteáil">Suiteáil</a></h2>
@@ -962,7 +962,7 @@ an scáileán:</p>
 <p>Anois tá an clár ag éirí suimiúil! Tá go leor ar siúl sa bheagán seo
 líne. Bainimid úsáid as an ráiteas <code>let</code> chun an athróg a chruthú. Seo sampla eile:</p>
 <pre><code class="language-rust ignore">let úlla = 5;</code></pre>
-<p>Cruthaíonn an líne seo athróg nua darb ainm <code>úlla</code> agus ceanglaíonn sí é leis an luach 5. In
+<p>Cruthaíonn an líne seo athróg nua darb ainm <code>apples</code> agus ceanglaíonn sí é leis an luach 5. In
 Meirge, tá athróga do-mharú de réir réamhshocraithe, rud a chiallaíonn nuair a thugaimid an athróg a
 luach, ní athróidh an luach. Beidh an coincheap seo á phlé againn go mion
 an [“Athróga agus Comhshócmhainneacht”][athróga-agus-shó-shó-athróga]<!-- neamhaird a dhéanamh ar -->
@@ -975,19 +975,19 @@ let bananaí mut = 5; // inathraithe</code></pre>
 líne. Déanann Rust neamhaird ar gach rud i dtuairimí. Déanfaimid trácht níos mó a phlé
 sonraí i [Caibidil 3][tráchtanna] <!-- neamhaird -->.</p>
 </blockquote>
-<p>Ag filleadh ar an gclár cluiche buille faoi thuairim, tá a fhios agat anois go mbeidh <code>let mut tomhas</code>
-athróg chomhshóite a thabhairt isteach darb ainm <code>tomhas</code>. Insíonn an comhartha comhionann (<code>=</code>) Rust dúinn
+<p>Ag filleadh ar an gclár cluiche buille faoi thuairim, tá a fhios agat anois go mbeidh <code>let mut guess</code>
+athróg chomhshóite a thabhairt isteach darb ainm <code>guess</code>. Insíonn an comhartha comhionann (<code>=</code>) Rust dúinn
 ag iarraidh rud éigin a cheangal leis an athróg anois. Ar thaobh na láimhe deise den chomhartha comhionann
-an luach atá faoi cheangal ag <code>tomhas</code>, atá mar thoradh ar ghlaoch
+an luach atá faoi cheangal ag <code>guess</code>, atá mar thoradh ar ghlaoch
 <code>String::new</code>, feidhm a thugann sampla nua de <code>String</code> ar ais.
-[<code>Teaghrán</code>][teaghrán] Is cineál teaghrán é <!-- neamhaird --> a sholáthraíonn an caighdeán
+[<code>String</code>][teaghrán] Is cineál teaghrán é <!-- neamhaird --> a sholáthraíonn an caighdeán
 leabharlann atá ina giotán téacs ionchódaithe UTF-8 infhás.</p>
 <p>Léiríonn an chomhréir <code>::</code> sa líne <code>::new</code> go bhfuil baint ag <code>new</code>
 feidhm den chineál <code>String</code>. Feidhm <em>ghaolmhar</em> is ea feidhm atá
 curtha i bhfeidhm ar chineál, sa chás seo <code>String</code>. Cruthaíonn an fheidhm <code>new</code> seo a
 teaghrán nua, folamh. Gheobhaidh tú feidhm <code>new</code> ar go leor cineálacha toisc gur a
 ainm coitianta ar fheidhm a dhéanann luach nua de shaghas éigin.</p>
-<p>Ina hiomláine, chruthaigh an líne <code>let mut tomhas = String::new();</code> mutable
+<p>Ina hiomláine, chruthaigh an líne <code>let mut guess = String::new();</code> mutable
 athróg atá ceangailte faoi láthair le sampla nua, folamh de <code>String</code>. Tá sin réidh!</p>
 <h3 id="ag-fáil-ionchur-Úsáideora"><a class="header" href="#ag-fáil-ionchur-Úsáideora">Ag fáil Ionchur Úsáideora</a></h3>
 <p>Thabhairt chun cuimhne gur chuimsigh muid an fheidhmiúlacht ionchuir/aschuir ón gcaighdeán
@@ -1014,9 +1014,9 @@ an chláir, d'fhéadfaimis an fheidhm a úsáid fós tríd an nglao feidhme seo 
 <code>std::io::stdin</code>. Tugann an fheidhm <code>stdin</code> sampla de
 <a href="../std/io/struct.Stdin.html"><code>std::io::Stdin</code></a> <!-- déan neamhaird de -->, ar cineál é a sheasann do
 láimhseáil go dtí an t-ionchur caighdeánach do do teirminéal.</p>
-<p>Ansin, glaonn an líne <code>.read_line(&amp;mut tomhas)</code> ar <a href="../std/io/struct.Stdin.html#method.read_line"><code>read_line</code></a><!--
+<p>Ansin, glaonn an líne <code>.read_line(&amp;mut guess)</code> ar <a href="../std/io/struct.Stdin.html#method.read_line"><code>read_line</code></a><!--
 neamhaird --> modh ar an láimhseáil ionchur caighdeánach chun ionchur a fháil ón úsáideoir.
-Tá <code>&amp;mut tomhas</code> á rith againn freisin mar argóint chun <code>léamh_líne</code> a insint cad é
+Tá <code>&amp;mut guess</code> á rith againn freisin mar argóint chun <code>read_line</code> a insint cad é
 teaghrán chun ionchur an úsáideora a stóráil. Is é an jab iomlán de <code>read_line</code> a ghlacadh
 is cuma cad iad na cineálacha úsáideora isteach i ionchur caighdeánach agus cuir é sin i sreangán
 (gan a bhfuil ann a fhorscríobh), mar sin cuirimid an teaghrán sin ar aghaidh mar
@@ -1028,12 +1028,12 @@ na sonraí sin a chóipeáil isteach i gcuimhne arís agus arís eile. Is gné c
 agus ceann de mhórbhuntáistí Rust ná cé chomh sábháilte agus éasca é a úsáid
 tagairtí. Ní gá go mbeadh a lán de na sonraí sin ar eolas agat chun é seo a chríochnú
 clár. Faoi láthair, níl a fhios agat ach, cosúil le hathróga, is tagairtí iad
-immutable de réir réamhshocraithe. Mar sin, ní mór duit <code>&amp;mut tomhas</code> a scríobh seachas
-<code>&amp;tomhas</code> chun é a dhéanamh mutable. (Míneoidh Caibidil 4 tagairtí níos mó
+immutable de réir réamhshocraithe. Mar sin, ní mór duit <code>&amp;mut guess</code> a scríobh seachas
+<code>&amp;guess</code> chun é a dhéanamh mutable. (Míneoidh Caibidil 4 tagairtí níos mó
 go críochnúil.)</p>
 <!-- Old heading. Do not remove or links may break. -->
 <p><a id="handling-potential-failure-with-the-result-type"></a></p>
-<h3 id="teip-féideartha-a-láimhseáil-le-toradh"><a class="header" href="#teip-féideartha-a-láimhseáil-le-toradh">Teip Féideartha a Láimhseáil le <code>Toradh</code></a></h3>
+<h3 id="teip-féideartha-a-láimhseáil-le-result"><a class="header" href="#teip-féideartha-a-láimhseáil-le-result">Teip Féideartha a Láimhseáil le <code>Result</code></a></h3>
 <p>Táimid fós ag obair ar an líne cód seo. Tá an tríú líne á phlé againn anois
 téacs, ach tabhair faoi deara go bhfuil sé fós mar chuid de líne chóid loighciúil amháin. An chéad cheann eile
 Is cuid den mhodh seo:</p>
@@ -1059,13 +1059,13 @@ Is minic a bhíonn sé ciallmhar líne nua agus spás bán eile a thabhairt iste
 línte nuair a ghlaonn tú ar mhodh leis an gcomhréir <code>.method_name()</code>. Anois déanaimis
 pléigh cad a dhéanann an líne seo.</p>
 <p>Mar a luadh cheana, cuireann <code>read_line</code> cibé rud a chuireann an t-úsáideoir isteach sa teaghrán
-tugaimid air, ach tugann sé luach <code>Torthaí</code> ar ais freisin. [<code>Toradh</code>][toradh]<!--
+tugaimid air, ach tugann sé luach <code>Result</code> ar ais freisin. <a href="../std/result/enum.Result.html"><code>Result</code></a><!--
 neamhaird a dhéanamh ar --> is <a href="ch06-00-enums.html"><em>enumeration</em></a><!-- neamhaird -->, ar a dtugtar <em>enum</em> go minic,
 atá cineál is féidir a bheith i gceann de na stáit iolracha. Glaoimid ar gach ceann acu
 b'fhéidir luaigh <em>variant</em>.</p>
 <p><a href="ch06-00-enums.html">Caibidil 6</a> Clúdóidh <!-- neamhaird --> enums níos mine. An cuspóir
-de na cineálacha <code>Torthaí</code> seo is ea faisnéis láimhseála earráidí a ionchódú.</p>
-<p>Is iad na leaganacha <code>Torthaí</code> ná <code>OK</code> agus <code>Err</code>. Léiríonn an leagan <code>Ok</code> an
+de na cineálacha <code>Result</code> seo is ea faisnéis láimhseála earráidí a ionchódú.</p>
+<p>Is iad na leaganacha <code>Result</code> ná <code>Ok</code> agus <code>Err</code>. Léiríonn an leagan <code>Ok</code> an
 D'éirigh leis an oibríocht, agus tá an luach a ghintear go rathúil ann.
 Ciallaíonn an leagan <code>Err</code> gur theip ar an oibríocht, agus tá faisnéis ann
 faoi ​​conas nó cén fáth ar theip ar an oibríocht.</p>
@@ -1075,7 +1075,7 @@ gur féidir leat glaoch. Más luach <code>Err</code> é an t-úsáír seo de <co
 a chur faoi deara an clár a tuairteála agus a thaispeáint ar an teachtaireacht a rith tú mar
 argóint le <code>expect</code>. Má thugann an modh <code>read_line</code> <code>Err</code> ar ais, dhéanfadh sé
 is dócha go bhfuil sé mar thoradh ar earráid a tháinig ón gcóras oibriúcháin bunúsach.
-Más luach <code>OK</code> é an t-úsaid seo de <code>Result</code>, glacfaidh <code>expect</code> an tuairisceán
+Más luach <code>Ok</code> é an t-úsaid seo de <code>Result</code>, glacfaidh <code>expect</code> an tuairisceán
 an luach atá ag <code>Ok</code> agus cuir an luach sin ar ais chugat ionas gur féidir leat é a úsáid.
 Sa chás seo, is é an luach sin líon na mbeart in ionchur an úsáideora.</p>
 <p>Mura nglaoann tú ‘ag súil’, tiomsóidh an clár, ach gheobhaidh tú rabhadh:</p>
@@ -1097,11 +1097,11 @@ help: use `let _ = ...` to ignore the resulting value
 warning: `guessing_game` (bin "guessing_game") generated 1 warning
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.59s
 </code></pre>
-<p>Tugann Rust foláireamh nár úsáid tú an luach <code>Result' a fuarthas ar ais ó </code>read_line`,
+<p>Tugann Rust foláireamh nár úsáid tú an luach <code>Result</code> a fuarthas ar ais ó <code>read_line</code>,
 ag tabhairt le fios nár láimhseáladh an clár earráid fhéideartha.</p>
 <p>Is é an bealach ceart chun an rabhadh a chosc ná cód láimhseála earráidí a scríobh,
 ach inár gcás ba mhaith linn ach a tuairteála an clár seo nuair a tharlaíonn fadhb, mar sin againn
-is féidir <code>expect</code> a úsáid. Foghlaimeoidh tú faoi earráidí a athshlánú i <a href="ch09-02-recoverable-errors-with-result.html">Chapter
+is féidir <code>expect</code> a úsáid. Foghlaimeoidh tú faoi earráidí a athshlánú i <a href="ch09-02-recoverable-errors-with-result.html">Caibidil
 9</a> <!-- neamhaird a dhéanamh -->.</p>
 <h3 id="luachanna-priontála-le-sealbhóirí-Áite-println"><a class="header" href="#luachanna-priontála-le-sealbhóirí-Áite-println">Luachanna Priontála le Sealbhóirí Áite <code>println!</code></a></h3>
 <p>Seachas an lúibín chatach deiridh, níl ach líne amháin eile le plé ann
@@ -1167,31 +1167,31 @@ dúirt feidhmiúlacht.</p>
 táimid ag tógáil cliathbhosca <em>dénártha</em>, atá inrite. An <code>rand</code>
 cliathbhosca <em>library</em> é an gcliathbhosca, ina bhfuil cód a bheartaítear a úsáid ann
 cláir eile agus ní féidir iad a chur i gcrích leis féin.</p>
-<p>Is é comhordú lasta na cliathbhoscaí seachtracha an áit a bhfuil an lasta ag taitneamh i ndáiríre. Roimh dúinn
+<p>Is é comhordú Cargo na cliathbhoscaí seachtracha an áit a bhfuil an Cargo ag taitneamh i ndáiríre. Roimh dúinn
 in ann cód a scríobh a úsáideann <code>rand</code>, ní mór dúinn an comhad <em>Cargo.toml</em> a mhodhnú go
 cuir an cliathbhosca <code>rand</code> san áireamh mar spleáchas. Oscail an comhad sin anois agus cuir an
 líne seo a leanas go dtí an bun, faoi bhun an ceanntásc alt <code>[dependencies]</code> go
-Lasta cruthaithe duit. Bí cinnte <code>rand</code> a shonrú go díreach mar atá againn anseo, le
+Cargo cruthaithe duit. Bí cinnte <code>rand</code> a shonrú go díreach mar atá againn anseo, le
 seans nach n-oibreoidh an uimhir leagain seo, nó na samplaí cóid sa rang teagaisc seo:</p>
 <!-- When updating the version of `rand` used, also update the version of
 `rand` used in these files so they all match:
 * ch07-04-bringing-paths-into-scope-with-the-use-keyword.md
 * ch14-03-cargo-workspaces.md
 -->
-<p><span class="filename">Filename: Cargo.toml</span></p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
 <pre><code class="language-toml">[dependencies]
 rand = "0.8.5"
 </code></pre>
 <p>Sa chomhad <em>Cargo.toml</em>, tá gach rud a leanann ceanntásc mar chuid de sin
 alt a leanann ar aghaidh go dtí go dtosaíonn alt eile. I <code>[dependencies]</code> tú
-inis do lasta cad iad na cliathbhoscaí seachtracha a bhraitheann do thionscadal agus cé na leaganacha díobh
+inis do Cargo cad iad na cliathbhoscaí seachtracha a bhraitheann do thionscadal agus cé na leaganacha díobh
 na cliathbhoscaí sin atá uait. Sa chás seo, sonraimid an gcliathbhosca <code>rand</code> leis an
-sonróir leagan shéimeantach <code>0.8.5</code>. Tuigeann lasta [Séimeantach
-Leagan <a href="http://semver.org">semver</a> <!-- neamhaird --> (uaireanta ar a dtugtar <em>SemVer</em>), arb é a
+sonróir leagan shéimeantach <code>0.8.5</code>. Tuigeann Cargo <a href="http://semver.org">Séimeantach
+Leagan</a><!-- neamhaird --> (uaireanta ar a dtugtar <em>SemVer</em>), arb é a
 caighdeánach chun uimhreacha leagan a scríobh. Is é an sonróir <code>0.8.5</code> i ndáiríre
 gearrscríbhinn le haghaidh <code>^0.8.5</code>, rud a chiallaíonn aon leagan go bhfuil ar a laghad 0.8.5 ach
 faoi ​​bhun 0.9.0.</p>
-<p>Measann lasta go bhfuil API poiblí ag na leaganacha seo atá comhoiriúnach leis an leagan
+<p>Measann Cargo go bhfuil API poiblí ag na leaganacha seo atá comhoiriúnach leis an leagan
 0.8.5, agus cinntíonn an tsonraíocht seo go bhfaighidh tú an scaoileadh paiste is déanaí sin
 fós le chéile leis an gcód sa chaibidil seo. Aon leagan 0.9.0 nó níos mó
 Ní ráthaítear go mbeidh an API céanna ann agus a úsáideann na samplaí seo a leanas.</p>
@@ -1232,19 +1232,19 @@ cargo build -->
 <p>Seans go bhfeicfidh tú uimhreacha leaganacha éagsúla (ach beidh siad go léir ag luí leis an
 cód, a bhuíochas le SemVer!) agus línte éagsúla (ag brath ar an oibríocht
 córas), agus féadfaidh na línte a bheith in ord difriúil.</p>
-<p>Nuair a chuirimid spleáchas seachtrach san áireamh, faigheann lasta na leaganacha is déanaí de
+<p>Nuair a chuirimid spleáchas seachtrach san áireamh, faigheann Cargo na leaganacha is déanaí de
 gach rud a theastaíonn ó spleáchas ón <em>registry</em>, is cóip de shonraí é
 ó <a href="https://crates.io/">Crates.io</a>. Is é Crates.io áit a bhfuil daoine san éiceachóras Rust
 postáil a dtionscadail foinse oscailte Rust do dhaoine eile le húsáid.</p>
 <p>Tar éis an chlár a nuashonrú, seiceálann Cargo an rannán <code>[dependencies]</code> agus
 íoslódáil aon cliathbhoscaí liostaithe nach bhfuil íoslódáilte cheana. Sa chás seo,
-cé nár liostaíomar ach <code>rand</code> mar spleáchas, rug lasta cliathbhoscaí eile freisin
+cé nár liostaíomar ach <code>rand</code> mar spleáchas, rug Cargo cliathbhoscaí eile freisin
 go mbraitheann <code>rand</code> ar a bheith ag obair. Tar éis na cliathbhoscaí a íoslódáil, tiomsaíonn Rust
 iad agus ansin déanann sé an tionscadal a thiomsú leis na spleáchais atá ar fáil.</p>
 <p>Má ritheann tú <code>cargo build</code> láithreach láithreach gan aon athruithe a dhéanamh, ní mór duit
-ní bhfaighidh tú aon aschur ach amháin ón líne <code>Finished</code>. Tá a fhios ag lasta cheana féin
+ní bhfaighidh tú aon aschur ach amháin ón líne <code>Finished</code>. Tá a fhios ag Cargo cheana féin
 íoslódáil agus tiomsaíodh na spleáchais, agus níl aon rud athraithe agat
-fúthu i do chomhad <em>Cargo.toml</em>. Tá a fhios ag lasta freisin nach bhfuil tú tar éis athrú
+fúthu i do chomhad <em>Cargo.toml</em>. Tá a fhios ag Cargo freisin nach bhfuil tú tar éis athrú
 rud ar bith faoi do chód, mar sin ní athchruinníonn sé é sin ach an oiread. Gan faic le
 a dhéanamh, fágann sé go simplí.</p>
 <p>Má osclaíonn tú an comhad <em>src/main.rs</em>, déan athrú fánach, agus ansin é a shábháil agus
@@ -1257,21 +1257,21 @@ cargo build -->
    Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.13s
 </code></pre>
-<p>Léiríonn na línte seo nach ndéanann lasta an tógáil a nuashonrú ach amháin le d'athrú beag ar an
+<p>Léiríonn na línte seo nach ndéanann Cargo an tógáil a nuashonrú ach amháin le d'athrú beag ar an
 <em>src/main.rs</em> comhad. Níor athraigh do spleáchais, mar sin tá a fhios ag Cargo gur féidir
 athúsáid a bhfuil íoslódáilte aige cheana féin agus tiomsaithe dóibh siúd.</p>
 <h4 id="tógálacha-in-atáirgthe-a-chinntiú-leis-an-gcomhad-cargolock"><a class="header" href="#tógálacha-in-atáirgthe-a-chinntiú-leis-an-gcomhad-cargolock">Tógálacha In-atáirgthe a Chinntiú leis an gComhad <em>Cargo.lock</em></a></h4>
-<p>Tá meicníocht ag lasta a chinntíonn gur féidir leat an déantán céanna a atógáil gach uair
-tógann tusa nó aon duine eile do chód: ní úsáidfidh lasta ach na leaganacha de na
+<p>Tá meicníocht ag Cargo a chinntíonn gur féidir leat an déantán céanna a atógáil gach uair
+tógann tusa nó aon duine eile do chód: ní úsáidfidh Cargo ach na leaganacha de na
 spleáchais a shonraigh tú go dtí go léiríonn tú a mhalairt. Mar shampla, abair é sin
 an tseachtain seo chugainn tagann leagan 0.8.6 den gcliathbhosca <code>rand</code> amach, agus an leagan sin
 tá ceartúchán tábhachtach ar fhabht, ach tá aischéimniú ann freisin a dhéanfaidh
 briseadh do chód. Chun é seo a láimhseáil, cruthaíonn Rust an comhad <em>Cargo.lock</em> ar dtús
 an t-am a ritheann tú <code>cargo build</code>, mar sin tá sé seo againn anois sa chluiche <em>guessing</em>
 eolaire.</p>
-<p>Nuair a thógann tú tionscadal den chéad uair, déanann lasta na leaganacha go léir a léiriú
+<p>Nuair a thógann tú tionscadal den chéad uair, déanann Cargo na leaganacha go léir a léiriú
 de na spleáchais a oireann do na critéir agus ansin iad a scríobh chuig an
-<em>Cargo.lock</em> comhad. Nuair a bheidh tú ag tógáil do thionscadal sa todhchaí, feicfidh lasta
+<em>Cargo.lock</em> comhad. Nuair a bheidh tú ag tógáil do thionscadal sa todhchaí, feicfidh Cargo
 go bhfuil an comhad <em>Cargo.lock</em> ann agus go n-úsáidfidh sé na leaganacha atá sonraithe ann
 seachas an obair ar fad a dhéanamh chun leaganacha a aimsiú arís. Ligeann sé seo duit
 tógáil in-atáirgthe go huathoibríoch. I bhfocail eile, beidh do thionscadal
@@ -1281,7 +1281,7 @@ sheiceáil i rialú foinse leis an gcuid eile den chód i do thionscadal.</p>
 <h4 id="cliathbhosca-á-nuashonrú-chun-leagan-nua-a-fháil"><a class="header" href="#cliathbhosca-á-nuashonrú-chun-leagan-nua-a-fháil">cliathbhosca á nuashonrú chun leagan nua a fháil</a></h4>
 <p>Nuair is mian leat <em>do</em> cliathbhosca a nuashonrú, soláthraíonn Cargo an t-ordú <code>update</code>,
 a dhéanfaidh neamhaird ar an gcomhad <em>Cargo.lock</em> agus figiúr amach go léir na leaganacha is déanaí
-a oireann do shonraíochtaí i <em>Cargo.toml</em>. Scríobhfaidh lasta iad siúd ansin
+a oireann do shonraíochtaí i <em>Cargo.toml</em>. Scríobhfaidh Cargo iad siúd ansin
 leaganacha don chomhad <em>Cargo.lock</em>. Sa chás seo, ní bheidh ach lorg ag Cargo
 leaganacha níos mó ná 0.8.5 agus níos lú ná 0.9.0. Má tá an gcliathbhosca <code>rand</code>
 scaoileadh an dá leagan nua 0.8.6 agus 0.9.0, d'fheicfeá an méid seo a leanas más rud é
@@ -1295,19 +1295,19 @@ as a guide to creating the hypothetical output shown here -->
     Updating crates.io index
     Updating rand v0.8.5 -&gt; v0.8.6
 </code></pre>
-<p>Déanann lasta neamhaird ar an scaoileadh 0.9.0. Ag an bpointe seo, thabharfá athrú faoi deara freisin
+<p>Déanann Cargo neamhaird ar an scaoileadh 0.9.0. Ag an bpointe seo, thabharfá athrú faoi deara freisin
 i do chomhad <em>Cargo.lock</em> ag tabhairt faoi deara gurb é an leagan den chliabhán <code>rand</code> atá tú
 ag baint úsáide as anois tá 0.8.6. Chun <code>rand</code> leagan 0.9.0 nó aon leagan sa 0.9.<em>x</em> a úsáid
 sraith, bheadh ​​ort an comhad <em>Cargo.toml</em> a nuashonrú chun breathnú mar seo ina ionad:</p>
 <pre><code class="language-toml">[dependencies]
 rand = "0.9.0"
 </code></pre>
-<p>An chéad uair eile a ritheann tú <code>cargo build</code>, déanfaidh lasta clár na gcliathbhosca a nuashonrú
+<p>An chéad uair eile a ritheann tú <code>cargo build</code>, déanfaidh Cargo clár na gcliathbhosca a nuashonrú
 ar fáil agus déan do riachtanais <code>rand</code> a athmheas de réir an leagain nua
 atá sonraithe agat.</p>
 <p>Tá go leor eile le rá faoi <a href="https://doc.rust-lang.org/cargo/">Cargo</a> <!-- neamhaird --> agus <a href="https://doc.rust-lang.org/cargo/reference/publishing.html">dá
 éiceachóras</a><!-- neamhaird a dhéanamh ar -->, a phléfaimid i gCaibidil 14, ach
-faoi ​​láthair, sin é gach ní mór duit fios a bheith agat. Déanann lasta an-éasca é a athúsáid
+faoi ​​láthair, sin é gach ní mór duit fios a bheith agat. Déanann Cargo an-éasca é a athúsáid
 leabharlanna, mar sin tá Rustaceans in ann tionscadail níos lú a scríobh a chuirtear le chéile
 ó roinnt pacáistí.</p>
 <h3 id="uimhir-randamach-á-giniúint"><a class="header" href="#uimhir-randamach-á-giniúint">Uimhir Randamach á giniúint</a></h3>
@@ -1351,8 +1351,10 @@ Ní mór <code>1..=100</code> a shonrú chun uimhir idir 1 agus 100 a iarraidh.<
 <blockquote>
 <p>Tabhair faoi deara: Ní bheidh a fhios agat cad iad na tréithe is cóir a úsáid agus cé na modhanna agus na feidhmeanna
 chun glaoch ó chliathbhosca, ionas go mbeidh doiciméadú le treoracha le haghaidh gach cliathbhosca
-é a úsáid. Gné néata eile de lasta is ea an doiciméad lasta a rith
-Tógfaidh --open<code>ordú doiciméadú a sholáthraíonn do chuid spleáchais go léir go háitiúil agus oscail i do bhrabhsálaí é. Má tá suim agat i gceann eile feidhmiúlacht sa gcliathbhosca</code>rand<code>, mar shampla, rith </code>cargo doc --open<code>agus cliceáil</code>rand` sa bharra taoibh ar chlé.</p>
+é a úsáid. Gné néata eile de lasta ná go dtógfaidh rith an ordaithe <code>cargo doc --open</code>
+doiciméadú a sholáthraíonn do chuid spleáchais go léir go háitiúil agus go n-osclófar é i do bhrabhsálaí.
+Má tá suim agat i bhfeidhmiúlacht eile sa chliabhán <code>rand</code>, mar shampla, reáchtáil <code>cargo doc --open</code>
+agus cliceáil <code>rand</code> sa bharra taoibh ar thaobh na láimhe clé.</p>
 </blockquote>
 <p>Déanann an dara líne nua an uimhir rúnda a phriontáil. Tá sé seo úsáideach agus muid
 an clár a fhorbairt le bheith in ann é a thástáil, ach scriosfaimid as an
@@ -1428,18 +1430,17 @@ na trí thoradh is féidir nuair a dhéanann tú comparáid idir dhá luach.</p>
 <p>Ansin cuirimid cúig líne nua ag bun a úsáideann an cineál <code>Ordering</code>. Tá an
 Déanann modh <code>cmp</code> dhá luach i gcomparáid agus is féidir glaoch a chur air ar aon rud is féidir
 i gcomparáid. Déanann sé tagairt do cibé rud is mian leat a chur i gcomparáid leis: seo é
-comparáid a dhéanamh idir <code>buille faoi thuairim</code> agus <code>uimhir_rúnda</code>. Ansin filleann sé leagan de na
+comparáid a dhéanamh idir <code>guess</code> agus <code>secret_number</code>. Ansin filleann sé leagan de na
 ‘Ordú’ enum thugamar isteach scóip leis an ráiteas ‘úsáide’. Úsáidimid a
 <a href="ch06-02-match.html"><code>match</code></a><!-- neamhaird a dhéanamh ar --> slonn le socrú cad é an chéad rud eile le déanamh bunaithe air
-cén leagan de <code>Ordú</code> a cuireadh ar ais ón nglao go <code>cmp</code> leis na luachanna
-in <code>buille faoi thuairim</code> agus <code>uimhir_rúnda</code>.</p>
+cén leagan de <code>Ordering</code> a cuireadh ar ais ón nglao go <code>cmp</code> leis na luachanna
+in <code>guess</code> agus <code>secret_number</code>.</p>
 <p>Tá slonn <code>match</code> comhdhéanta de <em>arms</em>. Is éard atá i lámh ná <em>pattern</em> to
 mheaitseáil i gcoinne, agus an cód ba chóir a rith má tá an luach a thugtar do <code>match</code>
-oireann patrún na láimhe sin. Glacann meirge an luach a thugtar do <code>mheaitseáil</code> agus cuma
-trí phatrún gach lámh ar a seal. Is iad patrúin agus an tógáil <code>meaits</code>
+oireann patrún na láimhe sin. Glacann meirge an luach a thugtar do <code>match</code> agus cuma
+trí phatrún gach lámh ar a seal. Is iad patrúin agus an tógáil <code>match</code>
 gnéithe cumhachtacha meirge: ligeann siad duit do chód a chur in iúl ar chásanna éagsúla
-d'fhéadfadh teacht trasna orthu agus déanann siad cinnte go láimhseálann tú iad go léir. Beidh na gnéithe seo
-clúdaithe go mion i gCaibidil 6 agus i gCaibidil 19, faoi seach.</p>
+d'fhéadfadh teacht trasna orthu agus déanann siad cinnte go láimhseálann tú iad go léir. Beidh na gnéithe seo clúdaithe go mion i gCaibidil 6 agus i gCaibidil 19, faoi seach.</p>
 <p>Siúlfaimid trí shampla leis an slonn <code>match</code> a úsáidimid anseo. Abair é sin
 tá buille faoi thuairim ag an úsáideoir 50 agus is é an uimhir rúnda a ghintear go randamach an uair seo 38.</p>
 <p>Nuair a chuirtear an cód i gcomparáid le 50 go 38, fillfidh an modh <code>cmp</code>
@@ -1498,7 +1499,7 @@ is é an earráid ná nach féidir le Rust teaghrán agus cineál uimhreach a ch
 <p>I ndeireadh na dála, ba mhaith linn an <code>String</code> a léann an clár mar ionchur a thiontú ina
 cineál uimhreach ionas gur féidir linn é a chur i gcomparáid go huimhriúil leis an uimhir rúnda. Déanaimid amhlaidh trí
 an líne seo a chur leis an gcorp feidhme <code>main</code>:</p>
-<p>span class="filename"&gt;Filename: src/main.rs</span></p>
+<p>span class="filename"&gt;Ainm comhaid: src/main.rs</span></p>
 <pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
 </span><span class="boring">use std::cmp::Ordering;
 </span><span class="boring">use std::io;
@@ -1532,48 +1533,343 @@ an líne seo a chur leis an gcorp feidhme <code>main</code>:</p>
 <span class="boring">}</span></code></pre>
 <p>Is é an líne:</p>
 <pre><code class="language-rust ignore">let guess: u32 = guess.trim().parse().expect("Please type a number!");</code></pre>
-<p>Cruthaímid athróg darb ainm <code>buille faoi thuairim</code>. Ach fan, nach bhfuil an clár cheana féin
-athróg darb ainm <code>buille faoi thuairim</code>? Déanann sé, ach cuiditheach ligeann Rust dúinn scáthú an
-luach <code>buille faoi thuairim</code> roimhe seo le ceann nua. Ligeann <em>Scáthú</em> dúinn an <code>buille faoi thuairim</code> a athúsáid
+<p>Cruthaímid athróg darb ainm <code>guess</code>. Ach fan, nach bhfuil an clár cheana féin
+athróg darb ainm <code>guess</code>? Déanann sé, ach cuiditheach ligeann Rust dúinn scáthú an
+luach <code>guess</code> roimhe seo le ceann nua. Ligeann <em>Scáthú</em> dúinn an <code>guess</code> a athúsáid
 ainm athróg seachas iallach a chur orainn dhá athróg uathúla a chruthú, mar shampla
-<code>guess_str</code> agus <code>buille faoi thuairim</code>, mar shampla. Clúdóimid é seo níos mine i
+<code>guess_str</code> agus <code>guess</code>, mar shampla. Clúdóimid é seo níos mine i
 [Caibidil 3][scáthú] <!-- neamhaird -->, ach faoi láthair, fios go bhfuil an ghné seo
 a úsáidtear go minic nuair is mian leat luach a thiontú ó chineál amháin go cineál eile.</p>
-<p>Ceanglaíonn muid an athróg nua seo leis an slonn <code>guess.trim().parse()</code>. An <code>buille faoi thuairim</code>
-tagraíonn an abairt don bhunathróg <code>buille faoi thuairim</code> ina raibh an
-ionchur mar teaghrán. Cuirfidh an modh <code>trim</code> ar shampla <code>Teaghrán</code> deireadh le haon cheann
+<p>Ceanglaíonn muid an athróg nua seo leis an slonn <code>guess.trim().parse()</code>. An <code>guess</code>
+tagraíonn an abairt don bhunathróg <code>guess</code> ina raibh an
+ionchur mar teaghrán. Cuirfidh an modh <code>trim</code> ar shampla <code>String</code> deireadh le haon cheann
 spás bán ag tús agus deireadh, rud nach mór dúinn a dhéanamh sular féidir linn a thiontú ar an
 teaghrán go <code>u32</code>, nach féidir ach sonraí uimhriúla a bheith ann. Caithfidh an t-úsáideoir brúigh
 <kbd>iontráil</kbd> chun <code>read_line</code> a shásamh agus chun a gcuid buille faoi thuairim a ionchur, rud a chuireann le
 carachtar nualíne don teaghrán. Mar shampla, má chuireann an t-úsáideoir cineál <kbd>5</kbd> agus
-brúigh <kbd>iontráil</kbd>, breathnaíonn <code>buille faoi thuairim</code> mar seo: <code>5\n</code>. Léiríonn an <code>\n</code>
-"líne nua." (Ar Windows, má bhrúnn tú <kbd>enter</kbd> beidh tuairisceán iompair ann
-agus líne nua, <code>\r\n</code>.) Cuireann an modh <code>Baile Átha Troim</code> deireadh le <code>\n</code> nó <code>\r\n</code>, agus mar thoradh air sin
+brúigh <kbd>iontráil</kbd>, breathnaíonn <code>guess</code> mar seo: <code>5\n</code>. Léiríonn an <code>\n</code>
+"líne nua." (Ar Windows, má bhrúnn tú <kbd>iontráil</kbd> beidh tuairisceán iompair ann
+agus líne nua, <code>\r\n</code>.) Cuireann an modh <code>trim</code> deireadh le <code>\n</code> nó <code>\r\n</code>, agus mar thoradh air sin
 i <code>5</code> díreach.</p>
-<p>Tiontaíonn an modh [<code>parsáil</code> ar teaghráin][parsáil] <!-- neamhaird --> teaghrán go
+<p>Tiontaíonn an <a href="../std/primitive.str.html#method.parse">modh <code>parse</code> ar teaghráin</a> <!-- neamhaird --> teaghrán go
 cineál eile. Anseo, bainimid úsáid as é a thiontú ó teaghrán go uimhir. Caithfimid
-inis do Rust an cineál uimhreach cruinn atá uainn trí úsáid a bhaint as <code>lig faoi thuairim: u32</code>. An colon
+inis do Rust an cineál uimhreach cruinn atá uainn trí úsáid a bhaint as <code>let guess: u32</code>. An colon
 (<code>:</code>) Tar éis do 'buille faoi thuairim' a rá le Rust déanfaimid cineál na hathróige anótáil. Tá meirge ag
 cúpla cineál uimhreacha ionsuite; is slánuimhir 32-giotán gan síniú é an <code>u32</code> a fheictear anseo.
 Is rogha réamhshocraithe maith é do líon beag dearfach. Foghlaimeoidh tú faoi
-cineálacha uimhreacha eile i [Caibidil 3][sláine]<!-- neamhaird a dhéanamh ar -->.</p>
+cineálacha uimhreacha eile i <a href="ch03-02-data-types.html#integer-types">Caibidil 3</a><!-- neamhaird a dhéanamh ar -->.</p>
 <p>Ina theannta sin, tá an nóta <code>u32</code> sa chlár samplach seo agus an chomparáid
-le <code>secret_number</code> ciallaíonn sé go mbainfidh Rust le tuiscint gur cheart go mbeadh <code>uimhir_rúnda</code> ina
-<code>u32</code> chomh maith. Mar sin anois beidh an chomparáid idir dhá luach mar an gcéanna
+le <code>secret_number</code> ciallaíonn sé go mbainfidh Rust le tuiscint gur cheart go mbeadh <code>secret_number</code> ina <code>u32</code> chomh maith. Mar sin anois beidh an chomparáid idir dhá luach mar an gcéanna
 cineál!</p>
 <p>Ní oibreoidh an modh <code>parse</code> ach ar charachtair ar féidir iad a thiontú go loighciúil
 isteach uimhreacha agus mar sin is féidir earráidí a chruthú go héasca. Más rud é, mar shampla, an teaghrán
 ina bhfuil <code>A👍%</code>, ní bheadh ​​aon bhealach ann é sin a thiontú go huimhir. Mar gheall air
-b'fhéidir go dteipeann orthu, tugann an modh <code>parsáil</code> cineál <code>Torthaí</code> ar ais, cosúil leis an <code>léamh_líne</code>
+b'fhéidir go dteipeann orthu, tugann an modh <code>parse</code> cineál <code>Result</code> ar ais, cosúil leis an <code>read_line</code>
 (a pléadh níos luaithe in <a href="ch02-00-guessing-game-tutorial.html#handling-potential-teip-le-toradh">“Ag Láimhseáil Teip Féideartha le
-<code>Toradh</code>”</a> <!-- neamhaird-->). Déileálfaimid
-an <code>Toradh</code> seo ar an mbealach céanna trí úsáid a bhaint as an modh <code>súil</code> arís. Má <code>parse</code>
-seolann sé leagan <code>Err``Result</code> ar ais toisc nach raibh sé in ann uimhir a chruthú ón
-teaghrán, beidh an glao <code>ag súil</code> tuairteála an cluiche agus a phriontáil an teachtaireacht a thugaimid dó.
+<code>Result</code>”</a> <!-- neamhaird-->). Déileálfaimid
+an <code>Result</code> seo ar an mbealach céanna trí úsáid a bhaint as an modh <code>expect</code> arís. Má <code>parse</code>
+seolann sé leagan <code>Err</code> <code>Result</code> ar ais toisc nach raibh sé in ann uimhir a chruthú ón
+teaghrán, beidh an glao <code>expect</code> tuairteála an cluiche agus a phriontáil an teachtaireacht a thugaimid dó.
 Más féidir le <code>parse</code> an teaghrán a thiontú go huimhir go rathúil, seolfaidh sé an
-Leagan <code>Ok</code> de <code>Toradh</code>, agus tabharfaidh <code>ag súil</code> ar ais an uimhir a theastaíonn uainn
+Leagan <code>Ok</code> de <code>Result</code>, agus tabharfaidh <code>expect</code> ar ais an uimhir a theastaíonn uainn
 an luach <code>Ok</code>.</p>
 <p>Rithfimid an clár anois:</p>
+<!-- manual-regeneration
+cd listings/ch02-guessing-game-tutorial/no-listing-03-convert-string-to-number/
+touch src/main.rs
+cargo run
+  76
+-->
+<pre><code class="language-console">$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.26s
+     Running `target/debug/guessing_game`
+Guess the number!
+The secret number is: 58
+Please input your guess.
+  76
+You guessed: 76
+Too big!
+</code></pre>
+<p>Go deas! Cé gur cuireadh spásanna leis roimh an buille faoi thuairim, bhí an clár fós le sonrú
+out that the user guessed 76. Rith an clár cúpla uair chun an
+iompar difriúil le cineálacha éagsúla input: buille faoi thuairim an uimhir i gceart,
+tomhas uimhir atá ró-ard, agus buille faoi thuairim uimhir atá ró-íseal.</p>
+<p>Tá an chuid is mó den chluiche ag obair anois, ach ní féidir leis an úsáideoir ach buille faoi thuairim amháin a dhéanamh.
+Déanaimis é sin a athrú trí lúb a chur leis!</p>
+<h2 id="tomhais-ilghnéitheacha-a-cheadú-le-lúb"><a class="header" href="#tomhais-ilghnéitheacha-a-cheadú-le-lúb">Tomhais Ilghnéitheacha a cheadú le Lúb</a></h2>
+<p>Cruthaíonn an eochairfhocal <code>loop</code> lúb gan teorainn. Cuirfimid lúb leis chun úsáideoirí a thabhairt seans níos mó an uimhir a thomhas:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span>    // --snip--
+
+    println!("The secret number is: {secret_number}");
+
+    loop {
+        println!("Please input your guess.");
+
+        // --snip--
+
+<span class="boring">
+</span><span class="boring">        let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">        io::stdin()
+</span><span class="boring">            .read_line(&amp;mut guess)
+</span><span class="boring">            .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">        let guess: u32 = guess.trim().parse().expect("Please type a number!");
+</span><span class="boring">
+</span><span class="boring">        println!("You guessed: {guess}");
+</span><span class="boring">
+</span>        match guess.cmp(&amp;secret_number) {
+            Ordering::Less =&gt; println!("Too small!"),
+            Ordering::Greater =&gt; println!("Too big!"),
+            Ordering::Equal =&gt; println!("You win!"),
+        }
+    }
+}</code></pre>
+<p>Mar a fheiceann tú, bhogamar gach rud ón leid ionchuir buille faoi thuairim isteach
+lúb. Bí cinnte a eangú na línte taobh istigh den lúb ceithre spás eile an ceann
+agus rith an clár arís. Iarrfaidh an clár anois buille faoi thuairim eile go deo,
+a thugann isteach i ndáiríre fadhb nua. Ní cosúil gur féidir leis an úsáideoir éirí as!</p>
+<p>D'fhéadfadh an t-úsáideoir cur isteach ar an gclár i gcónaí trí úsáid a bhaint as aicearra an mhéarchláir
+<kbd>ctrl</kbd> - <kbd>c</kbd>. Ach tá bealach eile chun éalú ón dosháraithe seo
+ollphéist, mar a luadh sa phlé <code>parse</code> i <a href="ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number">“Comparáid a dhéanamh idir an Comparing the Guess to the
+Secret Number”</a><!-- neamhaird -->: má
+cuireann an t-úsáideoir freagra neamh-uimhir, beidh an clár tuairteála. Is féidir linn a ghlacadh
+buntáiste a bhaint as sin chun ligean don úsáideoir éirí as, mar a thaispeántar anseo:</p>
+<!-- manual-regeneration
+cd listings/ch02-guessing-game-tutorial/no-listing-04-looping/
+touch src/main.rs
+cargo run
+(too small guess)
+(too big guess)
+(correct guess)
+quit
+-->
+<pre><code class="language-console">$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.23s
+     Running `target/debug/guessing_game`
+Guess the number!
+The secret number is: 59
+Please input your guess.
+45
+You guessed: 45
+Too small!
+Please input your guess.
+60
+You guessed: 60
+Too big!
+Please input your guess.
+59
+You guessed: 59
+You win!
+Please input your guess.
+quit
+thread 'main' panicked at 'Please type a number!: ParseIntError { kind: InvalidDigit }', src/main.rs:28:47
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Má chlóscríobhtar <code>quit</code> scoirfidh tú an cluiche, ach mar a thabharfaidh tú faoi deara, cuirfear aon cheann isteach
+ionchur eile gan uimhir. Tá sé seo suboptimal, a rá a laghad; ba mhaith linn an cluiche
+a stopadh freisin nuair a dhéantar an uimhir cheart a thomhas.</p>
+<h3 id="scoir-tar-éis-tomhais-ceart"><a class="header" href="#scoir-tar-éis-tomhais-ceart">Scoir Tar éis Tomhais Ceart</a></h3>
+<p>Déanaimis an cluiche a ríomh le scor nuair a bhíonn an bua ag an úsáideoir trí ráiteas <code>break</code> a chur leis:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    loop {
+</span><span class="boring">        println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">        let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">        io::stdin()
+</span><span class="boring">            .read_line(&amp;mut guess)
+</span><span class="boring">            .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">        let guess: u32 = guess.trim().parse().expect("Please type a number!");
+</span><span class="boring">
+</span><span class="boring">        println!("You guessed: {guess}");
+</span><span class="boring">
+</span>        // --snip--
+
+        match guess.cmp(&amp;secret_number) {
+            Ordering::Less =&gt; println!("Too small!"),
+            Ordering::Greater =&gt; println!("Too big!"),
+            Ordering::Equal =&gt; {
+                println!("You win!");
+                break;
+            }
+        }
+    }
+}</code></pre>
+<p>Nuair a chuirtear an líne <code>break</code> isteach i ndiaidh <code>You win!</code> fágann an clár an lúb nuair a
+déanann an t-úsáideoir an uimhir rúnda a thomhas i gceart. Ciallaíonn scor an lúb freisin
+ag fágáil an chláir, toisc gurb é an lúb an chuid dheireanach de <code>main</code>.</p>
+<h3 id="ionchur-neamhbhailí-a-láimhseáil"><a class="header" href="#ionchur-neamhbhailí-a-láimhseáil">Ionchur Neamhbhailí a Láimhseáil</a></h3>
+<p>Chun iompar an chluiche a bheachtú tuilleadh, seachas an clár a thuar nuair
+ionchuireann an t-úsáideoir neamhuimhir, déanaimis neamhaird a dhéanamh den chluiche ar neamhuimhir mar sin de
+is féidir leis an úsáideoir leanúint ar aghaidh le buille faoi thuairim. Is féidir linn é sin a dhéanamh ach an líne ina bhfuil <code>guess</code> a athrú
+a thiontú ó <code>String</code> go <code>u32</code>, mar a thaispeántar i Liostú 2-5.</p>
+<Listing number="2-5" file-name="src/main.rs" caption="Ignoring a non-number guess and asking for another guess instead of crashing the program">
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    loop {
+</span><span class="boring">        println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">        let mut guess = String::new();
+</span><span class="boring">
+</span>        // --snip--
+
+        io::stdin()
+            .read_line(&amp;mut guess)
+            .expect("Failed to read line");
+
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) =&gt; num,
+            Err(_) =&gt; continue,
+        };
+
+        println!("You guessed: {guess}");
+
+        // --snip--
+<span class="boring">
+</span><span class="boring">        match guess.cmp(&amp;secret_number) {
+</span><span class="boring">            Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">            Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">            Ordering::Equal =&gt; {
+</span><span class="boring">                println!("You win!");
+</span><span class="boring">                break;
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Aistrímid ó ghlao <code>expect</code> go slonn <code>match</code> chun bogadh ó bhualadh
+ar earráid chun an earráid a láimhseáil. Cuimhnigh go dtugann <code>parse</code> cineál <code>Result</code> ar ais
+agus is énum é <code>Result</code> a bhfuil na leaganacha <code>Ok</code> agus <code>Err</code> air. Táimid ag úsáid
+léiriú <code>match</code> anseo, mar a rinne muid le toradh <code>Ordering</code> an <code>cmp</code>
+modh.</p>
+<p>Má tá <code>parse</code> in ann an teaghrán a iompú ina huimhir go rathúil, déanfaidh sé
+seol ar ais luach <code>Ok</code> ina bhfuil an uimhir iarmhartach. Beidh an luach <code>Ok</code> sin
+mheaitseáil patrún an chéad lámh, agus beidh an slonn <code>match</code> ar ais díreach an
+luach <code>num</code> a tháirg <code>parse</code> agus a chuir taobh istigh den luach <code>Ok</code>. An uimhir sin
+críochnóidh sé san áit a dteastaíonn uainn é san athróg nua <code>guess</code> atá á chruthú againn.</p>
+<p>Má tá <code>parse</code> <em>not</em> in ann an teaghrán a iompú ina huimhir, seolfaidh sé uimhir ar ais
+Luach <code>Err</code> ina bhfuil tuilleadh eolais faoin earráid. An luach <code>Err</code>
+ní mheaitseálann sé leis an bpatrún <code>Ok(num)</code> sa chéad lámh <code>match</code>', ach is amhlaidh
+meaitseáil an patrún <code>Err(_)</code> sa dara lámh. Is é an foscór, <code>_</code>, a
+luach catchall; sa sampla seo, táimid ag rá go dteastaíonn uainn gach <code>Err</code> a mheaitseáil
+luachanna, is cuma cén t-eolas atá istigh iontu. Mar sin beidh an clár
+cód an dara láimhe a fhorghníomhú, <code>continue</code>, a insíonn don chlár dul go dtí an
+an chéad atriall eile den <code>loop</code> agus iarr buille faoi thuairim eile. Mar sin, go héifeachtach, an
+déanann an clár neamhaird ar gach earráid a d'fhéadfadh <code>parse</code> a bheith orthu!</p>
+<p>Anois ba chóir go n-oibreodh gach rud sa chlár mar a bhíothas ag súil leis. Déanaimis iarracht é:</p>
+<!-- manual-regeneration
+cd listings/ch02-guessing-game-tutorial/listing-02-05/
+cargo run
+(too small guess)
+(too big guess)
+foo
+(correct guess)
+-->
+<pre><code class="language-console">$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target/debug/guessing_game`
+Guess the number!
+The secret number is: 61
+Please input your guess.
+10
+You guessed: 10
+Too small!
+Please input your guess.
+99
+You guessed: 99
+Too big!
+Please input your guess.
+foo
+Please input your guess.
+61
+You guessed: 61
+You win!
+</code></pre>
+<p>Iontach! Le tweak deiridh beag bídeach amháin, críochnóimid an cluiche buille faoi thuairim. Athghairm
+go bhfuil an clár fós ag priontáil an uimhir rúnda. D'oibrigh sé sin go maith le haghaidh
+tástáil, ach scriosann sé an cluiche. Scriosaimid an <code>println!</code> a aschuireann an
+uimhir rúnda. Léiríonn liostú 2-6 an cód deiridh.</p>
+<Listing number="2-6" file-name="src/main.rs" caption="Complete guessing game code">
+<pre><code class="language-rust ignore">use rand::Rng;
+use std::cmp::Ordering;
+use std::io;
+
+fn main() {
+    println!("Guess the number!");
+
+    let secret_number = rand::thread_rng().gen_range(1..=100);
+
+    loop {
+        println!("Please input your guess.");
+
+        let mut guess = String::new();
+
+        io::stdin()
+            .read_line(&amp;mut guess)
+            .expect("Failed to read line");
+
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) =&gt; num,
+            Err(_) =&gt; continue,
+        };
+
+        println!("You guessed: {guess}");
+
+        match guess.cmp(&amp;secret_number) {
+            Ordering::Less =&gt; println!("Too small!"),
+            Ordering::Greater =&gt; println!("Too big!"),
+            Ordering::Equal =&gt; {
+                println!("You win!");
+                break;
+            }
+        }
+    }
+}</code></pre>
+</Listing>
+<p>Ag an bpointe seo, d'éirigh leat an cluiche tomhais a thógáil. Comhghairdeachas!</p>
+<h2 id="achoimre-1"><a class="header" href="#achoimre-1">Achoimre</a></h2>
+<p>Bealach praiticiúil a bhí sa tionscadal seo chun go leor coincheap nua Rust a chur in aithne duit:
+<code>let</code>, <code>match</code>, feidhmeanna, úsáid cliathbhoscaí seachtracha, agus go leor eile. Sa chéad cheann eile
+cúpla caibidil, foghlaimeoidh tú faoi na coincheapa seo níos mine. Caibidil 3
+clúdaíonn sé na coincheapa atá ag formhór na dteangacha ríomhchlárúcháin, amhail athróga, sonraí
+cineálacha, agus feidhmeanna, agus léiríonn sé conas iad a úsáid i Rust. Scrúdaíonn Caibidil 4
+úinéireacht, gné a fhágann go bhfuil Rust difriúil ó theangacha eile. Caibidil 5
+pléann sé struchtúir agus comhréir mhodhanna, agus míníonn Caibidil 6 conas a oibríonn enums.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="common-programming-concepts"><a class="header" href="#common-programming-concepts">Common Programming Concepts</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="variables-and-mutability"><a class="header" href="#variables-and-mutability">Variables and Mutability</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="data-types"><a class="header" href="#data-types">Data Types</a></h1>

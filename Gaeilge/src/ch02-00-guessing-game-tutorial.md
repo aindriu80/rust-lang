@@ -134,7 +134,7 @@ líne. Bainimid úsáid as an ráiteas `let` chun an athróg a chruthú. Seo sam
 let úlla = 5;
 ```
 
-Cruthaíonn an líne seo athróg nua darb ainm `úlla` agus ceanglaíonn sí é leis an luach 5. In
+Cruthaíonn an líne seo athróg nua darb ainm `apples` agus ceanglaíonn sí é leis an luach 5. In
 Meirge, tá athróga do-mharú de réir réamhshocraithe, rud a chiallaíonn nuair a thugaimid an athróg a
 luach, ní athróidh an luach. Beidh an coincheap seo á phlé againn go mion
 an [“Athróga agus Comhshócmhainneacht”][athróga-agus-shó-shó-athróga]<!-- neamhaird a dhéanamh ar -->
@@ -150,12 +150,12 @@ let bananaí mut = 5; // inathraithe
 > líne. Déanann Rust neamhaird ar gach rud i dtuairimí. Déanfaimid trácht níos mó a phlé
 > sonraí i [Caibidil 3][tráchtanna] <!-- neamhaird -->.
 
-Ag filleadh ar an gclár cluiche buille faoi thuairim, tá a fhios agat anois go mbeidh `let mut tomhas`
-athróg chomhshóite a thabhairt isteach darb ainm `tomhas`. Insíonn an comhartha comhionann (`=`) Rust dúinn
+Ag filleadh ar an gclár cluiche buille faoi thuairim, tá a fhios agat anois go mbeidh `let mut guess`
+athróg chomhshóite a thabhairt isteach darb ainm `guess`. Insíonn an comhartha comhionann (`=`) Rust dúinn
 ag iarraidh rud éigin a cheangal leis an athróg anois. Ar thaobh na láimhe deise den chomhartha comhionann
-an luach atá faoi cheangal ag `tomhas`, atá mar thoradh ar ghlaoch
+an luach atá faoi cheangal ag `guess`, atá mar thoradh ar ghlaoch
 `String::new`, feidhm a thugann sampla nua de `String` ar ais.
-[`Teaghrán`][teaghrán] Is cineál teaghrán é <!-- neamhaird --> a sholáthraíonn an caighdeán
+[`String`][teaghrán] Is cineál teaghrán é <!-- neamhaird --> a sholáthraíonn an caighdeán
 leabharlann atá ina giotán téacs ionchódaithe UTF-8 infhás.
 
 Léiríonn an chomhréir `::` sa líne `::new` go bhfuil baint ag `new`
@@ -164,7 +164,7 @@ curtha i bhfeidhm ar chineál, sa chás seo `String`. Cruthaíonn an fheidhm `ne
 teaghrán nua, folamh. Gheobhaidh tú feidhm `new` ar go leor cineálacha toisc gur a
 ainm coitianta ar fheidhm a dhéanann luach nua de shaghas éigin.
 
-Ina hiomláine, chruthaigh an líne `let mut tomhas = String::new();` mutable
+Ina hiomláine, chruthaigh an líne `let mut guess = String::new();` mutable
 athróg atá ceangailte faoi láthair le sampla nua, folamh de `String`. Tá sin réidh!
 
 ### Ag fáil Ionchur Úsáideora
@@ -184,9 +184,9 @@ an chláir, d'fhéadfaimis an fheidhm a úsáid fós tríd an nglao feidhme seo 
 [`std::io::Stdin`][iostdin] <!-- déan neamhaird de -->, ar cineál é a sheasann do
 láimhseáil go dtí an t-ionchur caighdeánach do do teirminéal.
 
-Ansin, glaonn an líne `.read_line(&mut tomhas)` ar [`read_line`][read_line]<!--
+Ansin, glaonn an líne `.read_line(&mut guess)` ar [`read_line`][read_line]<!--
 neamhaird --> modh ar an láimhseáil ionchur caighdeánach chun ionchur a fháil ón úsáideoir.
-Tá `&mut tomhas` á rith againn freisin mar argóint chun `léamh_líne` a insint cad é
+Tá `&mut guess` á rith againn freisin mar argóint chun `read_line` a insint cad é
 teaghrán chun ionchur an úsáideora a stóráil. Is é an jab iomlán de `read_line` a ghlacadh
 is cuma cad iad na cineálacha úsáideora isteach i ionchur caighdeánach agus cuir é sin i sreangán
 (gan a bhfuil ann a fhorscríobh), mar sin cuirimid an teaghrán sin ar aghaidh mar
@@ -199,15 +199,15 @@ na sonraí sin a chóipeáil isteach i gcuimhne arís agus arís eile. Is gné c
 agus ceann de mhórbhuntáistí Rust ná cé chomh sábháilte agus éasca é a úsáid
 tagairtí. Ní gá go mbeadh a lán de na sonraí sin ar eolas agat chun é seo a chríochnú
 clár. Faoi láthair, níl a fhios agat ach, cosúil le hathróga, is tagairtí iad
-immutable de réir réamhshocraithe. Mar sin, ní mór duit `&mut tomhas` a scríobh seachas
-`&tomhas` chun é a dhéanamh mutable. (Míneoidh Caibidil 4 tagairtí níos mó
+immutable de réir réamhshocraithe. Mar sin, ní mór duit `&mut guess` a scríobh seachas
+`&guess` chun é a dhéanamh mutable. (Míneoidh Caibidil 4 tagairtí níos mó
 go críochnúil.)
 
 <!-- Old heading. Do not remove or links may break. -->
 
 <a id="handling-potential-failure-with-the-result-type"></a>
 
-### Teip Féideartha a Láimhseáil le `Toradh`
+### Teip Féideartha a Láimhseáil le `Result`
 
 Táimid fós ag obair ar an líne cód seo. Tá an tríú líne á phlé againn anois
 téacs, ach tabhair faoi deara go bhfuil sé fós mar chuid de líne chóid loighciúil amháin. An chéad cheann eile
@@ -229,15 +229,15 @@ línte nuair a ghlaonn tú ar mhodh leis an gcomhréir `.method_name()`. Anois d
 pléigh cad a dhéanann an líne seo.
 
 Mar a luadh cheana, cuireann `read_line` cibé rud a chuireann an t-úsáideoir isteach sa teaghrán
-tugaimid air, ach tugann sé luach `Torthaí` ar ais freisin. [`Toradh`][toradh]<!--
+tugaimid air, ach tugann sé luach `Result` ar ais freisin. [`Result`][result]<!--
 neamhaird a dhéanamh ar --> is [_enumeration_][enums]<!-- neamhaird -->, ar a dtugtar _enum_ go minic,
 atá cineál is féidir a bheith i gceann de na stáit iolracha. Glaoimid ar gach ceann acu
 b'fhéidir luaigh _variant_.
 
 [Caibidil 6][enums] Clúdóidh <!-- neamhaird --> enums níos mine. An cuspóir
-de na cineálacha `Torthaí` seo is ea faisnéis láimhseála earráidí a ionchódú.
+de na cineálacha `Result` seo is ea faisnéis láimhseála earráidí a ionchódú.
 
-Is iad na leaganacha `Torthaí` ná `OK` agus `Err`. Léiríonn an leagan `Ok` an
+Is iad na leaganacha `Result` ná `Ok` agus `Err`. Léiríonn an leagan `Ok` an
 D'éirigh leis an oibríocht, agus tá an luach a ghintear go rathúil ann.
 Ciallaíonn an leagan `Err` gur theip ar an oibríocht, agus tá faisnéis ann
 faoi ​​conas nó cén fáth ar theip ar an oibríocht.
@@ -248,7 +248,7 @@ gur féidir leat glaoch. Más luach `Err` é an t-úsáír seo de `Result`, `exp
 a chur faoi deara an clár a tuairteála agus a thaispeáint ar an teachtaireacht a rith tú mar
 argóint le `expect`. Má thugann an modh `read_line` `Err` ar ais, dhéanfadh sé
 is dócha go bhfuil sé mar thoradh ar earráid a tháinig ón gcóras oibriúcháin bunúsach.
-Más luach `OK` é an t-úsaid seo de `Result`, glacfaidh `expect` an tuairisceán
+Más luach `Ok` é an t-úsaid seo de `Result`, glacfaidh `expect` an tuairisceán
 an luach atá ag `Ok` agus cuir an luach sin ar ais chugat ionas gur féidir leat é a úsáid.
 Sa chás seo, is é an luach sin líon na mbeart in ionchur an úsáideora.
 
@@ -258,12 +258,12 @@ Mura nglaoann tú ‘ag súil’, tiomsóidh an clár, ach gheobhaidh tú rabhad
 {{#include ../../listings/ch02-guessing-game-tutorial/no-listing-02-without-expect/output.txt}}
 ```
 
-Tugann Rust foláireamh nár úsáid tú an luach `Result' a fuarthas ar ais ó `read_line`,
+Tugann Rust foláireamh nár úsáid tú an luach `Result` a fuarthas ar ais ó `read_line`,
 ag tabhairt le fios nár láimhseáladh an clár earráid fhéideartha.
 
 Is é an bealach ceart chun an rabhadh a chosc ná cód láimhseála earráidí a scríobh,
 ach inár gcás ba mhaith linn ach a tuairteála an clár seo nuair a tharlaíonn fadhb, mar sin againn
-is féidir `expect` a úsáid. Foghlaimeoidh tú faoi earráidí a athshlánú i [Chapter
+is féidir `expect` a úsáid. Foghlaimeoidh tú faoi earráidí a athshlánú i [Caibidil
 9][recover] <!-- neamhaird a dhéanamh -->.
 
 ### Luachanna Priontála le Sealbhóirí Áite `println!`
@@ -333,11 +333,11 @@ táimid ag tógáil cliathbhosca _dénártha_, atá inrite. An `rand`
 cliathbhosca _library_ é an gcliathbhosca, ina bhfuil cód a bheartaítear a úsáid ann
 cláir eile agus ní féidir iad a chur i gcrích leis féin.
 
-Is é comhordú lasta na cliathbhoscaí seachtracha an áit a bhfuil an lasta ag taitneamh i ndáiríre. Roimh dúinn
+Is é comhordú Cargo na cliathbhoscaí seachtracha an áit a bhfuil an Cargo ag taitneamh i ndáiríre. Roimh dúinn
 in ann cód a scríobh a úsáideann `rand`, ní mór dúinn an comhad _Cargo.toml_ a mhodhnú go
 cuir an cliathbhosca `rand` san áireamh mar spleáchas. Oscail an comhad sin anois agus cuir an
 líne seo a leanas go dtí an bun, faoi bhun an ceanntásc alt `[dependencies]` go
-Lasta cruthaithe duit. Bí cinnte `rand` a shonrú go díreach mar atá againn anseo, le
+Cargo cruthaithe duit. Bí cinnte `rand` a shonrú go díreach mar atá againn anseo, le
 seans nach n-oibreoidh an uimhir leagain seo, nó na samplaí cóid sa rang teagaisc seo:
 
 <!-- When updating the version of `rand` used, also update the version of
@@ -346,7 +346,7 @@ seans nach n-oibreoidh an uimhir leagain seo, nó na samplaí cóid sa rang teag
 * ch14-03-cargo-workspaces.md
 -->
 
-<span class="filename">Filename: Cargo.toml</span>
+<span class="filename">Ainm comhaid: Cargo.toml</span>
 
 ```toml
 {{#include ../../listings/ch02-guessing-game-tutorial/listing-02-02/Cargo.toml:8:}}
@@ -354,15 +354,15 @@ seans nach n-oibreoidh an uimhir leagain seo, nó na samplaí cóid sa rang teag
 
 Sa chomhad _Cargo.toml_, tá gach rud a leanann ceanntásc mar chuid de sin
 alt a leanann ar aghaidh go dtí go dtosaíonn alt eile. I `[dependencies]` tú
-inis do lasta cad iad na cliathbhoscaí seachtracha a bhraitheann do thionscadal agus cé na leaganacha díobh
+inis do Cargo cad iad na cliathbhoscaí seachtracha a bhraitheann do thionscadal agus cé na leaganacha díobh
 na cliathbhoscaí sin atá uait. Sa chás seo, sonraimid an gcliathbhosca `rand` leis an
-sonróir leagan shéimeantach `0.8.5`. Tuigeann lasta [Séimeantach
-Leagan [semver] <!-- neamhaird --> (uaireanta ar a dtugtar _SemVer_), arb é a
+sonróir leagan shéimeantach `0.8.5`. Tuigeann Cargo [Séimeantach
+Leagan][semver]<!-- neamhaird --> (uaireanta ar a dtugtar _SemVer_), arb é a
 caighdeánach chun uimhreacha leagan a scríobh. Is é an sonróir `0.8.5` i ndáiríre
 gearrscríbhinn le haghaidh `^0.8.5`, rud a chiallaíonn aon leagan go bhfuil ar a laghad 0.8.5 ach
 faoi ​​bhun 0.9.0.
 
-Measann lasta go bhfuil API poiblí ag na leaganacha seo atá comhoiriúnach leis an leagan
+Measann Cargo go bhfuil API poiblí ag na leaganacha seo atá comhoiriúnach leis an leagan
 0.8.5, agus cinntíonn an tsonraíocht seo go bhfaighidh tú an scaoileadh paiste is déanaí sin
 fós le chéile leis an gcód sa chaibidil seo. Aon leagan 0.9.0 nó níos mó
 Ní ráthaítear go mbeidh an API céanna ann agus a úsáideann na samplaí seo a leanas.
@@ -411,21 +411,21 @@ Seans go bhfeicfidh tú uimhreacha leaganacha éagsúla (ach beidh siad go léir
 cód, a bhuíochas le SemVer!) agus línte éagsúla (ag brath ar an oibríocht
 córas), agus féadfaidh na línte a bheith in ord difriúil.
 
-Nuair a chuirimid spleáchas seachtrach san áireamh, faigheann lasta na leaganacha is déanaí de
+Nuair a chuirimid spleáchas seachtrach san áireamh, faigheann Cargo na leaganacha is déanaí de
 gach rud a theastaíonn ó spleáchas ón _registry_, is cóip de shonraí é
 ó [Crates.io][cratesio]. Is é Crates.io áit a bhfuil daoine san éiceachóras Rust
 postáil a dtionscadail foinse oscailte Rust do dhaoine eile le húsáid.
 
 Tar éis an chlár a nuashonrú, seiceálann Cargo an rannán `[dependencies]` agus
 íoslódáil aon cliathbhoscaí liostaithe nach bhfuil íoslódáilte cheana. Sa chás seo,
-cé nár liostaíomar ach `rand` mar spleáchas, rug lasta cliathbhoscaí eile freisin
+cé nár liostaíomar ach `rand` mar spleáchas, rug Cargo cliathbhoscaí eile freisin
 go mbraitheann `rand` ar a bheith ag obair. Tar éis na cliathbhoscaí a íoslódáil, tiomsaíonn Rust
 iad agus ansin déanann sé an tionscadal a thiomsú leis na spleáchais atá ar fáil.
 
 Má ritheann tú `cargo build` láithreach láithreach gan aon athruithe a dhéanamh, ní mór duit
-ní bhfaighidh tú aon aschur ach amháin ón líne `Finished`. Tá a fhios ag lasta cheana féin
+ní bhfaighidh tú aon aschur ach amháin ón líne `Finished`. Tá a fhios ag Cargo cheana féin
 íoslódáil agus tiomsaíodh na spleáchais, agus níl aon rud athraithe agat
-fúthu i do chomhad _Cargo.toml_. Tá a fhios ag lasta freisin nach bhfuil tú tar éis athrú
+fúthu i do chomhad _Cargo.toml_. Tá a fhios ag Cargo freisin nach bhfuil tú tar éis athrú
 rud ar bith faoi do chód, mar sin ní athchruinníonn sé é sin ach an oiread. Gan faic le
 a dhéanamh, fágann sé go simplí.
 
@@ -443,14 +443,14 @@ $ cargo build
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.13s
 ```
 
-Léiríonn na línte seo nach ndéanann lasta an tógáil a nuashonrú ach amháin le d'athrú beag ar an
+Léiríonn na línte seo nach ndéanann Cargo an tógáil a nuashonrú ach amháin le d'athrú beag ar an
 _src/main.rs_ comhad. Níor athraigh do spleáchais, mar sin tá a fhios ag Cargo gur féidir
 athúsáid a bhfuil íoslódáilte aige cheana féin agus tiomsaithe dóibh siúd.
 
 #### Tógálacha In-atáirgthe a Chinntiú leis an gComhad _Cargo.lock_
 
-Tá meicníocht ag lasta a chinntíonn gur féidir leat an déantán céanna a atógáil gach uair
-tógann tusa nó aon duine eile do chód: ní úsáidfidh lasta ach na leaganacha de na
+Tá meicníocht ag Cargo a chinntíonn gur féidir leat an déantán céanna a atógáil gach uair
+tógann tusa nó aon duine eile do chód: ní úsáidfidh Cargo ach na leaganacha de na
 spleáchais a shonraigh tú go dtí go léiríonn tú a mhalairt. Mar shampla, abair é sin
 an tseachtain seo chugainn tagann leagan 0.8.6 den gcliathbhosca `rand` amach, agus an leagan sin
 tá ceartúchán tábhachtach ar fhabht, ach tá aischéimniú ann freisin a dhéanfaidh
@@ -458,9 +458,9 @@ briseadh do chód. Chun é seo a láimhseáil, cruthaíonn Rust an comhad _Cargo
 an t-am a ritheann tú `cargo build`, mar sin tá sé seo againn anois sa chluiche _guessing_
 eolaire.
 
-Nuair a thógann tú tionscadal den chéad uair, déanann lasta na leaganacha go léir a léiriú
+Nuair a thógann tú tionscadal den chéad uair, déanann Cargo na leaganacha go léir a léiriú
 de na spleáchais a oireann do na critéir agus ansin iad a scríobh chuig an
-_Cargo.lock_ comhad. Nuair a bheidh tú ag tógáil do thionscadal sa todhchaí, feicfidh lasta
+_Cargo.lock_ comhad. Nuair a bheidh tú ag tógáil do thionscadal sa todhchaí, feicfidh Cargo
 go bhfuil an comhad _Cargo.lock_ ann agus go n-úsáidfidh sé na leaganacha atá sonraithe ann
 seachas an obair ar fad a dhéanamh chun leaganacha a aimsiú arís. Ligeann sé seo duit
 tógáil in-atáirgthe go huathoibríoch. I bhfocail eile, beidh do thionscadal
@@ -472,7 +472,7 @@ sheiceáil i rialú foinse leis an gcuid eile den chód i do thionscadal.
 
 Nuair is mian leat _do_ cliathbhosca a nuashonrú, soláthraíonn Cargo an t-ordú `update`,
 a dhéanfaidh neamhaird ar an gcomhad _Cargo.lock_ agus figiúr amach go léir na leaganacha is déanaí
-a oireann do shonraíochtaí i _Cargo.toml_. Scríobhfaidh lasta iad siúd ansin
+a oireann do shonraíochtaí i _Cargo.toml_. Scríobhfaidh Cargo iad siúd ansin
 leaganacha don chomhad _Cargo.lock_. Sa chás seo, ní bheidh ach lorg ag Cargo
 leaganacha níos mó ná 0.8.5 agus níos lú ná 0.9.0. Má tá an gcliathbhosca `rand`
 scaoileadh an dá leagan nua 0.8.6 agus 0.9.0, d'fheicfeá an méid seo a leanas más rud é
@@ -490,7 +490,7 @@ $ cargo update
     Updating rand v0.8.5 -> v0.8.6
 ```
 
-Déanann lasta neamhaird ar an scaoileadh 0.9.0. Ag an bpointe seo, thabharfá athrú faoi deara freisin
+Déanann Cargo neamhaird ar an scaoileadh 0.9.0. Ag an bpointe seo, thabharfá athrú faoi deara freisin
 i do chomhad _Cargo.lock_ ag tabhairt faoi deara gurb é an leagan den chliabhán `rand` atá tú
 ag baint úsáide as anois tá 0.8.6. Chun `rand` leagan 0.9.0 nó aon leagan sa 0.9._x_ a úsáid
 sraith, bheadh ​​ort an comhad _Cargo.toml_ a nuashonrú chun breathnú mar seo ina ionad:
@@ -500,13 +500,13 @@ sraith, bheadh ​​ort an comhad _Cargo.toml_ a nuashonrú chun breathnú mar 
 rand = "0.9.0"
 ```
 
-An chéad uair eile a ritheann tú `cargo build`, déanfaidh lasta clár na gcliathbhosca a nuashonrú
+An chéad uair eile a ritheann tú `cargo build`, déanfaidh Cargo clár na gcliathbhosca a nuashonrú
 ar fáil agus déan do riachtanais `rand` a athmheas de réir an leagain nua
 atá sonraithe agat.
 
 Tá go leor eile le rá faoi [Cargo][doccargo] <!-- neamhaird --> agus [dá
 éiceachóras][doccratesio]<!-- neamhaird a dhéanamh ar -->, a phléfaimid i gCaibidil 14, ach
-faoi ​​láthair, sin é gach ní mór duit fios a bheith agat. Déanann lasta an-éasca é a athúsáid
+faoi ​​láthair, sin é gach ní mór duit fios a bheith agat. Déanann Cargo an-éasca é a athúsáid
 leabharlanna, mar sin tá Rustaceans in ann tionscadail níos lú a scríobh a chuirtear le chéile
 ó roinnt pacáistí.
 
@@ -540,11 +540,11 @@ Ní mór `1..=100` a shonrú chun uimhir idir 1 agus 100 a iarraidh.
 
 > Tabhair faoi deara: Ní bheidh a fhios agat cad iad na tréithe is cóir a úsáid agus cé na modhanna agus na feidhmeanna
 > chun glaoch ó chliathbhosca, ionas go mbeidh doiciméadú le treoracha le haghaidh gach cliathbhosca
-> é a úsáid. Gné néata eile de lasta is ea an doiciméad lasta a rith
-> Tógfaidh --open`ordú doiciméadú a sholáthraíonn do chuid spleáchais go léir
-go háitiúil agus oscail i do bhrabhsálaí é. Má tá suim agat i gceann eile
-feidhmiúlacht sa gcliathbhosca`rand`, mar shampla, rith `cargo doc --open`agus
-cliceáil`rand` sa bharra taoibh ar chlé.
+> é a úsáid. Gné néata eile de lasta ná go dtógfaidh rith an ordaithe `cargo doc --open` 
+> doiciméadú a sholáthraíonn do chuid spleáchais go léir go háitiúil agus go n-osclófar é i do bhrabhsálaí.
+> Má tá suim agat i bhfeidhmiúlacht eile sa chliabhán `rand`, mar shampla, reáchtáil `cargo doc --open` 
+> agus cliceáil `rand` sa bharra taoibh ar thaobh na láimhe clé.
+
 
 Déanann an dara líne nua an uimhir rúnda a phriontáil. Tá sé seo úsáideach agus muid
 an clár a fhorbairt le bheith in ann é a thástáil, ach scriosfaimid as an
@@ -607,19 +607,18 @@ na trí thoradh is féidir nuair a dhéanann tú comparáid idir dhá luach.
 Ansin cuirimid cúig líne nua ag bun a úsáideann an cineál `Ordering`. Tá an
 Déanann modh `cmp` dhá luach i gcomparáid agus is féidir glaoch a chur air ar aon rud is féidir
 i gcomparáid. Déanann sé tagairt do cibé rud is mian leat a chur i gcomparáid leis: seo é
-comparáid a dhéanamh idir `buille faoi thuairim` agus `uimhir_rúnda`. Ansin filleann sé leagan de na
+comparáid a dhéanamh idir `guess` agus `secret_number`. Ansin filleann sé leagan de na
 ‘Ordú’ enum thugamar isteach scóip leis an ráiteas ‘úsáide’. Úsáidimid a
 [`match`][match]<!-- neamhaird a dhéanamh ar --> slonn le socrú cad é an chéad rud eile le déanamh bunaithe air
-cén leagan de `Ordú` a cuireadh ar ais ón nglao go `cmp` leis na luachanna
-in `buille faoi thuairim` agus `uimhir_rúnda`.
+cén leagan de `Ordering` a cuireadh ar ais ón nglao go `cmp` leis na luachanna
+in `guess` agus `secret_number`.
 
 Tá slonn `match` comhdhéanta de _arms_. Is éard atá i lámh ná _pattern_ to
 mheaitseáil i gcoinne, agus an cód ba chóir a rith má tá an luach a thugtar do `match`
-oireann patrún na láimhe sin. Glacann meirge an luach a thugtar do `mheaitseáil` agus cuma
-trí phatrún gach lámh ar a seal. Is iad patrúin agus an tógáil `meaits`
+oireann patrún na láimhe sin. Glacann meirge an luach a thugtar do `match` agus cuma
+trí phatrún gach lámh ar a seal. Is iad patrúin agus an tógáil `match`
 gnéithe cumhachtacha meirge: ligeann siad duit do chód a chur in iúl ar chásanna éagsúla
-d'fhéadfadh teacht trasna orthu agus déanann siad cinnte go láimhseálann tú iad go léir. Beidh na gnéithe seo
-clúdaithe go mion i gCaibidil 6 agus i gCaibidil 19, faoi seach.
+d'fhéadfadh teacht trasna orthu agus déanann siad cinnte go láimhseálann tú iad go léir. Beidh na gnéithe seo clúdaithe go mion i gCaibidil 6 agus i gCaibidil 19, faoi seach.
 
 Siúlfaimid trí shampla leis an slonn `match` a úsáidimid anseo. Abair é sin
 tá buille faoi thuairim ag an úsáideoir 50 agus is é an uimhir rúnda a ghintear go randamach an uair seo 38.
@@ -661,7 +660,7 @@ I ndeireadh na dála, ba mhaith linn an `String` a léann an clár mar ionchur a
 cineál uimhreach ionas gur féidir linn é a chur i gcomparáid go huimhriúil leis an uimhir rúnda. Déanaimid amhlaidh trí
 an líne seo a chur leis an gcorp feidhme `main`:
 
-span class="filename">Filename: src/main.rs</span>
+span class="filename">Ainm comhaid: src/main.rs</span>
 
 ```rust,ignore
 {{#rustdoc_include ../../listings/ch02-guessing-game-tutorial/no-listing-03-convert-string-to-number/src/main.rs:here}}
@@ -673,53 +672,253 @@ Is é an líne:
 let guess: u32 = guess.trim().parse().expect("Please type a number!");
 ```
 
-Cruthaímid athróg darb ainm `buille faoi thuairim`. Ach fan, nach bhfuil an clár cheana féin
-athróg darb ainm `buille faoi thuairim`? Déanann sé, ach cuiditheach ligeann Rust dúinn scáthú an
-luach `buille faoi thuairim` roimhe seo le ceann nua. Ligeann _Scáthú_ dúinn an `buille faoi thuairim` a athúsáid
+Cruthaímid athróg darb ainm `guess`. Ach fan, nach bhfuil an clár cheana féin
+athróg darb ainm `guess`? Déanann sé, ach cuiditheach ligeann Rust dúinn scáthú an
+luach `guess` roimhe seo le ceann nua. Ligeann _Scáthú_ dúinn an `guess` a athúsáid
 ainm athróg seachas iallach a chur orainn dhá athróg uathúla a chruthú, mar shampla
-`guess_str` agus `buille faoi thuairim`, mar shampla. Clúdóimid é seo níos mine i
+`guess_str` agus `guess`, mar shampla. Clúdóimid é seo níos mine i
 [Caibidil 3][scáthú] <!-- neamhaird -->, ach faoi láthair, fios go bhfuil an ghné seo
 a úsáidtear go minic nuair is mian leat luach a thiontú ó chineál amháin go cineál eile.
 
-Ceanglaíonn muid an athróg nua seo leis an slonn `guess.trim().parse()`. An `buille faoi thuairim`
-tagraíonn an abairt don bhunathróg `buille faoi thuairim` ina raibh an
-ionchur mar teaghrán. Cuirfidh an modh `trim` ar shampla `Teaghrán` deireadh le haon cheann
+Ceanglaíonn muid an athróg nua seo leis an slonn `guess.trim().parse()`. An `guess`
+tagraíonn an abairt don bhunathróg `guess` ina raibh an
+ionchur mar teaghrán. Cuirfidh an modh `trim` ar shampla `String` deireadh le haon cheann
 spás bán ag tús agus deireadh, rud nach mór dúinn a dhéanamh sular féidir linn a thiontú ar an
 teaghrán go `u32`, nach féidir ach sonraí uimhriúla a bheith ann. Caithfidh an t-úsáideoir brúigh
 <kbd>iontráil</kbd> chun `read_line` a shásamh agus chun a gcuid buille faoi thuairim a ionchur, rud a chuireann le
 carachtar nualíne don teaghrán. Mar shampla, má chuireann an t-úsáideoir cineál <kbd>5</kbd> agus
-brúigh <kbd>iontráil</kbd>, breathnaíonn `buille faoi thuairim` mar seo: `5\n`. Léiríonn an `\n`
-"líne nua." (Ar Windows, má bhrúnn tú <kbd>enter</kbd> beidh tuairisceán iompair ann
-agus líne nua, `\r\n`.) Cuireann an modh `Baile Átha Troim` deireadh le `\n` nó `\r\n`, agus mar thoradh air sin
+brúigh <kbd>iontráil</kbd>, breathnaíonn `guess` mar seo: `5\n`. Léiríonn an `\n`
+"líne nua." (Ar Windows, má bhrúnn tú <kbd>iontráil</kbd> beidh tuairisceán iompair ann
+agus líne nua, `\r\n`.) Cuireann an modh `trim` deireadh le `\n` nó `\r\n`, agus mar thoradh air sin
 i `5` díreach.
 
-Tiontaíonn an modh [`parsáil` ar teaghráin][parsáil] <!-- neamhaird --> teaghrán go
+Tiontaíonn an [modh `parse` ar teaghráin][parse] <!-- neamhaird --> teaghrán go
 cineál eile. Anseo, bainimid úsáid as é a thiontú ó teaghrán go uimhir. Caithfimid
-inis do Rust an cineál uimhreach cruinn atá uainn trí úsáid a bhaint as `lig faoi thuairim: u32`. An colon
+inis do Rust an cineál uimhreach cruinn atá uainn trí úsáid a bhaint as `let guess: u32`. An colon
 (`:`) Tar éis do 'buille faoi thuairim' a rá le Rust déanfaimid cineál na hathróige anótáil. Tá meirge ag
 cúpla cineál uimhreacha ionsuite; is slánuimhir 32-giotán gan síniú é an `u32` a fheictear anseo.
 Is rogha réamhshocraithe maith é do líon beag dearfach. Foghlaimeoidh tú faoi
-cineálacha uimhreacha eile i [Caibidil 3][sláine]<!-- neamhaird a dhéanamh ar -->.
+cineálacha uimhreacha eile i [Caibidil 3][integers]<!-- neamhaird a dhéanamh ar -->.
 
 Ina theannta sin, tá an nóta `u32` sa chlár samplach seo agus an chomparáid
-le `secret_number` ciallaíonn sé go mbainfidh Rust le tuiscint gur cheart go mbeadh `uimhir_rúnda` ina
-`u32` chomh maith. Mar sin anois beidh an chomparáid idir dhá luach mar an gcéanna
+le `secret_number` ciallaíonn sé go mbainfidh Rust le tuiscint gur cheart go mbeadh `secret_number` ina `u32` chomh maith. Mar sin anois beidh an chomparáid idir dhá luach mar an gcéanna
 cineál!
 
 Ní oibreoidh an modh `parse` ach ar charachtair ar féidir iad a thiontú go loighciúil
 isteach uimhreacha agus mar sin is féidir earráidí a chruthú go héasca. Más rud é, mar shampla, an teaghrán
 ina bhfuil `A👍%`, ní bheadh ​​aon bhealach ann é sin a thiontú go huimhir. Mar gheall air
-b'fhéidir go dteipeann orthu, tugann an modh `parsáil` cineál `Torthaí` ar ais, cosúil leis an `léamh_líne`
+b'fhéidir go dteipeann orthu, tugann an modh `parse` cineál `Result` ar ais, cosúil leis an `read_line`
 (a pléadh níos luaithe in [“Ag Láimhseáil Teip Féideartha le
-`Toradh`”](#handling-potential-teip-le-toradh) <!-- neamhaird-->). Déileálfaimid
-an `Toradh` seo ar an mbealach céanna trí úsáid a bhaint as an modh `súil` arís. Má `parse`
-seolann sé leagan ` Err``Result ` ar ais toisc nach raibh sé in ann uimhir a chruthú ón
-teaghrán, beidh an glao `ag súil` tuairteála an cluiche agus a phriontáil an teachtaireacht a thugaimid dó.
+`Result`”](#handling-potential-teip-le-toradh) <!-- neamhaird-->). Déileálfaimid
+an `Result` seo ar an mbealach céanna trí úsáid a bhaint as an modh `expect` arís. Má `parse`
+seolann sé leagan `Err` `Result` ar ais toisc nach raibh sé in ann uimhir a chruthú ón
+teaghrán, beidh an glao `expect` tuairteála an cluiche agus a phriontáil an teachtaireacht a thugaimid dó.
 Más féidir le `parse` an teaghrán a thiontú go huimhir go rathúil, seolfaidh sé an
-Leagan `Ok` de `Toradh`, agus tabharfaidh `ag súil` ar ais an uimhir a theastaíonn uainn
+Leagan `Ok` de `Result`, agus tabharfaidh `expect` ar ais an uimhir a theastaíonn uainn
 an luach `Ok`.
 
+
 Rithfimid an clár anois:
+
+<!-- manual-regeneration
+cd listings/ch02-guessing-game-tutorial/no-listing-03-convert-string-to-number/
+touch src/main.rs
+cargo run
+  76
+-->
+
+```console
+$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.26s
+     Running `target/debug/guessing_game`
+Guess the number!
+The secret number is: 58
+Please input your guess.
+  76
+You guessed: 76
+Too big!
+```
+
+Go deas! Cé gur cuireadh spásanna leis roimh an buille faoi thuairim, bhí an clár fós le sonrú
+out that the user guessed 76. Rith an clár cúpla uair chun an
+iompar difriúil le cineálacha éagsúla input: buille faoi thuairim an uimhir i gceart,
+tomhas uimhir atá ró-ard, agus buille faoi thuairim uimhir atá ró-íseal.
+
+Tá an chuid is mó den chluiche ag obair anois, ach ní féidir leis an úsáideoir ach buille faoi thuairim amháin a dhéanamh.
+Déanaimis é sin a athrú trí lúb a chur leis!
+
+## Tomhais Ilghnéitheacha a cheadú le Lúb
+
+Cruthaíonn an eochairfhocal `loop` lúb gan teorainn. Cuirfimid lúb leis chun úsáideoirí a thabhairt seans níos mó an uimhir a thomhas:
+
+
+<span class="filename">Ainm comhaid: src/main.rs</span>
+
+```rust,ignore
+{{#rustdoc_include ../../listings/ch02-guessing-game-tutorial/no-listing-04-looping/src/main.rs:here}}
+```
+
+Mar a fheiceann tú, bhogamar gach rud ón leid ionchuir buille faoi thuairim isteach
+lúb. Bí cinnte a eangú na línte taobh istigh den lúb ceithre spás eile an ceann
+agus rith an clár arís. Iarrfaidh an clár anois buille faoi thuairim eile go deo,
+a thugann isteach i ndáiríre fadhb nua. Ní cosúil gur féidir leis an úsáideoir éirí as!
+
+D'fhéadfadh an t-úsáideoir cur isteach ar an gclár i gcónaí trí úsáid a bhaint as aicearra an mhéarchláir
+<kbd>ctrl</kbd> - <kbd>c</kbd>. Ach tá bealach eile chun éalú ón dosháraithe seo
+ollphéist, mar a luadh sa phlé `parse` i [“Comparáid a dhéanamh idir an Comparing the Guess to the
+Secret Number”](#comparing-the-guess-to-the-secret-number)<!-- neamhaird -->: má
+cuireann an t-úsáideoir freagra neamh-uimhir, beidh an clár tuairteála. Is féidir linn a ghlacadh
+buntáiste a bhaint as sin chun ligean don úsáideoir éirí as, mar a thaispeántar anseo:
+
+<!-- manual-regeneration
+cd listings/ch02-guessing-game-tutorial/no-listing-04-looping/
+touch src/main.rs
+cargo run
+(too small guess)
+(too big guess)
+(correct guess)
+quit
+-->
+
+```console
+$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.23s
+     Running `target/debug/guessing_game`
+Guess the number!
+The secret number is: 59
+Please input your guess.
+45
+You guessed: 45
+Too small!
+Please input your guess.
+60
+You guessed: 60
+Too big!
+Please input your guess.
+59
+You guessed: 59
+You win!
+Please input your guess.
+quit
+thread 'main' panicked at 'Please type a number!: ParseIntError { kind: InvalidDigit }', src/main.rs:28:47
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+Má chlóscríobhtar `quit` scoirfidh tú an cluiche, ach mar a thabharfaidh tú faoi deara, cuirfear aon cheann isteach
+ionchur eile gan uimhir. Tá sé seo suboptimal, a rá a laghad; ba mhaith linn an cluiche
+a stopadh freisin nuair a dhéantar an uimhir cheart a thomhas.
+
+### Scoir Tar éis Tomhais Ceart
+
+Déanaimis an cluiche a ríomh le scor nuair a bhíonn an bua ag an úsáideoir trí ráiteas `break` a chur leis:
+
+<span class="filename">Ainm comhaid: src/main.rs</span>
+
+```rust,ignore
+{{#rustdoc_include ../../listings/ch02-guessing-game-tutorial/no-listing-05-quitting/src/main.rs:here}}
+```
+
+Nuair a chuirtear an líne `break` isteach i ndiaidh `You win!` fágann an clár an lúb nuair a
+déanann an t-úsáideoir an uimhir rúnda a thomhas i gceart. Ciallaíonn scor an lúb freisin
+ag fágáil an chláir, toisc gurb é an lúb an chuid dheireanach de `main`.
+
+### Ionchur Neamhbhailí a Láimhseáil
+
+Chun iompar an chluiche a bheachtú tuilleadh, seachas an clár a thuar nuair
+ionchuireann an t-úsáideoir neamhuimhir, déanaimis neamhaird a dhéanamh den chluiche ar neamhuimhir mar sin de
+is féidir leis an úsáideoir leanúint ar aghaidh le buille faoi thuairim. Is féidir linn é sin a dhéanamh ach an líne ina bhfuil `guess` a athrú
+a thiontú ó `String` go `u32`, mar a thaispeántar i Liostú 2-5.
+
+<Listing number="2-5" file-name="src/main.rs" caption="Ignoring a non-number guess and asking for another guess instead of crashing the program">
+
+```rust,ignore
+{{#rustdoc_include ../../listings/ch02-guessing-game-tutorial/listing-02-05/src/main.rs:here}}
+```
+
+</Listing>
+
+Aistrímid ó ghlao `expect` go slonn `match` chun bogadh ó bhualadh
+ar earráid chun an earráid a láimhseáil. Cuimhnigh go dtugann `parse` cineál `Result` ar ais
+agus is énum é `Result` a bhfuil na leaganacha `Ok` agus `Err` air. Táimid ag úsáid
+léiriú `match` anseo, mar a rinne muid le toradh `Ordering` an `cmp`
+modh.
+
+Má tá `parse` in ann an teaghrán a iompú ina huimhir go rathúil, déanfaidh sé
+seol ar ais luach `Ok` ina bhfuil an uimhir iarmhartach. Beidh an luach `Ok` sin
+mheaitseáil patrún an chéad lámh, agus beidh an slonn `match` ar ais díreach an
+luach `num` a tháirg `parse` agus a chuir taobh istigh den luach `Ok`. An uimhir sin
+críochnóidh sé san áit a dteastaíonn uainn é san athróg nua `guess` atá á chruthú againn.
+
+Má tá `parse` _not_ in ann an teaghrán a iompú ina huimhir, seolfaidh sé uimhir ar ais
+Luach `Err` ina bhfuil tuilleadh eolais faoin earráid. An luach `Err`
+ní mheaitseálann sé leis an bpatrún `Ok(num)` sa chéad lámh `match`', ach is amhlaidh
+meaitseáil an patrún `Err(_)` sa dara lámh. Is é an foscór, `_`, a
+luach catchall; sa sampla seo, táimid ag rá go dteastaíonn uainn gach `Err` a mheaitseáil
+luachanna, is cuma cén t-eolas atá istigh iontu. Mar sin beidh an clár
+cód an dara láimhe a fhorghníomhú, `continue`, a insíonn don chlár dul go dtí an
+an chéad atriall eile den `loop` agus iarr buille faoi thuairim eile. Mar sin, go héifeachtach, an
+déanann an clár neamhaird ar gach earráid a d'fhéadfadh `parse` a bheith orthu!
+
+Anois ba chóir go n-oibreodh gach rud sa chlár mar a bhíothas ag súil leis. Déanaimis iarracht é:
+
+<!-- manual-regeneration
+cd listings/ch02-guessing-game-tutorial/listing-02-05/
+cargo run
+(too small guess)
+(too big guess)
+foo
+(correct guess)
+-->
+
+```console
+$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target/debug/guessing_game`
+Guess the number!
+The secret number is: 61
+Please input your guess.
+10
+You guessed: 10
+Too small!
+Please input your guess.
+99
+You guessed: 99
+Too big!
+Please input your guess.
+foo
+Please input your guess.
+61
+You guessed: 61
+You win!
+```
+
+Iontach! Le tweak deiridh beag bídeach amháin, críochnóimid an cluiche buille faoi thuairim. Athghairm
+go bhfuil an clár fós ag priontáil an uimhir rúnda. D'oibrigh sé sin go maith le haghaidh
+tástáil, ach scriosann sé an cluiche. Scriosaimid an `println!` a aschuireann an
+uimhir rúnda. Léiríonn liostú 2-6 an cód deiridh.
+
+<Listing number="2-6" file-name="src/main.rs" caption="Complete guessing game code">
+
+```rust,ignore
+{{#rustdoc_include ../../listings/ch02-guessing-game-tutorial/listing-02-06/src/main.rs}}
+```
+
+</Listing>
+
+Ag an bpointe seo, d'éirigh leat an cluiche tomhais a thógáil. Comhghairdeachas!
+
+## Achoimre
+
+Bealach praiticiúil a bhí sa tionscadal seo chun go leor coincheap nua Rust a chur in aithne duit:
+`let`, `match`, feidhmeanna, úsáid cliathbhoscaí seachtracha, agus go leor eile. Sa chéad cheann eile
+cúpla caibidil, foghlaimeoidh tú faoi na coincheapa seo níos mine. Caibidil 3
+clúdaíonn sé na coincheapa atá ag formhór na dteangacha ríomhchlárúcháin, amhail athróga, sonraí
+cineálacha, agus feidhmeanna, agus léiríonn sé conas iad a úsáid i Rust. Scrúdaíonn Caibidil 4
+úinéireacht, gné a fhágann go bhfuil Rust difriúil ó theangacha eile. Caibidil 5
+pléann sé struchtúir agus comhréir mhodhanna, agus míníonn Caibidil 6 conas a oibríonn enums.
 
 [prelude]: ../std/prelude/index.html
 [variables-and-mutability]: ch03-01-variables-and-mutability.html#variables-and-mutability
