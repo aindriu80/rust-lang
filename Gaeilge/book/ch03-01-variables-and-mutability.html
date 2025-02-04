@@ -159,7 +159,201 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="variables-and-mutability"><a class="header" href="#variables-and-mutability">Variables and Mutability</a></h1>
+                        <h2 id="athróga-agus-inathraitheacht"><a class="header" href="#athróga-agus-inathraitheacht">Athróga agus Inathraitheacht</a></h2>
+<p>Mar a luadh sa <a href="ch02-00-guessing-game-tutorial.html#storing-values-with-variables">“Luachanna Stórála le
+Athróga”</a><!-- ignore --> alt, de réir réamhshocraithe,
+tá athróga do- immutable. Tá sé seo ar cheann de go leor nodanna a thugann Rust duit a scríobh
+do chód ar bhealach a bhaineann leas as an concurrency sábháilteachta agus éasca go
+Cuireann meirge. Mar sin féin, tá an rogha agat fós do chuid athróg a dhéanamh mutable.
+Déanaimis iniúchadh ar conas agus cén fáth a spreagann Rust tú a bheith i bhfabhar do-mhothúchánacht agus cén fáth
+uaireanta b'fhéidir gur mhaith leat rogha an diúltaithe.</p>
+<p>Nuair a bhíonn athróg neamh-inchurtha, a luaithe a bhíonn luach ceangailte le hainm, ní féidir leat athrú
+an luach sin. Chun é seo a léiriú, gintear tionscadal nua dar teideal <em>variables</em> in
+do <em>projects</em> eolaire trí úsáid a bhaint as <code>cargo new variables</code>.</p>
+<p>Ansin, i do eolaire <em>variables</em> nua, oscail <em>src/main.rs</em> agus cuir ceann ina áit
+cód leis an gcód seo a leanas, nach dtiomsóidh fós:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let x = 5;
+    println!("The value of x is: {x}");
+    x = 6;
+    println!("The value of x is: {x}");
+}</code></pre>
+<p>Sábháil agus rith an clár ag úsáid <code>cargo run</code>. Ba cheart go bhfaighfeá teachtaireacht earráide
+maidir le hearráid neamh-luaineachta, mar a thaispeántar san aschur seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+error[E0384]: cannot assign twice to immutable variable `x`
+ --&gt; src/main.rs:4:5
+  |
+2 |     let x = 5;
+  |         - first assignment to `x`
+3 |     println!("The value of x is: {x}");
+4 |     x = 6;
+  |     ^^^^^ cannot assign twice to immutable variable
+  |
+help: consider making this binding mutable
+  |
+2 |     let mut x = 5;
+  |         +++
+
+For more information about this error, try `rustc --explain E0384`.
+error: could not compile `variables` (bin "variables") due to 1 previous error
+</code></pre>
+<p>Léiríonn an sampla seo conas a chuidíonn an tiomsaitheoir leat teacht ar earráidí i do chláir.
+Is féidir le hearráidí tiomsaitheora a bheith frustrachas, ach i ndáiríre ní chiallaíonn siad ach do chlár
+nach bhfuil tú ag déanamh a bhfuil uait go fóill go sábháilte; ní chiallaíonn siad go bhfuil tú
+nach ríomhchláraitheoir maith é! Faigheann Rustaceans a bhfuil taithí acu earráidí tiomsaitheora fós.</p>
+<p>Fuair ​​tú an teachtaireacht earráide <code>cannot assign twice to immutable variable `x`</code> toisc go ndearna tú iarracht an dara luach a shannadh don athróg do-ath-inchurtha <code>x</code>.</p>
+<p>Tá sé tábhachtach go bhfaighimid earráidí maidir le ham tiomsaithe nuair a dhéanaimid iarracht a
+luach atá sainithe mar neamh-luaineach mar go bhféadfadh an cás seo a bheith mar thoradh air
+fabhtanna. Má oibríonn cuid amháin dár gcód ar an toimhde go mbeidh luach
+choíche agus athraíonn cuid eile dár gcód an luach sin, is féidir
+nach ndéanfaidh an chéad chuid den chód an rud a ceapadh dó a dhéanamh. An chúis
+Is féidir leis an gcineál seo fabht a bheith deacair a rianú síos i ndiaidh an bhfíric, go háirithe
+nuair a athraíonn an dara píosa cód an luach amháin <em>uaireanta</em>. An Meirge
+ráthaíonn tiomsaitheoir nuair a luann tú nach n-athróidh luach, i ndáiríre
+Ní athróidh, mar sin ní gá duit súil a choinneáil air féin. Tá do chód mar sin
+níos éasca a réasúnú tríd.</p>
+<p>Ach is féidir inathraitheacht a bheith an-úsáideach, agus is féidir cód a dhéanamh níos áisiúla a scríobh.
+Cé go bhfuil athróga do-laghdaithe de réir réamhshocraithe, is féidir leat iad a dhéanamh comhshóite faoi
+ag cur <code>mut</code> os comhair an ainm athróg mar a rinne tú i <a href="ch02-00-guessing-game-tutorial.html#storing-values-with-variables">Caibidil
+2</a> <!-- neamhaird -->. Nuair a chuirfear <code>mut</code> tugann sé freisin
+rún do léitheoirí an chóid amach anseo trí chodanna eile den chód a chur in iúl
+ag athrú luach na hathróige seo.</p>
+<p>Mar shampla, déanaimis <em>src/main.rs</em> a athrú chuig an méid seo a leanas:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let mut x = 5;
+    println!("The value of x is: {x}");
+    x = 6;
+    println!("The value of x is: {x}");
+}</code></pre></pre>
+<p>Nuair a ritheann muid an clár anois, faigheann muid seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s
+     Running `target/debug/variables`
+The value of x is: 5
+The value of x is: 6
+</code></pre>
+<p>Tá cead againn an luach faoi cheangal go <code>x</code> a athrú ó <code>5</code> go <code>6</code> nuair is <code>mut</code>
+úsáidtear. I ndeireadh na dála, is fút féin atá sé cinneadh a dhéanamh maidir le sócmhainneacht a úsáid nó gan é
+ag brath ar cad a cheapann tú is soiléire sa chás áirithe sin.</p>
+<h3 id="tairiseacha"><a class="header" href="#tairiseacha">Tairiseacha</a></h3>
+<p>Cosúil le hathróga domhalartaithe, is luachanna iad <em>constants</em> atá ceangailte d'ainm agus
+nach bhfuil cead a athrú, ach tá roinnt difríochtaí idir tairisigh
+agus athróga.</p>
+<p>Ar dtús, níl cead agat <code>mut</code> a úsáid le tairisigh. Ní hamháin go bhfuil tairisigh
+do-laghdaithe de réir réamhshocraithe - tá siad i gcónaí dochorraithe. Dearbhaíonn tú tairisigh ag baint úsáide as an
+eochairfhocal <code>const</code> in ionad an eochairfhocail <code>let</code>, agus cineál an luacha <em>must</em>
+a bheith anótáilte. Clúdóimid cineálacha agus clóscríobhfaimid nótaí sa chéad chuid eile,
+<a href="ch03-02-data-types.html#data-types">“Cineálacha Sonraí”</a><!-- neamhaird a dhéanamh ar -->, mar sin ná bí buartha faoi na sonraí
+ceart anois. Bíodh a fhios agat go gcaithfidh tú an cineál a anótáil i gcónaí.</p>
+<p>Is féidir tairisigh a dhearbhú in aon raon feidhme, lena n-áirítear an raon feidhme domhanda, a dhéanann
+úsáideach iad le haghaidh luachanna a gcaithfidh go leor codanna den chód a bheith ar an eolas fúthu.</p>
+<p>Is é an difríocht dheireanach nach féidir tairisigh a shocrú ach do shloinneadh tairiseach,
+ní toradh é sin ar luach nach bhféadfaí a ríomh ach ag am rite.</p>
+<p>Seo sampla de dhearbhú seasta:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
+<span class="boring">}</span></code></pre></pre>
+<p>Is é ainm an tairiseach ná <code>THREE_HOURS_IN_SECONDS</code> agus socraítear a luach go dtí an
+toradh ar iolrú 60 (líon na soicind i nóiméid) faoi 60 (an uimhir
+nóiméad in uair an chloig) faoi 3 (an líon uaireanta is mian linn a chomhaireamh sa
+clár). Is é an gnás ainmniúcháin atá ag Rust maidir le tairisigh ná gach cás uachtair a úsáid le
+béim idir focail. Tá an tiomsaitheoir in ann sraith theoranta de
+oibríochtaí ag am tiomsaithe, a ligeann dúinn rogha a dhéanamh an luach seo a scríobh amach in a
+bealach atá níos éasca a thuiscint agus a fhíorú, seachas an tairiseach seo a shocrú
+go dtí an luach 10,800. Féach an rannán <a href="../reference/const_eval.html">Tagairt Meirge ar tairiseach
+luacháil</a> le haghaidh tuilleadh eolais ar na hoibríochtaí is féidir a úsáid
+nuair a dhearbhaítear tairisigh.</p>
+<p>Tá tairisigh bailí ar feadh an ama ar fad a ritheann clár, laistigh den raon feidhme i
+a dearbhaíodh iad. Déanann an airí seo tairisigh úsáideach do luachanna i
+d'fhearann ​​iarratais a bhféadfadh go mbeadh a fhios ag codanna éagsúla den chlár
+thart ar, mar shampla an t-uaslíon pointí a cheadaítear d’aon imreoir cluiche
+thuilleamh, nó luas an tsolais.</p>
+<p>Tá sé úsáideach luachanna cruachódaithe a úsáidtear ar fud do chláir a ainmniú mar thairisigh
+brí an luacha sin a chur in iúl do lucht cothabhála an chóid amach anseo. sé freisin
+cabhraíonn sé le háit amháin a bheith i do chód bheadh ​​ort a athrú má tá an
+ní mór luach cruachód a nuashonrú amach anseo.</p>
+<h3 id="scáthfhoghlaim"><a class="header" href="#scáthfhoghlaim">Scáthfhoghlaim</a></h3>
+<p>Mar a chonaic tú sa rang teagaisc cluiche buille faoi thuairim i <a href="ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number">Caibidil
+2</a><!-- neamhaird a dhéanamh ar -->, is féidir leat a dhearbhú
+athróg nua leis an ainm céanna leis an athróg roimhe seo. Deir Rustaceans go bhfuil an
+Is é an chéad athróg <em>shadowed</em> ag an dara, rud a chiallaíonn go bhfuil an dara
+Is é an t-athróg a fheicfidh an tiomsaitheoir nuair a úsáideann tú ainm na hathróige.
+Go bunúsach, déanann an dara athróg scáthú ar an gcéad cheann, ag glacadh aon úsáidí a bhaintear as an
+ainm inathraithe dó féin go dtí go scáthaítear é féin nó go gcríochnaítear an raon feidhme.
+Is féidir linn athróg a scáthú trí úsáid a bhaint as ainm na hathróige céanna agus an t-athróg a athrá
+úsáid an eochairfhocail <code>let</code> mar seo a leanas:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = 5;
+
+    let x = x + 1;
+
+    {
+        let x = x * 2;
+        println!("The value of x in the inner scope is: {x}");
+    }
+
+    println!("The value of x is: {x}");
+}</code></pre></pre>
+<p>Ceanglaíonn an clár seo <code>x</code> ar luach <code>5</code> ar dtús. Ansin cruthaíonn sé athróg nua
+<code>x</code> trí <code>let x =</code> a athrá, ag tógáil an luach bunaidh agus ag cur <code>1</code> leis mar sin de
+Is é luach <code>x</code> ansin <code>6</code>. Ansin, laistigh de raon feidhme istigh a cruthaíodh leis an curly
+lúibíní, scáthaíonn an tríú ráiteas <code>let</code> <code>x</code> freisin agus cruthaíonn sé ráiteas nua
+athróg, ag iolrú an luach roimhe faoi <code>2</code> chun luach <code>12</code> a thabhairt do <code>x</code>.
+Nuair a bhíonn an scóip sin thart, cuirtear deireadh leis an scáthú istigh agus filleann <code>x</code> ar a bheith <code>6</code>.
+Nuair a bheidh an clár seo á rith againn, aschuirfidh sé an méid seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target/debug/variables`
+The value of x in the inner scope is: 12
+The value of x is: 6
+</code></pre>
+<p>Ní hionann an scáthú agus athróg a mharcáil mar <code>mut</code> mar gheobhaidh muid a
+earráid ama tiomsaithe má dhéanaimid iarracht de thaisme athshannadh don athróg seo gan
+ag baint úsáide as an eochairfhocal <code>let</code>. Trí úsáid a bhaint as <code>let</code>, is féidir linn cúpla claochlú a dhéanamh
+ar luach ach an bhfuil an t-athróg do-athlasta tar éis na claochluithe sin
+curtha i gcrích.</p>
+<p>Is é an difríocht eile idir <code>mut</code> agus scáthfhoghlaim ná toisc go bhfuilimid
+ag cruthú athróg nua go héifeachtach nuair a úsáidimid an eochairfhocal <code>let</code> arís, is féidir linn
+cineál an luacha a athrú ach an t-ainm céanna a athúsáid. Mar shampla, abair ár
+Iarrann an clár ar úsáideoir a thaispeáint cé mhéad spás atá uathu idir téacs éigin
+ag ionchur carachtair spáis, agus ansin ba mhaith linn an t-ionchur sin a stóráil mar uimhir:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let spaces = "   ";
+    let spaces = spaces.len();
+<span class="boring">}</span></code></pre></pre>
+<p>Is cineál teaghrán é an chéad athróg <code>spaces</code> agus an dara hathróg <code>spaces</code>
+is cineál uimhreach é. Fágann scáthú mar sin nach gá dúinn teacht suas leis
+ainmneacha éagsúla, mar <code>spaces_str</code> agus <code>spaces_num</code>; ina ionad sin, is féidir linn a athúsáid
+an t-ainm <code>spaces</code> níos simplí. Mar sin féin, má dhéanaimid iarracht <code>mut</code> a úsáid le haghaidh seo, mar a thaispeántar
+anseo, gheobhaidh muid earráid ama tiomsaithe:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let mut spaces = "   ";
+    spaces = spaces.len();
+<span class="boring">}</span></code></pre>
+<p>Deir an earráid nach bhfuil cead againn cineál athróige a athrú:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:3:14
+  |
+2 |     let mut spaces = "   ";
+  |                      ----- expected due to this value
+3 |     spaces = spaces.len();
+  |              ^^^^^^^^^^^^ expected `&amp;str`, found `usize`
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `variables` (bin "variables") due to 1 previous error
+</code></pre>
+<p>Anois go bhfuil iniúchadh déanta againn ar an gcaoi a n-oibríonn athróga, breathnaímid ar níos mó cineálacha sonraí iad
+is féidir a bheith.</p>
 
                     </main>
 
