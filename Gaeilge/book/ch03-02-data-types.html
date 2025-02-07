@@ -159,7 +159,363 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="data-types"><a class="header" href="#data-types">Data Types</a></h1>
+                        <h2 id="cineálacha-sonraí"><a class="header" href="#cineálacha-sonraí">Cineálacha Sonraí</a></h2>
+<p>Tá gach luach i Rust de chineál <em>data</em> áirithe, a insíonn do Rust cén cineál
+sonraí á shonrú ionas go mbeidh a fhios aige conas oibriú leis na sonraí sin. Breathnóimid ar
+dhá fhothacar de chineál sonraí: scálach agus cumaisc.</p>
+<p>Coinnigh i gcuimhne gur teanga <em>statically typed</em> í Rust, rud a chiallaíonn go bhfuil sé
+ní mór go mbeadh a fhios ag na cineálacha athróg go léir ag am tiomsaithe. Is féidir leis an tiomsaitheoir de ghnáth
+tátal a bhaint as cén cineál ba mhaith linn a úsáid bunaithe ar an luach agus conas a úsáidimid é. I gcásanna
+nuair is féidir go leor cineálacha a dhéanamh, mar shampla nuair a d'iompaíomar <code>String</code> go huimhriúil
+clóscríobh ag baint úsáide as <code>parse</code> sa <a href="ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number">“Ag Comparáid an Tomhais leis an Rúnduine”</a><!-- neamhaird a dhéanamh ar --> alt sa
+Caibidil 2, ní mór dúinn nóta cineáil a chur leis, mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let guess: u32 = "42".parse().expect("Not a number!");
+<span class="boring">}</span></code></pre></pre>
+<p>Mura gcuirfimid an nóta cineál <code>: u32</code> a thaispeántar sa chód roimhe seo, Rust
+taispeánfaidh sé an earráid seo a leanas, rud a chiallaíonn go dteastaíonn níos mó ón tiomsaitheoir
+faisnéis uainn chun a fháil amach cén cineál ba mhaith linn a úsáid:</p>
+<pre><code class="language-console">$ cargo build
+   Compiling no_type_annotations v0.1.0 (file:///projects/no_type_annotations)
+error[E0284]: type annotations needed
+ --&gt; src/main.rs:2:9
+  |
+2 |     let guess = "42".parse().expect("Not a number!");
+  |         ^^^^^        ----- type must be known at this point
+  |
+  = note: cannot satisfy `&lt;_ as FromStr&gt;::Err == _`
+help: consider giving `guess` an explicit type
+  |
+2 |     let guess: /* Type */ = "42".parse().expect("Not a number!");
+  |              ++++++++++++
+
+For more information about this error, try `rustc --explain E0284`.
+error: could not compile `no_type_annotations` (bin "no_type_annotations") due to 1 previous error
+</code></pre>
+<p>Feicfidh tú nótaí cineálacha éagsúla le haghaidh cineálacha eile sonraí.</p>
+<h3 id="cineálacha-scalar"><a class="header" href="#cineálacha-scalar">Cineálacha Scalar</a></h3>
+<p>Is ionann cineál <em>scalar</em> agus luach amháin. Tá ceithre phríomhchineál scálach ag meirge:
+slánuimhreacha, uimhreacha snámhphointe, Booles, agus carachtair. Seans go n-aithníonn tú
+iad seo ó theangacha ríomhchlárúcháin eile. Léimid an chaoi a n-oibríonn siad i Rust.</p>
+<h4 id="cineálacha-slánuimhir"><a class="header" href="#cineálacha-slánuimhir">Cineálacha Slánuimhir</a></h4>
+<p>Is uimhir é _ slánuimhir_ gan comhpháirt codánach. D’úsáideamar slánuimhir amháin
+clóscríobh i gCaibidil 2, an cineál <code>u32</code>. Tugann an dearbhú cineál seo le fios go bhfuil an
+ba cheart gur slánuimhir gan síniú (cineálacha slánuimhir sínithe a bheadh ​​sa luach a bhaineann leis
+tosú le <code>i</code> in ionad <code>u</code>) a thógann suas le 32 giotán spáis. Léiríonn Tábla 3-1
+na cineálacha slánuimhir ionsuite i Rust. Is féidir linn aon cheann de na leaganacha seo a úsáid chun a dhearbhú
+an cineál luach slánuimhir.</p>
+<p><span class="caption">Tábla 3-1: Cineálacha Slánuimhir i Meirge</span></p>
+<div class="table-wrapper"><table><thead><tr><th>Fad</th><th>Sínithe</th><th>Gan síniú</th></tr></thead><tbody>
+<tr><td>8-giotán</td><td><code>i8</code></td><td><code>u8</code></td></tr>
+<tr><td>16-giotán</td><td><code>i16</code></td><td><code>u16</code></td></tr>
+<tr><td>32-giotán</td><td><code>i32</code></td><td><code>u32</code></td></tr>
+<tr><td>64-giotán</td><td><code>i64</code></td><td><code>u64</code></td></tr>
+<tr><td>128-giotán</td><td><code>i128</code></td><td><code>u128</code></td></tr>
+<tr><td>arch</td><td><code>isize</code></td><td><code>usize</code></td></tr>
+</tbody></table>
+</div>
+<p>Is féidir le gach malairt a bheith sínithe nó gan síniú agus tá méid follasach aige.
+Tagraíonn <em>Signed</em> agus <em>unsigned</em> do cibé an féidir an uimhir a bheith
+diúltach - i bhfocail eile, cibé an gá comhartha a bheith ag an uimhir
+(sínithe) nó cibé an mbeidh sé dearfach choíche agus an féidir a bheith mar sin
+ionadaíocht gan comhartha (gan síniú). Tá sé cosúil le huimhreacha a scríobh ar pháipéar: cathain
+tá an comhartha tábhachtach, taispeántar uimhir le comhartha móide nó comhartha lúide; áfach,
+nuair atá sé sábháilte glacadh leis go bhfuil an uimhir deimhneach, taispeántar é gan aon chomhartha.
+Stóráiltear uimhreacha sínithe trí úsáid a bhaint as <a href="https://en.wikipedia.org/wiki/Two%27s_complement">dhá chomhlánú</a><!-- neamhaird
+--> ionadaíocht.</p>
+<p>Is féidir le gach leagan sínithe uimhreacha a stóráil ó -(2<sup>n - 1</sup>) go 2<sup>n -
+1</sup> - 1 san áireamh, áit arb é <em>n</em> líon na ngiotán a úsáideann an leagan. Mar sin an
+Is féidir le <code>i8</code> uimhreacha a stóráil ó -(2<sup>7</sup>) go 2<sup>7</sup> - 1, arb ionann é
+-128 go 127. Is féidir le leaganacha neamhshínithe uimhreacha a stóráil ó 0 go 2<sup>n</sup> - 1,
+mar sin is féidir le <code>u8</code> uimhreacha a stóráil ó 0 go 2<sup>8</sup> - 1, arb ionann é agus 0 go 255.</p>
+<p>Ina theannta sin, braitheann na cineálacha <code>isize</code> agus <code>usize</code> ar ailtireacht an
+ríomhaire a bhfuil do ríomhchlár ar siúl air, atá sonraithe sa tábla mar “áirse”:
+64 giotán má tá tú ar ailtireacht 64-giotán agus 32 giotán má tá tú ar 32-giotán
+ailtireacht.</p>
+<p>Is féidir leat slánuimhreacha a scríobh in aon cheann de na foirmeacha a thaispeántar i dTábla 3-2. Nóta
+go gceadaítear iarmhír cineáil i lítir uimhreacha ar féidir a bheith ina gcineálacha iolracha uimhriúla,
+mar <code>57u8</code>, chun an cineál a ainmniú. Is féidir le huimhreacha <code>_</code> a úsáid mar a
+deighilteoir amhairc chun an uimhir a dhéanamh níos éasca le léamh, mar <code>1_000</code>, a dhéanfaidh
+beidh an luach céanna agat agus dá mbeadh <code>1000</code> sonraithe agat.</p>
+<p><span class="caption">Tábla 3-2: Slánuimhir Liteartha i Meirge</span></p>
+<div class="table-wrapper"><table><thead><tr><th>Uimhreacha litrithe</th><th>Sampla</th></tr></thead><tbody>
+<tr><td>Deachúil</td><td><code>98_222</code></td></tr>
+<tr><td>Heics</td><td><code>0xff</code></td></tr>
+<tr><td>Octal</td><td><code>0o77</code></td></tr>
+<tr><td>Dénártha</td><td><code>0b1111_0000</code></td></tr>
+<tr><td>Beart (<code>u8</code> amháin)</td><td><code>b'A'</code></td></tr>
+</tbody></table>
+</div>
+<p>Mar sin cén chaoi a bhfuil a fhios agat cén cineál slánuimhir atá le húsáid? Mura bhfuil tú cinnte, Rust's
+is áiteanna maithe iad mainneachtainí de ghnáth le tosú: réamhshocrú cineálacha slánuimhir go <code>i32</code>.
+Is é an príomhstaid ina n-úsáidfeá <code>isize</code> nó <code>usize</code> agus tú ag innéacsú
+bailiúchán de shaghas éigin.</p>
+<blockquote>
+<h5 id="sárshreabhadh-slánuimhir"><a class="header" href="#sárshreabhadh-slánuimhir">Sárshreabhadh Slánuimhir</a></h5>
+<p>Ligean le rá go bhfuil athróg de chineál <code>u8</code> agat ar féidir leis luachanna a choinneáil idir 0 agus
+255. Má dhéanann tú iarracht an athróg a athrú go luach lasmuigh den raon sin, mar
+256, tarlóidh <em>integer overflow</em>, agus is féidir ceann amháin de dhá iompar a bheith mar thoradh air.
+Agus tú ag tiomsú i mód dífhabhtaithe, cuimsíonn Rust seiceálacha le haghaidh ró-shreabhadh slánuimhir
+a chuireann faoi deara do chlár <em>panic</em> ag am rite má tharlaíonn an t-iompar seo. Meirge
+úsáideann an téarma <em>panicking</em> nuair a scoireann clár le hearráid; pléifimid
+scaoll níos doimhne sa <a href="ch09-01-unrecoverable-errors-with-panic.html">“Earráidí Do-aisghabhála le
+<code>panic!</code>”</a><!-- neamhaird a dhéanamh ar --> alt i gCaibidil 9.</p>
+<p>Agus tú ag tiomsú i mód scaoilte leis an mbratach <code>--release</code>, déanann Rust amhlaidh
+<em>not</em> seiceálacha a chur san áireamh le haghaidh ró-shreabhadh slánuimhir a bhíonn ina chúis le scaoll. Ina áit sin, más rud é
+tarlaíonn ró-shreabhadh, feidhmíonn Rust <em>two's compliment wrapping</em>. I mbeagán focal, luachanna
+níos mó ná an t-uasluach is féidir leis an gcineál “timfhilleadh” a choinneáil chomh híseal agus is féidir
+de na luachanna is féidir leis an gcineál a choinneáil. I gcás <code>u8</code>, déantar an luach 256
+0, éiríonn an luach 257 1, agus mar sin de. Ní bheidh an clár scanraithe, ach beidh an
+beidh luach ag an athróg is dócha nach é an luach a raibh tú ag súil leis
+bhfuil. Meastar gur earráid é a bheith ag brath ar iompar fillte an tslánuimhir thar maoil.</p>
+<p>Chun an fhéidearthacht ró-shreabhadh a láimhseáil go sainráite, is féidir leat na teaghlaigh seo a úsáid
+modhanna a sholáthraíonn an leabharlann chaighdeánach do chineálacha uimhriúla primitive:</p>
+<ul>
+<li>Wrap i ngach modh leis na modhanna <code>wrapping_*</code>, mar shampla <code>wrapping_add</code>.</li>
+<li>Tabhair ar ais an luach <code>None</code> má tá cur thar maoil leis na modhanna <code>checked_*</code>.</li>
+<li>Tabhair ar ais an luach agus Boole ag cur in iúl an raibh cur thar maoil le
+na modhanna <code>overflowing_*</code>.</li>
+<li>Sáithithe ag íosluachanna nó uasluachanna an luacha leis an <code>saturating_*</code>
+modhanna.</li>
+</ul>
+</blockquote>
+<h4 id="cineálacha-snámhphointe"><a class="header" href="#cineálacha-snámhphointe">Cineálacha Snámhphointe</a></h4>
+<p>Tá dhá chineál primitive ag Rust freisin le haghaidh <em>floating-point numbers</em>, is iad sin
+uimhreacha le pointí deachúla. Is iad cineálacha snámhphointe meirge ná <code>f32</code> agus <code>f64</code>,
+atá 32 giotán agus 64 giotán i méid, faoi seach. Is é an cineál réamhshocraithe <code>f64</code>
+mar gheall ar LAPanna nua-aimseartha, tá sé thart ar an luas céanna le <code>f32</code> ach tá sé in ann
+níos cruinne. Tá gach cineál snámhphointe sínithe.</p>
+<p>Seo sampla a thaispeánann uimhreacha snámhphointe i ngníomh:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = 2.0; // f64
+
+    let y: f32 = 3.0; // f32
+}</code></pre></pre>
+<p>Léirítear uimhreacha snámhphointe de réir an chaighdeáin IEEE-754.  Is snámhphointe aon-chruinneas é an cineál <code>f32</code>, agus tá cruinneas dúbailte ag <code>f64</code>.</p>
+<h4 id="oibríochtaí-uimhriúla"><a class="header" href="#oibríochtaí-uimhriúla">Oibríochtaí Uimhriúla</a></h4>
+<p>Tacaíonn Rust leis na hoibríochtaí bunúsacha matamaitice a mbeifeá ag súil leo don uimhir ar fad
+cineálacha: suimiú, dealú, iolrú, roinnt, agus fuílleach. Slánuimhir
+teascadh an rannán i dtreo náid go dtí an tslánuimhir is gaire. Léiríonn an cód seo a leanas
+conas a d’úsáidfeá gach oibríocht uimhriúil i ráiteas <code>let</code>:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    // addition
+    let sum = 5 + 10;
+
+    // subtraction
+    let difference = 95.5 - 4.3;
+
+    // multiplication
+    let product = 4 * 30;
+
+    // division
+    let quotient = 56.7 / 32.2;
+    let truncated = -5 / 3; // Results in -1
+
+    // remainder
+    let remainder = 43 % 5;
+}</code></pre></pre>
+<p>Úsáideann gach slonn sna ráitis seo oibreoir matamaitice agus déanann sé meastóireacht
+go luach aonair, atá ceangailte ansin le hathróg. <a href="appendix-02-operators.html">Aguisín
+B</a><!-- neamhaird --> tá liosta de na hoibreoirí go léir a Rust
+soláthraíonn.</p>
+<h4 id="an-cineál-boole"><a class="header" href="#an-cineál-boole">An Cineál Boole</a></h4>
+<p>Mar atá i bhformhór na dteangacha ríomhchlárúcháin eile, tá dhá fhéidearthacht ag cineál Boole in Rust
+luachanna: <code>true</code> agus <code>false</code>. Is beart amháin iad Booleans. An cineál Boole i
+Sonraítear meirge ag baint úsáide as <code>bool</code>. Mar shampla:</p>
+<p><span class="filename">Filename: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let t = true;
+
+    let f: bool = false; // with explicit type annotation
+}</code></pre></pre>
+<p>Is é an príomhbhealach chun luachanna Boole a úsáid ná trí choinníollacha, mar <code>if</code>
+léiriú. Clúdóimid conas a oibríonn nathanna <code>if</code> i Rust sa <a href="ch03-05-control-flow.html#control-flow">“Control
+Sreabhadh”</a><!-- neamhaird a dhéanamh --> alt.</p>
+<h4 id="an-cineál-carachtair"><a class="header" href="#an-cineál-carachtair">An Cineál Carachtair</a></h4>
+<p>Is é an cineál <code>char</code> Rust an cineál aibítre is primitíbhí sa teanga. Seo iad
+roinnt samplaí de luachanna <code>char</code> a dhearbhú:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let c = 'z';
+    let z: char = 'ℤ'; // with explicit type annotation
+    let heart_eyed_cat = '😻';
+}</code></pre></pre>
+<p>Tabhair faoi deara go sonraimid <code>char</code> litriúil le comharthaí athfhriotail singil, seachas teaghrán
+litriúil, a úsáideann Sleachta dúbailte. Tá cineál <code>char</code> Rust ceithre beart i méid agus
+Léiríonn Luach Scálar Unicode, rud a chiallaíonn gur féidir leis a lán níos mó a léiriú ná
+ach ASCII. Litreacha accented; Carachtair na Síne, na Seapáine agus na Cóiré; emoji;
+agus is luachanna <code>char</code> bailí iad spásanna ar leithead nialasach i Rust. Scálar Unicode
+Réimníonn luachanna ó <code>U+0000</code> go <code>U+D7FF</code> agus <code>U+E000</code> go <code>U+10FFFF</code> san áireamh.
+Mar sin féin, ní coincheap in Unicode é “carachtar” i ndáiríre, mar sin do dhuine
+b'fhéidir nach bhfuil an intuiscint maidir le cad is “carachtar” ann ag teacht leis an rud atá i ‘char’
+Meirge. Déanfaimid an t-ábhar seo a phlé go mion i <a href="ch08-02-strings.html#storing-utf-8-encoded-text-with-strings">“Ag stóráil Téacs Ionchódaithe UTF-8 le
+Teaghráin”</a><!-- neamhaird --> i gCaibidil 8.</p>
+<h3 id="cineálacha-comhdhúile"><a class="header" href="#cineálacha-comhdhúile">Cineálacha Comhdhúile</a></h3>
+<p>Is féidir le <em>Compound types</em> luachanna iolracha a ghrúpáil i gcineál amháin. Tá dhá cheann ag meirge
+cineálacha cumaisc primitive: tuples agus eagair.</p>
+<h4 id="an-cineál-tuple"><a class="header" href="#an-cineál-tuple">An Cineál Tuple</a></h4>
+<p>Is bealach ginearálta é A <em>tuple</em> chun líon luachanna a ghrúpáil le chéile le a
+éagsúlacht cineálacha isteach i gcineál cumaisc amháin. Tá fad seasta ag tuples: uair amháin
+dearbhaithe, ní féidir leo fás nó crapadh i méid.</p>
+<p>Cruthaímid tuple trí liosta luachanna atá scartha le camóga a scríobh taobh istigh
+lúibíní. Tá cineál ag gach seasamh sa tuple, agus cineálacha an
+ní gá go mbeadh luachanna difriúla sa tuple mar an gcéanna. Chuireamar roghnach leis
+clóscríobh nótaí sa sampla seo:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let tup: (i32, f64, u8) = (500, 6.4, 1);
+}</code></pre></pre>
+<p>Ceanglaíonn an athróg <code>tup</code> leis an tuple iomlán toisc go meastar tuple a
+eilimint cumaisc amháin. Chun na luachanna aonair a bhaint as tuple, is féidir linn
+bain úsáid as meaitseáil patrún chun luach tuple a scrios, mar seo:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let tup = (500, 6.4, 1);
+
+    let (x, y, z) = tup;
+
+    println!("The value of y is: {y}");
+}</code></pre></pre>
+<p>Cruthaíonn an clár seo tuple ar dtús agus ceanglaíonn sé leis an athróg <code>tup</code>. Tá sé ansin
+úsáideann patrún le <code>let</code> chun <code>tup</code> a ghlacadh agus é a iompú ina thrí ar leith
+athróga, <code>x</code>, <code>y</code>, agus <code>z</code>. Tugtar <em>destructuring</em> air seo toisc go mbriseann sé
+an tuple aonair i dtrí chuid. Ar deireadh, priontaí an clár luach na
+<code>y</code>, atá <code>6.4</code>.</p>
+<p>Is féidir linn eilimint tuple a rochtain go díreach freisin trí úsáid a bhaint as tréimhse (<code>.</code>) ina dhiaidh sin
+innéacs an luacha ba mhaith linn a rochtain. Mar shampla:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x: (i32, f64, u8) = (500, 6.4, 1);
+
+    let five_hundred = x.0;
+
+    let six_point_four = x.1;
+
+    let one = x.2;
+}</code></pre></pre>
+<p>Cruthaíonn an clár seo an <code>x</code> tuple agus ansin rochtain a fháil ar gach eilimint den tuple
+ag baint úsáide as a n-innéacsanna faoi seach. Mar is amhlaidh le formhór na dteangacha ríomhchlárúcháin, an chéad cheann
+Is é 0 innéacs i tuple.</p>
+<p>Tá ainm speisialta ar an tuple gan luachanna, <em>unit</em>. An luach seo agus a
+tá an dá chineál comhfhreagrach scríofa <code>()</code> agus seasann siad do luach folamh nó luach
+cineál fillte folamh. Go hintuigthe tugann na habairtí an luach aonaid ar ais mura ndéanann siad
+aon luach eile a thabhairt ar ais.</p>
+<h4 id="an-cineál-eagar"><a class="header" href="#an-cineál-eagar">An Cineál Eagar</a></h4>
+<p>Bealach eile le bailiúchán illuachanna a bheith agat is ea <em>array</em>. Murab ionann
+tuple, ní mór go mbeadh an cineál céanna ag gach eilimint d'eagar. Murab ionann agus arrays i
+roinnt teangacha eile, tá fad seasta ag eagair i Rust.</p>
+<p>Scríobhaimid na luachanna in eagar mar liosta camóg-scartha taobh istigh de chearnóg
+lúibíní:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let a = [1, 2, 3, 4, 5];
+}</code></pre></pre>
+<p>Bíonn eagair úsáideach nuair is mian leat do shonraí a leithdháileadh ar an gcruach, mar a chéile
+na cineálacha eile atá feicthe againn go dtí seo, seachas an gcarn (beidh muid ag plé na
+chairn agus an gcarn níos mó i <a href="ch04-01-what-is-ownership.html#the-stack-and-the-heap">Caibidil 4</a><!-- neamhaird -->) nó nuair
+ba mhaith leat a chinntiú go mbíonn líon seasta eilimintí agat i gcónaí. Níl eagar mar
+solúbtha mar an cineál veicteora, áfach. Is cineál bailiúcháin den chineál céanna é <em>veicteoir</em>
+ar fáil ag an leabharlann chaighdeánach a <em>is</em> cead chun fás nó crapadh i méid. Más rud é
+níl tú cinnte cé acu eagar nó veicteoir a úsáid, seans gur cheart duit a
+veicteoir. <a href="ch08-01-vectors.html">Caibidil 8</a> <!-- neamhaird --> pléitear veicteoirí níos mine.</p>
+<p>Mar sin féin, tá arrays níos úsáidí nuair a fhios agat ar líon na n-eilimintí nach mbeidh
+gá a athrú. Mar shampla, má bhí tú ag baint úsáide as ainmneacha na míosa i
+ríomhchlár, is dócha go n-úsáidfeá eagar seachas veicteoir mar is eol duit
+beidh 12 eilimint ann i gcónaí:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let míonna = ["Eanáir", "Feabhra", "Márta", "Aibreán", "Bealtaine", "Meitheamh", "Iúil",
+ "Lúnasa", "Meán Fómhair", "Deireadh Fómhair", "Samhain", "Nollaig"];
+<span class="boring">}</span></code></pre></pre>
+<p>Scríobhann tú cineál eagar ag baint úsáide as lúibíní cearnacha le cineál gach dúil,
+leathstad, agus ansin líon na n-eilimintí san eagar, mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let a: [i32; 5] = [1, 2, 3, 4, 5];
+<span class="boring">}</span></code></pre></pre>
+<p>Anseo, is é <code>i32</code> an cineál gach eilimint. Tar éis an leathstad, an uimhir <code>5</code>
+Léiríonn an eagar go bhfuil cúig eilimint.</p>
+<p>Is féidir leat freisin eagar a thúsú chun an luach céanna a bheith ann do gach eilimint trí
+ag sonrú an luach tosaigh, agus leathstad ina dhiaidh sin, agus ansin fad
+an t-eagar idir lúibíní cearnacha, mar a thaispeántar anseo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let a = [3; 5];
+<span class="boring">}</span></code></pre></pre>
+<p>San eagar darb ainm <code>a</code> beidh gnéithe <code>5</code> a shocrófar ar fad ar an luach
+<code>3</code> ar dtús. Tá sé seo mar an gcéanna le scríobh <code>let a = [3, 3, 3, 3, 3];</code> ach in a
+bhealach níos gonta.</p>
+<h5 id="rochtain-a-fháil-ar-eilimintí-eagar"><a class="header" href="#rochtain-a-fháil-ar-eilimintí-eagar">Rochtain a fháil ar Eilimintí Eagar</a></h5>
+<p>Is éard atá in eagar ná smután amháin de chuimhne ar mhéid aitheanta seasta agus is féidir a bheith
+leithroinnte ar an chairn. Is féidir leat teacht ar eilimintí d'eagar trí úsáid a bhaint as innéacsú,
+mar seo:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let a = [1, 2, 3, 4, 5];
+
+    let first = a[0];
+    let second = a[1];
+}</code></pre></pre>
+<p>Sa sampla seo, gheobhaidh an athróg darb ainm <code>first</code> an luach <code>1</code> mar sin
+is é an luach ag innéacs <code>[0]</code> san eagar. Gheobhaidh an athróg darb ainm <code>second</code>
+an luach <code>2</code> ón innéacs <code>[1]</code> san eagar.</p>
+<h5 id="rochtain-neamhbhailí-ar-eilimint-eagar"><a class="header" href="#rochtain-neamhbhailí-ar-eilimint-eagar">Rochtain Neamhbhailí ar Eilimint Eagar</a></h5>
+<p>Feicfimid cad a tharlóidh má dhéanann tú iarracht rochtain a fháil ar eilimint d'eagar atá caite
+deireadh an eagar. Abair go ritheann tú an cód seo, cosúil leis an gcluiche buille faoi thuairim i
+Caibidil 2, chun innéacs eagair a fháil ón úsáideoir:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><code class="language-rust ignore panics">use std::io;
+
+fn main() {
+    let a = [1, 2, 3, 4, 5];
+
+    println!("Please enter an array index.");
+
+    let mut index = String::new();
+
+    io::stdin()
+        .read_line(&amp;mut index)
+        .expect("Failed to read line");
+
+    let index: usize = index
+        .trim()
+        .parse()
+        .expect("Index entered was not a number");
+
+    let element = a[index];
+
+    println!("The value of the element at index {index} is: {element}");
+}</code></pre>
+<p>D'éirigh leis an gcód seo a thiomsú. Má ritheann tú an cód seo ag baint úsáide as <code>cargo run</code> agus
+cuir isteach <code>0</code>, <code>1</code>, <code>2</code>,<code>3</code>, nó <code>4</code>, priontálfaidh an clár an ceann comhfhreagrach
+luach ag an innéacs sin san eagar. Má chuireann tú isteach ina ionad sin uimhir thar dheireadh na
+an eagar, mar <code>10</code>, feicfidh tú aschur mar seo:</p>
+<!-- manual-regeneration
+cd listings/ch03-common-programming-concepts/no-listing-15-invalid-array-access
+cargo run
+10
+-->
+<pre><code class="language-console">thread 'main' panicked at src/main.rs:19:19:
+index out of bounds: the len is 5 but the index is 10
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Bhí earráid <em>runtime</em> mar thoradh ar an gclár nuair a úsáideadh neamhbhailí
+luach san oibríocht innéacsaithe. Chuaigh an clár amach le teachtaireacht earráide agus
+níor rith an ráiteas <code>println!</code> deiridh. Nuair a dhéanann tú iarracht rochtain a fháil ar
+eilimint ag baint úsáide as innéacsú, seiceálfaidh Rust go bhfuil an t-innéacs a shonraigh tú níos lú
+ná an fad eagar. Má tá an t-innéacs níos mó ná nó cothrom leis an fad,
+Beidh meirge scaoll. Caithfidh an tseiceáil seo tarlú ag am rite, go háirithe sa chás seo,
+mar ní féidir a fhios ag an tiomsaitheoir cén luach a chuirfidh úsáideoir isteach nuair a bheidh sé
+rith an cód níos déanaí.</p>
+<p>Is sampla é seo de phrionsabail sábháilteachta cuimhne Rust i ngníomh. I go leor
+teangacha ísealleibhéil, ní dhéantar seiceáil den chineál seo, agus nuair a chuireann tú seiceáil ar fáil
+innéacs mícheart, is féidir rochtain a fháil ar chuimhne neamhbhailí. Cosnaíonn meirge tú ina choinne seo
+cineál earráide trí dhul amach láithreach in ionad an rochtain chuimhne a cheadú agus
+ag leanúint. Pléann Caibidil 9 níos mó de láimhseáil earráidí Rust agus conas is féidir leat
+scríobh cód inléite, sábháilte nach scaoll ná nach gceadaíonn rochtain neamhbhailí ar chuimhne.</p>
 
                     </main>
 
