@@ -2441,7 +2441,280 @@ innéacs mícheart, is féidir rochtain a fháil ar chuimhne neamhbhailí. Cosna
 cineál earráide trí dhul amach láithreach in ionad an rochtain chuimhne a cheadú agus
 ag leanúint. Pléann Caibidil 9 níos mó de láimhseáil earráidí Rust agus conas is féidir leat
 scríobh cód inléite, sábháilte nach scaoll ná nach gceadaíonn rochtain neamhbhailí ar chuimhne.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="functions"><a class="header" href="#functions">Functions</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="feidhmeanna"><a class="header" href="#feidhmeanna">Feidhmeanna</a></h2>
+<p>Tá feidhmeanna forleithne i gcód Rust. Tá ceann de na cinn is mó feicthe agat cheana féin
+feidhmeanna tábhachtacha sa teanga: an <code>main</code>, is é sin an iontráil
+pointe go leor clár. Tá an eochairfhocal <code>fn</code> feicthe agat freisin, a ligeann duit
+feidhmeanna nua a dhearbhú.</p>
+<p>Úsáideann cód meirge <em>nathair cás</em> mar ghnáthstíl feidhme agus athróg
+ainmneacha, ina bhfuil litreacha beaga go léir agus ina gcuirtear béim ar fhocail ar leith.
+Seo clár ina bhfuil sainmhíniú ar fheidhm shamplach:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    println!("Hello, world!");
+
+    another_function();
+}
+
+fn another_function() {
+    println!("Another function.");
+}</code></pre></pre>
+<p>Sainmhínímid feidhm i Rust trí <code>fn</code> a iontráil agus ainm feidhme agus a
+sraith lúibíní. Insíonn na lúibíní cuartha don tiomsaitheoir cá bhfuil an fheidhm
+tosaíonn agus críochnaíonn an comhlacht.</p>
+<p>Is féidir linn aon fheidhm atá sainithe againn a ghlaoch trína hainm a chur isteach agus sraith ina dhiaidh
+de lúibíní. Toisc go bhfuil <code>another_function</code> sainmhínithe sa chlár, is féidir é a bheith
+ar a dtugtar ón taobh istigh den <code>main</code>. Tabhair faoi deara gur shainmhíníomar <code>another_function</code>
+<em>tar éis</em> an fheidhm <code>main</code> sa chód foinse; d'fhéadfaimis é a shainiú roimhe seo
+chomh maith. Is cuma le Rust cén áit a shainíonn tú do chuid feidhmeanna, ach amháin go bhfuil siad
+sainithe áit éigin i raon feidhme atá le feiceáil ag an nglaoiteoir.</p>
+<p>Cuirimis tús le tionscadal dénártha nua darb ainm <em>functions</em> chun feidhmeanna a iniúchadh
+a thuilleadh. Cuir an sampla <code>another_function</code> i <em>src/main.rs</em> agus rith é. tu
+Ba chóir go bhfeicfeadh sé an t-aschur seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running `target/debug/functions`
+Hello, world!
+Another function.
+</code></pre>
+<p>Feidhmíonn na línte san ord ina bhfuil siad le feiceáil sa <code>main</code>.
+Ar dtús an "Dia duit, domhan!" priontaí an teachtaireacht, agus ansin tugtar <code>another_function</code>
+agus tá a theachtaireacht clóbhuailte.</p>
+<h3 id="paraiméadair"><a class="header" href="#paraiméadair">Paraiméadair</a></h3>
+<p>Is féidir linn feidhmeanna a shainiú chun <em>parameters</em> a bheith acu, ar athróga speisialta iad sin
+mar chuid de shíniú feidhme. Nuair a bhíonn paraiméadair ag feidhm, is féidir leat
+luachanna nithiúla a sholáthar dó le haghaidh na bparaiméadar sin. Go teicniúil, an coincréit
+<em>arguments</em> a thugtar ar luachanna, ach i gcomhrá ócáideach, is gnách go n-úsáideann daoine
+na focail <em>parameter</em> agus <em>argument</em> go hidirmhalartaithe do cheachtar na hathróga
+i sainmhíniú feidhme nó sna luachanna nithiúla a chuirtear isteach nuair a ghlaonn tú ar a
+feidhm.</p>
+<p>Sa leagan seo de <code>another_function</code> cuirimid paraiméadar leis:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    another_function(5);
+}
+
+fn another_function(x: i32) {
+    println!("The value of x is: {x}");
+}</code></pre></pre>
+<p>Bain triail as an gclár seo a rith; ba cheart duit an t-aschur seo a leanas a fháil:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.21s
+     Running `target/debug/functions`
+The value of x is: 5
+</code></pre>
+<p>Tá paraiméadar amháin darb ainm <code>x</code> sa dearbhú <code>another_function</code>. An cineál
+Sonraítear <code>x</code> mar <code>i32</code>. Nuair a thugaimid <code>5</code> isteach go <code>another_function</code>, beidh an
+<code>println!</code> cuireann macra <code>5</code> san áit a raibh an péire lúibíní cuartha ina raibh <code>x</code>
+sa teaghrán formáide.</p>
+<p>I sínithe feidhm, <em>ní mór duit</em> cineál gach paraiméadar a dhearbhú. Tá sé seo
+cinneadh d’aon ghnó i ndearadh Rust: nótaí clóite a éilíonn san fheidhm
+sainmhínithe ciallaíonn an tiomsaitheoir beagnach riamh gá duit iad a úsáid in aon áit eile
+an cód chun a dhéanamh amach cén cineál atá i gceist agat. Tá an tiomsaitheoir in ann a thabhairt freisin
+teachtaireachtaí earráide níos cabhrach má tá a fhios aige cad iad na cineálacha a bhfuil an fheidhm ag súil leo.</p>
+<p>Agus paraiméadair iolracha á sainiú, deighil na dearbhuithe paraiméadar le
+camóga, mar seo:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    print_labeled_measurement(5, 'h');
+}
+
+fn print_labeled_measurement(value: i32, unit_label: char) {
+    println!("The measurement is: {value}{unit_label}");
+}</code></pre></pre>
+<p>Cruthaíonn an sampla seo feidhm darb ainm <code>print_labeled_measurement</code> le dhá cheann
+paraiméadair. Tugtar <code>value</code> ar an gcéad pharaiméadar agus is <code>i32</code> é. Is é an dara
+darb ainm <code>unit_label</code> agus is cineál <code>char</code> é. Ansin priontaí an fheidhm téacs ina bhfuil
+an <code>value</code> agus an <code>unit_label</code> araon.</p>
+<p>Déanaimis iarracht an cód seo a rith. Ionadaigh an ríomhchlár atá i do <em>functions</em> faoi láthair
+comhad <em>src/main.rs</em> an tionscadail leis an sampla roimhe seo agus é a rith ag baint úsáide as <code>cargo run</code>:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target/debug/functions`
+The measurement is: 5h
+</code></pre>
+<p>Toisc gur thugamar an fheidhm le <code>5</code> mar luach <code>value</code> agus <code>' h'</code> mar
+an luach le haghaidh <code>unit_label</code>, tá na luachanna sin in aschur an chláir.</p>
+<h3 id="ráitis-agus-léirithe"><a class="header" href="#ráitis-agus-léirithe">Ráitis agus Léirithe</a></h3>
+<p>Tá comhlachtaí feidhme comhdhéanta de shraith ráiteas a chríochnaíonn go roghnach le
+léiriú. Go dtí seo, níor cuireadh deireadh leis na feidhmeanna atá clúdaithe againn
+abairt, ach tá slonn feicthe agat mar chuid de ráiteas. Toisc
+Is teanga bunaithe ar chaint í meirge, is idirdhealú tábhachtach é seo
+thuiscint. Níl na hidirdhealú céanna ag teangacha eile, mar sin breathaimis orthu
+cad iad ráitis agus nathanna cainte agus conas a théann a ndifríochtaí i bhfeidhm ar na coirp
+of feidhmeanna.</p>
+<ul>
+<li>Is treoracha iad <strong>Ráitis</strong> a dhéanann gníomh éigin agus nach bhfilleann
+luach.</li>
+<li>Déanann <strong>léirithe</strong> luach iarmhartach. Breathnaímid ar roinnt samplaí.</li>
+</ul>
+<p>Tá ráitis agus nathanna cainte úsáidte againn cheana féin. Athróg a chruthú agus
+is ráiteas é luach a shannadh dó leis an eochairfhocal <code>let</code>. I Liosta 3-1,
+<code>let y = 6;</code> is ráiteas é.</p>
+<Listing number="3-1" file-name="src/main.rs" caption="A `main` function declaration containing one statement">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let y = 6;
+}</code></pre></pre>
+</Listing>
+<p>Is ráitis iad sainmhínithe feidhmeanna freisin; is é an sampla iomlán roimhe seo a
+ráiteas ann féin. (Mar a fheicfimid thíos, ní feidhm <em>calling</em> a
+ráiteas.)</p>
+<p>Ní thugann ráitis luachanna ar ais. Mar sin, ní féidir leat ráiteas <code>let</code> a shannadh
+chuig athróg eile, mar a dhéanann an cód seo a leanas iarracht; gheobhaidh tú earráid:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let x = (let y = 6);
+}</code></pre>
+<p>Nuair a bheidh an clár seo á rith agat, beidh cuma mar seo ar an earráid a gheobhaidh tú:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+error: expected expression, found `let` statement
+ --&gt; src/main.rs:2:14
+  |
+2 |     let x = (let y = 6);
+  |              ^^^
+  |
+  = note: only supported directly in conditions of `if` and `while` expressions
+
+warning: unnecessary parentheses around assigned value
+ --&gt; src/main.rs:2:13
+  |
+2 |     let x = (let y = 6);
+  |             ^         ^
+  |
+  = note: `#[warn(unused_parens)]` on by default
+help: remove these parentheses
+  |
+2 -     let x = (let y = 6);
+2 +     let x = let y = 6;
+  |
+
+warning: `functions` (bin "functions") generated 1 warning
+error: could not compile `functions` (bin "functions") due to 1 previous error; 1 warning emitted
+</code></pre>
+<p>Ní thugann an ráiteas <code>let y = 6</code> luach ar ais, mar sin níl aon rud ann
+<code>x</code> chun ceangal a dhéanamh. Tá sé seo difriúil ón méid a tharlaíonn i dteangacha eile, mar
+C agus Ruby, áit a dtugann an tasc ar ais luach an taisc. Sna
+teangacha, is féidir leat <code>x = y = 6</code> a scríobh agus tá an luach ag <code>x</code> agus <code>y</code> araon
+<code>6</code>; ní hé sin an cás i Rust.</p>
+<p>Measúnaíonn na habairtí go luach agus is ionann iad agus an chuid is mó den chuid eile den chód a
+scríobhfaidh tú i Rust. Smaoinigh ar oibríocht matamaitice, mar <code>5 + 6</code>, atá ina
+slonn a dhéanann luacháil ar an luach <code>11</code>. Is féidir le habairtí a bheith mar chuid de
+ráitis: i Liostú 3-1, is é an <code>6</code> sa ráiteas <code>let y = 6;</code>
+slonn a dhéanann luacháil ar an luach <code>6</code>. Is éard atá i gceist le glaoch ar fheidhm ná
+léiriú. Is léiriú é macra a ghlaoch. Cruthaíodh bloc scóip nua le
+Is slonn é lúibíní curly, mar shampla:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let y = {
+        let x = 3;
+        x + 1
+    };
+
+    println!("The value of y is: {y}");
+}</code></pre></pre>
+<p>An slonn seo:</p>
+<pre><code class="language-rust ignore">{
+    let x = 3;
+    x + 1
+}</code></pre>
+<p>is bloc é a dhéanann, sa chás seo, meastóireacht ar <code>4</code>. Tá an luach sin ceangailte le <code>y</code>
+mar chuid den ráiteas <code>let</code>. Tabhair faoi deara nach bhfuil a
+leathstad ag an deireadh, rud nach ionann agus an chuid is mó de na línte atá feicthe agat go dtí seo.
+Ní fholaíonn na habairtí dar críoch leathchoilín. Má chuireann tú leathstad go dtí an deireadh
+de slonn, déanann tú ráiteas é, agus ní fhillfidh sé ansin a
+luach. Coinnigh seo san áireamh agus tú ag iniúchadh luachanna agus nathanna tuairisceáin fheidhme
+seo chugainn.</p>
+<h3 id="feidhmeanna-le-luachanna-tuairisceáin"><a class="header" href="#feidhmeanna-le-luachanna-tuairisceáin">Feidhmeanna le Luachanna Tuairisceáin</a></h3>
+<p>Is féidir le feidhmeanna luachanna a chur ar ais chuig an gcód a ghlaonn orthu. Ní thugaimid ainm ar ais
+luachanna, ach ní mór dúinn a gcineál a dhearbhú tar éis saighead (<code>-&gt;</code>). I Rust, an
+Tá luach aischuir na feidhme comhchiallach le luach an deiridh
+léiriú i mbloic an choirp feidhm. Is féidir leat filleadh go luath ó a
+feidhmiú trí úsáid a bhaint as an eochairfhocal <code>return</code> agus luach a shonrú, ach an chuid is mó
+filleann feidhmeanna an slonn deiridh go hintuigthe. Seo sampla de a
+feidhm a thugann luach ar ais:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn five() -&gt; i32 {
+    5
+}
+
+fn main() {
+    let x = five();
+
+    println!("The value of x is: {x}");
+}</code></pre></pre>
+<p>Níl aon ghlaonna feidhme, macraí, nó fiú ráitis <code>let</code> sna <code>five</code>
+feidhm - gan ach an uimhir <code>5</code> leis féin. Sin feidhm fhíor-bhailí i
+Meirge. Tabhair faoi deara go sonraítear cineál aischuir na feidhme freisin, mar <code>-&gt; i32</code>. Bain triail as
+an cód seo a rith; ba cheart go mbeadh cuma mar seo ar an aschur:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s
+     Running `target/debug/functions`
+The value of x is: 5
+</code></pre>
+<p>Is é an <code>5</code> i <code>five</code> luach aischuir na feidhme, agus sin an fáth a bhfuil an cineál tuairisceáin
+tá <code>i32</code>. Déanaimis é seo a scrúdú níos mine. Tá dhá mhír thábhachtacha ann:
+ar dtús, léiríonn an líne <code>let x = five();</code> go bhfuil luach aischuir a
+feidhm chun athróg a thúsú. Toisc go dtugann an fheidhm <code>five</code> <code>5</code> ar ais,
+is ionann an líne sin agus an méid seo a leanas:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let x = 5;
+<span class="boring">}</span></code></pre></pre>
+<p>Sa dara háit, níl aon pharaiméadair ag an bhfeidhm <code>five</code> agus sainmhíníonn sé cineál an
+luach ar ais, ach tá an comhlacht ar an fheidhm a uaigneach <code>5</code> gan aon leathstad
+mar is léiriú é ar mian linn a luach a thabhairt ar ais.</p>
+<p>Breathnaímis ar shampla eile:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = plus_one(5);
+
+    println!("The value of x is: {x}");
+}
+
+fn plus_one(x: i32) -&gt; i32 {
+    x + 1
+}</code></pre></pre>
+<p>Má ritheann tú an cód seo, priontálfar <code>The value of x is: 6</code>. Ach má chuirimid a
+leathstad ag deireadh na líne ina bhfuil <code>x + 1</code>, ag athrú ó an
+léiriú ar ráiteas, gheobhaidh muid earráid:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let x = plus_one(5);
+
+    println!("The value of x is: {x}");
+}
+
+fn plus_one(x: i32) -&gt; i32 {
+    x + 1;
+}</code></pre>
+<p>Cruthaíonn an cód seo earráid, mar a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:7:24
+  |
+7 | fn plus_one(x: i32) -&gt; i32 {
+  |    --------            ^^^ expected `i32`, found `()`
+  |    |
+  |    implicitly returns `()` as its body has no tail or `return` expression
+8 |     x + 1;
+  |          - help: remove this semicolon to return this value
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `functions` (bin "functions") due to 1 previous error
+</code></pre>
+<p>Nochtann an phríomhtheachtaireacht earráide, <code>mismatched types</code>, an phríomhcheist leis seo
+cód. Deir an sainmhíniú ar an bhfeidhm <code>plus_one</code> go dtabharfaidh sé ar ais an
+<code>i32</code>, ach ní luachálann ráitis go luach, a chuirtear in iúl le <code>()</code>,
+an cineál aonaid. Dá bhrí sin, ní chuirtear aon rud ar ais, rud a thagann salach ar an bhfeidhm
+sainmhíniú agus déantar earráid dá bharr. San aschur seo, cuireann Rust teachtaireacht chuig
+b'fhéidir cabhrú leis an tsaincheist seo a cheartú: molann sé an leathstad a bhaint, a
+dheisiú an earráid.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="comments"><a class="header" href="#comments">Comments</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="control-flow"><a class="header" href="#control-flow">Control Flow</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="understanding-ownership"><a class="header" href="#understanding-ownership">Understanding Ownership</a></h1>
