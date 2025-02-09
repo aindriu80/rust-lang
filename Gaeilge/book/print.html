@@ -2715,7 +2715,40 @@ an cineál aonaid. Dá bhrí sin, ní chuirtear aon rud ar ais, rud a thagann sa
 sainmhíniú agus déantar earráid dá bharr. San aschur seo, cuireann Rust teachtaireacht chuig
 b'fhéidir cabhrú leis an tsaincheist seo a cheartú: molann sé an leathstad a bhaint, a
 dheisiú an earráid.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="comments"><a class="header" href="#comments">Comments</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="tuairimí"><a class="header" href="#tuairimí">Tuairimí</a></h2>
+<p>Déanann gach ríomhchláraitheoir a ndícheall a gcód a dhéanamh éasca le tuiscint, ach uaireanta
+tá míniú breise ag teastáil. Sna cásanna seo, fágann ríomhchláraitheoirí <em>comments</em> isteach
+a gcód foinse nach ndéanfaidh an tiomsaitheoir neamhaird air ach daoine ag léamh na foinse
+d'fhéadfadh go mbeadh cód úsáideach.</p>
+<p>Seo trácht simplí:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// hello, world
+<span class="boring">}</span></code></pre></pre>
+<p>I Rust, cuireann an stíl tráchtaireacht idiotach tús le trácht le dhá slais, agus an
+leanann trácht ar aghaidh go dtí deireadh na líne. Le haghaidh tuairimí a théann thar a
+líne shingil, beidh ort <code>//</code> a chur san áireamh ar gach líne, mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// Mar sin táimid ag déanamh rud casta anseo, fada go leor agus a theastaíonn uainn
+// línte iolracha de thuairimí chun é a dhéanamh! Whew! Tá súil agam go ndéanfaidh an trácht seo
+// mínigh cad atá ar siúl.
+<span class="boring">}</span></code></pre></pre>
+<p>Is féidir tuairimí a chur freisin ag deireadh línte ina bhfuil cód:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let lucky_number = 7; // I’m feeling lucky today
+}</code></pre></pre>
+<p>Ach feicfidh tú níos minice iad a úsáid san fhormáid seo, leis an trácht ar a
+líne ar leith os cionn an chóid atá á nótáil aige:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    // I’m feeling lucky today
+    let lucky_number = 7;
+}</code></pre></pre>
+<p>Tá trácht de chineál eile ag Rust freisin, tuairimí doiciméadaithe, a dhéanfaimid
+pléigh san <a href="ch14-02-publishing-to-crates-io.html">“Cliathbhosca a Fhoilsiú go cliathbhoscaí.io”</a><!-- ignore -->
+alt de Chaibidil 14.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="control-flow"><a class="header" href="#control-flow">Control Flow</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="understanding-ownership"><a class="header" href="#understanding-ownership">Understanding Ownership</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="what-is-ownership"><a class="header" href="#what-is-ownership">What is Ownership?</a></h1>
