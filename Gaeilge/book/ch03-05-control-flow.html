@@ -159,7 +159,429 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="control-flow"><a class="header" href="#control-flow">Control Flow</a></h1>
+                        <h2 id="sreabhadh-rialaithe"><a class="header" href="#sreabhadh-rialaithe">Sreabhadh Rialaithe</a></h2>
+<p>An cumas roinnt cód a rith ag brath ar cibé an bhfuil coinníoll <code>true</code> agus go
+reáchtáil roinnt cód arís agus arís eile cé go bhfuil coinníoll <code>true</code> mar bhunchlocha tógála
+i bhformhór na dteangacha ríomhchlárúcháin. Na constructs is coitianta a ligeann duit a rialú
+is ionann sreabhadh forghníomhaithe an chóid Rust agus <code>if</code> nathanna agus lúba.</p>
+<h3 id="if-nathanna"><a class="header" href="#if-nathanna"><code>if</code> Nathanna</a></h3>
+<p>Ligeann slonn <code>if</code> duit do chód a chraobhscaoileadh ag brath ar choinníollacha. tu
+cuir coinníoll ar fáil agus ansin luaigh, “Má shásaítear an coinníoll seo, rith an bloc seo
+de chód. Mura gcomhlíontar an coinníoll, ná rith an bloc cód seo."</p>
+<p>Cruthaigh tionscadal nua darb ainm <em>branches</em> i d’eolaire <em>projects</em> le fiosrú
+an abairt <code>if</code>. Sa chomhad <em>src/main.rs</em>, cuir an méid seo a leanas isteach:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let number = 3;
+
+    if number &lt; 5 {
+        println!("condition was true");
+    } else {
+        println!("condition was false");
+    }
+}</code></pre></pre>
+<p>Tosaíonn gach nathanna <code>if</code> leis an eochairfhocal <code>if</code>, agus coinníoll ina dhiaidh sin. I
+sa chás seo, seiceálann an riocht cibé an bhfuil nó nach bhfuil ag an <code>number</code> athróg
+luach níos lú ná 5. Cuirimid an bloc cód a fhorghníomhú má tá an coinníoll
+<code>true</code> díreach tar éis an riocht taobh istigh de lúibíní curly. Bloic cód
+a bhaineann leis na coinníollacha i <code>if</code> tugtar <em>arms</em> uaireanta ar na habairtí,
+díreach cosúil leis na hairm sna habairtí <code>match</code> a phléamar sa <a href="ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number">“Comparáid
+an Buille faoi thuairim leis an Uimhir Rúnda”</a><!--
+neamhaird a dhéanamh ar --> alt de Chaibidil 2.</p>
+<p>Roghnach, is féidir linn slonn <code>else</code> a chur san áireamh freisin, rud a roghnaigh muid a dhéanamh
+anseo, chun bloc eile de chód a thabhairt don chlár le forghníomhú má tá an
+riocht luacháil go <code>false</code>. Mura dtugann tú slonn <code>else</code> agus
+is é an coinníoll <code>false</code>, ní dhéanfaidh an clár ach an bloc <code>if</code> a scipeáil agus bogadh ar aghaidh
+go dtí an chéad phíosa eile de chód.</p>
+<p>Bain triail as an gcód seo a rith; ba cheart duit an t-aschur seo a leanas a fheiceáil:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling branches v0.1.0 (file:///projects/branches)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target/debug/branches`
+condition was true
+</code></pre>
+<p>Déanaimid iarracht luach <code>number</code> a athrú go luach a dhéanann an riocht
+<code>false</code> féachaint cad a tharlaíonn:</p>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span>    let number = 7;
+<span class="boring">
+</span><span class="boring">    if number &lt; 5 {
+</span><span class="boring">        println!("condition was true");
+</span><span class="boring">    } else {
+</span><span class="boring">        println!("condition was false");
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<p>Rith an clár arís, agus féach ar an aschur:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling branches v0.1.0 (file:///projects/branches)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target/debug/branches`
+condition was false
+</code></pre>
+<p>Is fiú a thabhairt faoi deara freisin go gcaithfidh an coinníoll sa chód seo <em>a bheith</em> ina <code>bool</code>. Más rud é
+ní <code>bool</code> é an coinníoll, gheobhaidh muid earráid. Mar shampla, bain triail as ag rith an
+cód seo a leanas:</p>
+<p><span class="filename">Filename: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let number = 3;
+
+    if number {
+        println!("number was three");
+    }
+}</code></pre>
+<p>Measann an riocht <code>if</code> go luach <code>3</code> an uair seo, agus caitheann Rust an
+earráid:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling branches v0.1.0 (file:///projects/branches)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:4:8
+  |
+4 |     if number {
+  |        ^^^^^^ expected `bool`, found integer
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `branches` (bin "branches") due to 1 previous error
+</code></pre>
+<p>Léiríonn an earráid go raibh Rust ag súil le <code>bool</code> ach go bhfuair sé slánuimhir. Murab ionann agus
+teangacha ar nós Ruby agus JavaScript, ní dhéanfaidh Rust iarracht go huathoibríoch é
+cineálacha neamh-Boolean a thiontú go Boole. Caithfidh tú a bheith follasach agus a chur ar fáil i gcónaí
+<code>if</code> le Boole mar a riocht. Más mian linn an bloc cód <code>if</code> a rith
+ach amháin nuair nach bhfuil uimhir cothrom le <code>0</code>, mar shampla, is féidir linn an <code>if</code> a athrú
+léiriú ar an méid seo a leanas:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let number = 3;
+
+    if number != 0 {
+        println!("number was something other than zero");
+    }
+}</code></pre></pre>
+<p>Má reáchtálann tú an cód seo, priontálfar <code>number was something other than zero</code>.</p>
+<h4 id="láimhseáil-coinníollacha-il-le-else-if"><a class="header" href="#láimhseáil-coinníollacha-il-le-else-if">Láimhseáil Coinníollacha Il le <code>else if</code></a></h4>
+<p>Is féidir leat coinníollacha iolracha a úsáid trí <code>if</code> agus <code>else</code> a chur le chéile i <code>else if</code>
+léiriú. Mar shampla:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let number = 6;
+
+    if number % 4 == 0 {
+        println!("number is divisible by 4");
+    } else if number % 3 == 0 {
+        println!("number is divisible by 3");
+    } else if number % 2 == 0 {
+        println!("number is divisible by 2");
+    } else {
+        println!("number is not divisible by 4, 3, or 2");
+    }
+}</code></pre></pre>
+<p>Tá ceithre chosán féideartha ag an gclár seo ar féidir leis a ghlacadh. Tar éis é a rith, ba chóir duit
+féach an t-aschur seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling branches v0.1.0 (file:///projects/branches)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target/debug/branches`
+number is divisible by 3
+</code></pre>
+<p>Nuair a fheidhmíonn an clár seo, seiceálann sé gach slonn <code>if</code> ar a seal agus ritheann sé
+an chéad chorp a ndéanann an riocht meastóireacht air go <code>true</code>. Tabhair faoi deara go fiú
+cé go bhfuil 6 inroinnte ar 2, ní fheicimid go bhfuil an  <code>number is divisible by 2</code>,
+agus ní fheicimid nach bhfuil an <code>number is not divisible by 4, 3, or 2</code> téacs as an <code>else</code>
+bloc. Sin toisc nach ndéanann Rust ach an bloc a fhorghníomhú don chéad <code>true</code>
+riocht, agus nuair a fhaigheann sé ceann, ní seiceálann sé fiú an chuid eile.</p>
+<p>Ag baint úsáide as an iomarca <code>else if</code> nathanna is féidir do chód tranglam, mar sin má tá níos mó agat
+seachas ceann amháin, b'fhéidir gur mhaith leat do chód a athfhachtóiriú. Déanann Caibidil 6 cur síos ar chumhachtach
+Tógáil branching Rust ar a dtugtar <code>match</code> do na cásanna seo.</p>
+<h4 id="ag-baint-úsáide-if-i-ráiteas-let"><a class="header" href="#ag-baint-úsáide-if-i-ráiteas-let">Ag baint úsáide <code>if</code> i Ráiteas <code>let</code></a></h4>
+<p>Toisc gur slonn é <code>if</code>, is féidir linn é a úsáid ar thaobh na láimhe deise de <code>let</code>
+ráiteas chun an toradh a shannadh d’athróg, mar atá i Liostú 3-2.</p>
+<Listing number="3-2" file-name="src/main.rs" caption="Ag sannadh toradh slonn `if` d'athróg">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let condition = true;
+    let number = if condition { 5 } else { 6 };
+
+    println!("The value of number is: {number}");
+}</code></pre></pre>
+</Listing>
+<p>Beidh an athróg <code>number</code> ceangailte de réir luach a bheidh bunaithe ar thoradh an <code>if</code>
+léiriú. Rith an cód seo chun a fheiceáil cad a tharlaíonn:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling branches v0.1.0 (file:///projects/branches)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s
+     Running `target/debug/branches`
+The value of number is: 5
+</code></pre>
+<p>Cuimhnigh go bhfuil bloic de chód a mheas go dtí an slonn deiridh iontu, agus
+is nathanna cainte iad uimhreacha leo féin freisin. Sa chás seo, luach an
+iomlán <code>if</code> abairt ar an bloc cód a fhorghníomhú. Ciallaíonn sé seo an
+ní mór luachanna a d'fhéadfadh a bheith ina dtorthaí ó gach géag den <code>if</code>
+an cineál céanna; i Liosta 3-2, tá torthaí an lámh <code>if</code> agus an <code>else</code> araon
+lámh bhí slánuimhreacha <code>i32</code>. Má tá na cineálacha mímheaitseála, mar atá sa mhéid seo a leanas
+mar shampla, gheobhaidh muid earráid:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let condition = true;
+
+    let number = if condition { 5 } else { "six" };
+
+    println!("The value of number is: {number}");
+}</code></pre>
+<p>Nuair a dhéanaimid iarracht an cód seo a thiomsú, gheobhaidh muid earráid. Na lámha <code>if</code> agus <code>else</code>
+tá cineálacha luacha neamh-chomhoiriúnacha acu, agus léiríonn Rust go díreach cá háit le
+aimsigh an fhadhb sa chlár:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling branches v0.1.0 (file:///projects/branches)
+error[E0308]: `if` and `else` have incompatible types
+ --&gt; src/main.rs:4:44
+  |
+4 |     let number = if condition { 5 } else { "six" };
+  |                                 -          ^^^^^ expected integer, found `&amp;str`
+  |                                 |
+  |                                 expected because of this
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `branches` (bin "branches") due to 1 previous error
+</code></pre>
+<p>Déanann an slonn sa bhloc <code>if</code> luacháil go slánuimhir, agus an slonn i
+déanann an bloc <code>else</code> luacháil go teaghrán. Ní oibreoidh sé seo mar ní mór athróga
+bhfuil cineál amháin, agus ní mór Rust a fhios ag an am le chéile cén cineál an
+Is éard atá in athróg <code>number</code>, go cinntitheach. Ós eol an cineál <code>number</code> ligeann an
+tiomsaitheoir a fhíorú go bhfuil an cineál bailí i ngach áit a úsáidimid <code>number</code>. Ní bheadh Rust
+in ann é sin a dhéanamh dá gcinnfí an cineál <code>number</code> ag am rite amháin; an
+bheadh tiomsaitheoir níos casta agus dhéanfadh sé níos lú ráthaíochtaí faoin gcód
+dá mbeadh air súil a choinneáil ar ilchineálacha hipitéiseach d’athróg ar bith.</p>
+<h3 id="athrá-le-lúbanna"><a class="header" href="#athrá-le-lúbanna">Athrá le Lúbanna</a></h3>
+<p>Is minic a bhíonn sé úsáideach bloc cód a rith níos mó ná uair amháin. Don tasc seo,
+Soláthraíonn Rust roinnt <em>loops</em>, a rithfidh tríd an gcód taobh istigh den lúb
+comhlacht go dtí deireadh agus ansin tosú láithreach ar ais ag an tús. Chun triail
+le lúba, déanaimis tionscadal nua darb ainm <em>loops</em>.</p>
+<p>Tá trí chineál lúb ag Rust: <code>loop</code>, <code>while</code> agus <code>for</code>. Déanaimis iarracht gach ceann acu.</p>
+<h4 id="cód-á-athrá-le-loop"><a class="header" href="#cód-á-athrá-le-loop">Cód á athrá le <code>loop</code></a></h4>
+<p>Insíonn an eochairfhocal <code>loop</code> do Rust bloc cód a fhorghníomhú arís agus arís eile
+go deo nó go dtí go n-insíonn tú go sainráite é stopadh.</p>
+<p>Mar shampla, athraigh an comhad <em>src/main.rs</em> i do eolaire <em>loops</em> chun breathnú
+mar seo:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><code class="language-rust ignore">fn main() {
+    loop {
+        println!("again!");
+    }
+}</code></pre>
+<p>Agus an clár seo á rith againn, feicfidh muid <code>again!</code> á phriontáil arís agus arís eile
+go dtí go stopfaimid an clár de láimh. Tacaíonn an chuid is mó de na críochfoirt leis an aicearra méarchláir
+<kbd>ctrl</kbd> - <kbd>c</kbd> chun cur isteach ar ríomhchlár atá i bhfostú go leanúnach
+lúb. Bain triail as:</p>
+<!-- athghiniúint de láimh
+liostaí cd/ch03-common-programming-concepts/gan-liostú-32-lúb
+rith lasta
+CTRL-C
+-->
+<pre><code class="language-console">$ cargo run
+   Compiling loops v0.1.0 (file:///projects/loops)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s
+     Running `target/debug/loops`
+again!
+again!
+again!
+again!
+^Cagain!
+</code></pre>
+<p>Léiríonn an tsiombail <code>^C</code> an áit ar bhrúigh tú <kbd>ctrl</kbd> - <kbd>c</kbd>. tu
+b'fhéidir nó b'fhéidir nach bhfeicfidh sé an focal <code>again!</code> i gcló tar éis an <code>^C</code>, ag brath ar an áit
+bhí an cód sa lúb nuair a fuair sé an comhartha idirbhriste.</p>
+<p>Go fortunately, soláthraíonn Rust bealach freisin chun briseadh amach as lúb ag baint úsáide as cód. tu
+Is féidir leis an eochairfhocal <code>break</code> a chur laistigh den lúb chun a insint don chlár cathain a stopfaidh sé
+an lúb a fhorghníomhú. Thabhairt chun cuimhne go ndearna muid é seo sa chluiche buille faoi thuairim sa
+<a href="ch02-00-guessing-game-tutorial.html#quitting-after-a-correct-guess">“Ag Scoir Tar éis Buille Cheart”</a><!-- déan neamhaird
+--> alt de Chaibidil 2 a fhágáil ar an gclár nuair a bhuaigh an t-úsáideoir an cluiche trí
+an uimhir cheart a thomhas.</p>
+<p>Bhaineamar úsáid freisin as <code>continue</code> sa chluiche buille faoi thuairim, rud a insíonn an clár i lúb
+chun dul thar aon chód atá fágtha san atriall seo den lúb agus téigh go dtí an
+an chéad atriall eile.</p>
+<h4 id="luachanna-ag-filleadh-ó-lúbanna"><a class="header" href="#luachanna-ag-filleadh-ó-lúbanna">Luachanna Ag Filleadh ó Lúbanna</a></h4>
+<p>Ceann de na húsáidí a bhaineann le <code>loop</code> is ea triail eile a bhaint as oibríocht a bhfuil a fhios agat go bhféadfadh go dteipfeadh uirthi, mar sin
+le seiceáil an bhfuil a phost críochnaithe ag snáithe. Seans go mbeidh ort pas a fháil freisin
+toradh na hoibríochta sin amach as an lúb go dtí an chuid eile de do chód. A dhéanamh
+seo, is féidir leat an luach a theastaíonn uait a chur ar ais tar éis an slonn <code>break</code> tú
+úsáid chun an lúb a stopadh; cuirfear an luach sin ar ais as an lúb ionas gur féidir leat
+bain úsáid as, mar a thaispeántar anseo:</p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let mut counter = 0;
+
+    let result = loop {
+        counter += 1;
+
+        if counter == 10 {
+            break counter * 2;
+        }
+    };
+
+    println!("The result is {result}");
+}</code></pre></pre>
+<p>Roimh an lúb, dearbhaímid athróg darb ainm <code>counter</code> agus cuirimid tús leis
+<code>0</code>. Ansin dearbhaímid athróg darb ainm <code>result</code> chun an luach a tugadh ar ais uaidh a choinneáil
+an lúb. Ar gach atriall den lúb, cuirimid <code>1</code> leis an athróg <code>counter</code>,
+agus ansin seiceáil an bhfuil an <code>counter</code> cothrom le <code>10</code>. Nuair a bhíonn sé, úsáidimid an
+eochairfhocal <code>break</code> leis an luach <code>counter * 2</code>. Tar éis an lúb, úsáidimid a
+leathstad chun deireadh a chur leis an ráiteas a sannann an luach do <code>result</code>. Ar deireadh, táimid
+priontáil an luach i <code>result</code>, atá sa chás seo <code>20</code>.</p>
+<p>Is féidir leat <code>return</code> ón taobh istigh de lúb freisin. Cé nach n-imíonn <code>break</code> ach as an sruth
+lúb, fágann <code>return</code> an fheidhm reatha i gcónaí.</p>
+<h4 id="lipéid-lúb-le-díréimniú-idir-lúbanna-il"><a class="header" href="#lipéid-lúb-le-díréimniú-idir-lúbanna-il">Lipéid Lúb le Díréimniú Idir lúbanna Il</a></h4>
+<p>Má tá lúba laistigh de lúba agat, beidh feidhm ag <code>break</code> agus <code>continue</code> ar aghaidh chuig an gceann is faide istigh
+lúb ar an bpointe sin. Is féidir leat <em>loop label</em> a shonrú go roghnach ar lúb a
+is féidir leat a úsáid ansin le <code>break</code> nó <code>continue</code> chun a shonrú go bhfuil na heochairfhocail
+cuir i bhfeidhm ar an lúb lipéadaithe in ionad na lúb is faide istigh. Ní mór tús a chur le lipéid lúb
+le ceanglófar amháin. Seo sampla le dhá lúb neadaithe:</p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let mut count = 0;
+    'counting_up: loop {
+        println!("count = {count}");
+        let mut remaining = 10;
+
+        loop {
+            println!("remaining = {remaining}");
+            if remaining == 9 {
+                break;
+            }
+            if count == 2 {
+                break 'counting_up;
+            }
+            remaining -= 1;
+        }
+
+        count += 1;
+    }
+    println!("End count = {count}");
+}</code></pre></pre>
+<p>Tá an lipéad <code>'counting_up</code>' ar an lúb seachtrach, agus comhairfidh sé suas ó 0 go 2.
+Comhaireamh an lúb istigh gan lipéad síos ó 10 go 9. An chéad <code>break</code> sin
+Ní shonraítear lipéad scoirfidh sé den lúb inmheánach amháin. An <code>break 'counting_up;</code> scoirfidh ráiteas an lúb seachtrach. Priontálann an cód seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling loops v0.1.0 (file:///projects/loops)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.58s
+     Running `target/debug/loops`
+count = 0
+remaining = 10
+remaining = 9
+count = 1
+remaining = 10
+remaining = 9
+count = 2
+remaining = 10
+End count = 2
+</code></pre>
+<h4 id="lúb-choinníollach-le-while"><a class="header" href="#lúb-choinníollach-le-while">Lúb Choinníollach le <code>while</code></a></h4>
+<p>Is minic go gcaithfidh clár riocht laistigh de lúb a mheas. Cé go bhfuil an
+Tá an coinníoll <code>true</code>, ritheann an lúb. Nuair a scoireann an riocht de bheith <code>true</code>, beidh an
+Glaonn an clár <code>break</code>, ag stopadh an lúb. Is féidir iompar a chur i bhfeidhm
+mar seo ag baint úsáide as meascán de <code>loop</code>, <code>if</code>, <code>else</code>, agus <code>break</code>; d'fhéadfadh tú
+bain triail as sin anois i gclár, más mian leat. Mar sin féin, tá an patrún seo chomh coitianta
+go bhfuil tógáil teanga ionsuite ag Rust dó, ar a dtugtar lúb <code>while</code>. I
+Ag liostú 3-3, bainimid úsáid as <code>while</code> chun an clár a lúbadh trí huaire, ag comhaireamh síos gach ceann acu
+am, agus ansin, tar éis an lúb, a phriontáil teachtaireacht agus scoir.</p>
+<Listing number="3-3" file-name="src/main.rs" caption="Úsáid lúb `while` chun cód a rith agus coinníoll fós fíor">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let mut number = 3;
+
+    while number != 0 {
+        println!("{number}!");
+
+        number -= 1;
+    }
+
+    println!("LIFTOFF!!!");
+}</code></pre></pre>
+</Listing>
+<p>Cuireann an tógáil seo deireadh le go leor neadaithe a bheadh riachtanach dá mbainfeá úsáid as
+<code>loop</code>, <code>if</code>, <code>else</code>, agus <code>break</code>, agus tá sé níos soiléire. Cé go coinníoll
+meastóireacht go <code>true</code>, ritheann an cód; ar shlí eile, scoireann sé an lúb.</p>
+<h4 id="ag-dul-trí-bhailiúchán-le-for"><a class="header" href="#ag-dul-trí-bhailiúchán-le-for">Ag dul trí Bhailiúchán le <code>for</code></a></h4>
+<p>Is féidir leat an tógáil <code>while</code> a úsáid freisin chun na heilimintí de a
+bhailiú, mar shampla eagar. Mar shampla, priontaí an lúb i Liostú 3-4 an ceann
+eilimint san eagar <code>a</code>.</p>
+<Listing number="3-4" file-name="src/main.rs" caption="Ag dul trí gach eilimint de bhailiúchán ag úsáid lúb `while`">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let a = [10, 20, 30, 40, 50];
+    let mut index = 0;
+
+    while index &lt; 5 {
+        println!("the value is: {}", a[index]);
+
+        index += 1;
+    }
+}</code></pre></pre>
+</Listing>
+<p>Anseo, déantar an cód a chomhaireamh trí na heilimintí san eagar. Tosaíonn sé ag innéacs
+<code>0</code>, agus lúbann sé ansin go dtí go sroicheann sé an t-innéacs deiridh san eagar (is é sin,
+nuair nach bhfuil <code>index &lt; 5</code> a thuilleadh <code>true</code>). Má ritheann tú an cód seo, déanfar gach
+eilimint san eagar:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling loops v0.1.0 (file:///projects/loops)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.32s
+     Running `target/debug/loops`
+the value is: 10
+the value is: 20
+the value is: 30
+the value is: 40
+the value is: 50
+</code></pre>
+<p>Tá na cúig luach eagair ar fad le feiceáil sa teirminéal, mar a bhíothas ag súil leis. Cé go bhfuil <code>index</code>
+Beidh teacht ar luach <code>5</code> ag pointe éigin, stopann an lúb forghníomhaitheach roimh iarraidh
+an séú luach a fháil ón eagar.</p>
+<p>Mar sin féin, tá an cur chuige seo seans maith go hearráidí; d’fhéadfaimis scaoll a chur ar an gclár dá mba rud é
+tá an luach innéacs nó an riocht tástála mícheart. Mar shampla, má d'athraigh tú an
+sainmhíniú ar an eagar <code>a</code> a bheith ceithre eilimint ach dearmad a thabhairt cothrom le dáta an
+coinníoll go <code>while index &lt; 4</code>, bheadh an cód scaoll. Tá sé mall freisin, mar gheall ar
+cuireann an tiomsaitheoir cód ama rite leis chun an tseiceáil choinníollach a dhéanamh an bhfuil an
+tá an t-innéacs laistigh de theorainneacha an eagar ar gach atriall tríd an lúb.</p>
+<p>Mar rogha eile níos gonta, is féidir leat lúb <code>for</code> a úsáid agus cód éigin a fhorghníomhú
+do gach earra i mbailiúchán. Breathnaíonn lúb <code>for</code> cosúil leis an gcód i Liostú 3-5.</p>
+<Listing number="3-5" file-name="src/main.rs" caption="Ag lúbadh trí gach eilimint de bhailiúchán ag baint úsáide as lúb `for`">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let a = [10, 20, 30, 40, 50];
+
+    for element in a {
+        println!("the value is: {element}");
+    }
+}</code></pre></pre>
+</Listing>
+<p>Agus an cód seo á rith againn, feicfidh muid an t-aschur céanna agus atá i Liostú 3-4. Tuilleadh
+rud is tábhachtaí, táimid tar éis sábháilteacht an chóid a mhéadú anois agus deireadh a chur le
+seans fabhtanna a d'fhéadfadh a bheith mar thoradh ar dhul níos faide ná deireadh na sraithe nó nach bhfuil
+ag dul fada go leor agus roinnt míreanna ar iarraidh.</p>
+<p>Ag baint úsáide as an lúb <code>for</code>, ní bheadh ort cuimhneamh ar aon chód eile a athrú más rud é
+d'athraigh tú líon na luachanna san eagar, mar a dhéanfá leis an modh
+a úsáidtear i Liosta 3-4.</p>
+<p>Mar gheall ar shábháilteacht agus beacht na lúb <code>for</code> is iad an lúb is coitianta a úsáidtear
+Tógáil i Rust. Fiú i gcásanna inar mian leat a rith roinnt cód a
+líon áirithe uaireanta, mar atá sa sampla comhaireamh síos a d'úsáid lúb <code>while</code>
+i Liosta 3-3, d'úsáidfeadh formhór na Rustaceans lúb <code>for</code>. An bealach chun é sin a dhéanamh
+úsáid a bhaint as <code>Range</code>, a sholáthraíonn an leabharlann chaighdeánach, a ghineann
+gach uimhir in ord ag tosú ó uimhir amháin agus ag críochnú roimh uimhir eile
+uimhir.</p>
+<p>Seo an chuma a bheadh ar an gcomhaireamh síos ag baint úsáide as lúb <code>for</code> agus modh eile
+níor labhair muid faoi go fóill, <code>rev</code>, chun an raon a aisiompú:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    for number in (1..4).rev() {
+        println!("{number}!");
+    }
+    println!("LIFTOFF!!!");
+}</code></pre></pre>
+<p>Tá an cód seo beagán níos deise, nach ea?</p>
+<h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
+<p>Rinne tú é! Ba chaibidil shuntasach í seo: d’fhoghlaim tú faoi athróga, scálach
+agus cineálacha sonraí cumaisc, feidhmeanna, tuairimí, nathanna <code>if</code>, agus lúba! Chuig
+cleachtadh leis na coincheapa a phléitear sa chaibidil seo, bain triail as cláir a thógáil chun
+déan an méid seo a leanas:</p>
+<ul>
+<li>Tiontaigh teochtaí idir Fahrenheit agus Celsius.</li>
+<li>Gin an <em>n</em>ú uimhir Fibonacci.</li>
+<li>Priontáil na liricí don charúl Nollag “The Twelve Day of Christmas,”
+ag baint leasa as an athrá san amhrán.</li>
+</ul>
+<p>Nuair a bheidh tú réidh le bogadh ar aghaidh, labhróimid faoi choincheap i Rust nach <em>ní dhéanann</em>
+atá ann go coitianta i dteangacha ríomhchlárúcháin eile: úinéireacht.</p>
 
                     </main>
 
