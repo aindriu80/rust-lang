@@ -159,7 +159,521 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="what-is-ownership"><a class="header" href="#what-is-ownership">What is Ownership?</a></h1>
+                        <h2 id="cad-is-Úinéireacht-ann"><a class="header" href="#cad-is-Úinéireacht-ann">Cad is Úinéireacht ann?</a></h2>
+<p>Is sraith rialacha é <em>Úinéireacht</em> a rialaíonn conas a bhainistíonn clár Rust cuimhne.
+Caithfidh gach clár an bealach a úsáideann siad cuimhne ríomhaire a bhainistiú agus iad ag rith.
+Tá bailiúchán truflais ag teangacha áirithe nach n-úsáidtear a thuilleadh go minic
+cuimhne de réir mar a ritheann an clár; i dteangacha eile, ní mór don ríomhchláraitheoir go sainráite
+an chuimhne a leithdháileadh agus a shaoradh. Úsáideann Rust an tríú cur chuige: déantar cuimhne a bhainistiú
+trí chóras úinéireachta le sraith rialacha a sheiceálann an tiomsaitheoir. Más rud é
+sáraítear aon cheann de na rialacha, ní thiomsóidh an clár. Níl aon cheann de na gnéithe
+Cuirfidh úinéireachta moill ar do chlár agus é ar siúl.</p>
+<p>Toisc gur coincheap nua í úinéireacht do go leor ríomhchláraitheoirí, tógann sé roinnt ama
+dul i dtaithí ar. Is é an dea-scéal ná dá mhéad taithí a éiríonn tú le Rust
+agus rialacha an chórais úinéireachta, is amhlaidh is fusa duit go nádúrtha é
+cód a fhorbairt atá sábháilte agus éifeachtach. Coinnigh ort!</p>
+<p>Nuair a thuigeann tú úinéireacht, beidh bunús láidir tuisceana agat
+na gnéithe a dhéanann Rust uathúil. Sa chaibidil seo, foghlaimeoidh tú úinéireacht trí
+ag obair trí roinnt samplaí a dhíríonn ar struchtúr sonraí an-choitianta:
+teaghráin.</p>
+<blockquote>
+<h3 id="an-cruach-agus-an-charn"><a class="header" href="#an-cruach-agus-an-charn">An Cruach agus an Charn</a></h3>
+<p>Ní éilíonn go leor teangacha ríomhchláraithe duit smaoineamh ar an gcruach agus ar an
+carn go minic. Ach i dteanga ríomhchlárúcháin córais mar Rust, cibé acu a
+tá luach ar an gcruach nó bíonn tionchar ag an gcarn ar iompar na teanga agus cén fáth
+caithfidh tú cinntí áirithe a dhéanamh. Déanfar cur síos ar chodanna úinéireachta i
+maidir leis an chruach agus leis an gcarn níos déanaí sa chaibidil seo, mar sin seo achoimre
+míniú á ullmhú.</p>
+<p>Is codanna cuimhne iad an cruach agus an chairn araon atá ar fáil do do chód a úsáid
+ag am rite, ach tá siad struchtúrtha ar bhealaí éagsúla. Stórálann an cruach luachanna
+san ord a fhaigheann sé iad agus baintear na luachanna san ord eile. Tagraítear dó seo
+mar <em>an ceann deireanach isteach, an chéad cheann amach</em>. Smaoinigh ar cruach de
+plátaí: nuair a chuireann tú níos mó plátaí isteach, cuireann tú iad ar bharr an chairn, agus cathain
+teastaíonn pláta uait, tógann tú ceann den bharr. Ní oibreodh sé chomh maith plátaí
+a chur leis nó a bhaint den lár nó ón mbun! Tugtar _pushing ar shonraí a chur leis
+isteach ar an cruach, agus tugtar <em>popping as an cruach</em> ar na sonraí a bhaint. Gach
+ní mór méid seasta aitheanta a bheith ag sonraí atá stóráilte ar an chruach. Sonraí le anaithnid
+ní mór méid ag am tiomsaithe nó méid a d'fhéadfadh athrú a stóráil ar an gcarn
+ina ionad.</p>
+<p>Níl an carn chomh eagraithe: nuair a chuireann tú sonraí ar an gcarn, iarrann tú a
+méid áirithe spáis. Aimsíonn an leithdháileadh cuimhne spota folamh sa charn
+atá mór go leor, marcálann sé go bhfuil sé in úsáid, agus cuireann sé <em>pointer</em> ar ais, a bhfuil
+is é seoladh an tsuímh sin. Tugtar <em>leithdháileadh ar an bpróiseas seo
+heap</em> agus déantar é a ghiorrú uaireanta mar <em>leithroinnt</em> (luachanna a bhrú ar
+ní mheastar go leithdháileann an chruach). Toisc gurb é an pointeoir chuig an gcarn a
+ar a dtugtar, méid seasta, is féidir leat an pointeoir a stóráil ar an gcruach, ach nuair is mian leat
+na sonraí iarbhír, ní mór duit an pointeoir a leanúint. Smaoinigh ar a bheith ina suí ag a
+bialann. Nuair a théann tú isteach, luann tú líon na ndaoine i do ghrúpa, agus
+aimsíonn an t-óstach tábla folamh a oireann do gach duine agus a threoraíonn tú ann. Más rud é
+tagann duine éigin i do ghrúpa déanach, féadfaidh siad fiafraí de cá bhfuil tú i do shuí
+fhaigheann tú.</p>
+<p>Tá brú ar an chairn níos tapúla ná mar a leithdháileadh ar an gcarn mar gheall ar an
+ní gá don leithdháileoir áit a chuardach le sonraí nua a stóráil; go bhfuil an suíomh sin
+i gcónaí ag barr an chruach. I gcomparáid, spás a leithdháileadh ar an gcarn
+teastaíonn tuilleadh oibre mar ní mór don leithroinnt spás mór go leor a aimsiú ar dtús
+na sonraí a choinneáil agus ansin leabharchoimeád a dhéanamh chun ullmhú don chéad cheann eile
+leithdháileadh.</p>
+<p>Tá rochtain ar shonraí sa charn níos moille ná rochtain a fháil ar shonraí ar an gcruach toisc
+caithfidh tú pointeoir a leanúint le dul ann. Tá próiseálaithe comhaimseartha níos tapúla
+má léimeann siad timpeall níos lú sa chuimhne. Ag leanúint leis an analaí, a mheas ar fhreastalaí
+ag bialann ag glacadh orduithe ó go leor táblaí. Tá sé is éifeachtaí a fháil
+na horduithe go léir ag bord amháin sula dtéann tú ar aghaidh go dtí an chéad tábla eile. Ag tabhairt an
+ordú ó thábla A, ansin ordú ó thábla B, ansin ceann ó A arís, agus
+ansin bheadh próiseas ceann as B arís i bhfad níos moille. Ar an gcaoi chéanna, a
+is féidir le próiseálaí a chuid oibre a dhéanamh níos fearr má oibríonn sé ar shonraí atá gar do shonraí eile
+sonraí (mar atá sé ar an chruach) seachas níos faide ar shiúl (mar is féidir é a bheith ar an
+gcarn).</p>
+<p>Nuair a ghlaonn do chód feidhm, aistrítear na luachanna isteach san fheidhm
+(lena n-áirítear, féideartha, leideanna do shonraí ar an gcarn) agus na feidhmeanna
+brúitear athróga áitiúla isteach sa chruach. Nuair a bhíonn an fheidhm thart, iad siúd
+laghdaítear luachanna as an gcruach.</p>
+<p>Súil a choinneáil ar cad iad na codanna den chód a úsáideann na sonraí ar an gcarn,
+an méid sonraí dúblacha ar an gcarn a íoslaghdú, agus glanadh suas nach bhfuil in úsáid
+is fadhbanna leis an úinéireacht iad sonraí ar an gcarn ionas nach n-imíonn tú as spás
+seoltaí. Nuair a thuigeann tú úinéireacht, ní bheidh ort smaoineamh ar an
+Stack agus an gcarn go minic, ach a fhios agam go bhfuil an príomhchuspóir úinéireachta
+Is féidir le sonraí carn a bhainistiú cuidiú a mhíniú cén fáth a n-oibríonn sé mar a oibríonn sé.</p>
+</blockquote>
+<h3 id="rialacha-Úinéireachta"><a class="header" href="#rialacha-Úinéireachta">Rialacha Úinéireachta</a></h3>
+<p>Ar dtús, déanaimis féachaint ar na rialacha úinéireachta. Coinnigh na rialacha seo i gcuimhne agus muid
+obair trí na samplaí a léiríonn iad:</p>
+<ul>
+<li>Tá <em>úinéir</em> ag gach luach i Rust.</li>
+<li>Ní féidir ach úinéir amháin a bheith ann ag an am.</li>
+<li>Nuair a théann an t-úinéir as raon feidhme, beidh an luach a thit.</li>
+</ul>
+<h3 id="scóip-athróg"><a class="header" href="#scóip-athróg">Scóip Athróg</a></h3>
+<p>Anois agus muid imithe thart ar chomhréir bhunúsach Rust, ní chuirfimid gach <code>fn main() {</code> san áireamh
+cód i samplaí, mar sin má tá tú ag leanúint chomh maith, déan cinnte a chur ar an méid seo a leanas
+samplaí taobh istigh d'fheidhm <code>main</code> de láimh. Mar thoradh air sin, beidh ár samplaí a
+beagán níos gonta, ag ligean dúinn díriú ar na sonraí iarbhír seachas
+cód pláta coire.</p>
+<p>Mar chéad shampla d’úinéireacht, féachfaimid ar <em>scóip</em> roinnt athróg. A
+raon feidhme is ea an raon laistigh de chlár a bhfuil mír bailí dó. Tóg an
+athróg seo a leanas:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = "hello";
+<span class="boring">}</span></code></pre></pre>
+<p>Tagraíonn an athróg <code>s</code> do teaghrán litriúil, áit a bhfuil luach na sreinge
+hardcoded isteach i dtéacs ár gclár. Tá an athróg bailí ón bpointe ag
+atá dearbhaithe go dtí deireadh an <em>scóip</em> reatha. Léiríonn liostú 4-1 a
+clár le nótaí tráchta ag cur in iúl cá háit a mbeadh an athróg <code>s</code> bailí.</p>
+<Listing number="4-1" caption="A variable and the scope in which it is valid">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    {                      // s is not valid here, it’s not yet declared
+        let s = "hello";   // s is valid from this point forward
+
+        // do stuff with s
+    }                      // this scope is now over, and s is no longer valid
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>I bhfocail eile, tá dhá phointe tábhachtacha ama anseo:</p>
+<ul>
+<li>Nuair a thagann <code>s</code> <em>isteach</em> sa raon feidhme, bíonn sé bailí.</li>
+<li>Fanann sé bailí go dtí go dtéann sé <em>as</em> scóip.</li>
+</ul>
+<p>Ag an bpointe seo, tá an gaol idir scopes agus nuair a athróga bailí
+cosúil leis sin i dteangacha ríomhchlárúcháin eile. Anois cuirfimid leis seo
+a thuiscint tríd an gcineál <code>String</code> a thabhairt isteach.</p>
+<h3 id="an-cineál-string"><a class="header" href="#an-cineál-string">An Cineál <code>String</code></a></h3>
+<p>Chun na rialacha úinéireachta a léiriú, ní mór dúinn cineál sonraí atá níos casta
+ná iad siúd atá clúdaithe againn sa <a href="ch03-02-data-types.html#data-types">“Cineálacha Sonraí”</a><!-- neamhaird a dhéanamh ar --> alt
+de Chaibidil 3. Tá na cineálacha a clúdaíodh roimhe seo de mhéid aitheanta, is féidir iad a stóráil
+ar an chruach agus popped as an chairn nuair a bhíonn a raon feidhme thart, agus is féidir a bheith
+a chóipeáil go tapa agus go fánach chun cás nua neamhspleách a dhéanamh
+caithfidh cuid de chód an luach céanna a úsáid i raon feidhme difriúil. Ach ba mhaith linn
+féach ar na sonraí atá stóráilte ar an gcarn agus fiosraigh conas a bhíonn a fhios ag Rust cathain
+glan suas na sonraí sin, agus is sampla iontach é an cineál <code>String</code>.</p>
+<p>Díreoimid ar na codanna de <code>String</code> a bhaineann le húinéireacht. iad seo
+baineann gnéithe freisin le cineálacha sonraí casta eile, cibé acu a sholáthraíonn
+an leabharlann chaighdeánach nó cruthaithe agat. Déanfaimid plé níos doimhne ar <code>String</code>
+<a href="ch08-02-strings.html">Caibidil 8</a><!-- neamhaird a dhéanamh -->.</p>
+<p>Tá teaghlitreacha feicthe againn cheana féin, áit a bhfuil luach teaghrán códaithe go crua isteach inár
+clár. Tá litreacha teaghráin áisiúil, ach níl siad oiriúnach do gach ceann acu
+staid ina mb'fhéidir gur mhaith linn téacs a úsáid. Cúis amháin ná go bhfuil siad
+dochorraithe. Rud eile ná nach féidir gach luach teaghrán a bheith ar eolas agus muid ag scríobh
+ár gcód: mar shampla, cad má theastaíonn uainn ionchur úsáideora a ghlacadh agus é a stóráil? Le haghaidh
+sna cásanna seo, tá an dara cineál teaghrán ag Rust, <code>String</code>. Bainistíonn an cineál seo
+sonraí a leithdháiltear ar an gcarn agus mar sin tá sé in ann méid téacs a stóráil a
+is eol dúinn ag am tiomsaithe. Is féidir leat <code>String</code> a chruthú as teaghrán
+litriúil ag baint úsáide as an bhfeidhm <code>ó</code>, mar sin:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("hello");
+<span class="boring">}</span></code></pre></pre>
+<p>Ceadaíonn an t-oibreoir idirstad dúbailte <code>::</code> dúinn an <code>ó</code> áirithe seo a spásáil
+feidhmiú faoin gcineál <code>String</code> seachas úsáid a bhaint as ainm de shaghas éigin mar
+<code>string_from</code>. Déanfaimid an chomhréir seo a phlé níos mó sa <a href="ch05-03-method-syntax.html#method-syntax">“Modh
+Comhréir”</a><!-- ignore --> alt de Chaibidil 5, agus nuair a labhair muid
+faoi ​​spásáil ainmneacha le modúil i <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">“Cosáin chun tagairt a dhéanamh do mhír sa
+Crann an Mhodúil”</a><!-- ignore --> i gCaibidil 7.</p>
+<p>Is féidir an cineál seo téad <em>is féidir</em> a mutadh:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from("hello");
+
+    s.push_str(", world!"); // push_str() appends a literal to a String
+
+    println!("{s}"); // This will print `hello, world!`
+<span class="boring">}</span></code></pre></pre>
+<p>Mar sin, cad é an difríocht anseo? Cén fáth gur féidir <code>String</code> a shaobhadh ach go litriúil
+ní féidir? Is é an difríocht sa chaoi a ndéileálann an dá chineál seo le cuimhne.</p>
+<h3 id="cuimhne-agus-leithdháileadh"><a class="header" href="#cuimhne-agus-leithdháileadh">Cuimhne agus Leithdháileadh</a></h3>
+<p>I gcás teaghrán litriúil, tá a fhios againn an t-ábhar ag am tiomsaithe, mar sin an
+tá an téacs códaithe go díreach isteach sa inrite deiridh. Sin é an fáth teaghrán
+tá litriúil tapa agus éifeachtach. Ach ní thagann na hairíonna seo ach ón sreang
+neamh-inaistritheacht litriúil. Ar an drochuair, ní féidir linn blob cuimhne a chur isteach sa
+dénártha do gach píosa téacs nach bhfuil a mhéid anaithnid ag an am tiomsaithe agus cé leis
+seans go n-athróidh an méid agus an clár á rith.</p>
+<p>Leis an gcineál <code>String</code>, chun tacaíocht a thabhairt do phíosa téacs inaistrithe, infhás,
+ní mór dúinn méid cuimhne a leithdháileadh ar an gcarn, anaithnid ag am tiomsaithe,
+an t-ábhar a shealbhú. Ciallaíonn sé seo:</p>
+<ul>
+<li>Ní mór an chuimhne a iarraidh ar an leithdháileadh cuimhne ag am rite.</li>
+<li>Teastaíonn bealach uainn leis an gcuimhne seo a thabhairt ar ais don leithroinnt nuair a bheidh sé críochnaithe againn
+ár <code>String</code>.</li>
+</ul>
+<p>Déanaimid an chéad chuid sin: nuair a ghlaoimid <code>String::from</code>, a chur i bhfeidhm
+iarrann sé an chuimhne atá de dhíth air. Tá sé seo go leor uilíoch i gcláir
+teangacha.</p>
+<p>Mar sin féin, tá an dara cuid difriúil. I dteangacha le bailitheoir <em>truflais
+(GC)</em>, coinníonn an GC súil agus glanann sé cuimhne nach bhfuil in úsáid
+a thuilleadh, agus ní gá dúinn smaoineamh faoi. I bhformhór na dteangacha gan GC,
+tá sé de fhreagracht orainne a aithint nuair nach bhfuil cuimhne á húsáid a thuilleadh agus chun
+cód glaonna chun é a shaoradh go sainráite, díreach mar a rinneamar chun é a iarraidh. Ag déanamh seo
+i gceart bhí fadhb ríomhchláraithe deacair go stairiúil. Má dhéanaimid dearmad,
+caithfimid cuimhne. Má dhéanaimid é ró-luath, beidh athróg neamhbhailí againn. Más rud é
+déanaimid faoi dhó é, sin fabht freisin. Caithfimid <code>allocate</code> amháin a phéireáil leis
+Díreach ceann amháin <code>free</code>.</p>
+<p>Bíonn cosán difriúil ag meirge: cuirtear an chuimhne ar ais go huathoibríoch nuair a bhíonn an
+téann athróg ar leis é as raon feidhme. Seo leagan dár sampla scóip
+ó Liostú 4-1 ag baint úsáide as <code>String</code> in ionad teaghrán litriúil:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    {
+        let s = String::from("hello"); // s is valid from this point forward
+
+        // do stuff with s
+    }                                  // this scope is now over, and s is no
+                                       // longer valid
+<span class="boring">}</span></code></pre></pre>
+<p>Tá pointe nádúrtha ann inar féidir linn an chuimhne a theastaíonn ó ár <code>String</code> a thabhairt ar ais
+don leithroinnt: nuair a théann <code>s</code> as an scóip. Nuair a théann athróg amach as
+raon feidhme, glaonna Rust feidhm speisialta dúinn. Tugtar an fheidhm seo
+<a href="../std/ops/trait.Drop.html#tymethod.drop"><code>drop</code></a> <!-- ignore -->, agus seo an áit ar féidir le húdar <code>String</code> a chur
+an cód chun an chuimhne a thabhairt ar ais. Glaonn Rust <code>drop</code> go huathoibríoch ag an dúnadh
+lúibín chatach.</p>
+<blockquote>
+<p>Nóta: In C++, an patrún seo chun acmhainní a aimsiú ag deireadh míre
+uaireanta tugtar <em>Tionscnamh um Fháil Acmhainní (RAII)</em> ar an saolré.
+Beidh eolas agat ar an bhfeidhm <code>drop</code> i Rust má d'úsáid tú RAII
+patrúin.</p>
+</blockquote>
+<p>Bíonn tionchar as cuimse ag an bpatrún seo ar an mbealach a scríobhtar cód Meirge. Féadfaidh sé cosúil
+simplí anois, ach is féidir iompar cód a bheith gan choinne i níos mó
+cásanna casta nuair is mian linn athróga iolracha a bheith againn úsáid na sonraí
+atá leithdháilte againn ar an gcarn. Déanaimis iniúchadh ar roinnt de na cásanna sin anois.</p>
+<!-- Old heading. Do not remove or links may break. -->
+<p><a id="ways-variables-and-data-interact-move"></a></p>
+<h4 id="athróga-agus-sonraí-ag-idirghníomhú-le-bog"><a class="header" href="#athróga-agus-sonraí-ag-idirghníomhú-le-bog">Athróga agus Sonraí ag Idirghníomhú le Bog</a></h4>
+<p>Is féidir le hathróga iolracha idirghníomhú leis na sonraí céanna ar bhealaí éagsúla i Rust.
+Breathnaímid ar shampla ag baint úsáide as slánuimhir i Liostú 4-2.</p>
+<Listing number="4-2" caption="Assigning the integer value of variable `x` to `y`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 5;
+    let y = x;
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Is dócha gur féidir linn buille faoi thuairim a dhéanamh ar a bhfuil á dhéanamh seo: “ceannaigh an luach <code>5</code> le <code>x</code>; déan ansin
+cóip den luach in <code>x</code> agus ceangail le <code>y</code> é." Tá dhá athróg againn anois, <code>x</code>
+agus <code>y</code>, agus an dá chomhionann <code>5</code>. Tá sé seo go deimhin cad atá ag tarlú, mar gheall ar slánuimhreacha
+is luachanna simplí iad le méid seasta aitheanta, agus déantar an dá luach <code>5</code> seo a bhrú
+isteach sa chruach.</p>
+<p>Breathnaímis anois ar an leagan <code>String</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("hello");
+    let s2 = s1;
+<span class="boring">}</span></code></pre></pre>
+<p>Breathnaíonn sé seo an-chosúil, agus mar sin d'fhéadfaimis glacadh leis gurb é an bealach a oibríonn sé
+céanna: is é sin, dhéanfadh an dara líne cóip den luach i <code>s1</code> agus ceangail
+é go <code>s2</code>. Ach ní hé seo a tharlaíonn go hiomlán.</p>
+<p>Breathnaigh ar Fíor 4-1 chun a fheiceáil cad atá ag tarlú do <code>String</code> faoi na
+clúdaigh. Tá trí chuid i <code>String</code>, léirithe ar chlé: pointeoir chuig
+an chuimhne a choinníonn inneachar na téad, fad, agus toilleadh.
+Stóráiltear an grúpa sonraí seo ar an chruach. Ar dheis tá an chuimhne ar an
+carn a shealbhaíonn an t-ábhar.</p>
+<p><img alt="Dhá tábla: sa chéad tábla tá léiriú s1 ar an
+stack, arb é atá ann a fhad (5), toilleadh (5), agus pointeoir chuig an gcéad cheann
+luach sa dara tábla. Sa dara tábla tá léiriú an
+sonraí teaghrán ar an gcarn, beart le beart." src="img/trpl04-01.svg" class="center"
+style="width: 50%;" /></p>
+<p><span class="caption">Fíor 4-1: Léiriú i gcuimhne ar <code>String</code>
+a bhfuil an luach <code>"hello"</code> faoi cheangal go <code>s1</code></span></p>
+<p>Is é an fad ná cé mhéad cuimhne, i mbearta, atá inneachar an <code>String</code>
+ag baint úsáide as faoi láthair. Is é an toilleadh an méid iomlán de chuimhne, i mbeart, go bhfuil an
+Tá <code>String</code> faighte ón leithdháilteoir. An difríocht idir fad agus
+cúrsaí acmhainne, ach ní sa chomhthéacs seo, mar sin go fóill, tá sé ceart neamhaird a dhéanamh
+acmhainn.</p>
+<p>Nuair a shannaimid <code>s1</code> do <code>s2</code>, déantar na sonraí <code>String</code> a chóipeáil, rud a chiallaíonn go ndéanaimid cóip den
+pointeoir, an fad, agus an toilleadh atá ar an gcruach. Ní chóipeáilimid an
+sonraí ar an gcarn a dtagraíonn an pointeoir dó. I bhfocail eile, na sonraí
+Breathnaíonn ionadaíocht sa chuimhne cosúil le Fíor 4-2.</p>
+<p><img alt="Trí tábla: táblaí s1 agus s2 a léiríonn na teaghráin sin ar an
+stack, faoi seach, agus an dá phointe ag díriú ar na sonraí teaghrán céanna ar an gcarn."
+src="img/trpl04-02.svg" class="center" style="leithead: 50%;" /></p>
+<p><span class="caption">Fíor 4-2: Léiriú i gcuimhne ar an athróg <code>s2</code>
+ina bhfuil cóip den phointeoir, den fhad agus den toilleadh <code>s1</code></span></p>
+<p>Tá cuma <em>not</em> ar an léiriú ar Fhíor 4-3, agus is é sin an rud a dhéanfadh cuimhne
+cuma an ndearna Rust na sonraí carn a chóipeáil ina ionad sin freisin. Má rinne Rust é seo, beidh an
+d'fhéadfadh oibríocht <code>s2 = s1</code> a bheith an-chostasach i dtéarmaí feidhmíochta rite má
+bhí na sonraí ar an gcarn mór.</p>
+<p><img alt="Ceithre thábla: dhá thábla a léiríonn na sonraí cruachta le haghaidh s1 agus s2,
+agus díríonn gach ceann acu ar a chóip féin de shonraí teaghrán ar an gcarn."
+src="img/trpl04-03.svg" class="center" style="leithead: 50%;" /></p>
+<p><span class="caption">Fíor 4-3: Féidearthacht eile maidir le cad a d’fhéadfadh <code>s2 = s1</code>
+déan má chóipeáil Rust na sonraí carn freisin</span></p>
+<p>Níos luaithe, dúirt muid nuair a théann athróg as raon feidhme, Rust go huathoibríoch
+glaonn sé an fheidhm <code>drop</code> agus glanann sé an chuimhne chairn don athróg sin. Ach
+Léiríonn Fíor 4-2 an dá phointe sonraí ag díriú ar an suíomh céanna. Seo a
+fadhb: nuair a théann <code>s2</code> agus <code>s1</code> as an raon feidhme, déanfaidh siad araon iarracht an
+cuimhne chéanna. Earráid <em>double free</em> a thugtar air seo agus tá sé ar cheann de na cuimhne
+fabhtanna sábháilteachta a luaigh muid roimhe seo. Is féidir cuimhne a bheith mar thoradh ar chuimhne a shaoradh faoi dhó
+éilliú, a bhféadfadh leochaileachtaí slándála a bheith mar thoradh air.</p>
+<p>Chun sábháilteacht chuimhne a chinntiú, tar éis na líne <code>let s2 = s1;</code>, measann Rust <code>s1</code> mar
+bailí a thuilleadh. Mar sin, ní gá do Rust rud ar bith a shaoradh nuair a théann <code>s1</code>
+as scóip. Seiceáil cad a tharlaíonn nuair a dhéanann tú iarracht <code>s1</code> a úsáid i ndiaidh <code>s2</code>
+cruthaithe ; ní oibreoidh sé:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s1 = String::from("hello");
+    let s2 = s1;
+
+    println!("{s1}, world!");
+<span class="boring">}</span></code></pre>
+<p>Gheobhaidh tú earráid mar seo toisc go gcuireann Rust cosc ort an
+tagairt neamhbhailí:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0382]: borrow of moved value: `s1`
+ --&gt; src/main.rs:5:15
+  |
+2 |     let s1 = String::from("hello");
+  |         -- move occurs because `s1` has type `String`, which does not implement the `Copy` trait
+3 |     let s2 = s1;
+  |              -- value moved here
+4 |
+5 |     println!("{s1}, world!");
+  |               ^^^^ value borrowed here after move
+  |
+  = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider cloning the value if the performance cost is acceptable
+  |
+3 |     let s2 = s1.clone();
+  |                ++++++++
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `ownership` (bin "ownership") due to 1 previous error
+</code></pre>
+<p>Má tá na téarmaí <em>shallow copy</em> agus <em>deep copy</em> cloiste agat agus tú ag obair leo
+teangacha eile, coincheap an phointeora, an fad agus an toilleadh a chóipeáil
+gan na sonraí a chóipeáil is dócha gur cosúil le cóip éadomhain a dhéanamh. Ach
+toisc go ndéanann Rust an chéad athróg neamhbhailí freisin, in ionad a bheith ar a dtugtar a
+cóip éadomhain, a thugtar air mar <em>move</em>. Sa sampla seo, déarfaimis go bhfuil <code>s1</code>
+a <em>bogadh</em> go <code>s2</code>. Mar sin, taispeántar cad a tharlaíonn i ndáiríre i bhFíor 4-4.</p>
+<p><img alt="Trí tábla: táblaí s1 agus s2 a léiríonn na teaghráin sin ar an
+stack, faoi seach, agus an dá phointe ag díriú ar na sonraí teaghrán céanna ar an gcarn.
+Tá tábla s1 liathaithe toisc nach bhfuil s1 bailí a thuilleadh; ní féidir ach s2 a úsáid chun
+rochtain a fháil ar na sonraí carn." src="img/trpl04-04.svg" class="center" style="width:
+50%;" /></p>
+<p><span class="caption">Fíor 4-4: Léiriú i gcuimhne tar éis <code>s1</code> a bheith
+neamhbhailí</span></p>
+<p>Réitíonn sé sin ár bhfadhb! Le ach <code>s2</code> bailí, nuair a théann sé as raon feidhme é
+saorfaidh an chuimhne amháin, agus táimid críochnaithe.</p>
+<p>Ina theannta sin, tá rogha dearaidh intuigthe leis seo: ní dhéanfaidh Rust choíche
+cruthaigh cóipeanna “doimhne” de do shonraí go huathoibríoch. Mar sin, aon <em>uathoibríoch</em>
+is féidir glacadh leis go bhfuil an chóipeáil neamhchostasach i dtéarmaí feidhmíochta am rite.</p>
+<h4 id="scóip-agus-tasc"><a class="header" href="#scóip-agus-tasc">Scóip agus Tasc</a></h4>
+<p>Tá a mhalairt de seo fíor maidir leis an ngaol idir scóip, úinéireacht, agus
+cuimhne á scaoileadh tríd an bhfeidhm <code>drop</code> freisin. Nuair a shannadh tú go hiomlán
+luach nua ar athróg atá ann cheana féin, glaofaidh Rust <code>drop</code> agus saorfaidh sé an bunleagan
+cuimhne luach láithreach. Smaoinigh ar an gcód seo, mar shampla:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from("hello");
+    s = String::from("ahoy");
+
+    println!("{s}, world!");
+<span class="boring">}</span></code></pre></pre>
+<p>Ar dtús dearbhaímid athróg <code>s</code> agus ceanglaímid é de <code>String</code> leis an luach
+<code>"Dia duit"</code>. Ansin cruthaímid láithreach <code>String</code> nua leis an luach <code>"ahoy"</code> agus
+a shannadh do <code>s</code>. Ag an bpointe seo, níl aon rud ag tagairt don luach bunaidh ar
+an gcarn ar chor ar bith.</p>
+<p><img alt="Tábla amháin s a léiríonn an luach teaghrán ar an chruach, ag díriú ar
+an dara píosa sonraí téad (ahoy) ar an gcarn, leis an teaghrán bunaidh
+sonraí (hello) liath amach toisc nach féidir é a rochtain a thuilleadh."
+src="img/trpl04-05.svg"
+rang = "ionad"
+style="width: 50%;"
+/></p>
+<p><span class="caption">Fíor 4-5: Léiriú sa chuimhne i ndiaidh na tosaigh
+cuireadh an luach ina iomláine.</span></p>
+<p>Mar sin téann an teaghrán bunaidh as raon feidhme láithreach. Rithfidh Rust an <code>drop</code>
+feidhmiú air agus saorfar a chuimhne ar an bpointe boise. Nuair a phriontáilimid an luach
+ag an deireadh, beidh sé <code>"ahoy, world!"</code>.</p>
+<!-- Sean-cheannteideal. Ná bain amach nó seans go mbrisfidh naisc. -->
+<p><a id="ways-variables-and-data-interact-clone"></a></p>
+<h4 id="athróga-agus-sonraí-ag-idirghníomhú-le-clón"><a class="header" href="#athróga-agus-sonraí-ag-idirghníomhú-le-clón">Athróga agus Sonraí ag Idirghníomhú le Clón</a></h4>
+<p>Más mian linn <em>do</em> sonraí carn an <code>String</code> a chóipeáil go domhain, ní hamháin an
+sonraí cruachta, is féidir linn úsáid a bhaint as modh coitianta ar a dtugtar <code>clone</code>. Déanfaimid plé ar an modh
+comhréir i gCaibidil 5, ach toisc go bhfuil modhanna mar ghné coitianta i go leor
+teangacha ríomhchlárúcháin, is dócha go bhfaca tú iad roimhe seo.</p>
+<p>Seo sampla den mhodh ‘clóin’ i ngníomh:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("hello");
+    let s2 = s1.clone();
+
+    println!("s1 = {s1}, s2 = {s2}");
+<span class="boring">}</span></code></pre></pre>
+<p>Oibríonn sé seo go breá agus cruthaíonn sé go sainráite an iompar a léirítear i bhFíor 4-3,
+áit a ndéantar na sonraí carn <em>does</em> a chóipeáil.</p>
+<p>Nuair a fheiceann tú glao chuig <code>clone</code>, tá a fhios agat go bhfuil roinnt cód treallach á
+a fhorghníomhú agus féadfaidh an cód sin a bheith costasach. Tá sé ina tháscaire amhairc go bhfuil rud éigin
+difriúil ag dul ar aghaidh.</p>
+<h4 id="sonraí-cruachta-amháin-cóipeáil"><a class="header" href="#sonraí-cruachta-amháin-cóipeáil">Sonraí Cruachta Amháin: Cóipeáil</a></h4>
+<p>Tá roic eile nár labhair muid faoi go fóill. An cód seo ag baint úsáide as
+slánuimhreacha—ar taispeánadh cuid de i Liostú 4-2—oibreacha agus atá bailí:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 5;
+    let y = x;
+
+    println!("x = {x}, y = {y}");
+<span class="boring">}</span></code></pre></pre>
+<p>Ach is cosúil go bhfuil an cód seo ag teacht salach ar a bhfuil foghlamtha againn: níl aon ghlaoch orainn
+<code>clone</code>, ach tá <code>x</code> fós bailí agus níor aistríodh go <code>y</code> é.</p>
+<p>Is é an chúis atá leis sin ná go bhfuil cineálacha cosúil le slánuimhreacha a bhfuil méid aitheanta acu ag tiomsú
+stóráiltear an t-am go hiomlán ar an gcruach, mar sin tá cóipeanna de na luachanna iarbhír tapa
+a dhéanamh. Ciallaíonn sé sin nach bhfuil aon chúis ann go mbeimis ag iarraidh <code>x</code> a chosc
+bailí tar éis dúinn an athróg <code>y</code> a chruthú. I bhfocail eile, níl aon difríocht ann
+idir chóipeáil dhomhain agus éadomhain anseo, mar sin ní dhéanfadh glaoch <code>clone</code> tada
+difriúil ón ngnáthchóipeáil éadomhain, agus is féidir linn é a fhágáil amach.</p>
+<p>Tá nóta speisialta ag Rust ar a dtugtar an trait <code>Copy</code> is féidir linn a chur air
+cineálacha atá stóráilte ar an chruach, mar atá slánuimhreacha (beidh muid ag caint níos mó faoi
+tréithe i <a href="ch10-02-traits.html">Caibidil 10</a><!-- ignore -->). Má chuireann cineál an <code>Copy</code> i bhfeidhm
+tréithe, ní ghluaiseann athróga a úsáideann í, ach go ndéantar iad a chóipeáil go fánach,
+rud a fhágann go bhfuil siad fós bailí tar éis sannadh d'athróg eile.</p>
+<p>Ní ligfidh Rust dúinn cineál a anótáil le <code>Copy</code> más é an cineál, nó aon chuid dá chuid,
+tá an trait <code>Drop</code> curtha i bhfeidhm aige. Má theastaíonn rud éigin speisialta ón gcineál le tarlú
+nuair a théann an luach as raon feidhme agus cuirimid an nóta <code>Copy</code> leis an gcineál sin,
+gheobhaidh muid earráid ama tiomsaithe. Chun foghlaim faoi conas an nóta <code>Copy</code> a chur leis
+le do chineál chun an tréith a chur i bhfeidhm, féach [“Derivable
+Traits”][díorthaigh-traits]<!-- ignore --> in Aguisín C.</p>
+<p>Mar sin, cad iad na cineálacha a chuireann an trait <code>Copy</code> i bhfeidhm? Is féidir leat an doiciméadú a sheiceáil le haghaidh
+an cineál a thugtar a bheith cinnte, ach mar riail ghinearálta, aon ghrúpa de scálach simplí
+is féidir le luachanna <code>Copy</code> a chur i bhfeidhm, agus ní gá aon rud a leithdháileadh nó a bhfuil cuid acu
+foirm acmhainne is féidir <code>Copy</code> a chur i bhfeidhm. Seo cuid de na cineálacha a
+cuir <code>Copy</code> i bhfeidhm:</p>
+<ul>
+<li>Gach cineál slánuimhir, mar shampla <code>u32</code>.</li>
+<li>An cineál Boole, <code>bool</code>, le luachanna <code>true</code> agus <code>false</code>.</li>
+<li>Gach cineál snámhphointe, mar shampla <code>f64</code>.</li>
+<li>An cineál carachtar, <code>char</code>.</li>
+<li>Tuples, mura bhfuil iontu ach cineálacha a chuireann <code>Copy</code> i bhfeidhm freisin. Mar shampla,
+Cuireann <code>(i32, i32)</code> <code>Copy</code> i bhfeidhm, ach ní dhéanann <code>(i32, Teaghrán)</code>.</li>
+</ul>
+<h3 id="Úinéireacht-agus-feidhmeanna"><a class="header" href="#Úinéireacht-agus-feidhmeanna">Úinéireacht agus Feidhmeanna</a></h3>
+<p>Tá na meicníochtaí a bhaineann le luach a chur ar aghaidh go dtí feidhm cosúil leo siúd nuair a
+luach a shannadh d'athróg. Má chuirtear athróg ar aghaidh chuig feidhm, bogfar nó
+cóip, díreach mar a dhéanann sannadh. Tá sampla i liostú 4-3 le roinnt nótaí
+ag léiriú cá háit a dtéann athróga isteach agus amach as an scóip.</p>
+<Listing number="4-3" file-name="src/main.rs" caption="Feidhmeanna le húinéireacht agus raon feidhme anótáilte">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let s = String::from("hello");  // s comes into scope
+
+    takes_ownership(s);             // s's value moves into the function...
+                                    // ... and so is no longer valid here
+
+    let x = 5;                      // x comes into scope
+
+    makes_copy(x);                  // because i32 implements the Copy trait,
+                                    // x does NOT move into the function,
+    println!("{}", x);              // so it's okay to use x afterward
+
+} // Here, x goes out of scope, then s. But because s's value was moved, nothing
+  // special happens.
+
+fn takes_ownership(some_string: String) { // some_string comes into scope
+    println!("{some_string}");
+} // Here, some_string goes out of scope and `drop` is called. The backing
+  // memory is freed.
+
+fn makes_copy(some_integer: i32) { // some_integer comes into scope
+    println!("{some_integer}");
+} // Here, some_integer goes out of scope. Nothing special happens.</code></pre></pre>
+</Listing>
+<p>Dá ndéanfaimis iarracht <code>s</code> a úsáid tar éis an ghlao go <code>takes_ownership</code>, chaithfeadh Rust a
+earráid ama tiomsaithe. Cosnaíonn na seiceálacha statacha seo sinn ó bhotúin. Bain triail as cur
+cód go <code>main</code> a úsáideann <code>s</code> agus <code>x</code> chun a fheiceáil cén áit ar féidir leat iad a úsáid agus cén áit
+cuireann na rialacha úinéireachta cosc ​​ort é sin a dhéanamh.</p>
+<h3 id="luachanna-aischuir-agus-scóip"><a class="header" href="#luachanna-aischuir-agus-scóip">Luachanna Aischuir agus Scóip</a></h3>
+<p>Is féidir le luachanna tuairisceáin úinéireacht a aistriú freisin. Taispeánann liosta 4-4 sampla de a
+feidhm a thugann luach éigin ar ais, le nótaí cosúil leis na cinn i Liostú
+4-3.</p>
+<Listing number="4-4" file-name="src/main.rs" caption="Transferring ownership of return values">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let s1 = gives_ownership();         // gives_ownership moves its return
+                                        // value into s1
+
+    let s2 = String::from("hello");     // s2 comes into scope
+
+    let s3 = takes_and_gives_back(s2);  // s2 is moved into
+                                        // takes_and_gives_back, which also
+                                        // moves its return value into s3
+} // Here, s3 goes out of scope and is dropped. s2 was moved, so nothing
+  // happens. s1 goes out of scope and is dropped.
+
+fn gives_ownership() -&gt; String {             // gives_ownership will move its
+                                             // return value into the function
+                                             // that calls it
+
+    let some_string = String::from("yours"); // some_string comes into scope
+
+    some_string                              // some_string is returned and
+                                             // moves out to the calling
+                                             // function
+}
+
+// This function takes a String and returns one
+fn takes_and_gives_back(a_string: String) -&gt; String { // a_string comes into
+                                                      // scope
+
+    a_string  // a_string is returned and moves out to the calling function
+}</code></pre></pre>
+</Listing>
+<p>leanann úinéireacht athróige an patrún céanna gach uair: ag sannadh a
+aistríonn luach chuig athróg eile é. Nuair a athróg a chuimsíonn sonraí ar an
+gcarn imithe as raon feidhme, beidh an luach a ghlanadh suas le <code>drop</code> mura úinéireacht
+de na sonraí aistríodh chuig athróg eile.</p>
+<p>Cé go n-oibríonn sé seo, úinéireacht a ghlacadh agus ansin úinéireacht a thabhairt ar ais le gach
+Tá feidhm beagán tedious. Cad a tharlaíonn má theastaíonn uainn ligean d’fheidhm luach a úsáid ach
+nach bhfuil úinéireacht a ghlacadh? Tá sé an-chorraithe go bhfuil gá le haon rud a thabharfaimid isteach freisin
+a thabhairt ar ais más mian linn é a úsáid arís, chomh maith le haon sonraí a thagann as
+ó chorp an fheidhm a d'fhéadfadh muid a bheith ag iarraidh a thabhairt ar ais chomh maith.</p>
+<p>Ligeann Rust dúinn luachanna iolracha a thabhairt ar ais trí úsáid a bhaint as tuple, mar a thaispeántar i Liostú 4-5.</p>
+<Listing number="4-5" file-name="src/main.rs" caption="Úinéireacht paraiméadair á filleadh">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let s1 = String::from("hello");
+
+    let (s2, len) = calculate_length(s1);
+
+    println!("The length of '{s2}' is {len}.");
+}
+
+fn calculate_length(s: String) -&gt; (String, usize) {
+    let length = s.len(); // len() returns the length of a String
+
+    (s, length)
+}</code></pre></pre>
+</Listing>
+<p>Ach tá sé seo i bhfad ró-searmanas agus a lán oibre le haghaidh coincheap ba chóir a bheith
+coitianta. Go fortunately dúinn, tá gné ag Rust chun luach a úsáid gan
+úinéireacht a aistriú, ar a dtugtar <em>references</em>.</p>
 
                     </main>
 
