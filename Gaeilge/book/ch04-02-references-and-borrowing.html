@@ -159,7 +159,347 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="references-and-borrowing"><a class="header" href="#references-and-borrowing">References and Borrowing</a></h1>
+                        <h2 id="tagairtí-agus-iasacht"><a class="header" href="#tagairtí-agus-iasacht">Tagairtí agus Iasacht</a></h2>
+<p>Is í an tsaincheist leis an gcód tuple i Liosta 4-5 ná go gcaithfimid an
+<code>String</code> don fheidhm ghlao ionas gur féidir linn fós an <code>String</code> a úsáid tar éis an
+glaoigh go <code>calculate_length</code>, mar gur aistríodh an <code>String</code> isteach
+<code>calculate_length</code>. Ina áit sin, is féidir linn tagairt a sholáthar don luach <code>String</code>.
+Tá <em>reference</em> cosúil le pointeoir sa mhéid is gur seoladh é ar féidir linn rochtain a fháil air
+na sonraí atá stóráilte ag an seoladh sin; is le hathróg éigin eile na sonraí sin.
+Murab ionann agus pointeoir, ráthaítear le tagairt luach bailí a
+cineál ar leith do shaolré na tagartha sin.</p>
+<p>Seo é an chaoi a shaineofá agus a n-úsáidfeá feidhm <code>calculate_length</code> a bhfuil a
+tagairt do réad mar pharaiméadar in ionad úinéireacht a ghlacadh ar an luach:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let s1 = String::from("hello");
+
+    let len = calculate_length(&amp;s1);
+
+    println!("The length of '{s1}' is {len}.");
+}
+
+fn calculate_length(s: &amp;String) -&gt; usize {
+    s.len()
+}</code></pre></pre>
+</Listing>
+<p>Gcéad dul síos, faoi deara go léir an cód tuple sa dearbhú athróg agus an
+Tá luach ar ais feidhm imithe. Ar an dara dul síos, tabhair faoi deara go gcuirimid <code>&amp;s1</code> isteach
+<code>calculate_length</code> agus, ina shainmhíniú, glacaimid <code>&amp;String</code> seachas
+<code>String</code>. Is ionann na hampersands seo agus <em>references</em>, agus ligeann siad duit tagairt a dhéanamh
+ar luach éigin gan úinéireacht a ghlacadh air. Léiríonn Fíor 4-6 an coincheap seo.</p>
+<p><img alt="Trí thábla: níl sa tábla le haghaidh s ach pointeoir don tábla
+le haghaidh s1. Sa tábla do s1 tá na sonraí cruachta le haghaidh s1 agus pointí chuig an
+sonraí teaghrán ar an gcarn." src="img/trpl04-06.svg" class="center" /></p>
+<p><span class="caption">Fíor 4-6: Léaráid de <code>&amp;String s</code> ag pointeáil ar <code>String s1</code></span></p>
+<blockquote>
+<p>Nóta: Is é <em>dereferencing</em> a mhalairt de thagairtí trí úsáid a bhaint as <code>&amp;</code>, is é sin
+bainte amach leis an oibreoir dereference, <code>*</code>. Feicfimid roinnt úsáidí as an
+oibreoir dereference i gCaibidil 8 agus pléigh sonraí na díthagartha i
+Caibidil 15 .</p>
+</blockquote>
+<p>Breathnaímis ar an nglao feidhme anseo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("hello");
+
+    let len = calculate_length(&amp;s1);
+<span class="boring">
+</span><span class="boring">    println!("The length of '{s1}' is {len}.");
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn calculate_length(s: &amp;String) -&gt; usize {
+</span><span class="boring">    s.len()
+</span><span class="boring">}</span></code></pre></pre>
+<p>Ligeann an chomhréir <code>&amp;s1</code> dúinn tagairt a chruthú a <em>tagraíonn</em> do luach <code>s1</code>
+ach ní leis é. Toisc nach leis an tagairt í, díríonn an luach
+ní scaoilfear leis nuair a stopann úsáid na tagartha.</p>
+<p>Mar an gcéanna, úsáideann síniú na feidhme <code>&amp;</code> chun a chur in iúl go bhfuil an cineál
+is tagairt é an paraiméadar <code>s</code>. Cuirimis roinnt nótaí míniúcháin leis:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let s1 = String::from("hello");
+</span><span class="boring">
+</span><span class="boring">    let len = calculate_length(&amp;s1);
+</span><span class="boring">
+</span><span class="boring">    println!("The length of '{s1}' is {len}.");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn calculate_length(s: &amp;String) -&gt; usize { // s is a reference to a String
+    s.len()
+} // Here, s goes out of scope. But because s does not have ownership of what
+  // it refers to, the value is not dropped.</code></pre></pre>
+<p>Is ionann an scóip ina bhfuil an athróg <code>s</code> bailí agus feidhm ar bith
+raon feidhme an pharaiméadar, ach ní thittear an luach a luann an tagairt
+nuair a stopann <code>s</code> á úsáid, mar níl úinéireacht ag <code>s</code>. Nuair a feidhmeanna
+tagairtí a bheith agat mar pharaiméadair in ionad na luachanna iarbhír, ní bheidh orainn
+na luachanna a thabhairt ar ais chun úinéireacht a thabhairt ar ais, mar ní raibh againn riamh
+úinéireacht.</p>
+<p>Glaoimid ar an ngníomh chun tagairt a chruthú <em>iasacht</em>. Mar atá sa saol fíor, más rud é a
+is leis an duine rud éigin, is féidir leat é a fháil ar iasacht uathu. Nuair a bheidh tú críochnaithe, tá
+é a thabhairt ar ais. Ní leatsa é.</p>
+<p>Mar sin, cad a tharlóidh má dhéanaimid iarracht rud éigin atá á fháil ar iasacht againn a mhodhnú? Bain triail as an gcód i
+Liostáil 4-6. Foláireamh spoiler: ní oibríonn sé!</p>
+<Listing number="4-6" file-name="src/main.rs" caption="Attempting to modify a borrowed value">
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let s = String::from("hello");
+
+    change(&amp;s);
+}
+
+fn change(some_string: &amp;String) {
+    some_string.push_str(", world");
+}</code></pre>
+</Listing>
+<p>Seo an earráid:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0596]: cannot borrow `*some_string` as mutable, as it is behind a `&amp;` reference
+ --&gt; src/main.rs:8:5
+  |
+8 |     some_string.push_str(", world");
+  |     ^^^^^^^^^^^ `some_string` is a `&amp;` reference, so the data it refers to cannot be borrowed as mutable
+  |
+help: consider changing this to be a mutable reference
+  |
+7 | fn change(some_string: &amp;mut String) {
+  |                         +++
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `ownership` (bin "ownership") due to 1 previous error
+</code></pre>
+<p>Díreach mar a bhíonn athróga do-athchurtha de réir réamhshocraithe, is amhlaidh atá tagairtí. Nílimid
+cead rud éigin a bhfuil tagairt againn dó a mhodhnú.</p>
+<h3 id="tagairtí-mutable"><a class="header" href="#tagairtí-mutable">Tagairtí Mutable</a></h3>
+<p>Is féidir linn an cód ó Liosta 4-6 a shocrú chun ligean dúinn luach a fuarthas ar iasacht a mhionathrú
+gan ach cúpla tweaks beaga a úsáideann, ina ionad sin, tagairt <em>mutable</em>:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let mut s = String::from("hello");
+
+    change(&amp;mut s);
+}
+
+fn change(some_string: &amp;mut String) {
+    some_string.push_str(", world");
+}</code></pre></pre>
+</Listing>
+<p>Ar dtús athraíonn muid <code>s</code> le bheith <code>mut</code>. Ansin cruthaímid tagairt mutable le <code>&amp;mut s</code> áit a dtugaimid an fheidhm <code>change</code>, agus nuashonraímid síniú na feidhme go
+glac le tagairt mutable le <code>some_string: &amp;mut String</code>. Déanann sé seo an-
+soiléir go n-athróidh an fheidhm <code>change</code> an luach a gheobhaidh sé ar iasacht.</p>
+<p>Tá srian mór amháin ag tagairtí mutable: má tá tagairt shoghluaiste agat do
+luach, ní féidir aon tagairtí eile a bheith agat don luach sin. An cód seo go
+theipeann ar iarrachtaí dhá thagairt sho-shóite a chruthú do <code>s</code>:</p>
+<Listing file-name="src/main.rs">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let mut s = String::from("hello");
+
+    let r1 = &amp;mut s;
+    let r2 = &amp;mut s;
+
+    println!("{}, {}", r1, r2);
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Seo an earráid:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0499]: cannot borrow `s` as mutable more than once at a time
+ --&gt; src/main.rs:5:14
+  |
+4 |     let r1 = &amp;mut s;
+  |              ------ first mutable borrow occurs here
+5 |     let r2 = &amp;mut s;
+  |              ^^^^^^ second mutable borrow occurs here
+6 |
+7 |     println!("{}, {}", r1, r2);
+  |                        -- first borrow later used here
+
+For more information about this error, try `rustc --explain E0499`.
+error: could not compile `ownership` (bin "ownership") due to 1 previous error
+</code></pre>
+<p>Deir an earráid seo go bhfuil an cód seo neamhbhailí toisc nach féidir linn <code>s</code> a fháil ar iasacht mar
+mutable níos mó ná uair amháin ag an am. Tá an chéad iasacht sho-shóite i <code>r1</code> agus ní mór
+deireanach go dtí go n-úsáidtear é sa <code>println!</code>, ach idir chruthú sin
+tagairt mutable agus a úsáid, rinneamar iarracht tagairt eile a chruthú mutable
+in <code>r2</code> a fhaigheann na sonraí céanna ar iasacht le <code>r1</code>.</p>
+<p>An srian a chuireann cosc ​​ar thagairtí mutable iolracha do na sonraí céanna ag an
+ceadaíonn an t-am céanna sóchán ach ar bhealach an-rialaithe. Is rud é
+a mbíonn na Rustaceans nua ag streachailt leo mar ligeann formhór na dteangacha duit sóchán a dhéanamh
+aon uair is mian leat. Is é an buntáiste a bhaineann leis an srianadh seo ná gur féidir le Rust
+cosc a chur ar rásaí sonraí ag am tiomsaithe. Tá rás <em>data</em> cosúil le rás
+riocht agus a tharlaíonn nuair a tharlaíonn na trí iompar seo:</p>
+<ul>
+<li>Tá rochtain ag dhá threo nó níos mó ar na sonraí céanna ag an am céanna.</li>
+<li>Tá ceann amháin ar a laghad de na leideanna á n-úsáid chun na sonraí a scríobh.</li>
+<li>Níl aon mheicníocht á húsáid chun rochtain ar na sonraí a shioncronú.</li>
+</ul>
+<p>Is cúis le hiompar neamhshainithe is cúis le rásaí sonraí agus is féidir leo a bheith deacair a dhiagnóiseadh agus a shocrú
+nuair atá tú ag iarraidh iad a rianú síos ag am rite; Coscann meirge an fhadhb seo trí
+ag diúltú cód a thiomsú le rásaí sonraí!</p>
+<p>Mar is gnáth, is féidir linn lúibíní cuartha a úsáid chun raon feidhme nua a chruthú, rud a cheadaíonn
+tagairtí iolracha mutable, ní hamháin cinn <em>comhuaineacha</em>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from("hello");
+
+    {
+        let r1 = &amp;mut s;
+    } // r1 goes out of scope here, so we can make a new reference with no problems.
+
+    let r2 = &amp;mut s;
+<span class="boring">}</span></code></pre></pre>
+<p>Forfheidhmíonn meirge riail chomhchosúil maidir le tagairtí in-shóite agus neamh-inmheasartha a chomhcheangal.
+Tá earráid mar thoradh ar an gcód seo:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let mut s = String::from("hello");
+
+    let r1 = &amp;s; // no problem
+    let r2 = &amp;s; // no problem
+    let r3 = &amp;mut s; // BIG PROBLEM
+
+    println!("{}, {}, and {}", r1, r2, r3);
+<span class="boring">}</span></code></pre>
+<p>Seo an earráid:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+ --&gt; src/main.rs:6:14
+  |
+4 |     let r1 = &amp;s; // no problem
+  |              -- immutable borrow occurs here
+5 |     let r2 = &amp;s; // no problem
+6 |     let r3 = &amp;mut s; // BIG PROBLEM
+  |              ^^^^^^ mutable borrow occurs here
+7 |
+8 |     println!("{}, {}, and {}", r1, r2, r3);
+  |                                -- immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `ownership` (bin "ownership") due to 1 previous error
+</code></pre>
+<p>Whew! Ní féidir tagairt chomhshóite a bheith againn <em>freisin</em>, cé go bhfuil ceann nach féidir a mhalartú againn
+ar an luach céanna.</p>
+<p>Ní bhíonn úsáideoirí teistiméireachta domhalartaithe ag súil go n-athróidh an luach go tobann
+ó thíos leo! Mar sin féin, ceadaítear tagairtí iolracha domhalartaithe toisc nach bhfuil
+tá an cumas ag an té atá díreach ag léamh na sonraí dul i bhfeidhm ar dhaoine eile
+léamh na sonraí.</p>
+<p>Tabhair faoi deara go dtosaíonn scóip teistiméireachta ón áit a dtugtar isteach é agus go leanann sé ar aghaidh
+tríd an uair dheireanach a úsáidtear an tagairt sin. Mar shampla, déanfaidh an cód seo
+tiomsaigh toisc go bhfuil an úsáid dheireanach a bhaintear as na tagairtí domhalartaithe sa <code>println!</code>,
+sula dtabharfar isteach an tagairt mutable:</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">fn main() {
+</span>    let mut s = String::from("hello");
+
+    let r1 = &amp;s; // no problem
+    let r2 = &amp;s; // no problem
+    println!("{r1} and {r2}");
+    // variables r1 and r2 will not be used after this point
+
+    let r3 = &amp;mut s; // no problem
+    println!("{r3}");
+<span class="boring">}</span></code></pre></pre>
+<p>Críochnaíonn scóip na dtagairtí domhalartaithe <code>r1</code> agus <code>r2</code> tar éis an <code>println!</code>
+an áit a n-úsáidtear go deireanach iad, is é sin roimh an tagairt mutable <code>r3</code>
+cruthaithe. Ní fhorluíonn na scóip seo, mar sin ceadaítear an cód seo: is féidir leis an tiomsaitheoir
+abair nach bhfuil an tagairt á húsáid a thuilleadh ag pointe roimh dheireadh na
+an scóip.</p>
+<p>Cé go bhféadfadh earráidí iasachtaithe a bheith frustrachas uaireanta, cuimhnigh go bhfuil
+an tiomsaitheoir Rust ag cur in iúl fabht féideartha go luath (ag am tiomsaithe in áit
+ná ag am rite) agus a thaispeánann go beacht duit cá bhfuil an fhadhb. Ansin ní dhéanann tú
+caithfidh tú a lorg cén fáth nach bhfuil do shonraí mar a cheap tú a bhí ann.</p>
+<h3 id="tagairtí-crochta"><a class="header" href="#tagairtí-crochta">Tagairtí Crochta</a></h3>
+<p>I dteangacha le leideanna, is furasta <em>crochta a chruthú go hearráideach
+pointeoir</em>—pointeoir a dhéanann tagairt d’ionad i gcuimhne a d’fhéadfadh a bheith
+a thugtar do dhuine eile - trí chuimhne a shaoradh agus pointeoir chuige sin á chaomhnú
+cuimhne. I Rust, i gcodarsnacht leis sin, ráthaíonn an tiomsaitheoir go mbeidh tagairtí
+riamh a bheith crochta tagairtí: má tá tú tagairt do roinnt sonraí, an
+áiritheoidh tiomsaitheoir nach rachaidh na sonraí as raon feidhme roimh an
+déanann tagairt do na sonraí.</p>
+<p>Déanaimis iarracht tagairt dhochrach a chruthú lena fheiceáil conas a chuireann Rust cosc ​​orthu le a
+earráid ama tiomsaithe:</p>
+<Listing file-name="src/main.rs">
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let reference_to_nothing = dangle();
+}
+
+fn dangle() -&gt; &amp;String {
+    let s = String::from("hello");
+
+    &amp;s
+}</code></pre>
+</Listing>
+<p>Seo an earráid:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0106]: missing lifetime specifier
+ --&gt; src/main.rs:5:16
+  |
+5 | fn dangle() -&gt; &amp;String {
+  |                ^ expected named lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value, but there is no value for it to be borrowed from
+help: consider using the `'static` lifetime, but this is uncommon unless you're returning a borrowed value from a `const` or a `static`
+  |
+5 | fn dangle() -&gt; &amp;'static String {
+  |                 +++++++
+help: instead, you are more likely to want to return an owned value
+  |
+5 - fn dangle() -&gt; &amp;String {
+5 + fn dangle() -&gt; String {
+  |
+
+error[E0515]: cannot return reference to local variable `s`
+ --&gt; src/main.rs:8:5
+  |
+8 |     &amp;s
+  |     ^^ returns a reference to data owned by the current function
+
+Some errors have detailed explanations: E0106, E0515.
+For more information about an error, try `rustc --explain E0106`.
+error: could not compile `ownership` (bin "ownership") due to 2 previous errors
+</code></pre>
+<p>Tagraíonn an teachtaireacht earráide seo do ghné nár chlúdaigh muid go fóill: saolréanna. Déanfaimid
+pléigh saolréanna go mion i gCaibidil 10. Ach, má dhéanann tú neamhaird ar na codanna
+maidir le saolréanna, tá an eochair sa teachtaireacht maidir le cén fáth gur fadhb é an cód seo:</p>
+<pre><code class="language-téacs">tá luach a fuarthas ar iasacht i gcineál aischuir na feidhme seo, ach níl aon luach ann
+chun é a fháil ar iasacht uaidh
+</code></pre>
+<p>Breathnaímis ar cad go díreach atá ag tarlú ag gach céim dár gcuid
+cód <code>dangle</code>:</p>
+<Listing file-name="src/main.rs">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span><span class="boring">    let reference_to_nothing = dangle();
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn dangle() -&gt; &amp;String { // dangle returns a reference to a String
+
+    let s = String::from("hello"); // s is a new String
+
+    &amp;s // we return a reference to the String, s
+} // Here, s goes out of scope, and is dropped. Its memory goes away.
+  // Danger!</code></pre>
+</Listing>
+<p>Toisc go gcruthaítear <code>s</code> taobh istigh de <code>dangle</code>, nuair a bhíonn an cód <code>dangle</code> críochnaithe,
+beidh <code>s</code> dealaithe. Ach rinneamar iarracht tagairt a thabhairt ar ais dó. Ciallaíonn sé sin
+bheadh ​​an tagairt seo ag tagairt do <code>String</code> neamhbhailí. Níl sin go maith! Meirge
+ná lig dúinn é seo a dhéanamh.</p>
+<p>Is é an réiteach anseo ná an <code>String</code> a thabhairt ar ais go díreach:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let string = no_dangle();
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn no_dangle() -&gt; String {
+    let s = String::from("hello");
+
+    s
+}</code></pre></pre>
+<p>Oibríonn sé seo gan aon fhadhbanna. Tá úinéireacht ar athraíodh a ionad amach, agus tá rud ar bith
+dealraithe.</p>
+<h3 id="na-rialacha-tagartha"><a class="header" href="#na-rialacha-tagartha">Na Rialacha Tagartha</a></h3>
+<p>Gabhaimis siar a bhfuil pléite againn faoi thagairtí:</p>
+<ul>
+<li>Ag aon am ar leith, is féidir leat <em>ceachtar</em> tagairt sho-shóite amháin a bheith agat <em>nó</em> ar bith
+líon na dtagairtí dochorraithe.</li>
+<li>Caithfidh teistiméireachtaí a bheith bailí i gcónaí.</li>
+</ul>
+<p>Ansin, féachfaimid ar thagairt de chineál eile: slices.</p>
 
                     </main>
 
