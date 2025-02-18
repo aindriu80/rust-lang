@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>An Cineál Slisne - An Teanga Ríomhchláraithe Rust</title>
+        <title>An Cineál Slice - An Teanga Ríomhchláraithe Rust</title>
 
 
         <!-- Custom HTML head -->
@@ -159,7 +159,412 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="the-slice-type"><a class="header" href="#the-slice-type">The Slice Type</a></h1>
+                        <h2 id="an-cineál-slice"><a class="header" href="#an-cineál-slice">An Cineál Slice</a></h2>
+<p>Ligeann <em>Slices</em> duit tagairt a dhéanamh do sheicheamh comhtheagmhálach d’eilimintí in a
+<a href="ch08-00-common-collections.html">collection</a> seachas an cnuasach iomlán. A
+Is cineál tagartha é slice, mar sin níl úinéireacht aige.</p>
+<p>Seo fadhb bheag ríomhchláraithe: scríobh feidhm a ghlacann teaghrán de
+focail scartha le spásanna agus seolann sé ar ais an chéad fhocal a aimsíonn sé sa téad sin.
+Mura bhfaighidh an fheidhm spás sa téad, caithfidh an téad iomlán a bheith
+focal amháin, mar sin ba chóir an teaghrán iomlán a chur ar ais.</p>
+<p>Déanaimis oibriú tríd an gcaoi a scríobhfaimid síniú na feidhme seo gan úsáid a bhaint as
+slices, chun an fhadhb a réiteoidh slisní a thuiscint:</p>
+<pre><code class="language-rust ignore">fn first_word(s: &amp;String) -&gt; ?</code></pre>
+<p>Tá <code>&amp;String</code> mar pharaiméadar ag an bhfeidhm <code>first_word</code>. Ní gá dúinn
+úinéireacht, mar sin tá sé seo go breá. (I Rust idiomatic, ní feidhmeanna a ghlacadh úinéireacht
+dá n-argóintí mura gá, agus tiocfaidh na cúiseanna leis sin
+soiléir agus muid ag leanúint ar aghaidh!) Ach cad ba cheart dúinn filleadh? Níl bealach againn i ndáiríre
+chun labhairt faoi chuid de shreang. Mar sin féin, d'fhéadfaimis an t-innéacs de dheireadh na
+an focal, léirithe ag spás. Déanaimis iarracht é sin, mar a thaispeántar i Liostú 4-7.</p>
+<Listing number="4-7" file-name="src/main.rs" caption="The `first_word` function that returns a byte index value into the `String` parameter">
+<pre><pre class="playground"><code class="language-rust">fn first_word(s: &amp;String) -&gt; usize {
+    let bytes = s.as_bytes();
+
+    for (i, &amp;item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return i;
+        }
+    }
+
+    s.len()
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Toisc go gcaithfimid dul tríd an eilimint <code>String</code> de réir eiliminte agus seiceáil an bhfuil
+Is spás é luach, déanfaimid ár <code>String</code> a thiontú go sraith beart ag baint úsáide as an
+modh <code>as_bytes</code>.</p>
+<pre><code class="language-rust ignore"><span class="boring">fn first_word(s: &amp;String) -&gt; usize {
+</span>    let bytes = s.as_bytes();
+<span class="boring">
+</span><span class="boring">    for (i, &amp;item) in bytes.iter().enumerate() {
+</span><span class="boring">        if item == b' ' {
+</span><span class="boring">            return i;
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    s.len()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
+<p>Ansin, cruthaímid iterator thar an sraith beart ag baint úsáide as an modh <code>iter</code>:</p>
+<pre><code class="language-rust ignore"><span class="boring">fn first_word(s: &amp;String) -&gt; usize {
+</span><span class="boring">    let bytes = s.as_bytes();
+</span><span class="boring">
+</span>    for (i, &amp;item) in bytes.iter().enumerate() {
+<span class="boring">        if item == b' ' {
+</span><span class="boring">            return i;
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    s.len()
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
+<p>Déanfaimid plé níos mine ar atrialltóirí i <a href="ch13-02-iterators.html">Caibidil 13</a><!-- neamhaird -->.
+Go dtí seo, bíodh a fhios agat gur modh é <code>iter</code> a thugann gach eilimint i mbailiúchán ar ais
+agus go gcumhdaíonn <code>enumerate</code> toradh <code>iter</code> agus cuireann sé gach eilimint ar ais mar
+cuid de tuple ina ionad. D'fhill an chéad eilimint den tuple ó
+Is é <code>enumerate</code> an t-innéacs, agus is tagairt í an dara eilimint don eilimint.
+Tá sé seo beagán níos áisiúla ná an t-innéacs a ríomh dúinn féin.</p>
+<p>Toisc go dtugann an modh <code>áirimh</code> tuple ar ais, is féidir linn patrúin a úsáid chun
+scrios an tuple sin. Beidh muid ag plé patrúin níos mó i <a href="ch06-02-match.html#patterns-that-bind-to-values">Caibidil
+6</a> <!-- neamhaird a dhéanamh -->. Sa lúb <code>do</code>, sonraímid patrún a bhfuil <code>i</code> air
+don innéacs sa tuple agus <code>&amp;item</code> don bheart singil sa tuple.
+Toisc go bhfaighimid tagairt don eilimint ó <code>.iter().enurate()</code>, úsáidimid
+<code>&amp;</code> sa phatrún.</p>
+<p>Laistigh den lúb <code>do</code>, déanaimid cuardach don bheart a sheasann don spás trí
+ag baint úsáide as an chomhréir liteartha beart. Má aimsímid spás, cuirimid an suíomh ar ais.
+Seachas sin, cuirimid fad na sreinge ar ais trí úsáid a bhaint as <code>s.len()</code>.</p>
+<pre><code class="language-rust ignore"><span class="boring">fn first_word(s: &amp;String) -&gt; usize {
+</span><span class="boring">    let bytes = s.as_bytes();
+</span><span class="boring">
+</span><span class="boring">    for (i, &amp;item) in bytes.iter().enumerate() {
+</span>        if item == b' ' {
+            return i;
+        }
+    }
+
+    s.len()
+<span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
+<p>Tá bealach againn anois le hinnéacs deireadh an chéad fhocail sa
+teaghrán, ach tá fadhb ann. Táimid ag tabhairt 'usize' ar ais leis féin, ach tá
+uimhir bhríoch amháin i gcomhthéacs an <code>&amp;String</code>. I bhfocail eile,
+toisc gur luach ar leith é ón <code>String</code>, níl aon ráthaíocht ann go mbeidh sé
+beidh sé fós bailí sa todhchaí. Smaoinigh ar an gclár i Liosta 4-8 go
+úsáideann an fheidhm <code>first_word</code> ó Liostú 4-7.</p>
+<Listing number="4-8" file-name="src/main.rs" caption="Storing the result from calling the `first_word` function and then changing the `String` contents">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn first_word(s: &amp;String) -&gt; usize {
+</span><span class="boring">    let bytes = s.as_bytes();
+</span><span class="boring">
+</span><span class="boring">    for (i, &amp;item) in bytes.iter().enumerate() {
+</span><span class="boring">        if item == b' ' {
+</span><span class="boring">            return i;
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    s.len()
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let mut s = String::from("hello world");
+
+    let word = first_word(&amp;s); // word will get the value 5
+
+    s.clear(); // this empties the String, making it equal to ""
+
+    // `word` still has the value `5` here, but `s` no longer has any content
+    // that we could meaningfully use with the value `5`, so `word` is now
+    // totally invalid!
+}</code></pre></pre>
+</Listing>
+<p>Tiomsaítear an clár seo gan aon earráidí agus dhéanfadh sé é sin freisin dá mba rud é gur úsáideamar <code>word</code>
+tar éis glaoch ar <code>s.clear()</code>. Toisc nach bhfuil <code>word</code> ceangailte le staid <code>s</code>
+ar chor ar bith, tá an luach <code>5</code> fós i <code>word</code>. D'fhéadfaimis an luach sin <code>5</code> a úsáid le
+an athróg <code>s</code> chun iarracht a dhéanamh an chéad fhocal a bhaint amach, ach bheadh ​​​​sé seo ina fhabht
+mar tá ábhar <code>s</code> athraithe ó shábháil muid <code>5</code> i <code>word</code>.</p>
+<p>Ní mór a bheith buartha faoin innéacs i <code>word</code> ag éirí as sioncronú leis na sonraí i
+Tá <code>s</code> tedious agus seans maith go hearráid! Tá sé níos brí fós na hinnéacsanna seo a bhainistiú más rud é
+scríobhaimid feidhm <code>second_word</code>. Chaithfeadh a shíniú breathnú mar seo:</p>
+<pre><code class="language-rust ignore">fn second_word(s: &amp;String) -&gt; (usize, usize) {</code></pre>
+<p>Anois tá <em>agus</em> innéacs tosaigh á rianú againn, agus tá níos mó fós againn
+luachanna a ríomhadh ó shonraí i stát ar leith ach nach bhfuil ceangailte leo
+an stát sin ar chor ar bith. Tá trí athróg neamhghaolmhara againn ag snámh thart ar an riachtanas sin
+a choinneáil i sioncronú.</p>
+<p>Ar ámharaí an tsaoil, tá réiteach ag Rust ar an bhfadhb seo: slisní teaghrán.</p>
+<h3 id="sliseanna-teaghrán"><a class="header" href="#sliseanna-teaghrán">Sliseanna Teaghrán</a></h3>
+<p>Tagairt is ea <em>string slice</em> do chuid de <code>String</code>, agus tá an chuma air seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s = String::from("hello world");
+
+    let hello = &amp;s[0..5];
+    let world = &amp;s[6..11];
+<span class="boring">}</span></code></pre></pre>
+<p>Seachas tagairt don <code>String</code> iomlán, is tagairt é <code>hello</code> d'a
+cuid den <code>String</code>, sonraithe sa ghiotán breise <code>[0..5]</code>. Cruthaímid slisní
+ag baint úsáide as raon laistigh de lúibíní trí <code>[starting_index..ending_index]</code> a shonrú,
+áit a bhfuil <code>starting_index</code> an chéad suíomh sa slice agus is é <code>ending_index</code>
+ceann amháin níos mó ná an seasamh deireanach sa slice. Go hinmheánach, na sonraí slice
+Stórálann struchtúr an suíomh tosaigh agus fad an slice, a
+fhreagraíonn do <code>ending_index</code> lúide <code>starting_index</code>. Mar sin, i gcás <code>let world = &amp;s[6..11];</code>, bheadh ​​<code>world</code> ina shlis ina bhfuil pointeoir don
+beart ag innéacs 6 de <code>s</code> le luach faid <code>5</code>.</p>
+<p>Taispeánann Fíor 4-7 é seo i léaráid.</p>
+<p><img alt="Trí thábla: tábla a léiríonn sonraí cruachta s, a léiríonn
+chuig an mbeart ag innéacs 0 i dtábla de na sonraí teaghrán &quot;hello world&quot; ar
+an gcarn. Déanann an tríú tábla ionadaíocht ar shonraí cruachta an domhain slice, a
+tá luach faid 5 aige agus pointí go beart 6 den tábla sonraí carn."
+src="img/trpl04-07.svg" class="center" style="leithead: 50%;" /></p>
+<p><span class="caption">Fíor 4-7: Slis teaghrán a thagraíonn do chuid d’a
+<code>String</code></span></p>
+<p>Le comhréir raon <code>..</code> Rust, más mian leat tosú ag innéacs 0, is féidir leat titim
+an luach roimh an dá thréimhse. I bhfocail eile, tá siad seo comhionann:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("hello");
+
+let slice = &amp;s[0..2];
+let slice = &amp;s[..2];
+<span class="boring">}</span></code></pre></pre>
+<p>Ar an gcaoi chéanna, má chuimsíonn do shlis an beart deireanach den <code>String</code>, tusa
+Is féidir titim ar an uimhir trailing. Ciallaíonn sé sin go bhfuil siad seo comhionann:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("hello");
+
+let len = s.len();
+
+let slice = &amp;s[3..len];
+let slice = &amp;s[3..];
+<span class="boring">}</span></code></pre></pre>
+<p>Is féidir leat an dá luach a laghdú freisin chun slice den teaghrán iomlán a ghlacadh. Mar sin iad seo
+comhionann:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("hello");
+
+let len = s.len();
+
+let slice = &amp;s[0..len];
+let slice = &amp;s[..];
+<span class="boring">}</span></code></pre></pre>
+<blockquote>
+<p>Tabhair faoi deara: Caithfidh innéacsanna raon slisne teaghráin a bheith ag carachtar bailí UTF-8
+teorainneacha. Má dhéanann tú iarracht sreangshlis a chruthú i lár a
+carachtar multibyte, scoirfidh do chlár le hearráid. Chun críocha
+ó thabhairt isteach slisní teaghrán, táimid ag glacadh leis ASCII amháin sa chuid seo; a
+tá plé níos críochnúla ar láimhseáil UTF-8 sa <a href="ch08-02-strings.html#storing-utf-8-encoded-text-with-strings">“Storing UTF-8 Ionchódaithe
+Téacs le Teaghráin”</a><!-- neamhaird --> alt de Chaibidil 8.</p>
+</blockquote>
+<p>Agus an fhaisnéis seo go léir san áireamh, athscríobhfaimid <code>first_word</code> chun a
+slisne. Scríobhtar <code>&amp;str</code> an cineál a chiallaíonn "slis teaghrán":</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust">fn first_word(s: &amp;String) -&gt; &amp;str {
+    let bytes = s.as_bytes();
+
+    for (i, &amp;item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &amp;s[0..i];
+        }
+    }
+
+    &amp;s[..]
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Faighimid an t-innéacs do fhoirceann an fhocail mar a rinneamar i Liosta 4-7, de réir
+ag lorg an chéad eachtra de spás. Nuair a aimsímid spás, filleann muid a
+slisne teaghrán ag baint úsáide as tús na sreinge agus innéacs an spáis mar an
+innéacsanna tosaigh agus deiridh.</p>
+<p>Anois nuair a ghlaoimid <code>first_word</code>, faighimid ar ais luach amháin atá ceangailte leis an
+sonraí bunúsacha. Tá an luach comhdhéanta de thagairt do phointe tosaigh na
+an slice agus líon na n-eilimintí sa slice.</p>
+<p>Bheadh ​​feidhm <code>second_word</code> ag baint le slisne a thabhairt ar ais freisin:</p>
+<pre><code class="language-rust ignore">fn second_word(s: &amp;String) -&gt; &amp;str {</code></pre>
+<p>Tá API simplí againn anois atá i bhfad níos deacra a praiseach a dhéanamh mar gheall ar an
+cinnteoidh tiomsaitheoir go bhfanfaidh na tagairtí sa <code>String</code> bailí. Cuimhnigh
+an fabht sa chlár i Liostú 4-8, nuair a fuair muid an t-innéacs go dtí deireadh an
+chéad fhocal ach ansin glanta an teaghrán mar sin bhí ár n-innéacs neamhbhailí? Bhí an cód sin
+mícheart go loighciúil ach níor léirigh sé aon earráidí láithreach. Bheadh ​​na fadhbanna
+thaispeáint suas níos déanaí má choinnigh muid ag iarraidh úsáid a bhaint as an chéad fhocal innéacs le fholmhú
+teaghrán. Déanann slisní an fabht seo dodhéanta agus cuirimid in iúl dúinn go bhfuil fadhb againn leis
+ár gcód i bhfad níos luaithe. Ag baint úsáide as an leagan slise de <code>first_word</code> caithfear a
+earráid ama tiomsaithe:</p>
+<Listing file-name="src/main.rs">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn first_word(s: &amp;String) -&gt; &amp;str {
+</span><span class="boring">    let bytes = s.as_bytes();
+</span><span class="boring">
+</span><span class="boring">    for (i, &amp;item) in bytes.iter().enumerate() {
+</span><span class="boring">        if item == b' ' {
+</span><span class="boring">            return &amp;s[0..i];
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    &amp;s[..]
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let mut s = String::from("hello world");
+
+    let word = first_word(&amp;s);
+
+    s.clear(); // error!
+
+    println!("the first word is: {word}");
+}</code></pre>
+</Listing>
+<p>Seo é earráid an tiomsaitheora:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+  --&gt; src/main.rs:18:5
+   |
+16 |     let word = first_word(&amp;s);
+   |                           -- immutable borrow occurs here
+17 |
+18 |     s.clear(); // error!
+   |     ^^^^^^^^^ mutable borrow occurs here
+19 |
+20 |     println!("the first word is: {word}");
+   |                                  ------ immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `ownership` (bin "ownership") due to 1 previous error
+</code></pre>
+<p>A thabhairt chun cuimhne ó na rialacha iasachtaithe go má tá tagairt do-inaistrithe againn do
+rud éigin, ní féidir linn tagairt mutable a ghlacadh freisin. Toisc go bhfuil gá le <code>clear</code>
+gearr an <code>String</code>, ní mór dó tagairt mutable a fháil. An <code>println!</code>
+tar éis an ghlao go <code>clear</code> úsáideann an tagairt i <code>word</code>, mar sin an do-athlasach
+ní mór tagairt a bheith gníomhach fós ag an bpointe sin. Dícheadaíonn meirge an mutable
+tagairt in <code>clear</code> agus an tagairt do-athluaite i <code>word</code> as atá ann cheana féin ag an
+am céanna, agus teipeann ar an tiomsú. Ní hamháin go bhfuil Rust tar éis ár n-API a dhéanamh níos éasca le húsáid,
+ach chuir sé deireadh freisin le haicme iomlán earráidí ag am tiomsaithe!</p>
+<!-- Old heading. Do not remove or links may break. -->
+<p><a id="string-literals-are-slices"></a></p>
+<h4 id="teaghrán-liteartha-mar-slisní"><a class="header" href="#teaghrán-liteartha-mar-slisní">Teaghrán Liteartha mar Slisní</a></h4>
+<p>Thabhairt chun cuimhne gur labhair muid faoi litreacha teaghrán á stóráil taobh istigh den dénártha. Anois
+go bhfuil a fhios againn faoi slisní, is féidir linn a thuiscint i gceart litreacha teaghrán:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = "Hello, world!";
+<span class="boring">}</span></code></pre></pre>
+<p>Is é an cineál <code>s</code> anseo ná <code>&amp;str</code>: is slice é a dhíríonn ar an bpointe sonrach sin de
+an dénártha. Is é seo freisin an fáth go bhfuil sreang-litreacha do-athlasach; Is é <code>&amp;str</code>
+tagairt do- immutable.</p>
+<h4 id="sliseanna-teaghrán-mar-pharaiméadair"><a class="header" href="#sliseanna-teaghrán-mar-pharaiméadair">Sliseanna Teaghrán mar Pharaiméadair</a></h4>
+<p>Má bhíonn a fhios agat gur féidir leat slisní liteartha a ghlacadh agus luachanna <code>String</code> is féidir linn
+feabhas amháin eile ar <code>first_word</code>, agus sin é a shíniú:</p>
+<pre><code class="language-rust ignore">fn first_word(s: &amp;String) -&gt; &amp;str {</code></pre>
+<p>Scríobhfadh Rustacean le níos mó taithí an síniú a thaispeántar i Liostú 4-9
+ina ionad sin toisc go ligeann sé dúinn an fheidhm chéanna a úsáid ar an dá luach <code>&amp;String</code>
+agus luachanna <code>&amp;str</code>.</p>
+<Listing number="4-9" caption="Improving the `first_word` function by using a string slice for the type of the `s` parameter">
+<pre><code class="language-rust ignore">fn first_word(s: &amp;str) -&gt; &amp;str {
+<span class="boring">    let bytes = s.as_bytes();
+</span><span class="boring">
+</span><span class="boring">    for (i, &amp;item) in bytes.iter().enumerate() {
+</span><span class="boring">        if item == b' ' {
+</span><span class="boring">            return &amp;s[0..i];
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    &amp;s[..]
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let my_string = String::from("hello world");
+</span><span class="boring">
+</span><span class="boring">    // `first_word` works on slices of `String`s, whether partial or whole
+</span><span class="boring">    let word = first_word(&amp;my_string[0..6]);
+</span><span class="boring">    let word = first_word(&amp;my_string[..]);
+</span><span class="boring">    // `first_word` also works on references to `String`s, which are equivalent
+</span><span class="boring">    // to whole slices of `String`s
+</span><span class="boring">    let word = first_word(&amp;my_string);
+</span><span class="boring">
+</span><span class="boring">    let my_string_literal = "hello world";
+</span><span class="boring">
+</span><span class="boring">    // `first_word` works on slices of string literals, whether partial or whole
+</span><span class="boring">    let word = first_word(&amp;my_string_literal[0..6]);
+</span><span class="boring">    let word = first_word(&amp;my_string_literal[..]);
+</span><span class="boring">
+</span><span class="boring">    // Because string literals *are* string slices already,
+</span><span class="boring">    // this works too, without the slice syntax!
+</span><span class="boring">    let word = first_word(my_string_literal);
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Má tá slisne teaghrán againn, is féidir linn é sin a chur ar aghaidh go díreach. Má tá <code>String</code> againn, táimid
+is féidir leat slice den <code>String</code> nó tagairt don <code>String</code> a chur ar aghaidh. seo
+baineann solúbthacht leas as <em>deref coercions</em>, gné a chlúdóimid sa
+<a href="ch15-02-deref.html#implicit-deref-coercions-with-functions-and-methods">“Comhéigeantais Fóirne intuigthe le Feidhmeanna agus
+Modhanna”</a><!-- neamhaird--> alt de Chaibidil 15.</p>
+<p>Feidhm a shainiú chun sreangshlis a ghlacadh in ionad tagairt do <code>String</code>
+a dhéanann ár n-API níos ginearálta agus níos úsáidí gan aon fheidhmiúlacht a chailliúint:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn first_word(s: &amp;str) -&gt; &amp;str {
+</span><span class="boring">    let bytes = s.as_bytes();
+</span><span class="boring">
+</span><span class="boring">    for (i, &amp;item) in bytes.iter().enumerate() {
+</span><span class="boring">        if item == b' ' {
+</span><span class="boring">            return &amp;s[0..i];
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    &amp;s[..]
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let my_string = String::from("hello world");
+
+    // `first_word` works on slices of `String`s, whether partial or whole
+    let word = first_word(&amp;my_string[0..6]);
+    let word = first_word(&amp;my_string[..]);
+    // `first_word` also works on references to `String`s, which are equivalent
+    // to whole slices of `String`s
+    let word = first_word(&amp;my_string);
+
+    let my_string_literal = "hello world";
+
+    // `first_word` works on slices of string literals, whether partial or whole
+    let word = first_word(&amp;my_string_literal[0..6]);
+    let word = first_word(&amp;my_string_literal[..]);
+
+    // Because string literals *are* string slices already,
+    // this works too, without the slice syntax!
+    let word = first_word(my_string_literal);
+}</code></pre></pre>
+</Listing>
+<h3 id="sliseanna-eile"><a class="header" href="#sliseanna-eile">Sliseanna Eile</a></h3>
+<p>Baineann slisní teaghrán, mar a d'fhéadfá a shamhlú, go sonrach le teaghráin. Ach tá a
+cineál slice níos ginearálta freisin. Smaoinigh ar an eagar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let a = [1, 2, 3, 4, 5];
+<span class="boring">}</span></code></pre></pre>
+<p>Díreach mar a d’fhéadfadh gur mhaith linn tagairt a dhéanamh do chuid de shraith, b’fhéidir gur mhaith linn tagairt a dhéanamh
+chuid d'eagar. Dhéanfaimis mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let a = [1, 2, 3, 4, 5];
+
+let slice = &amp;a[1..3];
+
+assert_eq!(slice, &amp;[2, 3]);
+<span class="boring">}</span></code></pre></pre>
+<p>Tá an cineál <code>&amp;[i32]</code> ar an sliseog seo. Oibríonn sé ar an mbealach céanna is a dhéanann slisní teaghrán, trí
+ag stóráil tagairt don chéad eilimint agus fad. Bainfidh tú úsáid as an gcineál seo
+slice do gach cineál bailiúcháin eile. Déanfaimid plé ar na bailiúcháin seo i
+mionsonraí nuair a labhraímid faoi veicteoirí i gCaibidil 8.</p>
+<h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
+<p>Cinntíonn coincheapa na húinéireachta, na hiasachta, agus na slisní sábháilteacht cuimhne i Rust
+cláir ag am tiomsaithe. Tugann an teanga Rust smacht duit ar do chuimhne
+úsáid ar an mbealach céanna le teangacha ríomhchláraithe córais eile, ach a bhfuil an
+úinéir na sonraí a ghlanadh suas go huathoibríoch na sonraí sin nuair a théann an t-úinéir as raon feidhme
+ciallaíonn sé seo nach gá duit cód breise a scríobh agus a dhífhabhtú chun an rialú seo a fháil.</p>
+<p>Bíonn tionchar ag úinéireacht ar an gcaoi a n-oibríonn go leor codanna eile de Rust, mar sin labhróimid faoi
+na coincheapa seo níos faide ar fud an chuid eile den leabhar. Bogaimis ar aghaidh go dtí
+Caibidil 5 agus féach ar phíosaí sonraí a ghrúpáil le chéile i <code>struct</code>.</p>
 
                     </main>
 
