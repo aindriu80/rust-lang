@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Struchtúir a Shainmhíniú agus a Thúsú - An Teanga Ríomhchláraithe Rust</title>
+        <title>Structs a shainiú agus a thionscnamh - An Teanga Ríomhchláraithe Rust</title>
 
 
         <!-- Custom HTML head -->
@@ -159,7 +159,352 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="defining-and-instantiating-structs"><a class="header" href="#defining-and-instantiating-structs">Defining and Instantiating Structs</a></h1>
+                        <h2 id="struchtúir-a-shainmhíniú-agus-a-thionscnamh"><a class="header" href="#struchtúir-a-shainmhíniú-agus-a-thionscnamh">Struchtúir a Shainmhíniú agus a Thionscnamh</a></h2>
+<p>Tá struchtúir cosúil le tuples, a phléitear in <a href="ch03-02-data-types.html#the-tuple-type">“An Cineál Tuple”</a><!--
+neamhaird a dhéanamh ar --> alt, sa mhéid is go bhfuil luachanna gaolmhara iolracha ag an dá cheann. Cosúil le tuples, an
+is féidir cineálacha éagsúla a bheith i bpíosaí struchtúir. Murab ionann agus tuples, i struct
+ainmneoidh tú gach píosa sonraí ionas go mbeidh sé soiléir cad a chiallaíonn na luachanna. Ag cur leo seo
+Ciallaíonn ainmneacha go bhfuil struchtúir níos solúbtha ná tuples: ní gá duit a bheith ag brath
+ar ord na sonraí chun luachanna an tsampla a shonrú nó a rochtain.</p>
+<p>Chun struchtúr a shainiú, cuirimid an eochairfhocal <code>struct</code> isteach agus ainmnímid an struchtúr iomlán. A
+ba chóir go ndéanfadh ainm struct cur síos ar thábhacht na bpíosaí sonraí atá ann
+grúpáilte le chéile. Ansin, taobh istigh de lúibíní curly, sainímid ainmneacha agus cineálacha
+na píosaí sonraí, ar a dtugaimid <em>fields</em>. Mar shampla, taispeánann Liostú 5-1 a
+struchtúr a stórálann faisnéis faoi chuntas úsáideora.</p>
+<Listing number="5-1" file-name="src/main.rs" caption="A `User` struct definition">
+<pre><pre class="playground"><code class="language-rust">struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Chun struchtúr a úsáid tar éis dúinn é a shainiú, cruthaímid <em>gcás</em> den struchtúr sin
+trí luachanna nithiúla a shonrú do gach ceann de na réimsí. Cruthaímid sampla trí
+ag lua ainm an struchtúir agus ansin cuir lúibíní curlaí ina bhfuil <em>key:
+value</em> péirí, áit a bhfuil na heochracha ainmneacha na réimsí agus na luachanna an
+sonraí ba mhaith linn a stóráil sna réimsí sin. Ní gá dúinn na réimsí a shonrú i
+an t-ord céanna inar dhearbhaigh muid iad sa struct. I bhfocail eile, tá an
+Tá sainmhíniú struchtúr cosúil le teimpléad ginearálta don chineál, agus cásanna a líonadh
+sa teimpléad sin le sonraí ar leith chun luachanna den chineál a chruthú. Le haghaidh
+Mar shampla, is féidir linn úsáideoir áirithe a dhearbhú mar a thaispeántar i Liostú 5-2.</p>
+<Listing number="5-2" file-name="src/main.rs" caption="Creating an instance of the `User` struct">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct User {
+</span><span class="boring">    active: bool,
+</span><span class="boring">    username: String,
+</span><span class="boring">    email: String,
+</span><span class="boring">    sign_in_count: u64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let user1 = User {
+        active: true,
+        username: String::from("someusername123"),
+        email: String::from("someone@example.com"),
+        sign_in_count: 1,
+    };
+}</code></pre></pre>
+</Listing>
+<p>Chun luach sonrach a fháil ó struchtúr, úsáidimid nodaireacht poncanna. Mar shampla, go
+rochtain a fháil ar sheoladh ríomhphoist an úsáideora seo, úsáidimid <code>user1.email</code>. Más é an cás
+mutable, is féidir linn luach a athrú tríd an nodaireacht ponc a úsáid agus a shannadh isteach i
+réimse ar leith. Léiríonn liostú 5-3 conas an luach sa <code>email</code> a athrú
+réimse shampla <code>User</code> mutable.</p>
+<Listing number="5-3" file-name="src/main.rs" caption="Changing the value in the `email` field of a `User` instance">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct User {
+</span><span class="boring">    active: bool,
+</span><span class="boring">    username: String,
+</span><span class="boring">    email: String,
+</span><span class="boring">    sign_in_count: u64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let mut user1 = User {
+        active: true,
+        username: String::from("someusername123"),
+        email: String::from("someone@example.com"),
+        sign_in_count: 1,
+    };
+
+    user1.email = String::from("anotheremail@example.com");
+}</code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara go gcaithfidh an ásc iomlán a bheith mutable; Ní ligeann meirge dúinn marcáil
+ach réimsí áirithe mar shoghluaiste. Mar is amhlaidh le haon slonn, is féidir linn ceann nua a thógáil
+shampla an struct mar an slonn deiridh i gcorp feidhme a
+go hintuigthe cuir ar ais an cás nua sin.</p>
+<p>Taispeánann liostú 5-4 feidhm <code>build_user</code> a sheolann sampla <code>User</code> ar ais le
+an seoladh ríomhphoist agus an t-ainm úsáideora a tugadh. Faigheann an réimse <code>active</code> luach <code>true</code>, agus
+faigheann an <code>sign_in_count</code> luach <code>1</code>.</p>
+<Listing number="5-4" file-name="src/main.rs" caption="A `build_user` function that takes an email and username and returns a `User` instance">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct User {
+</span><span class="boring">    active: bool,
+</span><span class="boring">    username: String,
+</span><span class="boring">    email: String,
+</span><span class="boring">    sign_in_count: u64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn build_user(email: String, username: String) -&gt; User {
+    User {
+        active: true,
+        username: username,
+        email: email,
+        sign_in_count: 1,
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let user1 = build_user(
+</span><span class="boring">        String::from("someone@example.com"),
+</span><span class="boring">        String::from("someusername123"),
+</span><span class="boring">    );
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Déanann sé ciall paraiméadair na feidhme a ainmniú leis an ainm céanna leis an struchtúr
+réimsí, ach caithfidh tú na hainmneacha réimse <code>email</code> agus <code>username</code> a athdhéanamh agus
+athróga beagán tedious. Dá mbeadh níos mó réimsí sa struchtúr, agus gach ainm á athrá
+bheadh ​​níos mó fós annoying. Ar ámharaí an tsaoil, tá gearrscannán áisiúil ann!</p>
+<!-- Old heading. Do not remove or links may break. -->
+<p><a id="using-the-field-init-shorthand-when-variables-and-fields-have-the-same-name"></a></p>
+<h3 id="ag-baint-úsáide-as-an-réimse-init-gearrlámh"><a class="header" href="#ag-baint-úsáide-as-an-réimse-init-gearrlámh">Ag baint úsáide as an Réimse Init Gearrlámh</a></h3>
+<p>Toisc go bhfuil ainmneacha na bparaiméadar agus na hainmneacha páirce struct díreach mar a chéile i
+Ag liostú 5-4, is féidir linn an chomhréir <em>field init shorthand</em> a úsáid chun athscríobh
+<code>build_user</code> mar sin iompraíonn sé díreach mar an gcéanna ach ní bhíonn an athrá air
+<code>username</code> agus <code>email</code>, mar a thaispeántar i Liostú 5-5.</p>
+<Listing number="5-5" file-name="src/main.rs" caption="A `build_user` function that uses field init shorthand because the `username` and `email` parameters have the same name as struct fields">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct User {
+</span><span class="boring">    active: bool,
+</span><span class="boring">    username: String,
+</span><span class="boring">    email: String,
+</span><span class="boring">    sign_in_count: u64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn build_user(email: String, username: String) -&gt; User {
+    User {
+        active: true,
+        username,
+        email,
+        sign_in_count: 1,
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let user1 = build_user(
+</span><span class="boring">        String::from("someone@example.com"),
+</span><span class="boring">        String::from("someusername123"),
+</span><span class="boring">    );
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Anseo, táimid ag cruthú sampla nua den struchtúr <code>User</code>, a bhfuil réimse aige
+darb ainm <code>email</code>. Ba mhaith linn luach an réimse <code>email</code> a shocrú go dtí an luach sa
+paraiméadar <code>email</code> den fheidhm <code>build_user</code>. Toisc go bhfuil an réimse <code>email</code> agus
+Tá an t-ainm céanna ar an bparaiméadar <code>email</code>, ní gá dúinn ach <code>email</code> a scríobh in áit
+ná <code>email: email</code>.</p>
+<h3 id="cásanna-a-chruthú-ó-chásanna-eile-le-comhréir-nuashonraithe-struchtúr"><a class="header" href="#cásanna-a-chruthú-ó-chásanna-eile-le-comhréir-nuashonraithe-struchtúr">Cásanna a Chruthú ó Chásanna Eile le Comhréir Nuashonraithe Struchtúr</a></h3>
+<p>Is minic a bhíonn sé úsáideach sampla nua de struchtúr a chruthú a chuimsíonn an chuid is mó de
+na luachanna ó shampla eile, ach athraíonn roinnt. Is féidir leat é seo a dhéanamh ag baint úsáide as
+<em>struct nuashonraigh comhréir</em>.</p>
+<p>Ar dtús, i Liostú 5-6 léirímid conas mar shampla <code>User</code> nua a chruthú in <code>user2</code>
+go rialta, gan an chomhréir nuashonraithe. Shocraigh muid luach nua do <code>email</code> ach
+nó bain úsáid as na luachanna céanna ó <code>user1</code> a chruthaigh muid i Liostú 5-2.</p>
+<Listing number="5-6" file-name="src/main.rs" caption="Creating a new `User` instance using all but one of the values from `user1`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct User {
+</span><span class="boring">    active: bool,
+</span><span class="boring">    username: String,
+</span><span class="boring">    email: String,
+</span><span class="boring">    sign_in_count: u64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    // --snip--
+<span class="boring">
+</span><span class="boring">    let user1 = User {
+</span><span class="boring">        email: String::from("someone@example.com"),
+</span><span class="boring">        username: String::from("someusername123"),
+</span><span class="boring">        active: true,
+</span><span class="boring">        sign_in_count: 1,
+</span><span class="boring">    };
+</span>
+    let user2 = User {
+        active: user1.active,
+        username: user1.username,
+        email: String::from("another@example.com"),
+        sign_in_count: user1.sign_in_count,
+    };
+}</code></pre></pre>
+</Listing>
+<p>Ag baint úsáide as comhréir nuashonraithe struct, is féidir linn an éifeacht chéanna a bhaint amach le níos lú cód, mar
+léirithe i Liosta 5-7. Sonraíonn an chomhréir <code>..</code> nach bhfuil na réimsí atá fágtha
+ba cheart go mbeadh an luach céanna ag na réimsí a leagtar síos go sainráite agus atá ag na réimsí sa chás ar leith.</p>
+<Listing number="5-7" file-name="src/main.rs" caption="Using struct update syntax to set a new `email` value for a `User` instance but to use the rest of the values from `user1`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct User {
+</span><span class="boring">    active: bool,
+</span><span class="boring">    username: String,
+</span><span class="boring">    email: String,
+</span><span class="boring">    sign_in_count: u64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    // --snip--
+<span class="boring">
+</span><span class="boring">    let user1 = User {
+</span><span class="boring">        email: String::from("someone@example.com"),
+</span><span class="boring">        username: String::from("someusername123"),
+</span><span class="boring">        active: true,
+</span><span class="boring">        sign_in_count: 1,
+</span><span class="boring">    };
+</span>
+    let user2 = User {
+        email: String::from("another@example.com"),
+        ..user1
+    };
+}</code></pre></pre>
+</Listing>
+<p>Cruthaíonn an cód i Liostú 5-7 sampla freisin in <code>user2</code> a bhfuil a
+luach difriúil don <code>email</code> ach tá na luachanna céanna aige don <code>username</code>,
+réimsí <code>active</code>, agus <code>sign_in_count</code> ó <code>user1</code>. Caithfidh an <code>..user1</code> teacht ar deireadh
+a shonrú gur cheart go bhfaigheadh ​​aon réimsí atá fágtha a luachanna ó na
+réimsí comhfhreagracha in <code>user1</code>, ach is féidir linn a roghnú luachanna a shonrú mar
+go leor réimsí mar ba mhaith linn in aon ord, beag beann ar ord na réimsí i
+sainmhíniú an struchtúir.</p>
+<p>Tabhair faoi deara go n-úsáideann an chomhréir nuashonraithe struct <code>=</code> cosúil le tasc; tá sé seo mar gheall ar
+bogann sé na sonraí, díreach mar a chonaic muid sa [“Athróga agus Sonraí Idirghníomhú le
+Bog”][bogadh]<!-- neamhaird --> alt. Sa sampla seo, ní féidir linn a úsáid a thuilleadh
+<code>user1</code> ina iomláine tar éis <code>user2</code> a chruthú mar go bhfuil an <code>String</code> sa
+Bogadh an réimse <code>username</code> de <code>user1</code> go <code>user2</code>. Dá mbeadh <code>user2</code> nua tugtha againn
+Luachanna <code>String</code> le haghaidh <code>email</code> agus <code>username</code> araon, agus mar sin níor úsáideadh ach an
+luachanna <code>active</code> agus <code>sign_in_count</code> ó <code>user1</code>, ansin bheadh ​​<code>user1</code> fós
+bailí tar éis <code>user2</code> a chruthú. Is cineálacha iad <code>active</code> agus <code>sign_in_count</code> araon
+an tréith <code>Copy</code> a chur i bhfeidhm, mar sin an iompar a phléamar sa [“Stack-Only
+Sonraí: Cóipeáil”][cóip]<!-- neamhaird --> bheadh ​​feidhm ag an alt. Is féidir linn a úsáid fós
+<code>user1.email</code> sa sampla seo, toisc gur <em>ní</em> bogadh amach a luach.</p>
+<h3 id="ag-Úsáid-struchtúir-tuple-gan-réimsí-ainmnithe-chun-cineálacha-Éagsúla-a-chruthú"><a class="header" href="#ag-Úsáid-struchtúir-tuple-gan-réimsí-ainmnithe-chun-cineálacha-Éagsúla-a-chruthú">Ag Úsáid Struchtúir Tuple Gan Réimsí Ainmnithe chun Cineálacha Éagsúla a Chruthú</a></h3>
+<p>Tacaíonn meirge freisin le struchtúir atá cosúil le tuples, ar a dtugtar <em>tuple structs</em>.
+Tá an bhrí bhreise ag struchtúir tuple a sholáthraíonn an t-ainm struchtúir ach níl an bhrí eile aige
+ainmneacha a bhaineann lena réimsí; in áit, níl acu ach cineálacha an
+réimsí. Tá struchtúir tuple úsáideach nuair is mian leat ainm a thabhairt don tuple iomlán
+agus déan cineál difriúil den tuple ó thuple eile, agus nuair a ainmnítear gach ceann acu
+réimse mar atá i struchtúr rialta bheadh ​​briathra nó iomarcach.</p>
+<p>Chun tuple struct a shainiú, cuir tús leis an eochairfhocal <code>struct</code> agus an t-ainm struct
+ina dhiaidh sin na cineálacha sa tuple. Mar shampla, anseo sainímid agus úsáidimid dhá cheann
+tuple structs darb ainm <code>Color</code> agus <code>Point</code>:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust">struct Color(i32, i32, i32);
+struct Point(i32, i32, i32);
+
+fn main() {
+    let black = Color(0, 0, 0);
+    let origin = Point(0, 0, 0);
+}</code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara gur cineálacha difriúla iad na luachanna <code>black</code> agus <code>origin</code> toisc go bhfuil siad
+cásanna de struchtúir tuple éagsúla. Is é a chineál féin gach struchtúr a shainíonn tú,
+cé go bhféadfadh na cineálacha céanna a bheith sna réimsí laistigh den struchtúr. Le haghaidh
+Mar shampla, ní féidir le feidhm a ghlacann paraiméadar den chineál <code>Color</code> a
+<code>Point</code> mar argóint, cé go bhfuil an dá chineál comhdhéanta de thrí <code>i32</code>
+luachanna. Seachas sin, tá cásanna tuple struct cosúil le tuples sa mhéid is gur féidir leat
+iad a scrios ina bpíosaí aonair, agus is féidir leat úsáid a bhaint as <code>.</code> dhiaidh sin
+ag an innéacs chun rochtain a fháil ar luach aonair. Murab ionann agus tuples, tuple structs
+iarraidh ort an cineál struchtúir a ainmniú nuair a dhéanann tú iad a mhilleadh. Le haghaidh
+Mar shampla, scríobhfaimis <code>Let Point(x, y, z) = point</code>.</p>
+<h3 id="struchtúir-atá-cosúil-le-haonad-gan-réimsí-ar-bith"><a class="header" href="#struchtúir-atá-cosúil-le-haonad-gan-réimsí-ar-bith">Struchtúir atá cosúil le hAonad gan Réimsí ar bith</a></h3>
+<p>Is féidir leat struchtúir a shainiú freisin nach bhfuil réimsí ar bith acu! Tugtar iad seo
+<em>unit-like structs</em> toisc go n-iompraíonn siad mar an gcéanna le <code>()</code>, cineál an aonaid sin
+luaigh muid i <a href="ch03-02-data-types.html#the-tuple-type">"An Cineál Tuple"</a><!-- neamhaird --> alt. Aonad-mhaith
+is féidir le struchtúir a bheith úsáideach nuair is gá duit tréith de chineál éigin a chur i bhfeidhm ach nach ndéanann
+aon sonraí is mian leat a stóráil sa chineál féin. Pléifimid tréithe
+i gCaibidil 10. Seo sampla de struchtúr aonaid a dhearbhú agus a thabhairt ar an toirt
+darb ainm <code>AlwaysEqual</code>:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust">struct AlwaysEqual;
+
+fn main() {
+    let subject = AlwaysEqual;
+}</code></pre></pre>
+</Listing>
+<p>Chun <code>AlwaysEqual</code> a shainiú, úsáidimid an eochairfhocal <code>struct</code>, an t-ainm a theastaíonn uainn, agus
+ansin leathstad. Níl gá le lúibíní nó lúibíní chatach! Ansin is féidir linn a fháil ar
+mar shampla de <code>AlwaysEqual</code> san athróg <code>subject</code> ar bhealach comhchosúil: ag baint úsáide as an
+an t-ainm atá sainmhínithe againn, gan aon lúibíní nó lúibíní chatach. Samhlaigh sin níos déanaí
+cuirfimid iompar den chineál seo i bhfeidhm ionas go mbeidh gach cás de
+Bíonn <code>AlwaysEqual</code> i gcónaí cothrom le gach cás d'aon chineál eile, b'fhéidir
+go mbeadh toradh aitheanta acu chun críocha tástála. Ní bheadh ​​aon sonraí ag teastáil uainn
+cuir an t-iompar sin i bhfeidhm! Feicfidh tú i gCaibidil 10 conas tréithe a shainiú agus
+iad a chur i bhfeidhm ar aon chineál, lena n-áirítear struchtúir aonad-mhaith.</p>
+<blockquote>
+<h3 id="Úinéireacht-sonraí-struchtúr"><a class="header" href="#Úinéireacht-sonraí-struchtúr">Úinéireacht Sonraí Struchtúr</a></h3>
+<p>Sa sainmhíniú ar struchtúr <code>User</code> i Liostú 5-1, d'úsáideamar an <code>String</code> faoi úinéireacht
+cineál seachas an cineál sliseog teaghrán <code>&amp;str</code>. Is rogha d'aon ghnó é seo
+mar ba mhaith linn go mbeadh úinéireacht ag gach cás den struchtúr seo ar a chuid sonraí go léir agus ar a son
+go mbeidh na sonraí sin bailí chomh fada agus a bheidh an struchtúr iomlán bailí.</p>
+<p>Is féidir freisin do struchtúir tagairtí a stóráil do shonraí ar le rud éigin iad
+eile, ach chun é sin a dhéanamh teastaíonn úsáid <em>lifetimes</em>, gné Rust a dhéanfaimid
+pléigh i gCaibidil 10. Cinntíonn Saolré go bhfuil na sonraí dá dtagraítear ag struct
+bailí chomh fada agus atá an struchtúr. Ligean le rá go ndéanann tú iarracht tagairt a stóráil
+i struchtúr gan saolréanna a shonrú, mar a leanas; ní oibreoidh sé seo:</p>
+<Listing file-name="src/main.rs">
+<!-- CAN'T EXTRACT SEE https://github.com/rust-lang/mdBook/issues/1127 -->
+<pre><code class="language-rust ignore does_not_compile">struct User {
+    active: bool,
+    username: &amp;str,
+    email: &amp;str,
+    sign_in_count: u64,
+}
+
+fn main() {
+    let user1 = User {
+        active: true,
+        username: "someusername123",
+        email: "someone@example.com",
+        sign_in_count: 1,
+    };
+}</code></pre>
+</Listing>
+<p>Déanfaidh an tiomsaitheoir gearán go bhfuil sonraíocht saoil de dhíth air:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling structs v0.1.0 (file:///projects/structs)
+error[E0106]: missing lifetime specifier
+ --&gt; src/main.rs:3:15
+  |
+3 |     username: &amp;str,
+  |               ^ expected named lifetime parameter
+  |
+help: consider introducing a named lifetime parameter
+  |
+1 ~ struct User&lt;'a&gt; {
+2 |     active: bool,
+3 ~     username: &amp;'a str,
+  |
+
+error[E0106]: missing lifetime specifier
+ --&gt; src/main.rs:4:12
+  |
+4 |     email: &amp;str,
+  |            ^ expected named lifetime parameter
+  |
+help: consider introducing a named lifetime parameter
+  |
+1 ~ struct User&lt;'a&gt; {
+2 |     active: bool,
+3 |     username: &amp;str,
+4 ~     email: &amp;'a str,
+  |
+
+Chun tuilleadh eolais a fháil faoin earráid seo, bain triail as `rustc --explain E0106`.
+error: níorbh fhéidir `structs` (bin "structs") a thiomsú mar gheall ar 2 earráid roimhe seo
+</code></pre>
+<p>I gCaibidil 10, pléifimid conas na hearráidí seo a cheartú ionas gur féidir leat iad a stóráil
+tagairtí i struchtúir, ach faoi láthair, socróimid earráidí mar seo ag baint úsáide as úinéireacht
+cineálacha cosúil le <code>String</code> in ionad tagairtí cosúil le <code>&amp;str</code>.</p>
+</blockquote>
+<!-- manual-regeneration
+for the error above
+after running update-rustc.sh:
+pbcopy < listings/ch05-using-structs-to-structure-related-data/no-listing-02-reference-in-struct/output.txt
+paste above
+add `> ` before every line -->
 
                     </main>
 

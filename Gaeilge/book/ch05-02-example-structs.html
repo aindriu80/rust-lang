@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Clár Samplach ag Úsáid Struchtúr - An Teanga Ríomhchláraithe Rust</title>
+        <title>Clár Samplach ag Úsáid Structs - An Teanga Ríomhchláraithe Rust</title>
 
 
         <!-- Custom HTML head -->
@@ -159,7 +159,282 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="an-example-program-using-structs"><a class="header" href="#an-example-program-using-structs">An Example Program Using Structs</a></h1>
+                        <h2 id="clár-samplach-ag-Úsáid-structs"><a class="header" href="#clár-samplach-ag-Úsáid-structs">Clár Samplach ag Úsáid Structs</a></h2>
+<p>Chun a thuiscint cathain a d’fhéadfadh muid a bheith ag iarraidh struchtúir a úsáid, scríobhaimis clár a
+ríomhann sé achar dronuilleog. Tosóimid trí athróga aonair a úsáid, agus
+ansin athmhacnaigh an clár go dtí go mbeimid ag úsáid structs ina ionad.</p>
+<p>Déanaimis tionscadal dénártha nua le lasta ar a dtugtar <em>rectangles</em> a ghlacfaidh
+leithead agus airde dronuilleog sonraithe i bpicteilín agus ríomh an t-achar
+den dronuilleog. Léiríonn liostú 5-8 clár gearr le bealach amháin le déanamh
+go díreach é sin i <em>src/main.rs</em> ár dtionscadal.</p>
+<Listing number="5-8" file-name="src/main.rs" caption="Calculating the area of a rectangle specified by separate width and height variables">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let width1 = 30;
+    let height1 = 50;
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        area(width1, height1)
+    );
+}
+
+fn area(width: u32, height: u32) -&gt; u32 {
+    width * height
+}</code></pre></pre>
+</Listing>
+<p>Now, run this program using <code>cargo run</code>:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s
+     Running `target/debug/rectangles`
+The area of the rectangle is 1500 square pixels.
+</code></pre>
+<p>Éiríonn leis an gcód seo achar na dronuilleoige a dhéanamh amach trí ghlaoch a chur ar an
+feidhm <code>area</code> le gach gné, ach is féidir linn níos mó a dhéanamh chun an cód seo a dhéanamh soiléir
+agus inléite.</p>
+<p>Tá an tsaincheist leis an gcód seo le feiceáil i síniú <code>area</code>:</p>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span><span class="boring">    let width1 = 30;
+</span><span class="boring">    let height1 = 50;
+</span><span class="boring">
+</span><span class="boring">    println!(
+</span><span class="boring">        "The area of the rectangle is {} square pixels.",
+</span><span class="boring">        area(width1, height1)
+</span><span class="boring">    );
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn area(width: u32, height: u32) -&gt; u32 {
+<span class="boring">    width * height
+</span><span class="boring">}</span></code></pre>
+<p>Tá an fheidhm <code>area</code> ceaptha chun achar dronuilleog amháin a ríomh, ach an
+tá dhá pharaiméadar ag an bhfeidhm a scríobhamar, agus níl sé soiléir áit ar bith inár
+clár go bhfuil baint ag na paraiméadair. Bheadh ​​​​sé níos inléite agus níos mó
+inbhainistithe leithead agus airde a ghrúpáil le chéile. Tá bealach amháin pléite againn cheana féin
+d'fhéadfaimis é sin a dhéanamh sa <a href="ch03-02-data-types.html#the-tuple-type">"An Cineál Tuple"</a><!-- neamhaird a dhéanamh ar --> alt
+de Chaibidil 3: trí úsáid a bhaint as tuples.</p>
+<h3 id="athmhachnamh-le-tuples"><a class="header" href="#athmhachnamh-le-tuples">Athmhachnamh le Tuples</a></h3>
+<p>Léiríonn liostú 5-9 leagan eile dár gclár a úsáideann tuples.</p>
+<Listing number="5-9" file-name="src/main.rs" caption="Specifying the width and height of the rectangle with a tuple">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let rect1 = (30, 50);
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        area(rect1)
+    );
+}
+
+fn area(dimensions: (u32, u32)) -&gt; u32 {
+    dimensions.0 * dimensions.1
+}</code></pre></pre>
+</Listing>
+<p>Ar bhealach amháin, tá an clár seo níos fearr. Tuples in iúl dúinn a chur le beagán de struchtúr, agus
+níl ach argóint amháin á rith againn anois. Ach ar bhealach eile, tá an leagan seo níos lú
+soiléir: ní ainmníonn tuples a n-eilimintí, mar sin ní mór dúinn a innéacsú isteach i gcodanna
+an tuple, rud a fhágann nach bhfuil ár ríomh chomh soiléir.</p>
+<p>Ní bhainfeadh an leithead agus an airde a mheascadh le ríomh an limistéir, ach dá mbeadh
+ba mhaith linn an dronuilleog a tharraingt ar an scáileán, is cuma! Bheadh ​​orainn
+coinnigh i gcuimhne gurb é <code>width</code> an t-innéacs tuple <code>0</code> agus is é <code>height</code> an tuple
+innéacs <code>1</code>. Bheadh ​​sé seo níos deacra fós do dhuine eile a dhéanamh amach agus a choinneáil i
+aigne dá mba rud é go n-úsáidfeadh siad ár gcód. Toisc nach bhfuil muid tar éis an bhrí a chur in iúl
+ár sonraí inár gcód, tá sé níos éasca anois earráidí a thabhairt isteach.</p>
+<h3 id="athmhacrú-le-struchtúir-níos-mó-brí-a-chur-leis"><a class="header" href="#athmhacrú-le-struchtúir-níos-mó-brí-a-chur-leis">Athmhacrú le Struchtúir: Níos Mó Brí a Chur Leis</a></h3>
+<p>Bainimid úsáid as struchtúir chun brí a chur leis trí na sonraí a lipéadú. Is féidir linn an tuple a athrú
+táimid ag baint úsáide as struchtúr le ainm don iomlán chomh maith le hainmneacha don
+páirteanna, mar a thaispeántar i Liosta 5-10.</p>
+<Listing number="5-10" file-name="src/main.rs" caption="Defining a `Rectangle` struct">
+<pre><pre class="playground"><code class="language-rust">struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        area(&amp;rect1)
+    );
+}
+
+fn area(rectangle: &amp;Rectangle) -&gt; u32 {
+    rectangle.width * rectangle.height
+}</code></pre></pre>
+</Listing>
+<p>Anseo tá struchtúr sainmhínithe againn agus thugamar <code>Rectangle</code> air. Laistigh den chuach
+lúibíní, shainmhíníomar na réimsí mar <code>width</code> agus <code>height</code>, a bhfuil an dá cheann acu
+clóscríobh <code>u32</code>. Ansin, i <code>main</code>, chruthaíomar sampla ar leith de <code>Rectangle</code>
+go bhfuil leithead <code>30</code> agus airde <code>50</code>.</p>
+<p>Tá ár bhfeidhm <code>area</code> sainmhínithe anois le paraiméadar amháin, atá ainmnithe againn
+<code>Rectangle</code>, a bhfuil a chineál ar iasacht do-inaistrithe de struchtúr <code>Rectangle</code>
+shampla. Mar a luadh i gCaibidil 4, ba mhaith linn an struct a fháil ar iasacht seachas
+úinéireacht a ghlacadh air. Ar an mbealach seo, coimeádann <code>main</code> a úinéireacht agus is féidir leanúint ar aghaidh
+ag baint úsáide as <code>rect1</code>, agus sin é an fáth a n-úsáidimid an <code>&amp;</code> sa síniú feidhme agus
+an áit a dtugaimid an fheidhm.</p>
+<p>Faigheann an fheidhm <code>area</code> rochtain ar na réimsí <code>width</code> agus <code>height</code> sa <code>Rectangle</code>
+shampla (tabhair faoi deara nach ionann rochtain a fháil ar réimsí den struchtúr a fuarthas ar iasacht
+na luachanna réimse a bhogadh, agus sin an fáth a fheiceann tú go minic ar iasacht de struchtúir). Ár
+deir síniú feidhme do <code>area</code> anois go díreach cad atá i gceist againn: ríomh an t-achar
+de <code>Rectangle</code>, ag baint úsáide as a réimsí <code>width</code> agus <code>height</code>. Tugann sé seo le fios go bhfuil an
+tá leithead agus airde gaolmhar lena chéile, agus tugann sé ainmneacha tuairisciúla ar
+na luachanna seachas na luachanna comhinnéacs tuple de <code>0</code> agus <code>1</code> a úsáid. Seo a
+buaigh ar mhaithe le soiléireacht.</p>
+<h3 id="feidhmiúlacht-Úsáideach-a-chur-le-tréithe-díorthaithe"><a class="header" href="#feidhmiúlacht-Úsáideach-a-chur-le-tréithe-díorthaithe">Feidhmiúlacht Úsáideach a Chur le Tréithe Díorthaithe</a></h3>
+<p>Bheadh ​​sé úsáideach a bheith in ann sampla de <code>Rectangle</code> a phriontáil agus muid
+dífhabhtaigh ár gclár agus féach ar na luachanna dá réimsí go léir. Liostáil 5-11 iarracht
+ag baint úsáide as an <a href="../std/macro.println.html"><code>println!</code> macro</a><!-- neamhaird --> mar a d'úsáideamar i
+caibidlí roimhe seo. Ní oibreoidh sé seo, áfach.</p>
+<Listing number="5-11" file-name="src/main.rs" caption="Attempting to print a `Rectangle` instance">
+<pre><code class="language-rust ignore does_not_compile">struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {}", rect1);
+}</code></pre>
+</Listing>
+<p>Nuair a thiomsaimid an cód seo, faighimid earráid leis an bpríomhtheachtaireacht seo:</p>
+<pre><code class="language-text">error[E0277]: `Rectangle` doesn't implement `std::fmt::Display`
+</code></pre>
+<p>Is féidir leis an macra <code>println!</code> go leor cineálacha formáidithe a dhéanamh, agus de réir réamhshocraithe, an chatach
+insíonn lúibíní do <code>println!</code> formáidiú ar a dtugtar <code>Display</code> a úsáid: an t-aschur atá beartaithe
+le haghaidh tomhaltas díreach úsáideora deiridh. Na cineálacha primitive atá feicthe againn go dtí seo
+cuir <code>Display</code> i bhfeidhm de réir réamhshocraithe mar níl ach bealach amháin ann ar mhaith leat a thaispeáint
+a <code>1</code> nó aon chineál primitive eile d'úsáideoir. Ach le structs, ar an mbealach
+Ba cheart go bhformáid <code>println!</code> nach bhfuil an t-aschur chomh soiléir mar go bhfuil níos mó ann
+féidearthachtaí taispeána: Ar mhaith leat camóga nó nach bhfuil? Ar mhaith leat an
+lúibíní curly? Ar chóir na réimsí go léir a thaispeáint? Mar gheall ar an débhríocht seo, Rust
+ní dhéanann sé iarracht buille faoi thuairim a dhéanamh ar cad atá uainn, agus níl aon soláthar ag struchtúir
+<code>Display</code> a chur i bhfeidhm le húsáid le <code>println!</code> agus an sealbhóir áite <code>{}</code>.</p>
+<p>Má leanaimid ar aghaidh ag léamh na n-earráidí, gheobhaidh muid an nóta cabhrach seo:</p>
+<pre><code class="language-text">   = help: the trait `std::fmt::Display` is not implemented for `Rectangle`
+   = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
+</code></pre>
+<p>Déanaimis iarracht é! Beidh cuma anois ar an nglao macra <code>println!</code> mar <code>println! ("rect1 is {rect1:?}");</code>. Ag cur an sonraitheora <code>:?</code> taobh istigh de na lúibíní cuartha insíonn
+<code>println!</code> ba mhaith linn formáid aschuir ar a dtugtar <code>Debug</code> a úsáid. An trait <code>Debug</code>
+cuireann sé ar ár gcumas ár struchtúr a phriontáil ar bhealach atá úsáideach d'fhorbróirí ionas gur féidir linn
+féach ar a luach agus muid ag dífhabhtú ár gcód.</p>
+<p>Tiomsaigh an cód leis an athrú seo. Drat! Faighimid earráid fós:</p>
+<pre><code class="language-text">error[E0277]: `Rectangle` doesn't implement `Debug`
+</code></pre>
+<p>Ach arís, tugann an tiomsaitheoir nóta cabhrach dúinn:</p>
+<pre><code class="language-text">   = help: the trait `Debug` is not implemented for `Rectangle`
+   = note: add `#[derive(Debug)]` to `Rectangle` or manually `impl Debug for Rectangle`
+</code></pre>
+<p>Rust <em>does</em> san áireamh feidhmiúlacht chun faisnéis debugging a phriontáil amach, ach táimid
+ní mór dúinn tarraingt isteach go sainráite chun an fheidhmiúlacht sin a chur ar fáil dár struchtúr.
+Chun é sin a dhéanamh, cuirimid an tréith sheachtrach <code>#[derive(Debug)]</code> díreach roimh an
+struct sainmhíniú, mar a thaispeántar i Liostú 5-12.</p>
+<Listing number="5-12" file-name="src/main.rs" caption="Adding the attribute to derive the `Debug` trait and printing the `Rectangle` instance using debug formatting">
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {rect1:?}");
+}</code></pre></pre>
+</Listing>
+<p>Anois agus an clár á rith againn, ní bhfaighidh muid aon earráidí, agus feicfidh muid an
+aschur seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running `target/debug/rectangles`
+rect1 is Rectangle { width: 30, height: 50 }
+</code></pre>
+<p>Go deas! Ní hé an t-aschur is deise é, ach taispeánann sé luachanna na réimsí go léir
+sa chás seo, rud a chuideodh go cinnte le linn dífhabhtaithe. Nuair atá againn
+struchtúir níos mó, tá sé úsáideach aschur a bheith agat atá beagán níos éasca le léamh; isteach
+sna cásanna sin, is féidir linn <code>{:#?}</code> a úsáid in ionad <code>{:?}</code> sa teaghrán <code>println!</code>. I
+an sampla seo, ag baint úsáide as an stíl <code>{:#?}</code> aschuirfear an méid seo a leanas:</p>
+<pre><code class="language-consól">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running `target/debug/rectangles`
+rect1 is Rectangle {
+    width: 30,
+    height: 50,
+}
+</code></pre>
+<p>Bealach eile chun luach a phriontáil ag baint úsáide as an bhformáid <code>Debug</code> is ea an <a href="../std/macro.dbg.html"><code>dbg!</code>
+macro</a> <!-- neamhaird -->a úsáid, a ghlacann úinéireacht slonn (seachas
+go <code>println!</code>, a thógann tagairt), priontaí an comhad agus uimhir líne na
+áit a dtarlaíonn an macraghlao <code>dbg!</code> sin i do chód mar aon leis an luach iarmhartach
+den slonn sin, agus tugann sé úinéireacht ar an luach ar ais.</p>
+<blockquote>
+<p>Nóta: Ag glaoch ar an <code>dbg!</code> priontaí macra chuig an sruth caighdeánach consól earráide
+(<code>stderr</code>), seachas <code>println!</code>, a phriontálann go dtí an t-aschur caighdeánach
+sruth consól (<code>stdout</code>). Labhróimid níos mó faoi <code>stderr</code> agus <code>stdout</code> sa
+<a href="ch12-06-writing-to-stderr-instead-of-stdout.html">“Teachtaireachtaí Earráide á Scríobh go Earráid Chaighdeánach In ionad Aschur Caighdeánach”
+alt i gCaibidil 12</a><!-- neamhaird -->.</p>
+</blockquote>
+<p>Seo sampla ina bhfuil suim againn sa luach a shanntar don
+réimse <code>width</code>, chomh maith le luach an struchtúir iomláin in <code>rect1</code>:</p>
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let scale = 2;
+    let rect1 = Rectangle {
+        width: dbg!(30 * scale),
+        height: 50,
+    };
+
+    dbg!(&amp;rect1);
+}</code></pre></pre>
+<p>Is féidir linn <code>dbg!</code> a chur timpeall ar an slonn <code>scale 30 *</code> agus, toisc go bhfuil <code>dbg!</code>
+ar ais úinéireacht ar luach na slonn, gheobhaidh an réimse <code>width</code> an
+an luach céanna mura mbeadh an glao <code>dbg!</code> againn ann. Nílimid ag iarraidh <code>dbg!</code> a
+seilbh a ghlacadh ar <code>rect1</code>, mar sin úsáidimid tagairt do <code>rect1</code> sa chéad ghlao eile.
+Seo an chuma atá ar aschur an tsampla seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running `target/debug/rectangles`
+[src/main.rs:10:16] 30 * scale = 60
+[src/main.rs:14:5] &amp;rect1 = Rectangle {
+    width: 60,
+    height: 50,
+}
+</code></pre>
+<p>Is féidir linn a fheiceáil gur tháinig an chéad phíosa aschuir ó <em>src/main.rs</em> líne 10 áit a bhfuilimid
+ag dífhabhtú na slonn <code>30 * scale</code>, agus is é an luach iarmhartach ná <code>60</code> (an
+Is éard atá i gceist le formáidiú <code>Debug</code> a chuirtear i bhfeidhm le haghaidh slánuimhreacha a luach a phriontáil amháin. Tá an
+Aschuir <code>dbg!</code> glao ar líne 14 de <em>src/main.rs</em> luach <code>&amp;rect1</code>, is é sin
+an struchtúr <code>Rectangle</code>. Úsáideann an t-aschur seo formáidiú deas <code>Debug</code> an
+Cineál <code>Rectangle</code>. Is féidir leis an macra <code>dbg!</code> a bheith an-chabhrach agus tú ag iarraidh é a dhéanamh
+déan amach cad atá á dhéanamh ag do chód!</p>
+<p>Chomh maith leis an trait <code>Debug</code>, tá Rust tar éis roinnt tréithe a sholáthar dúinn
+a úsáid leis an tréith <code>derive</code> ar féidir a iompar úsáideach a chur lenár saincheaptha
+cineálacha. Tá na tréithe sin agus a n-iompraíocht liostaithe in <a href="appendix-03-derivable-traits.html">Aguisín C</a><!--
+neamhaird a dhéanamh -->. Clúdóimid conas na tréithe seo a chur i bhfeidhm le hiompar saincheaptha mar
+chomh maith le conas do chuid tréithe féin a chruthú i gCaibidil 10. Tá go leor ann freisin
+tréithe seachas <code>derive</code>; le haghaidh tuilleadh eolais, féach <a href="../reference/attributes.html">na “Tréithe”
+chuid den Tagairt Rust</a>.</p>
+<p>Tá ár bhfeidhm <code>area</code> an-sonrach: ní ríomhann sé ach achar na dronuilleogach.
+Bheadh ​​sé ina chuidiú an t-iompar seo a cheangal níos dlúithe lenár struchtúr <code>Rectangle</code>
+mar ní oibreoidh sé le haon chineál eile. Breathnaímid ar conas is féidir linn leanúint ar aghaidh
+athmhonaraigh an cód seo tríd an bhfeidhm <code>area</code> a iompú ina <code>area</code> <em>method</em>
+sainithe ar ár gcineál <code>Rectangle</code>.</p>
 
                     </main>
 

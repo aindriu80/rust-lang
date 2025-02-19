@@ -28,10 +28,10 @@
   - [Tagairtí agus Iasachtaí](ch04-02-references-and-borrowing.md)
   - [An Cineál Slice](ch04-03-slices.md)
 
-- [Ag Úsáid Struchtúr chun Sonraí Gaolmhara a Struchtúrú](ch05-00-structs.md)
+- [Structs a Úsáid chun Sonraí Gaolmhara a Struchtúrú](ch05-00-structs.md)
 
-  - [Struchtúir a Shainmhíniú agus a Thúsú](ch05-01-defining-structs.md)
-  - [Clár Samplach ag Úsáid Struchtúr](ch05-02-example-structs.md)
+  - [Structs a shainiú agus a thionscnamh](ch05-01-defining-structs.md)
+  - [Clár Samplach ag Úsáid Structs](ch05-02-example-structs.md)
   - [Modh Comhréir](ch05-03-method-syntax.md)
 
 - [Áirimh agus Meaitseáil Patrún](ch06-00-enums.md)

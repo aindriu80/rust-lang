@@ -4440,10 +4440,972 @@ ciallaíonn sé seo nach gá duit cód breise a scríobh agus a dhífhabhtú chu
 <p>Bíonn tionchar ag úinéireacht ar an gcaoi a n-oibríonn go leor codanna eile de Rust, mar sin labhróimid faoi
 na coincheapa seo níos faide ar fud an chuid eile den leabhar. Bogaimis ar aghaidh go dtí
 Caibidil 5 agus féach ar phíosaí sonraí a ghrúpáil le chéile i <code>struct</code>.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="using-structs-to-structure-related-data"><a class="header" href="#using-structs-to-structure-related-data">Using Structs to Structure Related Data</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="defining-and-instantiating-structs"><a class="header" href="#defining-and-instantiating-structs">Defining and Instantiating Structs</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="an-example-program-using-structs"><a class="header" href="#an-example-program-using-structs">An Example Program Using Structs</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="method-syntax"><a class="header" href="#method-syntax">Method Syntax</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="structs-a-Úsáid-chun-sonraí-gaolmhara-a-struchtúrú"><a class="header" href="#structs-a-Úsáid-chun-sonraí-gaolmhara-a-struchtúrú">Structs a Úsáid chun Sonraí Gaolmhara a Struchtúrú</a></h1>
+<p>Is cineál sonraí saincheaptha é <em>struct</em>, nó <em>struchtúr</em>, a ligeann duit pacáiste a dhéanamh
+le chéile agus ainmnigh luachanna gaolmhara iolracha a dhéanann suas grúpa bríoch. Más rud é
+tá cur amach agat ar theanga atá dírithe ar oibiachtaí, tá <em>struct</em> cosúil le
+tréithe sonraí an réad. Sa chaibidil seo, déanfaimid comparáid agus codarsnacht idir na tuples
+le struchtúir chun cur leis an méid atá ar eolas agat cheana féin agus a léiriú cathain a bheidh struchtúir ann
+bealach níos fearr chun sonraí a ghrúpáil.</p>
+<p>Taispeánfaimid conas struchtúir a shainiú agus a chur ar an toirt. Déanfaimid plé ar conas
+feidhmeanna gaolmhara a shainiú, go háirithe an cineál feidhmeanna gaolmhara ar a dtugtar
+<em>methods</em>, chun iompraíocht a bhaineann le cineál struchtúir a shonrú. Struchtúir agus enums
+(pléite i gCaibidil 6) na bloic thógála chun cineálacha nua a chruthú i do
+fearainn an chláir chun leas iomlán a bhaint as seiceáil cineáil ama tiomsaithe Rust.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="struchtúir-a-shainmhíniú-agus-a-thionscnamh"><a class="header" href="#struchtúir-a-shainmhíniú-agus-a-thionscnamh">Struchtúir a Shainmhíniú agus a Thionscnamh</a></h2>
+<p>Tá struchtúir cosúil le tuples, a phléitear in <a href="ch03-02-data-types.html#the-tuple-type">“An Cineál Tuple”</a><!--
+neamhaird a dhéanamh ar --> alt, sa mhéid is go bhfuil luachanna gaolmhara iolracha ag an dá cheann. Cosúil le tuples, an
+is féidir cineálacha éagsúla a bheith i bpíosaí struchtúir. Murab ionann agus tuples, i struct
+ainmneoidh tú gach píosa sonraí ionas go mbeidh sé soiléir cad a chiallaíonn na luachanna. Ag cur leo seo
+Ciallaíonn ainmneacha go bhfuil struchtúir níos solúbtha ná tuples: ní gá duit a bheith ag brath
+ar ord na sonraí chun luachanna an tsampla a shonrú nó a rochtain.</p>
+<p>Chun struchtúr a shainiú, cuirimid an eochairfhocal <code>struct</code> isteach agus ainmnímid an struchtúr iomlán. A
+ba chóir go ndéanfadh ainm struct cur síos ar thábhacht na bpíosaí sonraí atá ann
+grúpáilte le chéile. Ansin, taobh istigh de lúibíní curly, sainímid ainmneacha agus cineálacha
+na píosaí sonraí, ar a dtugaimid <em>fields</em>. Mar shampla, taispeánann Liostú 5-1 a
+struchtúr a stórálann faisnéis faoi chuntas úsáideora.</p>
+<Listing number="5-1" file-name="src/main.rs" caption="A `User` struct definition">
+<pre><pre class="playground"><code class="language-rust">struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Chun struchtúr a úsáid tar éis dúinn é a shainiú, cruthaímid <em>gcás</em> den struchtúr sin
+trí luachanna nithiúla a shonrú do gach ceann de na réimsí. Cruthaímid sampla trí
+ag lua ainm an struchtúir agus ansin cuir lúibíní curlaí ina bhfuil <em>key:
+value</em> péirí, áit a bhfuil na heochracha ainmneacha na réimsí agus na luachanna an
+sonraí ba mhaith linn a stóráil sna réimsí sin. Ní gá dúinn na réimsí a shonrú i
+an t-ord céanna inar dhearbhaigh muid iad sa struct. I bhfocail eile, tá an
+Tá sainmhíniú struchtúr cosúil le teimpléad ginearálta don chineál, agus cásanna a líonadh
+sa teimpléad sin le sonraí ar leith chun luachanna den chineál a chruthú. Le haghaidh
+Mar shampla, is féidir linn úsáideoir áirithe a dhearbhú mar a thaispeántar i Liostú 5-2.</p>
+<Listing number="5-2" file-name="src/main.rs" caption="Creating an instance of the `User` struct">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct User {
+</span><span class="boring">    active: bool,
+</span><span class="boring">    username: String,
+</span><span class="boring">    email: String,
+</span><span class="boring">    sign_in_count: u64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let user1 = User {
+        active: true,
+        username: String::from("someusername123"),
+        email: String::from("someone@example.com"),
+        sign_in_count: 1,
+    };
+}</code></pre></pre>
+</Listing>
+<p>Chun luach sonrach a fháil ó struchtúr, úsáidimid nodaireacht poncanna. Mar shampla, go
+rochtain a fháil ar sheoladh ríomhphoist an úsáideora seo, úsáidimid <code>user1.email</code>. Más é an cás
+mutable, is féidir linn luach a athrú tríd an nodaireacht ponc a úsáid agus a shannadh isteach i
+réimse ar leith. Léiríonn liostú 5-3 conas an luach sa <code>email</code> a athrú
+réimse shampla <code>User</code> mutable.</p>
+<Listing number="5-3" file-name="src/main.rs" caption="Changing the value in the `email` field of a `User` instance">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct User {
+</span><span class="boring">    active: bool,
+</span><span class="boring">    username: String,
+</span><span class="boring">    email: String,
+</span><span class="boring">    sign_in_count: u64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let mut user1 = User {
+        active: true,
+        username: String::from("someusername123"),
+        email: String::from("someone@example.com"),
+        sign_in_count: 1,
+    };
+
+    user1.email = String::from("anotheremail@example.com");
+}</code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara go gcaithfidh an ásc iomlán a bheith mutable; Ní ligeann meirge dúinn marcáil
+ach réimsí áirithe mar shoghluaiste. Mar is amhlaidh le haon slonn, is féidir linn ceann nua a thógáil
+shampla an struct mar an slonn deiridh i gcorp feidhme a
+go hintuigthe cuir ar ais an cás nua sin.</p>
+<p>Taispeánann liostú 5-4 feidhm <code>build_user</code> a sheolann sampla <code>User</code> ar ais le
+an seoladh ríomhphoist agus an t-ainm úsáideora a tugadh. Faigheann an réimse <code>active</code> luach <code>true</code>, agus
+faigheann an <code>sign_in_count</code> luach <code>1</code>.</p>
+<Listing number="5-4" file-name="src/main.rs" caption="A `build_user` function that takes an email and username and returns a `User` instance">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct User {
+</span><span class="boring">    active: bool,
+</span><span class="boring">    username: String,
+</span><span class="boring">    email: String,
+</span><span class="boring">    sign_in_count: u64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn build_user(email: String, username: String) -&gt; User {
+    User {
+        active: true,
+        username: username,
+        email: email,
+        sign_in_count: 1,
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let user1 = build_user(
+</span><span class="boring">        String::from("someone@example.com"),
+</span><span class="boring">        String::from("someusername123"),
+</span><span class="boring">    );
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Déanann sé ciall paraiméadair na feidhme a ainmniú leis an ainm céanna leis an struchtúr
+réimsí, ach caithfidh tú na hainmneacha réimse <code>email</code> agus <code>username</code> a athdhéanamh agus
+athróga beagán tedious. Dá mbeadh níos mó réimsí sa struchtúr, agus gach ainm á athrá
+bheadh ​​níos mó fós annoying. Ar ámharaí an tsaoil, tá gearrscannán áisiúil ann!</p>
+<!-- Old heading. Do not remove or links may break. -->
+<p><a id="using-the-field-init-shorthand-when-variables-and-fields-have-the-same-name"></a></p>
+<h3 id="ag-baint-úsáide-as-an-réimse-init-gearrlámh"><a class="header" href="#ag-baint-úsáide-as-an-réimse-init-gearrlámh">Ag baint úsáide as an Réimse Init Gearrlámh</a></h3>
+<p>Toisc go bhfuil ainmneacha na bparaiméadar agus na hainmneacha páirce struct díreach mar a chéile i
+Ag liostú 5-4, is féidir linn an chomhréir <em>field init shorthand</em> a úsáid chun athscríobh
+<code>build_user</code> mar sin iompraíonn sé díreach mar an gcéanna ach ní bhíonn an athrá air
+<code>username</code> agus <code>email</code>, mar a thaispeántar i Liostú 5-5.</p>
+<Listing number="5-5" file-name="src/main.rs" caption="A `build_user` function that uses field init shorthand because the `username` and `email` parameters have the same name as struct fields">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct User {
+</span><span class="boring">    active: bool,
+</span><span class="boring">    username: String,
+</span><span class="boring">    email: String,
+</span><span class="boring">    sign_in_count: u64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn build_user(email: String, username: String) -&gt; User {
+    User {
+        active: true,
+        username,
+        email,
+        sign_in_count: 1,
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let user1 = build_user(
+</span><span class="boring">        String::from("someone@example.com"),
+</span><span class="boring">        String::from("someusername123"),
+</span><span class="boring">    );
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Anseo, táimid ag cruthú sampla nua den struchtúr <code>User</code>, a bhfuil réimse aige
+darb ainm <code>email</code>. Ba mhaith linn luach an réimse <code>email</code> a shocrú go dtí an luach sa
+paraiméadar <code>email</code> den fheidhm <code>build_user</code>. Toisc go bhfuil an réimse <code>email</code> agus
+Tá an t-ainm céanna ar an bparaiméadar <code>email</code>, ní gá dúinn ach <code>email</code> a scríobh in áit
+ná <code>email: email</code>.</p>
+<h3 id="cásanna-a-chruthú-ó-chásanna-eile-le-comhréir-nuashonraithe-struchtúr"><a class="header" href="#cásanna-a-chruthú-ó-chásanna-eile-le-comhréir-nuashonraithe-struchtúr">Cásanna a Chruthú ó Chásanna Eile le Comhréir Nuashonraithe Struchtúr</a></h3>
+<p>Is minic a bhíonn sé úsáideach sampla nua de struchtúr a chruthú a chuimsíonn an chuid is mó de
+na luachanna ó shampla eile, ach athraíonn roinnt. Is féidir leat é seo a dhéanamh ag baint úsáide as
+<em>struct nuashonraigh comhréir</em>.</p>
+<p>Ar dtús, i Liostú 5-6 léirímid conas mar shampla <code>User</code> nua a chruthú in <code>user2</code>
+go rialta, gan an chomhréir nuashonraithe. Shocraigh muid luach nua do <code>email</code> ach
+nó bain úsáid as na luachanna céanna ó <code>user1</code> a chruthaigh muid i Liostú 5-2.</p>
+<Listing number="5-6" file-name="src/main.rs" caption="Creating a new `User` instance using all but one of the values from `user1`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct User {
+</span><span class="boring">    active: bool,
+</span><span class="boring">    username: String,
+</span><span class="boring">    email: String,
+</span><span class="boring">    sign_in_count: u64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    // --snip--
+<span class="boring">
+</span><span class="boring">    let user1 = User {
+</span><span class="boring">        email: String::from("someone@example.com"),
+</span><span class="boring">        username: String::from("someusername123"),
+</span><span class="boring">        active: true,
+</span><span class="boring">        sign_in_count: 1,
+</span><span class="boring">    };
+</span>
+    let user2 = User {
+        active: user1.active,
+        username: user1.username,
+        email: String::from("another@example.com"),
+        sign_in_count: user1.sign_in_count,
+    };
+}</code></pre></pre>
+</Listing>
+<p>Ag baint úsáide as comhréir nuashonraithe struct, is féidir linn an éifeacht chéanna a bhaint amach le níos lú cód, mar
+léirithe i Liosta 5-7. Sonraíonn an chomhréir <code>..</code> nach bhfuil na réimsí atá fágtha
+ba cheart go mbeadh an luach céanna ag na réimsí a leagtar síos go sainráite agus atá ag na réimsí sa chás ar leith.</p>
+<Listing number="5-7" file-name="src/main.rs" caption="Using struct update syntax to set a new `email` value for a `User` instance but to use the rest of the values from `user1`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct User {
+</span><span class="boring">    active: bool,
+</span><span class="boring">    username: String,
+</span><span class="boring">    email: String,
+</span><span class="boring">    sign_in_count: u64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    // --snip--
+<span class="boring">
+</span><span class="boring">    let user1 = User {
+</span><span class="boring">        email: String::from("someone@example.com"),
+</span><span class="boring">        username: String::from("someusername123"),
+</span><span class="boring">        active: true,
+</span><span class="boring">        sign_in_count: 1,
+</span><span class="boring">    };
+</span>
+    let user2 = User {
+        email: String::from("another@example.com"),
+        ..user1
+    };
+}</code></pre></pre>
+</Listing>
+<p>Cruthaíonn an cód i Liostú 5-7 sampla freisin in <code>user2</code> a bhfuil a
+luach difriúil don <code>email</code> ach tá na luachanna céanna aige don <code>username</code>,
+réimsí <code>active</code>, agus <code>sign_in_count</code> ó <code>user1</code>. Caithfidh an <code>..user1</code> teacht ar deireadh
+a shonrú gur cheart go bhfaigheadh ​​aon réimsí atá fágtha a luachanna ó na
+réimsí comhfhreagracha in <code>user1</code>, ach is féidir linn a roghnú luachanna a shonrú mar
+go leor réimsí mar ba mhaith linn in aon ord, beag beann ar ord na réimsí i
+sainmhíniú an struchtúir.</p>
+<p>Tabhair faoi deara go n-úsáideann an chomhréir nuashonraithe struct <code>=</code> cosúil le tasc; tá sé seo mar gheall ar
+bogann sé na sonraí, díreach mar a chonaic muid sa [“Athróga agus Sonraí Idirghníomhú le
+Bog”][bogadh]<!-- neamhaird --> alt. Sa sampla seo, ní féidir linn a úsáid a thuilleadh
+<code>user1</code> ina iomláine tar éis <code>user2</code> a chruthú mar go bhfuil an <code>String</code> sa
+Bogadh an réimse <code>username</code> de <code>user1</code> go <code>user2</code>. Dá mbeadh <code>user2</code> nua tugtha againn
+Luachanna <code>String</code> le haghaidh <code>email</code> agus <code>username</code> araon, agus mar sin níor úsáideadh ach an
+luachanna <code>active</code> agus <code>sign_in_count</code> ó <code>user1</code>, ansin bheadh ​​<code>user1</code> fós
+bailí tar éis <code>user2</code> a chruthú. Is cineálacha iad <code>active</code> agus <code>sign_in_count</code> araon
+an tréith <code>Copy</code> a chur i bhfeidhm, mar sin an iompar a phléamar sa [“Stack-Only
+Sonraí: Cóipeáil”][cóip]<!-- neamhaird --> bheadh ​​feidhm ag an alt. Is féidir linn a úsáid fós
+<code>user1.email</code> sa sampla seo, toisc gur <em>ní</em> bogadh amach a luach.</p>
+<h3 id="ag-Úsáid-struchtúir-tuple-gan-réimsí-ainmnithe-chun-cineálacha-Éagsúla-a-chruthú"><a class="header" href="#ag-Úsáid-struchtúir-tuple-gan-réimsí-ainmnithe-chun-cineálacha-Éagsúla-a-chruthú">Ag Úsáid Struchtúir Tuple Gan Réimsí Ainmnithe chun Cineálacha Éagsúla a Chruthú</a></h3>
+<p>Tacaíonn meirge freisin le struchtúir atá cosúil le tuples, ar a dtugtar <em>tuple structs</em>.
+Tá an bhrí bhreise ag struchtúir tuple a sholáthraíonn an t-ainm struchtúir ach níl an bhrí eile aige
+ainmneacha a bhaineann lena réimsí; in áit, níl acu ach cineálacha an
+réimsí. Tá struchtúir tuple úsáideach nuair is mian leat ainm a thabhairt don tuple iomlán
+agus déan cineál difriúil den tuple ó thuple eile, agus nuair a ainmnítear gach ceann acu
+réimse mar atá i struchtúr rialta bheadh ​​briathra nó iomarcach.</p>
+<p>Chun tuple struct a shainiú, cuir tús leis an eochairfhocal <code>struct</code> agus an t-ainm struct
+ina dhiaidh sin na cineálacha sa tuple. Mar shampla, anseo sainímid agus úsáidimid dhá cheann
+tuple structs darb ainm <code>Color</code> agus <code>Point</code>:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust">struct Color(i32, i32, i32);
+struct Point(i32, i32, i32);
+
+fn main() {
+    let black = Color(0, 0, 0);
+    let origin = Point(0, 0, 0);
+}</code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara gur cineálacha difriúla iad na luachanna <code>black</code> agus <code>origin</code> toisc go bhfuil siad
+cásanna de struchtúir tuple éagsúla. Is é a chineál féin gach struchtúr a shainíonn tú,
+cé go bhféadfadh na cineálacha céanna a bheith sna réimsí laistigh den struchtúr. Le haghaidh
+Mar shampla, ní féidir le feidhm a ghlacann paraiméadar den chineál <code>Color</code> a
+<code>Point</code> mar argóint, cé go bhfuil an dá chineál comhdhéanta de thrí <code>i32</code>
+luachanna. Seachas sin, tá cásanna tuple struct cosúil le tuples sa mhéid is gur féidir leat
+iad a scrios ina bpíosaí aonair, agus is féidir leat úsáid a bhaint as <code>.</code> dhiaidh sin
+ag an innéacs chun rochtain a fháil ar luach aonair. Murab ionann agus tuples, tuple structs
+iarraidh ort an cineál struchtúir a ainmniú nuair a dhéanann tú iad a mhilleadh. Le haghaidh
+Mar shampla, scríobhfaimis <code>Let Point(x, y, z) = point</code>.</p>
+<h3 id="struchtúir-atá-cosúil-le-haonad-gan-réimsí-ar-bith"><a class="header" href="#struchtúir-atá-cosúil-le-haonad-gan-réimsí-ar-bith">Struchtúir atá cosúil le hAonad gan Réimsí ar bith</a></h3>
+<p>Is féidir leat struchtúir a shainiú freisin nach bhfuil réimsí ar bith acu! Tugtar iad seo
+<em>unit-like structs</em> toisc go n-iompraíonn siad mar an gcéanna le <code>()</code>, cineál an aonaid sin
+luaigh muid i <a href="ch03-02-data-types.html#the-tuple-type">"An Cineál Tuple"</a><!-- neamhaird --> alt. Aonad-mhaith
+is féidir le struchtúir a bheith úsáideach nuair is gá duit tréith de chineál éigin a chur i bhfeidhm ach nach ndéanann
+aon sonraí is mian leat a stóráil sa chineál féin. Pléifimid tréithe
+i gCaibidil 10. Seo sampla de struchtúr aonaid a dhearbhú agus a thabhairt ar an toirt
+darb ainm <code>AlwaysEqual</code>:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust">struct AlwaysEqual;
+
+fn main() {
+    let subject = AlwaysEqual;
+}</code></pre></pre>
+</Listing>
+<p>Chun <code>AlwaysEqual</code> a shainiú, úsáidimid an eochairfhocal <code>struct</code>, an t-ainm a theastaíonn uainn, agus
+ansin leathstad. Níl gá le lúibíní nó lúibíní chatach! Ansin is féidir linn a fháil ar
+mar shampla de <code>AlwaysEqual</code> san athróg <code>subject</code> ar bhealach comhchosúil: ag baint úsáide as an
+an t-ainm atá sainmhínithe againn, gan aon lúibíní nó lúibíní chatach. Samhlaigh sin níos déanaí
+cuirfimid iompar den chineál seo i bhfeidhm ionas go mbeidh gach cás de
+Bíonn <code>AlwaysEqual</code> i gcónaí cothrom le gach cás d'aon chineál eile, b'fhéidir
+go mbeadh toradh aitheanta acu chun críocha tástála. Ní bheadh ​​aon sonraí ag teastáil uainn
+cuir an t-iompar sin i bhfeidhm! Feicfidh tú i gCaibidil 10 conas tréithe a shainiú agus
+iad a chur i bhfeidhm ar aon chineál, lena n-áirítear struchtúir aonad-mhaith.</p>
+<blockquote>
+<h3 id="Úinéireacht-sonraí-struchtúr"><a class="header" href="#Úinéireacht-sonraí-struchtúr">Úinéireacht Sonraí Struchtúr</a></h3>
+<p>Sa sainmhíniú ar struchtúr <code>User</code> i Liostú 5-1, d'úsáideamar an <code>String</code> faoi úinéireacht
+cineál seachas an cineál sliseog teaghrán <code>&amp;str</code>. Is rogha d'aon ghnó é seo
+mar ba mhaith linn go mbeadh úinéireacht ag gach cás den struchtúr seo ar a chuid sonraí go léir agus ar a son
+go mbeidh na sonraí sin bailí chomh fada agus a bheidh an struchtúr iomlán bailí.</p>
+<p>Is féidir freisin do struchtúir tagairtí a stóráil do shonraí ar le rud éigin iad
+eile, ach chun é sin a dhéanamh teastaíonn úsáid <em>lifetimes</em>, gné Rust a dhéanfaimid
+pléigh i gCaibidil 10. Cinntíonn Saolré go bhfuil na sonraí dá dtagraítear ag struct
+bailí chomh fada agus atá an struchtúr. Ligean le rá go ndéanann tú iarracht tagairt a stóráil
+i struchtúr gan saolréanna a shonrú, mar a leanas; ní oibreoidh sé seo:</p>
+<Listing file-name="src/main.rs">
+<!-- CAN'T EXTRACT SEE https://github.com/rust-lang/mdBook/issues/1127 -->
+<pre><code class="language-rust ignore does_not_compile">struct User {
+    active: bool,
+    username: &amp;str,
+    email: &amp;str,
+    sign_in_count: u64,
+}
+
+fn main() {
+    let user1 = User {
+        active: true,
+        username: "someusername123",
+        email: "someone@example.com",
+        sign_in_count: 1,
+    };
+}</code></pre>
+</Listing>
+<p>Déanfaidh an tiomsaitheoir gearán go bhfuil sonraíocht saoil de dhíth air:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling structs v0.1.0 (file:///projects/structs)
+error[E0106]: missing lifetime specifier
+ --&gt; src/main.rs:3:15
+  |
+3 |     username: &amp;str,
+  |               ^ expected named lifetime parameter
+  |
+help: consider introducing a named lifetime parameter
+  |
+1 ~ struct User&lt;'a&gt; {
+2 |     active: bool,
+3 ~     username: &amp;'a str,
+  |
+
+error[E0106]: missing lifetime specifier
+ --&gt; src/main.rs:4:12
+  |
+4 |     email: &amp;str,
+  |            ^ expected named lifetime parameter
+  |
+help: consider introducing a named lifetime parameter
+  |
+1 ~ struct User&lt;'a&gt; {
+2 |     active: bool,
+3 |     username: &amp;str,
+4 ~     email: &amp;'a str,
+  |
+
+Chun tuilleadh eolais a fháil faoin earráid seo, bain triail as `rustc --explain E0106`.
+error: níorbh fhéidir `structs` (bin "structs") a thiomsú mar gheall ar 2 earráid roimhe seo
+</code></pre>
+<p>I gCaibidil 10, pléifimid conas na hearráidí seo a cheartú ionas gur féidir leat iad a stóráil
+tagairtí i struchtúir, ach faoi láthair, socróimid earráidí mar seo ag baint úsáide as úinéireacht
+cineálacha cosúil le <code>String</code> in ionad tagairtí cosúil le <code>&amp;str</code>.</p>
+</blockquote>
+<!-- manual-regeneration
+for the error above
+after running update-rustc.sh:
+pbcopy < listings/ch05-using-structs-to-structure-related-data/no-listing-02-reference-in-struct/output.txt
+paste above
+add `> ` before every line -->
+<div style="break-before: page; page-break-before: always;"></div><h2 id="clár-samplach-ag-Úsáid-structs"><a class="header" href="#clár-samplach-ag-Úsáid-structs">Clár Samplach ag Úsáid Structs</a></h2>
+<p>Chun a thuiscint cathain a d’fhéadfadh muid a bheith ag iarraidh struchtúir a úsáid, scríobhaimis clár a
+ríomhann sé achar dronuilleog. Tosóimid trí athróga aonair a úsáid, agus
+ansin athmhacnaigh an clár go dtí go mbeimid ag úsáid structs ina ionad.</p>
+<p>Déanaimis tionscadal dénártha nua le lasta ar a dtugtar <em>rectangles</em> a ghlacfaidh
+leithead agus airde dronuilleog sonraithe i bpicteilín agus ríomh an t-achar
+den dronuilleog. Léiríonn liostú 5-8 clár gearr le bealach amháin le déanamh
+go díreach é sin i <em>src/main.rs</em> ár dtionscadal.</p>
+<Listing number="5-8" file-name="src/main.rs" caption="Calculating the area of a rectangle specified by separate width and height variables">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let width1 = 30;
+    let height1 = 50;
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        area(width1, height1)
+    );
+}
+
+fn area(width: u32, height: u32) -&gt; u32 {
+    width * height
+}</code></pre></pre>
+</Listing>
+<p>Now, run this program using <code>cargo run</code>:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s
+     Running `target/debug/rectangles`
+The area of the rectangle is 1500 square pixels.
+</code></pre>
+<p>Éiríonn leis an gcód seo achar na dronuilleoige a dhéanamh amach trí ghlaoch a chur ar an
+feidhm <code>area</code> le gach gné, ach is féidir linn níos mó a dhéanamh chun an cód seo a dhéanamh soiléir
+agus inléite.</p>
+<p>Tá an tsaincheist leis an gcód seo le feiceáil i síniú <code>area</code>:</p>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span><span class="boring">    let width1 = 30;
+</span><span class="boring">    let height1 = 50;
+</span><span class="boring">
+</span><span class="boring">    println!(
+</span><span class="boring">        "The area of the rectangle is {} square pixels.",
+</span><span class="boring">        area(width1, height1)
+</span><span class="boring">    );
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn area(width: u32, height: u32) -&gt; u32 {
+<span class="boring">    width * height
+</span><span class="boring">}</span></code></pre>
+<p>Tá an fheidhm <code>area</code> ceaptha chun achar dronuilleog amháin a ríomh, ach an
+tá dhá pharaiméadar ag an bhfeidhm a scríobhamar, agus níl sé soiléir áit ar bith inár
+clár go bhfuil baint ag na paraiméadair. Bheadh ​​​​sé níos inléite agus níos mó
+inbhainistithe leithead agus airde a ghrúpáil le chéile. Tá bealach amháin pléite againn cheana féin
+d'fhéadfaimis é sin a dhéanamh sa <a href="ch03-02-data-types.html#the-tuple-type">"An Cineál Tuple"</a><!-- neamhaird a dhéanamh ar --> alt
+de Chaibidil 3: trí úsáid a bhaint as tuples.</p>
+<h3 id="athmhachnamh-le-tuples"><a class="header" href="#athmhachnamh-le-tuples">Athmhachnamh le Tuples</a></h3>
+<p>Léiríonn liostú 5-9 leagan eile dár gclár a úsáideann tuples.</p>
+<Listing number="5-9" file-name="src/main.rs" caption="Specifying the width and height of the rectangle with a tuple">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let rect1 = (30, 50);
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        area(rect1)
+    );
+}
+
+fn area(dimensions: (u32, u32)) -&gt; u32 {
+    dimensions.0 * dimensions.1
+}</code></pre></pre>
+</Listing>
+<p>Ar bhealach amháin, tá an clár seo níos fearr. Tuples in iúl dúinn a chur le beagán de struchtúr, agus
+níl ach argóint amháin á rith againn anois. Ach ar bhealach eile, tá an leagan seo níos lú
+soiléir: ní ainmníonn tuples a n-eilimintí, mar sin ní mór dúinn a innéacsú isteach i gcodanna
+an tuple, rud a fhágann nach bhfuil ár ríomh chomh soiléir.</p>
+<p>Ní bhainfeadh an leithead agus an airde a mheascadh le ríomh an limistéir, ach dá mbeadh
+ba mhaith linn an dronuilleog a tharraingt ar an scáileán, is cuma! Bheadh ​​orainn
+coinnigh i gcuimhne gurb é <code>width</code> an t-innéacs tuple <code>0</code> agus is é <code>height</code> an tuple
+innéacs <code>1</code>. Bheadh ​​sé seo níos deacra fós do dhuine eile a dhéanamh amach agus a choinneáil i
+aigne dá mba rud é go n-úsáidfeadh siad ár gcód. Toisc nach bhfuil muid tar éis an bhrí a chur in iúl
+ár sonraí inár gcód, tá sé níos éasca anois earráidí a thabhairt isteach.</p>
+<h3 id="athmhacrú-le-struchtúir-níos-mó-brí-a-chur-leis"><a class="header" href="#athmhacrú-le-struchtúir-níos-mó-brí-a-chur-leis">Athmhacrú le Struchtúir: Níos Mó Brí a Chur Leis</a></h3>
+<p>Bainimid úsáid as struchtúir chun brí a chur leis trí na sonraí a lipéadú. Is féidir linn an tuple a athrú
+táimid ag baint úsáide as struchtúr le ainm don iomlán chomh maith le hainmneacha don
+páirteanna, mar a thaispeántar i Liosta 5-10.</p>
+<Listing number="5-10" file-name="src/main.rs" caption="Defining a `Rectangle` struct">
+<pre><pre class="playground"><code class="language-rust">struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        area(&amp;rect1)
+    );
+}
+
+fn area(rectangle: &amp;Rectangle) -&gt; u32 {
+    rectangle.width * rectangle.height
+}</code></pre></pre>
+</Listing>
+<p>Anseo tá struchtúr sainmhínithe againn agus thugamar <code>Rectangle</code> air. Laistigh den chuach
+lúibíní, shainmhíníomar na réimsí mar <code>width</code> agus <code>height</code>, a bhfuil an dá cheann acu
+clóscríobh <code>u32</code>. Ansin, i <code>main</code>, chruthaíomar sampla ar leith de <code>Rectangle</code>
+go bhfuil leithead <code>30</code> agus airde <code>50</code>.</p>
+<p>Tá ár bhfeidhm <code>area</code> sainmhínithe anois le paraiméadar amháin, atá ainmnithe againn
+<code>Rectangle</code>, a bhfuil a chineál ar iasacht do-inaistrithe de struchtúr <code>Rectangle</code>
+shampla. Mar a luadh i gCaibidil 4, ba mhaith linn an struct a fháil ar iasacht seachas
+úinéireacht a ghlacadh air. Ar an mbealach seo, coimeádann <code>main</code> a úinéireacht agus is féidir leanúint ar aghaidh
+ag baint úsáide as <code>rect1</code>, agus sin é an fáth a n-úsáidimid an <code>&amp;</code> sa síniú feidhme agus
+an áit a dtugaimid an fheidhm.</p>
+<p>Faigheann an fheidhm <code>area</code> rochtain ar na réimsí <code>width</code> agus <code>height</code> sa <code>Rectangle</code>
+shampla (tabhair faoi deara nach ionann rochtain a fháil ar réimsí den struchtúr a fuarthas ar iasacht
+na luachanna réimse a bhogadh, agus sin an fáth a fheiceann tú go minic ar iasacht de struchtúir). Ár
+deir síniú feidhme do <code>area</code> anois go díreach cad atá i gceist againn: ríomh an t-achar
+de <code>Rectangle</code>, ag baint úsáide as a réimsí <code>width</code> agus <code>height</code>. Tugann sé seo le fios go bhfuil an
+tá leithead agus airde gaolmhar lena chéile, agus tugann sé ainmneacha tuairisciúla ar
+na luachanna seachas na luachanna comhinnéacs tuple de <code>0</code> agus <code>1</code> a úsáid. Seo a
+buaigh ar mhaithe le soiléireacht.</p>
+<h3 id="feidhmiúlacht-Úsáideach-a-chur-le-tréithe-díorthaithe"><a class="header" href="#feidhmiúlacht-Úsáideach-a-chur-le-tréithe-díorthaithe">Feidhmiúlacht Úsáideach a Chur le Tréithe Díorthaithe</a></h3>
+<p>Bheadh ​​sé úsáideach a bheith in ann sampla de <code>Rectangle</code> a phriontáil agus muid
+dífhabhtaigh ár gclár agus féach ar na luachanna dá réimsí go léir. Liostáil 5-11 iarracht
+ag baint úsáide as an <a href="../std/macro.println.html"><code>println!</code> macro</a><!-- neamhaird --> mar a d'úsáideamar i
+caibidlí roimhe seo. Ní oibreoidh sé seo, áfach.</p>
+<Listing number="5-11" file-name="src/main.rs" caption="Attempting to print a `Rectangle` instance">
+<pre><code class="language-rust ignore does_not_compile">struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {}", rect1);
+}</code></pre>
+</Listing>
+<p>Nuair a thiomsaimid an cód seo, faighimid earráid leis an bpríomhtheachtaireacht seo:</p>
+<pre><code class="language-text">error[E0277]: `Rectangle` doesn't implement `std::fmt::Display`
+</code></pre>
+<p>Is féidir leis an macra <code>println!</code> go leor cineálacha formáidithe a dhéanamh, agus de réir réamhshocraithe, an chatach
+insíonn lúibíní do <code>println!</code> formáidiú ar a dtugtar <code>Display</code> a úsáid: an t-aschur atá beartaithe
+le haghaidh tomhaltas díreach úsáideora deiridh. Na cineálacha primitive atá feicthe againn go dtí seo
+cuir <code>Display</code> i bhfeidhm de réir réamhshocraithe mar níl ach bealach amháin ann ar mhaith leat a thaispeáint
+a <code>1</code> nó aon chineál primitive eile d'úsáideoir. Ach le structs, ar an mbealach
+Ba cheart go bhformáid <code>println!</code> nach bhfuil an t-aschur chomh soiléir mar go bhfuil níos mó ann
+féidearthachtaí taispeána: Ar mhaith leat camóga nó nach bhfuil? Ar mhaith leat an
+lúibíní curly? Ar chóir na réimsí go léir a thaispeáint? Mar gheall ar an débhríocht seo, Rust
+ní dhéanann sé iarracht buille faoi thuairim a dhéanamh ar cad atá uainn, agus níl aon soláthar ag struchtúir
+<code>Display</code> a chur i bhfeidhm le húsáid le <code>println!</code> agus an sealbhóir áite <code>{}</code>.</p>
+<p>Má leanaimid ar aghaidh ag léamh na n-earráidí, gheobhaidh muid an nóta cabhrach seo:</p>
+<pre><code class="language-text">   = help: the trait `std::fmt::Display` is not implemented for `Rectangle`
+   = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
+</code></pre>
+<p>Déanaimis iarracht é! Beidh cuma anois ar an nglao macra <code>println!</code> mar <code>println! ("rect1 is {rect1:?}");</code>. Ag cur an sonraitheora <code>:?</code> taobh istigh de na lúibíní cuartha insíonn
+<code>println!</code> ba mhaith linn formáid aschuir ar a dtugtar <code>Debug</code> a úsáid. An trait <code>Debug</code>
+cuireann sé ar ár gcumas ár struchtúr a phriontáil ar bhealach atá úsáideach d'fhorbróirí ionas gur féidir linn
+féach ar a luach agus muid ag dífhabhtú ár gcód.</p>
+<p>Tiomsaigh an cód leis an athrú seo. Drat! Faighimid earráid fós:</p>
+<pre><code class="language-text">error[E0277]: `Rectangle` doesn't implement `Debug`
+</code></pre>
+<p>Ach arís, tugann an tiomsaitheoir nóta cabhrach dúinn:</p>
+<pre><code class="language-text">   = help: the trait `Debug` is not implemented for `Rectangle`
+   = note: add `#[derive(Debug)]` to `Rectangle` or manually `impl Debug for Rectangle`
+</code></pre>
+<p>Rust <em>does</em> san áireamh feidhmiúlacht chun faisnéis debugging a phriontáil amach, ach táimid
+ní mór dúinn tarraingt isteach go sainráite chun an fheidhmiúlacht sin a chur ar fáil dár struchtúr.
+Chun é sin a dhéanamh, cuirimid an tréith sheachtrach <code>#[derive(Debug)]</code> díreach roimh an
+struct sainmhíniú, mar a thaispeántar i Liostú 5-12.</p>
+<Listing number="5-12" file-name="src/main.rs" caption="Adding the attribute to derive the `Debug` trait and printing the `Rectangle` instance using debug formatting">
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {rect1:?}");
+}</code></pre></pre>
+</Listing>
+<p>Anois agus an clár á rith againn, ní bhfaighidh muid aon earráidí, agus feicfidh muid an
+aschur seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running `target/debug/rectangles`
+rect1 is Rectangle { width: 30, height: 50 }
+</code></pre>
+<p>Go deas! Ní hé an t-aschur is deise é, ach taispeánann sé luachanna na réimsí go léir
+sa chás seo, rud a chuideodh go cinnte le linn dífhabhtaithe. Nuair atá againn
+struchtúir níos mó, tá sé úsáideach aschur a bheith agat atá beagán níos éasca le léamh; isteach
+sna cásanna sin, is féidir linn <code>{:#?}</code> a úsáid in ionad <code>{:?}</code> sa teaghrán <code>println!</code>. I
+an sampla seo, ag baint úsáide as an stíl <code>{:#?}</code> aschuirfear an méid seo a leanas:</p>
+<pre><code class="language-consól">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running `target/debug/rectangles`
+rect1 is Rectangle {
+    width: 30,
+    height: 50,
+}
+</code></pre>
+<p>Bealach eile chun luach a phriontáil ag baint úsáide as an bhformáid <code>Debug</code> is ea an <a href="../std/macro.dbg.html"><code>dbg!</code>
+macro</a> <!-- neamhaird -->a úsáid, a ghlacann úinéireacht slonn (seachas
+go <code>println!</code>, a thógann tagairt), priontaí an comhad agus uimhir líne na
+áit a dtarlaíonn an macraghlao <code>dbg!</code> sin i do chód mar aon leis an luach iarmhartach
+den slonn sin, agus tugann sé úinéireacht ar an luach ar ais.</p>
+<blockquote>
+<p>Nóta: Ag glaoch ar an <code>dbg!</code> priontaí macra chuig an sruth caighdeánach consól earráide
+(<code>stderr</code>), seachas <code>println!</code>, a phriontálann go dtí an t-aschur caighdeánach
+sruth consól (<code>stdout</code>). Labhróimid níos mó faoi <code>stderr</code> agus <code>stdout</code> sa
+<a href="ch12-06-writing-to-stderr-instead-of-stdout.html">“Teachtaireachtaí Earráide á Scríobh go Earráid Chaighdeánach In ionad Aschur Caighdeánach”
+alt i gCaibidil 12</a><!-- neamhaird -->.</p>
+</blockquote>
+<p>Seo sampla ina bhfuil suim againn sa luach a shanntar don
+réimse <code>width</code>, chomh maith le luach an struchtúir iomláin in <code>rect1</code>:</p>
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let scale = 2;
+    let rect1 = Rectangle {
+        width: dbg!(30 * scale),
+        height: 50,
+    };
+
+    dbg!(&amp;rect1);
+}</code></pre></pre>
+<p>Is féidir linn <code>dbg!</code> a chur timpeall ar an slonn <code>scale 30 *</code> agus, toisc go bhfuil <code>dbg!</code>
+ar ais úinéireacht ar luach na slonn, gheobhaidh an réimse <code>width</code> an
+an luach céanna mura mbeadh an glao <code>dbg!</code> againn ann. Nílimid ag iarraidh <code>dbg!</code> a
+seilbh a ghlacadh ar <code>rect1</code>, mar sin úsáidimid tagairt do <code>rect1</code> sa chéad ghlao eile.
+Seo an chuma atá ar aschur an tsampla seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running `target/debug/rectangles`
+[src/main.rs:10:16] 30 * scale = 60
+[src/main.rs:14:5] &amp;rect1 = Rectangle {
+    width: 60,
+    height: 50,
+}
+</code></pre>
+<p>Is féidir linn a fheiceáil gur tháinig an chéad phíosa aschuir ó <em>src/main.rs</em> líne 10 áit a bhfuilimid
+ag dífhabhtú na slonn <code>30 * scale</code>, agus is é an luach iarmhartach ná <code>60</code> (an
+Is éard atá i gceist le formáidiú <code>Debug</code> a chuirtear i bhfeidhm le haghaidh slánuimhreacha a luach a phriontáil amháin. Tá an
+Aschuir <code>dbg!</code> glao ar líne 14 de <em>src/main.rs</em> luach <code>&amp;rect1</code>, is é sin
+an struchtúr <code>Rectangle</code>. Úsáideann an t-aschur seo formáidiú deas <code>Debug</code> an
+Cineál <code>Rectangle</code>. Is féidir leis an macra <code>dbg!</code> a bheith an-chabhrach agus tú ag iarraidh é a dhéanamh
+déan amach cad atá á dhéanamh ag do chód!</p>
+<p>Chomh maith leis an trait <code>Debug</code>, tá Rust tar éis roinnt tréithe a sholáthar dúinn
+a úsáid leis an tréith <code>derive</code> ar féidir a iompar úsáideach a chur lenár saincheaptha
+cineálacha. Tá na tréithe sin agus a n-iompraíocht liostaithe in <a href="appendix-03-derivable-traits.html">Aguisín C</a><!--
+neamhaird a dhéanamh -->. Clúdóimid conas na tréithe seo a chur i bhfeidhm le hiompar saincheaptha mar
+chomh maith le conas do chuid tréithe féin a chruthú i gCaibidil 10. Tá go leor ann freisin
+tréithe seachas <code>derive</code>; le haghaidh tuilleadh eolais, féach <a href="../reference/attributes.html">na “Tréithe”
+chuid den Tagairt Rust</a>.</p>
+<p>Tá ár bhfeidhm <code>area</code> an-sonrach: ní ríomhann sé ach achar na dronuilleogach.
+Bheadh ​​sé ina chuidiú an t-iompar seo a cheangal níos dlúithe lenár struchtúr <code>Rectangle</code>
+mar ní oibreoidh sé le haon chineál eile. Breathnaímid ar conas is féidir linn leanúint ar aghaidh
+athmhonaraigh an cód seo tríd an bhfeidhm <code>area</code> a iompú ina <code>area</code> <em>method</em>
+sainithe ar ár gcineál <code>Rectangle</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="comhréir-modh"><a class="header" href="#comhréir-modh">Comhréir Modh</a></h2>
+<p>Tá <em>modhanna</em> cosúil le feidhmeanna: dearbhaímid iad leis an eochairfhocal <code>fn</code> agus a
+ainm, is féidir paraiméadair agus luach tuairisceáin a bheith acu, agus tá roinnt cód iontu
+sin a rith nuair a ghlaoitear an modh ó áit éigin eile. Murab ionann agus feidhmeanna,
+sainmhínítear modhanna i gcomhthéacs struchtúir (nó enum nó trait
+réad, a chlúdaímid i <a href="ch06-00-enums.html">Caibidil 6</a> <!-- neamhaird --> agus <a href="ch18-02-trait-objects.html">Caibidil
+17</a><!-- déan neamhaird de -->, faoi seach), agus is é a gcéad pharaiméadar
+i gcónaí <code>self</code>, a léiríonn an ásc ar an struchtúr an modh á
+ar a dtugtar ar.</p>
+<h3 id="modhanna-a-shainmhíniú"><a class="header" href="#modhanna-a-shainmhíniú">Modhanna a Shainmhíniú</a></h3>
+<p>Athraímis an fheidhm <code>area</code> a bhfuil sampla <code>Rectangle</code> aici mar pharaiméadar
+agus ina ionad sin déan modh <code>area</code> atá sainmhínithe ar an struchtúr <code>Rectangle</code>, mar a thaispeántar
+i Liosta 5-13.</p>
+<Listing number="5-13" file-name="src/main.rs" caption="Defining an `area` method on the `Rectangle` struct">
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&amp;self) -&gt; u32 {
+        self.width * self.height
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        rect1.area()
+    );
+}</code></pre></pre>
+</Listing>
+<p>Chun an fheidhm a shainiú laistigh de chomhthéacs <code>Rectangle</code>, cuirimid tús le <code>impl</code>
+(cur i bhfeidhm) bloc le haghaidh <code>Rectangle</code>. Gach rud laistigh den bhloc <code>impl</code> seo
+a bhaineann leis an gcineál <code>Rectangle</code>. Ansin bogaimid an fheidhm <code>area</code>
+laistigh de na lúibíní chatach <code>impl</code> agus athraigh an chéad cheann (agus sa chás seo, amháin)
+paraiméadar a bheith <code>self</code> sa síniú agus i ngach áit laistigh den chorp. I
+<code>main</code>, áit ar thugamar an fheidhm <code>area</code> agus gur ritheamar <code>rect1</code> mar argóint,
+ina ionad sin is féidir linn <em>method syntax</em> a úsáid chun an modh <code>area</code> a ghlaoch ar ár <code>Rectangle</code>
+shampla. Téann an modh comhréire tar éis sampla: cuirimid ponc leis ina dhiaidh sin
+ainm an mhodha, lúibíní, agus aon argóintí.</p>
+<p>Sa síniú le haghaidh <code>area</code>, úsáidimid <code>&amp;self</code> in ionad <code>rectangle: &amp;Rectangle</code>.
+Tá an <code>&amp;self</code> gearr i ndáiríre do <code>self: &amp;Self</code>. Laistigh de bhloc <code>impl</code>, tá an
+cineál Is ailias é <code>self</code> don chineál ar a bhfuil an bloc <code>impl</code>. Ní mór modhanna
+bíodh paraiméadar darb ainm <code>self</code> den chineál <code>self</code> acu dá gcéad pharaiméadar, mar sin Meirge
+ligeann sé duit é seo a ghiorrú gan ach an t-ainm <code>self</code> sa chéad láthair paraiméadar.
+Tabhair faoi deara go gcaithfimid fós an <code>&amp;</code> a úsáid os comhair na gearrscaireachta <code>self</code> chun
+cuir in iúl go bhfaigheann an modh seo an sampla <code>self</code> ar iasacht, díreach mar a rinneamar i
+<code>rectangle: &amp;Rectangle</code>. Is féidir le modhanna úinéireacht a ghlacadh ar <code>self</code>, <code>self</code> a fháil ar iasacht
+go do-athraithe, mar atá déanta againn anseo, nó 'self` a fháil ar iasacht go frithpháirteach, díreach mar is féidir leo
+paraiméadar eile.</p>
+<p>Roghnaigh muid <code>&amp;self</code> anseo ar an gcúis chéanna a d'úsáid muid <code>&amp;Rectangle</code> san fheidhm
+leagan: nílimid ag iarraidh úinéireacht a ghlacadh, agus níl uainn ach na sonraí a léamh isteach
+an struct, ní scríobh air. Dá mba mhian linn an cás atá againn a athrú
+ar a dtugtar an modh ar mar chuid de cad a dhéanann an modh, d'úsáidfimid <code>&amp;mut self</code> mar
+an chéad pharaiméadar. Ag modh a ghlacann úinéireacht ar an gcás trí
+ag baint úsáide as ach <code>self</code> mar go bhfuil an chéad paraiméadar annamh; tá an teicníc seo de ghnáth
+a úsáidtear nuair a athraíonn an modh <code>self</code> isteach i rud éigin eile agus is mian leat a
+cosc a chur ar an nglaoiteoir an t-ábhar bunaidh a úsáid tar éis an chlaochlaithe.</p>
+<p>An phríomhchúis le modhanna a úsáid in ionad feidhmeanna, sa bhreis ar
+ag soláthar comhréire modhanna agus gan a bheith athrá ar an gcineál <code>self</code> i ngach
+síniú an mhodha, is don eagraíocht é. Chuireamar gach rud is féidir linn a dhéanamh
+le sampla de chineál i mbloc <code>impl</code> amháin seachas úsáideoirí a dhéanamh amach anseo
+dár gcuardach cód le haghaidh cumais <code>Rectangle</code> in áiteanna éagsúla sa
+leabharlann a chuirimid ar fáil.</p>
+<p>Tabhair faoi deara gur féidir linn a roghnú modh a thabhairt ar an ainm céanna le ceann de na struchtúir
+réimsí. Mar shampla, is féidir linn modh a shainiú ar <code>Rectangle</code> atá ainmnithe freisin
+<code>width</code>:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Rectangle {
+    fn width(&amp;self) -&gt; bool {
+        self.width &gt; 0
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    if rect1.width() {
+        println!("The rectangle has a nonzero width; it is {}", rect1.width);
+    }
+}</code></pre></pre>
+</Listing>
+<p>Anseo, táimid ag roghnú an modh <code>width</code> a thabhairt ar ais <code>true</code> má tá an luach isteach
+tá réimse <code>width</code> an ásc níos mó ná <code>0</code> agus <code>false</code> más luach é
+<code>0</code>: is féidir linn réimse a úsáid laistigh de mhodh den ainm céanna chun críche ar bith. I
+<code>main</code>, nuair a leanaimid <code>rect1.width</code> le lúibíní, tá a fhios ag Rust gurb éard atá i gceist againn
+modh <code>width</code>. Nuair nach n-úsáidimid lúibíní, tá a fhios ag Rust go bhfuil an réimse i gceist againn
+<code>width</code>.</p>
+<p>Go minic, ach ní i gcónaí, nuair a thugaimid modh an t-ainm céanna le réimse ba mhaith linn
+é a thabhairt ar ais ach an luach sa réimse agus rud ar bith eile a dhéanamh. Modhanna mar seo
+Tugtar <em>getters</em> orthu, agus ní chuireann Rust i bhfeidhm iad go huathoibríoch le haghaidh struchtúr
+réimsí mar a dhéanann roinnt teangacha eile. Tá getters úsáideach mar is féidir leat an
+réimse príobháideach ach an modh poiblí, agus dá bhrí sin cumasaigh rochtain inléite amháin air sin
+réimse mar chuid den chineál API poiblí. Déanfaimid plé ar cad poiblí agus príobháideach
+atá agus conas réimse nó modh a ainmniú mar phoiblí nó príobháideach i <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword">Caibidil
+7</a> <!-- neamhaird a dhéanamh -->.</p>
+<blockquote>
+<h3 id="cá-bhfuil-an-t-oibreoir--"><a class="header" href="#cá-bhfuil-an-t-oibreoir--">Cá bhfuil an t-oibreoir <code>-&gt;</code>?</a></h3>
+<p>In C agus C++, úsáidtear dhá oibreoir éagsúla chun modhanna glaonna a úsáid: úsáideann tú
+<code>.</code> má tá tú ag glaoch modh ar an réad go díreach agus <code>-&gt;</code> má tá tú
+an modh a ghlaoch ar phointeoir don réad agus is gá díthagairt a dhéanamh don
+pointeoir ar dtús. I bhfocail eile, más pointeoir é <code>object</code>,
+Tá <code>object-&gt;something()</code> cosúil le <code>(*object).something()</code>.</p>
+<p>Níl coibhéis ag meirge leis an oibreoir <code>-&gt;</code>; ina ionad sin, tá Rust a
+gné ar a dtugtar <em>tagairtí uathoibríocha agus dereferencing</em>. Tá modhanna glaonna
+ceann de na cúpla áit i Rust leis an iompar seo.</p>
+<p>Seo mar a oibríonn sé: nuair a ghlaonn tú ar mhodh le <code>object.something()</code>, Rust
+cuireann sé isteach <code>&amp;</code>, <code>&amp;mut</code>, nó <code>*</code> go huathoibríoch ionas go meaitseálann <code>object</code> síniú
+an modh. I bhfocail eile, tá na rudaí seo a leanas mar an gcéanna:</p>
+<!-- CAN'T EXTRACT SEE BUG https://github.com/rust-lang/mdBook/issues/1127 -->
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">#[derive(Debug,Copy,Clone)]
+</span><span class="boring">struct Point {
+</span><span class="boring">    x: f64,
+</span><span class="boring">    y: f64,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Point {
+</span><span class="boring">   fn distance(&amp;self, other: &amp;Point) -&gt; f64 {
+</span><span class="boring">       let x_squared = f64::powi(other.x - self.x, 2);
+</span><span class="boring">       let y_squared = f64::powi(other.y - self.y, 2);
+</span><span class="boring">
+</span><span class="boring">       f64::sqrt(x_squared + y_squared)
+</span><span class="boring">   }
+</span><span class="boring">}
+</span><span class="boring">let p1 = Point { x: 0.0, y: 0.0 };
+</span><span class="boring">let p2 = Point { x: 5.0, y: 6.5 };
+</span>p1.distance(&amp;p2);
+(&amp;p1).distance(&amp;p2);
+<span class="boring">}</span></code></pre></pre>
+<p>Breathnaíonn an chéad cheann i bhfad níos glaine. Oibríonn an t-iompar tagartha uathoibríoch seo
+toisc go bhfuil glacadóir soiléir ag modhanna - an cineál <code>self</code>. I bhfianaise an ghlacadóra
+agus ainm an mhodha, is féidir le Rust a dhéanamh amach go cinntitheach an bhfuil an modh
+ag léamh (<code>&amp;self</code>), ag mutating (<code>&amp;mut self</code>), nó ag ithe (<code>self</code>). An bhfíric
+go dtugann Rust iasachtaíocht intuigthe do ghlacadóirí modhanna is cuid mhór de
+úinéireacht a dhéanamh eirgeanamaíochta go praiticiúil.</p>
+</blockquote>
+<h3 id="modhanna-le-tuilleadh-paraiméadair"><a class="header" href="#modhanna-le-tuilleadh-paraiméadair">Modhanna le Tuilleadh Paraiméadair</a></h3>
+<p>Déanaimis modhanna a chleachtadh trí mhodh eile a chur i bhfeidhm ar an <code>Rectangle</code>
+struchtúr. An uair seo ba mhaith linn sampla de <code>Rectangle</code> a ghlacadh mar shampla eile
+de <code>Rectangle</code> agus seol ar ais <code>true</code> más féidir leis an dara <code>Rectangle</code> oiriúnach go hiomlán
+laistigh de <code>self</code> (an chéad <code>Rectangle</code>); ar shlí eile, ba cheart go dtabharfadh sé <code>false</code> ar ais.
+Is é sin, nuair a bheidh an modh <code>can_hold</code> sainmhínithe againn, ba mhaith linn a bheith in ann scríobh
+an clár a thaispeántar i Liosta 5-14.</p>
+<Listing number="5-14" file-name="src/main.rs" caption="Using the as-yet-unwritten `can_hold` method">
+<pre><code class="language-rust ignore">fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    let rect2 = Rectangle {
+        width: 10,
+        height: 40,
+    };
+    let rect3 = Rectangle {
+        width: 60,
+        height: 45,
+    };
+
+    println!("Can rect1 hold rect2? {}", rect1.can_hold(&amp;rect2));
+    println!("Can rect1 hold rect3? {}", rect1.can_hold(&amp;rect3));
+}</code></pre>
+</Listing>
+<p>Bheadh ​​cuma mar seo a leanas ar an aschur a bhfuiltear ag súil leis toisc go bhfuil an dá thoise de
+tá <code>rect2</code> níos lú ná toisí <code>rect1</code>, ach tá <code>rect3</code> níos leithne ná
+<code>rect1</code>:</p>
+<pre><code class="language-text">Can rect1 hold rect2? true
+Can rect1 hold rect3? false
+</code></pre>
+<p>Tá a fhios againn gur mhaith linn modh a shainiú, mar sin beidh sé laistigh den <code>impl Rectangle</code>
+bloc. Is é an t-ainm modha <code>can_hold</code>, agus tógfaidh sé iasacht neamh-inmhalartaithe
+de <code>Rectangle</code> eile mar pharaiméadar. Is féidir linn a insint cad é an cineál an
+Déanfar paraiméadar trí bhreathnú ar an gcód a ghlaonn an modh:
+Gabhann <code>rect1.can_hold(&amp;rect2)</code> isteach in <code>&amp;rect2</code>, ar iasacht do-inmheasúnaithe é
+<code>rect2</code>, sampla de <code>Rectangle</code>. Déanann sé seo ciall mar ní gá dúinn ach
+léigh <code>rect2</code> (seachas scríobh, rud a chiallódh go mbeadh iasacht sho-shóite de dhíth orainn),
+agus ba mhaith linn go gcoimeádfadh <code>main</code> úinéireacht ar <code>rect2</code> ionas gur féidir linn é a úsáid arís ina dhiaidh sin
+ag glaoch ar an modh <code>can_hold</code>. Is é luach aischuir <code>can_hold</code> ná a
+Beidh Boole, agus an cur i bhfeidhm a sheiceáil cibé an leithead agus airde
+tá <code>self</code> níos mó ná leithead agus airde an <code>Rectangle</code> eile,
+faoi ​​seach. Cuirimis an modh nua <code>can_hold</code> leis an mbloc <code>impl</code> ó
+Liostú 5-13, léirithe i Liostú 5-15.</p>
+<Listing number="5-15" file-name="src/main.rs" caption="Implementing the `can_hold` method on `Rectangle` that takes another `Rectangle` instance as a parameter">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Rectangle {
+    fn area(&amp;self) -&gt; u32 {
+        self.width * self.height
+    }
+
+    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
+        self.width &gt; other.width &amp;&amp; self.height &gt; other.height
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let rect1 = Rectangle {
+</span><span class="boring">        width: 30,
+</span><span class="boring">        height: 50,
+</span><span class="boring">    };
+</span><span class="boring">    let rect2 = Rectangle {
+</span><span class="boring">        width: 10,
+</span><span class="boring">        height: 40,
+</span><span class="boring">    };
+</span><span class="boring">    let rect3 = Rectangle {
+</span><span class="boring">        width: 60,
+</span><span class="boring">        height: 45,
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    println!("Can rect1 hold rect2? {}", rect1.can_hold(&amp;rect2));
+</span><span class="boring">    println!("Can rect1 hold rect3? {}", rect1.can_hold(&amp;rect3));
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Nuair a rithimid an cód seo leis an <code>main</code> i Liostú 5-14, gheobhaidh muid ár
+aschur inmhianaithe. Is féidir le modhanna a ghlacadh paraiméadair iolracha a chuirimid leis an
+síniú tar éis an pharaiméadar <code>self</code>, agus oibríonn na paraiméadair sin díreach mar a chéile
+paraiméadair i bhfeidhmeanna.</p>
+<h3 id="feidhmeanna-gaolmhara"><a class="header" href="#feidhmeanna-gaolmhara">Feidhmeanna Gaolmhara</a></h3>
+<p>Tugtar <em>feidhmeanna gaolmhara</em> ar gach feidhm a shainítear laistigh de bhloc <code>impl</code>
+toisc go bhfuil baint acu leis an gcineál atá ainmnithe i ndiaidh an <code>impl</code>. Is féidir linn a shainiú
+feidhmeanna gaolmhara nach bhfuil <code>self</code> mar a gcéad pharaiméadar acu (agus mar sin
+nach modhanna iad) toisc nach bhfuil sampla den chineál ag teastáil uathu le bheith ag obair leo.
+Tá feidhm amháin mar seo úsáidte againn cheana féin: an fheidhm <code>String::from</code> .Tá feidhm amháin
+mar seo úsáidte againn cheana féin: an fheidhm <code>String::from</code> a shainmhínítear ar an gcineál <code>String</code>.</p>
+<p>Is minic a úsáidtear feidhmeanna gaolmhara nach modhanna iad le haghaidh tógálaithe a
+tabharfaidh sé sampla nua den struchtúr ar ais. Is minic a dtugtar <code>new</code> orthu seo, ach
+Ní ainm speisialta é ‘nua’ agus níl sé fite fuaite sa teanga. Mar shampla, táimid
+d'fhéadfadh sé a roghnú feidhm ghaolmhar darb ainm <code>square</code> a sholáthar a bheadh ​​aici
+paraiméadar toise amháin agus é sin a úsáid mar leithead agus airde araon, rud a fhágann go bhfuil sé
+níos éasca <code>Rectangle</code> cearnach a chruthú seachas a bheith ag sonrú an rud céanna
+luach faoi dhó:</p>
+<p><span class="filename">Filename: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Rectangle {
+    fn square(size: u32) -&gt; Self {
+        Self {
+            width: size,
+            height: size,
+        }
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let sq = Rectangle::square(3);
+</span><span class="boring">}</span></code></pre></pre>
+<p>Is iad na heochairfhocail <code>self</code> sa chineál tuairisceáin agus i gcorp na feidhme
+ailiasanna don chineál a thagann i ndiaidh an eochairfhocail <code>impl</code>, atá sa chás seo
+is <code>Rectangle</code>.</p>
+<p>Chun an fheidhm ghaolmhar seo a ghlaoch, úsáidimid an chomhréir <code>::</code> leis an ainm struct;
+Is sampla é <code>let sq = Rectangle::square(3);</code>. Tá an fheidhm seo spásáilte le
+an struct: úsáidtear an chomhréir <code>::</code> don dá fheidhm chomhcheangailte agus
+spásanna ainmneacha cruthaithe ag modúil. Déanfaimid modúil a phlé i <a href="ch07-02-defining-modules-to-control-scope-and-privacy.html">Caibidil
+7</a> <!-- neamhaird a dhéanamh -->.</p>
+<h3 id="bloic-impl-iolracha"><a class="header" href="#bloic-impl-iolracha">Bloic <code>impl</code> iolracha</a></h3>
+<p>Ceadaítear bloic iolracha <code>impl</code> a bheith ag gach struchtúr. Mar shampla, Liostú
+Tá 5-15 comhionann leis an gcód a thaispeántar i Liosta 5-16, a bhfuil gach modh ann
+a bhloc <code>impl</code> féin.</p>
+<Listing number="5-16" caption="Rewriting Listing 5-15 using multiple `impl` blocks">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Rectangle {
+    fn area(&amp;self) -&gt; u32 {
+        self.width * self.height
+    }
+}
+
+impl Rectangle {
+    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
+        self.width &gt; other.width &amp;&amp; self.height &gt; other.height
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let rect1 = Rectangle {
+</span><span class="boring">        width: 30,
+</span><span class="boring">        height: 50,
+</span><span class="boring">    };
+</span><span class="boring">    let rect2 = Rectangle {
+</span><span class="boring">        width: 10,
+</span><span class="boring">        height: 40,
+</span><span class="boring">    };
+</span><span class="boring">    let rect3 = Rectangle {
+</span><span class="boring">        width: 60,
+</span><span class="boring">        height: 45,
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    println!("Can rect1 hold rect2? {}", rect1.can_hold(&amp;rect2));
+</span><span class="boring">    println!("Can rect1 hold rect3? {}", rect1.can_hold(&amp;rect3));
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Níl aon chúis leis na modhanna seo a dheighilt ina mbloic <code>impl</code> iolracha anseo,
+ach is comhréir bailí é seo. Feicfimid cás ina bhfuil bloic <code>impl</code> iolracha
+úsáideach i gCaibidil 10, ina bpléimid cineálacha agus tréithe cineálacha.</p>
+<h2 id="achoimre-4"><a class="header" href="#achoimre-4">Achoimre</a></h2>
+<p>Ligeann struchtúir duit cineálacha saincheaptha a chruthú a bhfuil brí leo do d'fhearann. Le
+ag baint úsáide as struchtúir, is féidir leat píosaí sonraí gaolmhara a choinneáil ceangailte lena chéile
+agus ainmnigh gach píosa chun do chód a dhéanamh soiléir. I mbloic <code>impl</code>, is féidir leat a shainiú
+feidhmeanna a bhaineann le do chineál, agus modhanna atá ar chineál an
+fheidhm ghaolmhar a ligeann duit a shonrú ar an iompar go cásanna de do
+tá struchtúir.</p>
+<p>Ach ní hiad struchtúir an t-aon bhealach ar féidir leat cineálacha saincheaptha a chruthú: déanaimis iompú orthu
+Gné Rust's enum chun uirlis eile a chur le do bhosca uirlisí.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="enums-and-pattern-matching"><a class="header" href="#enums-and-pattern-matching">Enums and Pattern Matching</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="defining-an-enum"><a class="header" href="#defining-an-enum">Defining an Enum</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="the-match-control-flow-construct"><a class="header" href="#the-match-control-flow-construct">The match Control Flow Construct</a></h1>
