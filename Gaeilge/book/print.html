@@ -5406,10 +5406,1069 @@ fheidhm ghaolmhar a ligeann duit a shonrú ar an iompar go cásanna de do
 tá struchtúir.</p>
 <p>Ach ní hiad struchtúir an t-aon bhealach ar féidir leat cineálacha saincheaptha a chruthú: déanaimis iompú orthu
 Gné Rust's enum chun uirlis eile a chur le do bhosca uirlisí.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="enums-and-pattern-matching"><a class="header" href="#enums-and-pattern-matching">Enums and Pattern Matching</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="defining-an-enum"><a class="header" href="#defining-an-enum">Defining an Enum</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="the-match-control-flow-construct"><a class="header" href="#the-match-control-flow-construct">The match Control Flow Construct</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="concise-control-flow-with-if-let-and-let-else"><a class="header" href="#concise-control-flow-with-if-let-and-let-else">Concise Control Flow with if let and let else</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ainmneacha-agus-meaitseáil-patrún"><a class="header" href="#ainmneacha-agus-meaitseáil-patrún">Ainmneacha agus Meaitseáil Patrún</a></h1>
+<p>Sa chaibidil seo, féachfaimid ar <em>enumerations</em>, ar a dtugtar <em>enums</em> freisin.
+Ligeann Enums duit cineál a shainiú trí na <em>variant</em> féideartha a áireamh. Ar dtús
+saineoimid agus úsáidfimid enum chun a thaispeáint conas is féidir le enum brí a ionchódú mar aon le
+sonraí. Ansin, déanfaimid iniúchadh ar enum an-úsáideach, ar a dtugtar <code>Option</code>, a
+cuireann sé in iúl gur féidir le luach a bheith mar rud nó rud ar bith. Ansin féachfaimid ar
+mar a dhéanann meaitseáil patrún sa slonn <code>match</code> go bhfuil sé éasca rith difriúil
+cód le haghaidh luachanna éagsúla enum. Ar deireadh, clúdóimid conas an <code>if let</code>
+Is idiom áisiúil agus gonta eile é construct atá ar fáil le láimhseáil na n-éinim
+do chód.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="Áirimh-a-shainiú"><a class="header" href="#Áirimh-a-shainiú">Áirimh a shainiú</a></h2>
+<p>Nuair a thugann struchtúir bealach duit réimsí agus sonraí gaolmhara a ghrúpáil le chéile, mar shampla
+<code>Rectangle</code> lena <code>width</code> agus <code>height</code>, tugann enums bealach duit le rá a
+tá luach ar cheann de shraith luachanna féideartha. Mar shampla, b’fhéidir gur mhaith linn é sin a rá
+Tá <code>Rectangle</code> ar cheann de shraith cruthanna féideartha a chuimsíonn <code>Circle</code> agus
+<code>Triangle</code>. Chun seo a dhéanamh, ligeann Rust dúinn na féidearthachtaí seo a ionchódú mar enum.</p>
+<p>Breathnaímis ar chás b’fhéidir gur mhaith linn a chur in iúl i gcód agus féachaimis cén fáth a bhfuiltear ag súil leis
+úsáideach agus níos oiriúnaí ná na struchtúir sa chás seo. Abair go gcaithfimid oibriú
+le seoltaí IP. Faoi láthair, úsáidtear dhá mhórchaighdeán le haghaidh seoltaí IP:
+leagan a ceathair agus leagan a sé. Toisc gurb iad seo na féidearthachtaí amháin le haghaidh an
+Seoladh IP a dtiocfaidh ár gclár trasna air, is féidir linn <em>enurate</em> gach is féidir
+leagan, agus is é sin an áit a fhaigheann an áirimh a ainm.</p>
+<p>Féadfaidh seoladh IP a bheith ina sheoladh a ceathair nó ina sheoladh leagan a sé, ach ní féidir
+araon ag an am céanna. Déanann an mhaoin sin de sheoltaí IP na sonraí enum
+struchtúr oiriúnach toisc nach féidir le luach enum ach a bheith mar cheann dá leagan.
+Tá seoltaí leagan a ceathair agus leagan a sé fós go bunúsach IP
+seoltaí, mar sin ba chóir iad a láimhseáil mar an cineál céanna nuair a bhíonn an cód á láimhseáil
+cásanna a bhaineann le seoladh IP de chineál ar bith.</p>
+<p>Is féidir linn an coincheap seo a chur in iúl i gcód trí áireamh <code>IpAddrKind</code> agus
+ag liostú na cineálacha féideartha is féidir le seoladh IP a bheith, <code>V4</code> agus <code>V6</code>. Seo iad na
+leaganacha den enum:</p>
+<pre><pre class="playground"><code class="language-rust">enum IpAddrKind {
+    V4,
+    V6,
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let four = IpAddrKind::V4;
+</span><span class="boring">    let six = IpAddrKind::V6;
+</span><span class="boring">
+</span><span class="boring">    route(IpAddrKind::V4);
+</span><span class="boring">    route(IpAddrKind::V6);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn route(ip_kind: IpAddrKind) {}</span></code></pre></pre>
+<p>Is cineál sonraí saincheaptha é <code>IpAddrKind</code> anois is féidir linn a úsáid in áit eile dár gcód.</p>
+<h3 id="luachanna-enum"><a class="header" href="#luachanna-enum">Luachanna Enum</a></h3>
+<p>Is féidir linn cásanna a chruthú de gach ceann den dá leagan de <code>IpAddrKind</code> mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">enum IpAddrKind {
+</span><span class="boring">    V4,
+</span><span class="boring">    V6,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    let four = IpAddrKind::V4;
+    let six = IpAddrKind::V6;
+<span class="boring">
+</span><span class="boring">    route(IpAddrKind::V4);
+</span><span class="boring">    route(IpAddrKind::V6);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn route(ip_kind: IpAddrKind) {}</span></code></pre></pre>
+<p>Tabhair faoi deara go bhfuil leaganacha an enum spásáilte faoina aitheantóir, agus táimid
+úsáid a bhaint as idirstad dúbailte chun an dá cheann a scaradh. Tá sé seo úsáideach mar anois an dá luachanna
+Tá <code>IpAddrKind::V4</code> agus <code>IpAddrKind::V6</code> den chineál céanna: <code>IpAddrKind</code>. muid
+is féidir ansin, mar shampla, feidhm a shainiú a ghlacann aon <code>IpAddrKind</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">enum IpAddrKind {
+</span><span class="boring">    V4,
+</span><span class="boring">    V6,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let four = IpAddrKind::V4;
+</span><span class="boring">    let six = IpAddrKind::V6;
+</span><span class="boring">
+</span><span class="boring">    route(IpAddrKind::V4);
+</span><span class="boring">    route(IpAddrKind::V6);
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn route(ip_kind: IpAddrKind) {}</code></pre></pre>
+<p>Agus is féidir linn an fheidhm seo a thabhairt le ceachtar den dá leagan:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">enum IpAddrKind {
+</span><span class="boring">    V4,
+</span><span class="boring">    V6,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let four = IpAddrKind::V4;
+</span><span class="boring">    let six = IpAddrKind::V6;
+</span><span class="boring">
+</span>    route(IpAddrKind::V4);
+    route(IpAddrKind::V6);
+<span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn route(ip_kind: IpAddrKind) {}</span></code></pre></pre>
+<p>Tá buntáistí níos mó fós ag baint le húsáid enums. Ag smaoineamh níos mó ar ár gcineál seoladh IP,
+faoi ​​láthair níl bealach againn chun an seoladh IP iarbhír <em>data</em> a stóráil; againn
+níl a fhios ach cén <em>chineál</em> atá ann. Ós rud é gur fhoghlaim tú díreach faoi structs i
+Caibidil 5, seans go mbeidh cathú ort dul i ngleic leis an bhfadhb seo le struchtúir mar a léirítear i
+Liostáil 6-1.</p>
+<Listing number="6-1" caption="Storing the data and `IpAddrKind` variant of an IP address using a `struct`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum IpAddrKind {
+        V4,
+        V6,
+    }
+
+    struct IpAddr {
+        kind: IpAddrKind,
+        address: String,
+    }
+
+    let home = IpAddr {
+        kind: IpAddrKind::V4,
+        address: String::from("127.0.0.1"),
+    };
+
+    let loopback = IpAddr {
+        kind: IpAddrKind::V6,
+        address: String::from("::1"),
+    };
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Anseo, tá struchtúr <code>IpAddr</code> sainmhínithe againn a bhfuil dhá réimse ann: réimse <code>kind</code> a
+is den chineál <code>IpAddrKind</code> (an enum a shainmhínigh muid roimhe seo) agus réimse <code>address</code>
+den chineál <code>String</code>. Tá dhá chás den struchtúr seo againn. Is é an chéad cheann ná <code>home</code>,
+agus tá an luach <code>IpAddrKind::V4</code> mar a <code>kind</code> agus seoladh gaolmhar aige
+sonraí de <code>127.0.0.1</code>. Is é an dara cás ná <code>loopback</code>. Tá an ceann eile aige
+leagan de <code>IpAddrKind</code> mar a luach <code>kind</code>, <code>V6</code>, agus tá seoladh <code>::1</code> aige
+bhaineann leis. Bhaineamar úsáid as struchtúr chun an <code>kind</code> agus an <code>address</code> a chumhdach
+luachanna le chéile, mar sin anois tá baint ag an malairt leis an luach.</p>
+<p>Mar sin féin, tá sé níos gonta an coincheap céanna a léiriú ag baint úsáide as enum amháin:
+seachas enum taobh istigh de struchtúr, is féidir linn sonraí a chur go díreach i ngach enum
+athraitheach. Deir an sainmhíniú nua seo ar an <code>IpAddr</code> enum go bhfuil <code>V4</code> agus <code>V6</code> araon
+beidh luachanna <code>String</code> gaolmhar ag leagan:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum IpAddr {
+        V4(String),
+        V6(String),
+    }
+
+    let home = IpAddr::V4(String::from("127.0.0.1"));
+
+    let loopback = IpAddr::V6(String::from("::1"));
+<span class="boring">}</span></code></pre></pre>
+<p>Ceangaimid sonraí go díreach le gach leagan den enum, mar sin níl aon ghá le
+struchtúr breise. Anseo, tá sé níos éasca sonraí eile a fheiceáil faoin gcaoi a n-oibríonn enums:
+déantar feidhm freisin d'ainm gach athraitheach enum a shainímid
+Tógann sampla den enum. Is é sin, is glao feidhme é <code>IpAddr::V4()</code>
+a thógann argóint <code>String</code> agus a thugann sampla den chineál <code>IpAddr</code> ar ais. muid
+a fháil go huathoibríoch an fheidhm cruthaitheoir sainithe mar thoradh ar shainiú an
+áim.</p>
+<p>Tá buntáiste eile ag baint le enum seachas struchtúr a úsáid: gach leagan
+is féidir cineálacha agus méideanna éagsúla sonraí gaolmhara a bheith ann. Leagan a ceathair IP
+beidh ceithre chomhpháirt uimhriúla ag seoltaí a mbeidh luachanna acu i gcónaí
+idir 0 agus 255. Dá dteastódh uainn seoltaí <code>V4</code> a stóráil mar cheithre luach <code>u8</code> ach
+fós seoltaí <code>V6</code> a chur in iúl mar luach <code>String</code> amháin, ní bheimis in ann é a dhéanamh
+a struchtúr. Láimhseálann Enums an cás seo gan stró:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum IpAddr {
+        V4(u8, u8, u8, u8),
+        V6(String),
+    }
+
+    let home = IpAddr::V4(127, 0, 0, 1);
+
+    let loopback = IpAddr::V6(String::from("::1"));
+<span class="boring">}</span></code></pre></pre>
+<p>Tá roinnt bealaí éagsúla léirithe againn chun struchtúir sonraí a shainiú chun an leagan a stóráil
+ceithre agus leagan sé seoltaí IP. Mar sin féin, mar a casadh sé amach, ar mian leo a stóráil
+Seoltaí IP agus ionchódaigh cén cineál iad atá chomh coitianta go bhfuil sainmhíniú ar <a href="../std/net/enum.IpAddr.html">an leabharlann
+chaighdeánach is féidir linn a úsáid!</a><!-- neamhaird a dhéanamh --> Breathnaímid ar conas
+sainmhíníonn an leabharlann chaighdeánach <code>IpAddr</code>: tá an enum agus na leaganacha beacht aige sin
+atá sainmhínithe agus úsáidte againn, ach neadaíonn sé na sonraí seolta laistigh de na leaganacha isteach
+i bhfoirm dhá struchtúr éagsúla, atá sainmhínithe go difriúil do gach ceann acu
+leagan:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct Ipv4Addr {
+    // --snip--
+}
+
+struct Ipv6Addr {
+    // --snip--
+}
+
+enum IpAddr {
+    V4(Ipv4Addr),
+    V6(Ipv6Addr),
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Léiríonn an cód seo gur féidir leat sonraí de chineál ar bith a chur taobh istigh de mhalairt enum:
+teaghráin, cineálacha uimhriúla, nó struchtúir, mar shampla. Is féidir leat fiú ceann eile a áireamh
+uaim! Chomh maith leis sin, is minic nach mbíonn cineálacha caighdeánacha leabharlainne i bhfad níos casta ná
+cad a d'fhéadfá teacht suas leis.</p>
+<p>Tabhair faoi deara, cé go bhfuil sainmhíniú ar <code>IpAddr</code> sa ghnáthleabharlann,
+is féidir linn ár sainmhíniú féin a chruthú agus a úsáid go fóill gan coinbhleacht mar gheall orainn
+nár thug muid sainmhíniú caighdeánach na leabharlainne isteach inár raon feidhme. Labhróimid
+tuilleadh faoi chineálacha a thabhairt isteach sa raon feidhme i gCaibidil 7 .</p>
+<p>Breathnaímid ar shampla eile d’enum i Liostú 6-2: tá réimse leathan ag an gceann seo
+éagsúlacht na gcineálacha atá leabaithe ina leagan.</p>
+<Listing number="6-2" caption="A `Message` enum whose variants each store different amounts and types of values">
+<pre><pre class="playground"><code class="language-rust">enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Tá ceithre leagan ag an enum seo le cineálacha éagsúla:</p>
+<ul>
+<li>Níl aon sonraí ag <code>Quit</code> a bhaineann leis ar chor ar bith.</li>
+<li>Tá réimsí ainmnithe ag <code>Move</code>, mar a dhéanann struchtúr.</li>
+<li>Cuimsíonn <code>Write</code> <code>String</code> singil.</li>
+<li>Áirítear le <code>ChangeColor</code> trí luach <code>i32</code>.</li>
+</ul>
+<p>Tá sé cosúil le sainiú ainim le malairtí ar nós na cinn i Liosta 6-2
+cineálacha éagsúla sainmhínithe struchtúir a shainmhíniú, ach amháin ní úsáideann an enum an
+eochairfhocal <code>struct</code> agus déantar na leaganacha go léir a ghrúpáil le chéile faoin <code>Message</code>
+cineál. D'fhéadfadh na sonraí céanna a bheith sna struchtúir seo a leanas agus a bhí sa enum roimhe seo
+sealbhaíonn leagan:</p>
+<pre><pre class="playground"><code class="language-rust">struct QuitMessage; // unit struct
+struct MoveMessage {
+    x: i32,
+    y: i32,
+}
+struct WriteMessage(String); // tuple struct
+struct ChangeColorMessage(i32, i32, i32); // tuple struct
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+<p>Ach má úsáidimid na struchtúir éagsúla, a bhfuil a chineál féin ag gach ceann acu, ní mór dúinn
+Níorbh fhéidir feidhm a shainiú chomh héasca chun aon cheann de na cineálacha teachtaireachtaí seo a ghlacadh agus
+d'fhéadfaimis leis an <code>Message</code> enum a shainmhínítear i Liostú 6-2, ar cineál amháin é.</p>
+<p>Tá cosúlacht amháin eile idir enums agus struchtúir: díreach mar is féidir linn
+modhanna a shainiú ar struchtúir ag baint úsáide as <code>impl</code>, táimid in ann modhanna a shainiú ar
+éinim. Seo modh darb ainm ‘glaoch’ a d’fhéadfaimis a shainiú ar ár ‘Teachtaireacht’ enum:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    enum Message {
+</span><span class="boring">        Quit,
+</span><span class="boring">        Move { x: i32, y: i32 },
+</span><span class="boring">        Write(String),
+</span><span class="boring">        ChangeColor(i32, i32, i32),
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    impl Message {
+        fn call(&amp;self) {
+            // method body would be defined here
+        }
+    }
+
+    let m = Message::Write(String::from("hello"));
+    m.call();
+<span class="boring">}</span></code></pre></pre>
+<p>D'úsáidfeadh corp an mhodha <code>self</code> chun an luach a thugamar ar an
+modh ar. Sa sampla seo, chruthaíomar athróg <code>m</code> a bhfuil an luach aige
+<code>Message::Write(String::from("hello"))</code>, agus sin an rud a bheidh <code>self</code> sa
+corp an mhodha <code>call</code> nuair a ritheann <code>m.call()</code>.</p>
+<p>Breathnaímid ar enum eile sa leabharlann chaighdeánach atá an-choitianta agus
+úsáideach: <code>Option</code>.</p>
+<h3 id="an-option-enum-agus-a-buntáistí-thar-luachanna-neamhnithe"><a class="header" href="#an-option-enum-agus-a-buntáistí-thar-luachanna-neamhnithe">An <code>Option</code> Enum agus a Buntáistí thar Luachanna Neamhnithe</a></h3>
+<p>Scrúdaíonn an chuid seo cás-staidéar ar <code>Option</code>, a bhfuil sainmhíniú eile air
+ag an leabharlann chaighdeánach. Ionchódaíonn an cineál <code>Option</code> an cás an-choitianta i
+a d'fhéadfadh a bheith ina luach rud éigin nó d'fhéadfadh sé a bheith rud ar bith.</p>
+<p>Mar shampla, má iarrann tú an chéad mhír ar liosta neamhfholamh, gheobhaidh tú
+luach. Má iarrann tú an chéad mhír ar liosta folamh, ní bhfaighfeá rud ar bith.
+Is féidir leis an tiomsaitheoir an coincheap seo a chur in iúl i dtéarmaí an chórais chineáil
+seiceáil an bhfuil gach cás ba cheart duit a láimhseáil láimhseáilte agat; seo
+is féidir le feidhmiúlacht cosc ​​a chur ar fhabhtanna atá thar a bheith coitianta i gcláir eile
+teangacha.</p>
+<p>Is minic a smaoinítear ar dhearadh teanga ríomhchláraithe i dtéarmaí na ngnéithe atá agat
+san áireamh, ach tá na gnéithe a eisiamh tú tábhachtach freisin. Níl an meirge ag meirge
+null gné atá ag go leor teangacha eile. Is luach é <em>Null</em> a chiallaíonn ann
+níl aon luach ann. I dteangacha le null, is féidir athróga a bheith i gceann de na hathróga i gcónaí
+dhá stát: neamhní nó neamh-null.</p>
+<p>Ina chur i láthair in 2009 “Null References: The Billion Dollar Mistake,” Tony
+Tá sé seo le rá ag Hoare, aireagóir null:</p>
+<blockquote>
+<p>Tugaim mo bhotún billiún dollar air. Ag an am sin, bhí mé ag dearadh an chéad cheann
+cineál córas cuimsitheach le haghaidh tagairtí i dteanga atá dírithe ar oibiachtaí. Mo
+Ba é an sprioc ná a chinntiú gur chóir go mbeadh gach úsáid a bhaintear as teistiméireachtaí go hiomlán sábháilte, le
+seiceáil a dhéanann an tiomsaitheoir go huathoibríoch. Ach ní raibh mé in ann cur i gcoinne
+temptation tagairt ar neamhní a chur isteach, go simplí toisc go raibh sé chomh héasca sin
+chur i bhfeidhm. Mar thoradh air seo tá líon mór earráidí, leochaileachtaí agus córais
+tuairteanna, a ba chúis dócha billiún dollar de pian agus damáiste i
+daichead bliain anuas.</p>
+</blockquote>
+<p>Is í an fhadhb le luachanna nialasach ná má dhéanann tú iarracht luach nialasach a úsáid mar
+luach neamh-null, gheobhaidh tú earráid de chineál éigin. Mar gheall ar seo ar neamhní nó-null
+tá an mhaoin forleatach, tá sé thar a bheith éasca earráid den chineál seo a dhéanamh.</p>
+<p>Mar sin féin, tá an coincheap atá null ag iarraidh a chur in iúl fós úsáideach: a
+Is luach é null atá neamhbhailí faoi láthair nó atá as láthair ar chúis éigin.</p>
+<p>Ní bhaineann an fhadhb leis an gcoincheap i ndáiríre ach leis an ábhar ar leith
+cur i bhfeidhm. Mar sin, níl nulls ag Rust, ach tá enum aige
+ar féidir leis an gcoincheap luach a bheith i láthair nó as láthair a ionchódú. Tá an enum seo
+<code>Rogha&lt;T&gt;</code>, agus <a href="../std/option/enum.Option.html">sainmhínítear é sa ghnáthleabharlann</a><!-- neamhaird a dhéanamh ar -->
+mar seo a leanas:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum Option&lt;T&gt; {
+    None,
+    Some(T),
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Tá an <code>Option&lt;T&gt;</code> enum chomh húsáideach sin go bhfuil sé san áireamh fiú sa réamhrá; leat
+ní gá é a thabhairt isteach sa raon feidhme go sainráite. Tá a leagan san áireamh freisin i
+an réamhrá: is féidir leat <code>Some</code> agus <code>None</code> a úsáid go díreach gan an <code>Option::</code>
+réimír. Níl sa <code>Option&lt;T&gt;</code> enum fós ach áithne rialta, agus <code>Some(T)</code> agus
+Is leaganacha den chineál <code>Option&lt;T&gt;</code> iad <code>none</code> fós.</p>
+<p>Is gné de Rust é an chomhréir <code>&lt;T&gt;</code> nár labhair muid faoi go fóill. Tá sé a
+paraiméadar cineálach, agus clúdóimid cineálacha níos mionsonraithe i gCaibidil 10.
+Faoi láthair, níl a fhios agat ach go gciallaíonn <code>&lt;T&gt;</code> gurb é an leagan <code>Some</code> de
+is féidir leis an enum <code>Option</code> píosa amháin sonraí a choinneáil d'aon chineál, agus go bhfuil gach ceann acu
+de chineál coincréite a úsáidtear in ionad <code>T</code> a dhéanann an cineál foriomlán <code>Option&lt;T&gt;</code>
+cineál difriúil. Seo roinnt samplaí de luachanna <code>Option</code> a úsáid le coinneáil
+cineálacha uimhreacha agus cineálacha ruaille:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let some_number = Some(5);
+    let some_char = Some('e');
+
+    let absent_number: Option&lt;i32&gt; = None;
+<span class="boring">}</span></code></pre></pre>
+<p>Is é <code>Option&lt;i32&gt;</code> an ​​cineál <code>some_number</code>. Is é an cineál <code>some_char</code>
+<code>Option&lt;char&gt;</code>, ar cineál difriúil é. Is féidir le meirge tátal a bhaint as na cineálacha seo toisc
+tá luach sonraithe againn laistigh den leagan <code>Some</code>. Le haghaidh <code>absent_number</code>, Rust
+éilíonn orainn an cineál foriomlán <code>Option</code> a anó: ní féidir leis an tiomsaitheoir an tátal a bhaint as
+clóscríobh go gcoimeádfaidh an leagan comhfhreagrach <code>Some</code> trí bhreathnú ar a
+luach <code>none</code>. Anseo, insíonn muid do Rust go bhfuil i gceist againn go mbeadh <code>absent_number</code> de chineál
+<code>Option&lt;i32&gt;</code>.</p>
+<p>Nuair a bhíonn luach <code>Some</code> againn, tá a fhios againn go bhfuil luach i láthair agus go bhfuil an luach ann
+ar siúl laistigh den <code>Some</code>. Nuair a bhíonn luach <code>None</code> againn, i gciall éigin ciallaíonn sé an
+rud céanna le null: níl luach bailí againn. Mar sin cén fáth a bhfuil <code>Option&lt;T&gt;</code> agat
+ar bith níos fearr ná null a bheith agat?</p>
+<p>I mbeagán focal, toisc go bhfuil <code>Option&lt;T&gt;</code> agus <code>T</code> (áit ar féidir <code>T</code> a bheith de chineál ar bith) difriúil
+cineálacha, ní ligfidh an tiomsaitheoir dúinn luach <code>Option&lt;T&gt;</code> a úsáid amhail is dá mba é
+cinnte luach bailí. Mar shampla, ní thiomsóidh an cód seo, toisc go bhfuil
+ag iarraidh <code>i8</code> a chur le <code>Option&lt;i8&gt;</code>:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let x: i8 = 5;
+    let y: Option&lt;i8&gt; = Some(5);
+
+    let sum = x + y;
+<span class="boring">}</span></code></pre>
+<p>Má rithimid an cód seo, faighimid teachtaireacht earráide mar an gceann seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling enums v0.1.0 (file:///projects/enums)
+error[E0277]: cannot add `Option&lt;i8&gt;` to `i8`
+ --&gt; src/main.rs:5:17
+  |
+5 |     let sum = x + y;
+  |                 ^ no implementation for `i8 + Option&lt;i8&gt;`
+  |
+  = help: the trait `Add&lt;Option&lt;i8&gt;&gt;` is not implemented for `i8`
+  = help: the following other types implement trait `Add&lt;Rhs&gt;`:
+            `&amp;'a i8` implements `Add&lt;i8&gt;`
+            `&amp;i8` implements `Add&lt;&amp;i8&gt;`
+            `i8` implements `Add&lt;&amp;i8&gt;`
+            `i8` implements `Add`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `enums` (bin "enums") due to 1 previous error
+</code></pre>
+<p>Go dian! Go bunúsach, ciallaíonn an teachtaireacht earráide seo nach dtuigeann Rust conas
+chun <code>i8</code> agus <code>Option&lt;i8&gt;</code> a chur leis, toisc gur cineálacha éagsúla iad. Nuair a bheidh muid
+a bhfuil luach de chineál cosúil le <code>i8</code> i Rust, cinnteoidh an tiomsaitheoir go mbeidh muid
+luach bailí i gcónaí. Is féidir linn dul ar aghaidh go muiníneach gan seiceáil a dhéanamh
+le haghaidh null roimh an luach sin a úsáid. Go dtí go bhfuil <code>Option&lt;i8&gt;</code> againn (nó
+cibé cineál luacha a bhfuilimid ag obair leis) an gcaithfidh muid a bheith buartha faoi b'fhéidir
+gan luach, agus cinnteoidh an tiomsaitheoir go ndéileálfaimid leis an gcás sin roimhe seo
+ag baint úsáide as an luach.</p>
+<p>I bhfocail eile, caithfidh tú <code>Option&lt;T&gt;</code> a thiontú go <code>T</code> sular féidir leat
+oibríochtaí <code>T</code> a dhéanamh leis. Go ginearálta, cuidíonn sé seo le breith ar cheann de na cinn is mó
+ceisteanna coitianta le null: ag glacadh leis nach bhfuil rud éigin ar neamhní nuair atá sé i ndáiríre.</p>
+<p>Má dhéantar an baol a bhaineann le luach neamhneal a ghlacadh go mícheart, cabhraíonn sé leat a bheith
+níos mó muiníne i do chód. D'fhonn go mbeadh luach is féidir a bheith b'fhéidir
+null, ní mór duit liostáil go sainráite tríd an gcineál luacha sin a dhéanamh <code>Option&lt;T&gt;</code>.
+Ansin, nuair a úsáideann tú an luach sin, ceanglaítear ort an cás a láimhseáil go sainráite
+nuair a bhíonn an luach nialasach. I ngach áit go bhfuil luach ag cineál nach bhfuil
+<code>Option&lt;T&gt;</code>, glacann tú leis go sábháilte nach bhfuil an luach ar neamhní. Bhí sé seo a
+cinneadh dearaidh d’aon ghnó do Rust teorainn a chur le forleatach agus méadú null
+sábháilteacht an chóid meirge.</p>
+<p>Mar sin, conas a fhaigheann tú an luach <code>T</code> as leagan <code>Some</code> nuair a bhíonn luach agat
+den chineál <code>Option&lt;T&gt;</code> ionas gur féidir leat an luach sin a úsáid? Tá a
+líon mór modhanna atá úsáideach i gcásanna éagsúla; is féidir leat
+seiceáil iad ina <a href="../std/option/enum.Option.html">a cháipéisíocht</a> <!-- neamhaird -->. Ag éirí eolach
+leis na modhanna ar <code>Option&lt;T&gt;</code> beidh siad thar a bheith úsáideach i do thuras le
+Meirge.</p>
+<p>Go ginearálta, chun luach <code>Option&lt;T&gt;</code> a úsáid, ba mhaith leat cód a bheith agat
+láimhseálfaidh gach leagan. Ba mhaith leat roinnt cód a bheidh ar siúl ach amháin nuair a bheidh agat
+Luach <code>Some(T)</code>, agus ceadaítear don chód seo an <code>T</code> istigh a úsáid. Ba mhaith leat roinnt
+cód eile le rith mura bhfuil luach <code>None</code> agat, agus mura bhfuil a
+luach <code>T</code> ar fáil. Is éard atá sa slonn <code>match</code> ná tógáil ar shreabhadh rialaithe a dhéanann
+déanann sé seo go díreach nuair a úsáidtear é le enums: beidh sé ag rith cód difriúil ag brath ar
+cén leagan den enum atá aige, agus is féidir leis an gcód sin úsáid a bhaint as na sonraí taobh istigh den
+luach meaitseála.</p>
+<div style="break-before: page; page-break-before: always;"></div><!-- Sean-cheannteideal. Ná bain amach nó seans go mbrisfidh naisc. -->
+<p><a id="the-match-control-flow-operator"></a></p>
+<h2 id="an-match-tógáil-sreabhadh-rialaithe"><a class="header" href="#an-match-tógáil-sreabhadh-rialaithe">An "match" Tógáil Sreabhadh Rialaithe</a></h2>
+<p>Tá struchtúr sreafa rialaithe thar a bheith cumhachtach ag Rust ar a dtugtar <code>match</code> sin
+ligeann duit luach a chur i gcomparáid le sraith patrún agus ansin a fhorghníomhú
+cód bunaithe ar an patrún a oireann. Is féidir le patrúin a bheith comhdhéanta de luachanna litriúla,
+ainmneacha athraitheacha, saoróga, agus go leor rudaí eile; <a href="ch19-00-patterns.html">Caibidil
+19</a><!-- neamhaird --> clúdaíonn sé na cineálacha éagsúla patrún go léir
+agus cad a dhéanann siad. Tagann cumhacht <code>match</code> as sainiúlacht an
+patrúin agus ar an bhfíric go ndeimhníonn an tiomsaitheoir go bhfuil gach cás féideartha
+láimhsithe.</p>
+<p>Smaoinigh ar shloinneadh <code>match</code> a bheith cosúil le meaisín sórtála boinn: sleamhnaíonn boinn
+síos rian le poill de mhéideanna éagsúla ar a feadh, agus titeann gach bonn tríd
+an chéad pholl a bhuaileann sé a luíonn sé isteach. Ar an mbealach céanna, téann luachanna
+trí gach patrún i <code>match</code>, agus ag an gcéad phatrún "oireann,"
+titeann an luach isteach sa bhloc cód gaolmhar atá le húsáid le linn forghníomhaithe.</p>
+<p>Ag labhairt di ar bhoinn, déanaimis iad a úsáid mar shampla ag baint úsáide as <code>match</code>! Is féidir linn scríobh a
+feidhm a ghlacann bonn SAM anaithnid agus, ar bhealach cosúil leis an gcomhaireamh
+meaisín, socraíonn sé cén bonn atá ann agus cuireann sé a luach ar ais ina cent, mar a thaispeántar
+i Liosta 6-3.</p>
+<Listing number="6-3" caption="An enum and a `match` expression that has the variants of the enum as its patterns">
+<pre><pre class="playground"><code class="language-rust">enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+
+fn value_in_cents(coin: Coin) -&gt; u8 {
+    match coin {
+        Coin::Penny =&gt; 1,
+        Coin::Nickel =&gt; 5,
+        Coin::Dime =&gt; 10,
+        Coin::Quarter =&gt; 25,
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Déanaimis miondealú ar an <code>match</code> san fheidhm <code>value_in_cents</code>. Ar dtús déanaimid liosta
+an eochairfhocal <code>match</code> agus slonn ina dhiaidh sin, arb é an luach é sa chás seo
+<code>coin</code>. Dealraíonn sé seo an-chosúil le slonn coinníollach a úsáidtear le <code>if</code>, ach
+tá difríocht mhór ann: le <code>if</code>, is gá an riocht a mheas go dtí a
+Luach Boole, ach anseo is féidir é a bheith de chineál ar bith. An cineál <code>coin</code> sa sampla seo
+is é an <code>Coin</code> enum a shainmhíníomar ar an gcéad líne.</p>
+<p>Ina dhiaidh sin tá na hairm <code>match</code>. Tá dhá chuid ag lámh: patrún agus roinnt cód. Tá an
+tá patrún sa chéad lámh anseo arb é an luach <code>Coin::Penny</code> agus ansin an <code>=&gt;</code>
+oibreoir a scarann ​​an patrún agus an cód a rith. An cód sa chás seo
+níl ann ach an luach <code>1</code>. Tá gach lámh scartha ón gcéad cheann eile le camóg.</p>
+<p>Nuair a fheidhmíonn an slonn <code>match</code>, déanann sé an luach iarmhartach a chur i gcomparáid le
+patrún gach lámh, in ord. Má mheaitseálann patrún leis an luach, an cód
+a bhaineann leis an bpatrún sin a fhorghníomhú. Mura n-oireann an patrún sin leis an
+luach, leanann an forghníomhú ar aghaidh go dtí an chéad lámh eile, an oiread agus is i meaisín sórtála mona.
+Is féidir linn an oiread arm agus is gá a bheith againn: i Liosta 6-3, tá ceithre lámh ag ár <code>match</code>.</p>
+<p>Is slonn é an cód a bhaineann le gach lámh, agus an luach iarmhartach de
+is é an slonn sa lámh meaitseála an luach a fhaightear ar ais don
+abairt <code>match</code> ar fad.</p>
+<p>De ghnáth ní úsáidimid lúibíní curacha má tá cód lámh an chluiche gearr, mar atá sé
+i Liosta 6-3 áit nach dtugann gach lámh ach luach ar ais. Más mian leat a reáchtáil iolrach
+línte cód i lámh cluiche, ní mór duit úsáid a bhaint as lúibíní chatach, agus an camóg
+Tá leanúint na láimhe roghnach ansin. Mar shampla, priontaí an cód seo a leanas
+"Pingin an t-ádh!" gach uair a thugtar an modh le <code>Coin::Penny</code>, ach fós
+seo ar ais luach deiridh an bhloic, <code>1</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn value_in_cents(coin: Coin) -&gt; u8 {
+    match coin {
+        Coin::Penny =&gt; {
+            println!("Lucky penny!");
+            1
+        }
+        Coin::Nickel =&gt; 5,
+        Coin::Dime =&gt; 10,
+        Coin::Quarter =&gt; 25,
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+<h3 id="patrúin-a-cheanglaíonn-luachanna"><a class="header" href="#patrúin-a-cheanglaíonn-luachanna">Patrúin a Cheanglaíonn Luachanna</a></h3>
+<p>Gné úsáideach eile a bhaineann le hairm mheaitseála ná gur féidir leo ceangal a dhéanamh le codanna an
+luachanna a mheaitseálann an patrún. Seo mar is féidir linn luachanna a bhaint as enum
+athraithigh.</p>
+<p>Mar shampla, déanaimis ceann dár n-athraithigh enum a athrú chun sonraí a choinneáil istigh ann.
+Ó 1999 go dtí 2008, bhuail na Stáit Aontaithe cheathrú le éagsúla
+dearaí do gach ceann de na 50 stát ar thaobh amháin. Ní bhfuair aon bhoinn eile an stát
+dearaí, mar sin níl ach an luach breise seo ag ceathrúna. Is féidir linn an fhaisnéis seo a chur le
+ár <code>enum</code> tríd an leagan <code>Quarter</code> a athrú chun luach <code>UsState</code> a chur san áireamh
+stóráilte istigh ann, rud atá déanta againn i Liostú 6-4.</p>
+<Listing number="6-4" caption="A `Coin` enum in which the `Quarter` variant also holds a `UsState` value">
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)] // so we can inspect the state in a minute
+enum UsState {
+    Alabama,
+    Alaska,
+    // --snip--
+}
+
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Samhlóimis go bhfuil cara ag iarraidh na 50 ceathrú stáit ar fad a bhailiú. Cé go
+Déanaimid ár n-athrú scaoilte a shórtáil de réir cineáil boinn, glaofaimid amach freisin ainm an
+luaigh baint aige le gach ráithe ionas más ceann é nach bhfuil ag ár gcara,
+is féidir leo é a chur lena mbailiúchán.</p>
+<p>Sa slonn meaitseála don chód seo, cuirimid athróg darb ainm <code>state</code> leis an
+patrún a mheaitseálann luachanna an leagain <code>Coin::Quarter</code>. Nuair a
+Meaitseálann <code>Coin::Quarter</code>, beidh an athróg <code>state</code> ina gceangal leis an luach sin
+stát ceathrú. Ansin is féidir linn <code>state</code> a úsáid sa chód don lámh sin, mar sin:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn value_in_cents(coin: Coin) -&gt; u8 {
+    match coin {
+        Coin::Penny =&gt; 1,
+        Coin::Nickel =&gt; 5,
+        Coin::Dime =&gt; 10,
+        Coin::Quarter(state) =&gt; {
+            println!("State quarter from {state:?}!");
+            25
+        }
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    value_in_cents(Coin::Quarter(UsState::Alaska));
+</span><span class="boring">}</span></code></pre></pre>
+<p>Dá gcuirfimid <code>value_in_cents(Coin::Quarter(UsState::Alaska))</code>, <code>coin</code>
+bheadh ​​<code>Coin::Quarter(UsState::Alaska)</code>. Nuair a dhéanaimid an luach sin i gcomparáid le gach ceann acu
+de na hairm chluiche, ní mheaitseálann aon cheann acu go dtí go sroicheann muid <code>Coin::Quarter(state)</code>. Ag
+an pointe sin, is é an luach <code>UsState::Alaska</code> a bheidh mar cheangal ar <code>state</code>. Is féidir linn
+ansin bain úsáid as an gceangal sin sa slonn <code>println!</code>, mar sin faigh an taobh istigh
+luaigh luach amach as an malairt <code>coin</code> enum le haghaidh <code>Quarter</code>.</p>
+<h3 id="ag-meaitseáil-le-optiont"><a class="header" href="#ag-meaitseáil-le-optiont">Ag meaitseáil le <code>Option&lt;T&gt;</code></a></h3>
+<p>San alt roimhe seo, bhíomar ag iarraidh an luach <code>T</code> istigh a bhaint as an <code>Some</code>
+cás agus <code>Option&lt;T&gt;</code> in úsáid; is féidir linn <code>Option&lt;T&gt;</code> a láimhseáil freisin ag baint úsáide as <code>match</code>, mar
+rinne muid leis an <code>Coin</code> enum! In ionad boinn a chur i gcomparáid, déanfaimid comparáid idir na
+leaganacha de <code>Option&lt;T&gt;</code>, ach fanann an bealach a oibríonn an slonn <code>match</code> mar an gcéanna
+céanna.</p>
+<p>Ligean le rá gur mhaith linn feidhm a scríobh a ghlacann <code>Option&lt;i32&gt;</code> agus, más rud é
+tá luach istigh, cuireann sé 1 leis an luach sin. Mura bhfuil luach istigh ann,
+ba chóir don fheidhm an luach <code>None</code> a thabhairt ar ais agus gan iarracht a dhéanamh aon cheann a dhéanamh
+oibríochtaí.</p>
+<p>Tá an fheidhm seo an-éasca a scríobh, a bhuíochas sin do <code>match</code>, agus beidh cuma mhaith
+Liostáil 6-5.</p>
+<Listing number="6-5" caption="A function that uses a `match` expression on an `Option<i32>`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+        match x {
+            None =&gt; None,
+            Some(i) =&gt; Some(i + 1),
+        }
+    }
+
+    let five = Some(5);
+    let six = plus_one(five);
+    let none = plus_one(None);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Déanaimis scrúdú níos mine ar an gcéad fhorghníomhú de <code>plus_one</code>. Nuair a ghlaoimid
+<code>plus_one(five)</code>, beidh an athróg <code>x</code> i gcorp <code>plus_one</code>
+luach <code>Some(5)</code>. Déanaimid é sin a chur i gcomparáid le gach lámh cluiche:</p>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span><span class="boring">    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+</span><span class="boring">        match x {
+</span>            None =&gt; None,
+<span class="boring">            Some(i) =&gt; Some(i + 1),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    let five = Some(5);
+</span><span class="boring">    let six = plus_one(five);
+</span><span class="boring">    let none = plus_one(None);
+</span><span class="boring">}</span></code></pre>
+<p>Ní mheaitseálann an luach <code>Some(5)</code> an patrún <code>None</code>, mar sin leanaimid ar aghaidh chuig an
+lámh eile:</p>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span><span class="boring">    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+</span><span class="boring">        match x {
+</span><span class="boring">            None =&gt; None,
+</span>            Some(i) =&gt; Some(i + 1),
+<span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    let five = Some(5);
+</span><span class="boring">    let six = plus_one(five);
+</span><span class="boring">    let none = plus_one(None);
+</span><span class="boring">}</span></code></pre>
+<p>An meaitseálann <code>Some(5)``Some(i)</code>? Déanann sé! Tá an leagan céanna againn. Tá an <code>i</code>
+ceanglaíonn sé leis an luach atá i <code>Some</code>, mar sin glacann <code>i</code> an luach <code>5</code>. An cód i
+déantar lámh an chluiche ansin, mar sin cuirimid 1 le luach <code>i</code> agus cruthaímid a
+luach <code>Some</code> nua lenár <code>6</code> iomlán istigh.</p>
+<p>Anois déanaimis machnamh ar an dara glao ar <code>plus_one</code> i Liostú 6-5, áit a bhfuil <code>x</code>
+<code>None</code>. Cuirimid isteach sa <code>match</code> agus cuirimid i gcomparáid leis an gcéad lámh:</p>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span><span class="boring">    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+</span><span class="boring">        match x {
+</span>            None =&gt; None,
+<span class="boring">            Some(i) =&gt; Some(i + 1),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    let five = Some(5);
+</span><span class="boring">    let six = plus_one(five);
+</span><span class="boring">    let none = plus_one(None);
+</span><span class="boring">}</span></code></pre>
+<p>Meaitseálann sé! Níl aon luach le cur leis, mar sin stopann an clár agus seolann sé an
+luach <code>none</code> ar thaobh na láimhe deise de <code>=&gt;</code>. Mar gheall ar mheaitseáil an chéad lámh, ní eile
+déantar comparáid idir airm.</p>
+<p>Tá sé úsáideach 'meaitseáil' agus enums a chomhcheangal i go leor cásanna. Feicfidh tú é seo
+patrún go leor sa chód meirge: <code>match</code> i gcoinne enum, ceangail athróg leis an
+sonraí taobh istigh, agus ansin a fhorghníomhú cód bunaithe ar sé. Tá sé beagán tricky ar dtús, ach
+a luaithe a rachaidh tú i dtaithí air, ba mhaith leat go mbeadh sé agat i ngach teanga. Tá sé
+go seasta is fearr leat úsáideoir.</p>
+<h3 id="tá-meaitseálacha-uileghabhálach"><a class="header" href="#tá-meaitseálacha-uileghabhálach">Tá Meaitseálacha Uileghabhálach</a></h3>
+<p>Tá gné amháin eile den ‘mheaitseáil’ ar gá dúinn a phlé: ní mór patrúin na n-arm
+gach féidearthacht a chlúdach. Smaoinigh ar an leagan seo dár bhfeidhm <code>plus_one</code>,
+a bhfuil fabht aige agus nach dtiomsóidh:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+        match x {
+            Some(i) =&gt; Some(i + 1),
+        }
+    }
+<span class="boring">
+</span><span class="boring">    let five = Some(5);
+</span><span class="boring">    let six = plus_one(five);
+</span><span class="boring">    let none = plus_one(None);
+</span><span class="boring">}</span></code></pre>
+<p>Níor láimhseáil muid an cás <code>None</code>, mar sin cruthóidh an cód seo fabht. Ar ámharaí an tsaoil, tá
+fabht Tá a fhios ag Rust conas a ghabháil. Má dhéanaimid iarracht an cód seo a thiomsú, gheobhaidh muid é
+earráid:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling enums v0.1.0 (file:///projects/enums)
+error[E0004]: non-exhaustive patterns: `None` not covered
+   --&gt; src/main.rs:3:15
+    |
+3   |         match x {
+    |               ^ pattern `None` not covered
+    |
+note: `Option&lt;i32&gt;` defined here
+   --&gt; file:///home/.rustup/toolchains/1.82/lib/rustlib/src/rust/library/core/src/option.rs:571:1
+    |
+571 | pub enum Option&lt;T&gt; {
+    | ^^^^^^^^^^^^^^^^^^
+...
+575 |     None,
+    |     ---- not covered
+    = note: the matched value is of type `Option&lt;i32&gt;`
+help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
+    |
+4   ~             Some(i) =&gt; Some(i + 1),
+5   ~             None =&gt; todo!(),
+    |
+
+For more information about this error, try `rustc --explain E0004`.
+error: could not compile `enums` (bin "enums") due to 1 previous error
+</code></pre>
+<p>Tá a fhios ag Rust nár chlúdaigh muid gach cás féideartha, agus tá a fhios aige fiú cé acu
+patrún dearmadta againn! Tá meaitseanna meirge <em>uileghabhálach</em>: ní mór dúinn gach ceann deireanach a sceite
+féidearthacht ionas go mbeidh an cód bailí. Go háirithe i gcás
+<code>Option&lt;T&gt;</code>, nuair a chuireann Rust cosc ​​orainn dearmad a dhéanamh ar an
+‘Gan cás’, cosnaíonn sé sinn ó bheith ag glacadh leis go bhfuil luach againn nuair a d’fhéadfaimis
+bheith ar neamhní, rud a fhágann go bhfuil an botún billiún dollar a pléadh níos luaithe dodhéanta.</p>
+<h3 id="patrúin-catch-all-agus-an-sealbhóir-Áite-_"><a class="header" href="#patrúin-catch-all-agus-an-sealbhóir-Áite-_">Patrúin Catch-All agus an Sealbhóir Áite <code>_</code></a></h3>
+<p>Ag baint úsáide as enums, is féidir linn a ghlacadh freisin gníomhartha speisialta le haghaidh cúpla luachanna ar leith, ach
+do gach luach eile déan beart réamhshocraithe amháin. Samhlaigh go bhfuil cluiche á chur i bhfeidhm againn
+más rud é, má rollaíonn tú 3 ar rolla dísle, ní bhogann d'imreoir, ach ina ionad sin
+Faigheann hata mhaisiúil nua. Má rollaíonn tú 7, cailleann d'imreoir hata mhaisiúil. Do chách
+luachanna eile, bogann d'imreoir an líon sin spásanna ar an gclár cluiche. Seo chugaibh
+<code>match</code> a chuireann an loighic sin i bhfeidhm, le toradh an rolla dísle
+hardcoded seachas luach randamach, agus gach loighic eile ionadaíocht ag
+feidhmeanna gan chomhlachtaí toisc go bhfuil cur chun feidhme iarbhír na bhfeidhmeanna sin lasmuigh den scóip le haghaidh
+an sampla seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let dice_roll = 9;
+    match dice_roll {
+        3 =&gt; add_fancy_hat(),
+        7 =&gt; remove_fancy_hat(),
+        other =&gt; move_player(other),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+    fn move_player(num_spaces: u8) {}
+<span class="boring">}</span></code></pre></pre>
+<p>Don chéad dá lámh, is iad na patrúin na luachanna litriúla <code>3</code> agus <code>7</code>. Le haghaidh
+an lámh deiridh a chlúdaíonn gach luach féideartha eile, is é an patrún an
+athróg atá roghnaithe againn chun <code>other</code> a ainmniú. An cód a ritheann don lámh <code>other</code>
+Úsáideann sé an athróg trína chur ar aghaidh chuig an bhfeidhm <code>move_player</code>.</p>
+<p>Tiomsaítear an cód seo, cé nach bhfuil na luachanna féideartha go léir liostaithe againn a
+Is féidir le <code>u8</code> a bheith agat, mar beidh an patrún deireanach ag teacht le gach luach nach bhfuil go sonrach
+liostaithe. Comhlíonann an patrún uileghabhálach seo an riachtanas nach mór <code>match</code> a bheith ann
+uileghabhálach. Tabhair faoi deara go gcaithfimid an lámh iomlán a chur suas go deireanach mar go bhfuil an
+déantar patrúin a mheas in ord. Má chuir muid an lámh ghabháil-uile níos luaithe, an ceann eile
+ní rithfeadh airm choíche, mar sin tabharfaidh Rust foláireamh dúinn má chuirimid airm leis tar éis gach rud!</p>
+<p>Tá patrún ag meirge freisin ar féidir linn a úsáid nuair a theastaíonn uainn go mbeidh gach rud againn ach nach dteastaíonn uainn
+<em>use</em> an luach sa phatrún uileghabhálach: Is patrún speisialta é <code>_</code> a mheaitseálann
+luach ar bith agus ní cheanglaíonn sé leis an luach sin. Insíonn sé seo do Rust nach bhfuilimid chun
+bain úsáid as an luach, mar sin ní thabharfaidh Rust rabhadh dúinn faoi athróg nár úsáideadh.</p>
+<p>Athróimid rialacha an chluiche: anois, má rollaíonn tú rud ar bith seachas 3 nó
+a 7, ní mór duit rolladh arís. Ní gá dúinn an luach uileghabhálach a úsáid a thuilleadh, mar sin ní mór dúinn
+Is féidir ár gcód a athrú chun <code>_</code> a úsáid in ionad na hathróige darb ainm <code>other</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let dice_roll = 9;
+    match dice_roll {
+        3 =&gt; add_fancy_hat(),
+        7 =&gt; remove_fancy_hat(),
+        _ =&gt; reroll(),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+    fn reroll() {}
+<span class="boring">}</span></code></pre></pre>
+<p>Comhlíonann an sampla seo an riachtanas uileghabhálachta freisin toisc go bhfuilimid go sainráite
+neamhaird a dhéanamh ar gach luach eile sa lámh dheireanach; níl dearmad déanta againn ar rud ar bith.</p>
+<p>Ar deireadh, athróimid rialacha an chluiche arís eile ionas nach mbeidh aon rud eile ann
+a tharlaíonn ar do sheal má rollaíonn tú rud ar bith seachas 3 nó 7. Is féidir linn a chur in iúl
+sin trí úsáid a bhaint as an luach aonaid (an cineál tuple folamh a luaigh muid in <a href="ch03-02-data-types.html#the-tuple-type">“The Tuple
+Cineál”</a> <!-- neamhaird a dhéanamh --> alt) mar an cód a théann leis an lámh <code>_</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let dice_roll = 9;
+    match dice_roll {
+        3 =&gt; add_fancy_hat(),
+        7 =&gt; remove_fancy_hat(),
+        _ =&gt; (),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+<span class="boring">}</span></code></pre></pre>
+<p>Anseo, táimid ag insint do Rust go sainráite nach bhfuilimid chun aon luach eile a úsáid
+nach bhfuil ag teacht le patrún i lámh níos luaithe, agus nílimid ag iarraidh aon cheann a rith
+cód sa chás seo.</p>
+<p>Tá níos mó faoi phatrúin agus faoi mheaitseáil a chlúdóimid i <a href="ch19-00-patterns.html">Caibidil
+19</a><!-- neamhaird a dhéanamh -->. Faoi láthair, táimid ag dul ar aghaidh go dtí an
+comhréir <code>if let</code>, is féidir a bheith úsáideach i gcásanna ina bhfuil an slonn <code>match</code>
+rud beag focal.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="sreabhadh-rialaithe-gonta-le-if-let-agus-let-else"><a class="header" href="#sreabhadh-rialaithe-gonta-le-if-let-agus-let-else">Sreabhadh Rialaithe Gonta le <code>if let</code> agus <code>let else</code></a></h2>
+<p>Ligeann an chomhréir <code>if let</code> duit <code>if</code> agus <code>let</code> a chur le chéile ar bhealach nach bhfuil chomh briathartha
+láimhseáil luachanna a mheaitseálann patrún amháin agus neamhaird á déanamh ar an gcuid eile. Smaoinigh ar an
+clár i Liostú 6-6 a mheaitseálann ar luach <code>Option&lt;u8&gt;</code> sa
+athróg <code>config_max</code> ach ní theastaíonn uaidh cód a rith ach amháin más é an luach an <code>Some</code>
+athraitheach.</p>
+<Listing number="6-6" caption="A `match` that only cares about executing code when the value is `Some`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let config_max = Some(3u8);
+    match config_max {
+        Some(max) =&gt; println!("The maximum is configured to be {max}"),
+        _ =&gt; (),
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Más <code>Some</code> an luach, priontálaimid an luach sa leagan <code>Some</code> trí cheangal
+an luach don athróg <code>max</code> sa phatrún. Nílimid ag iarraidh aon rud a dhéanamh
+leis an luach <code>None</code>. Chun an slonn <code>match</code> a shásamh, caithfimid <code>_ =&gt;  ()</code> a chur leis tar éis, a phróiseáil ach malairt amháin, a bhfuil cód boilerplate annoying go
+cuir.</p>
+<p>Ina áit sin, d'fhéadfaimis é seo a scríobh ar bhealach níos giorra ag baint úsáide as <code>if let</code>. Seo a leanas
+Iompraíonn an cód mar an gcéanna leis an `match`` i Liostú 6-6:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let config_max = Some(3u8);
+    if let Some(max) = config_max {
+        println!("The maximum is configured to be {max}");
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>Glacann an chomhréir <code>if let</code> patrún agus slonn scartha le cothrom
+comhartha. Oibríonn sé ar an mbealach céanna le <code>match</code>, áit a dtugtar an abairt do na
+<code>match</code> agus is é an patrún a chéad lámh. Sa chás seo, tá an patrún
+<code>Some(max)</code>, agus ceanglaíonn an <code>max</code> leis an luach taobh istigh den <code>Some</code>. Is féidir linn ansin
+úsáid <code>max</code> i gcorp an bhloic <code>if let</code> ar an mbealach céanna a d'úsáid muid <code>max</code> in
+an lámh <code>match</code> comhfhreagrach. Ní ritheann an cód sa bhloc <code>if let</code> ach amháin má tá an
+meaitseálann luach an patrún.</p>
+<p>Ciallaíonn úsáid <code>if let</code> níos lú clóscríobh, níos lú eangú, agus níos lú cód pláta coire.
+Mar sin féin, caillfidh tú an seiceáil uileghabhálach a fhorfheidhmíonn <code>match</code>. Ag roghnú
+idir <code>match</code> agus <code>if let</code> ag brath ar a bhfuil ar siúl agat i do chuid féin
+an staid agus an bhfuil comhbhrón oiriúnach dó nó nach bhfuil
+seiceáil uileghabhálach a chailleadh.</p>
+<p>I bhfocail eile, is féidir leat smaoineamh ar <code>if let</code> mar shiúcra comhréire le haghaidh <code>match</code> sin
+ritheann cód nuair a mheaitseálann an luach patrún amháin agus ansin neamhaird ar gach luach eile.</p>
+<p>Is féidir linn <code>else</code> a chur san áireamh le <code>if let</code>. An bloc cód a théann leis an
+is ionann <code>else</code> agus an bloc cód a rachadh leis an tuiseal <code>_</code> sa
+<code>match</code> atá comhionann leis an abairt <code>if let</code> agus <code>else</code>. Athghairm an
+Sainmhíniú <code>Coin</code> enum i Liosta 6-4, áit a raibh an leagan <code>Quarter</code>
+luach <code>UsState</code>. Dá dteastódh uainn gach bonn neamhcheathrún a chomhaireamh feicimid agus sinn freisin
+ag fógairt staid na ceathrún, d’fhéadfaimis é sin a dhéanamh le <code>match</code>
+abairt, mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let coin = Coin::Penny;
+</span>    let mut count = 0;
+    match coin {
+        Coin::Quarter(state) =&gt; println!("State quarter from {state:?}!"),
+        _ =&gt; count += 1,
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>Nó d’fhéadfaimis nath <code>if let</code> agus <code>else</code> a úsáid, mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let coin = Coin::Penny;
+</span>    let mut count = 0;
+    if let Coin::Quarter(state) = coin {
+        println!("State quarter from {state:?}!");
+    } else {
+        count += 1;
+    }
+<span class="boring">}</span></code></pre></pre>
+<h2 id="ag-fanacht-ar-an-cosán-sásta-le-let-else"><a class="header" href="#ag-fanacht-ar-an-cosán-sásta-le-let-else">Ag fanacht ar an “cosán sásta” le <code>let else</code></a></h2>
+<p>Patrún coitianta amháin is ea roinnt ríomh a dhéanamh nuair a bhíonn luach i láthair agus
+cuir luach réamhshocraithe ar ais ar shlí eile. Ag leanúint ar aghaidh lenár sampla de bhoinn le a
+luach <code>UsState</code>, dá mbeimis ag iarraidh rud éigin greannmhar a rá ag brath ar cén aois an
+stáit ar an ráithe a bhí, d'fhéadfadh muid a thabhairt isteach modh ar <code>UsState</code> a sheiceáil leis an
+aois stáit, mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)] // so we can inspect the state in a minute
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl UsState {
+    fn existed_in(&amp;self, year: u16) -&gt; bool {
+        match self {
+            UsState::Alabama =&gt; year &gt;= 1819,
+            UsState::Alaska =&gt; year &gt;= 1959,
+            // -- snip --
+        }
+    }
+}
+<span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn describe_state_quarter(coin: Coin) -&gt; Option&lt;String&gt; {
+</span><span class="boring">    if let Coin::Quarter(state) = coin {
+</span><span class="boring">        if state.existed_in(1900) {
+</span><span class="boring">            Some(format!("{state:?} is pretty old, for America!"))
+</span><span class="boring">        } else {
+</span><span class="boring">            Some(format!("{state:?} is relatively new."))
+</span><span class="boring">        }
+</span><span class="boring">    } else {
+</span><span class="boring">        None
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    if let Some(desc) = describe_state_quarter(Coin::Quarter(UsState::Alaska)) {
+</span><span class="boring">        println!("{desc}");
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+<p>Ansin d'fhéadfaimis <code>if let</code> a úsáid chun an cineál bonn a mheaitseáil, agus <code>state</code> á thabhairt isteach
+athraitheach laistigh de chorp an choinníll, mar atá i Liosta 6-7.</p>
+<Listing number="6-7" caption="Using" file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)] // so we can inspect the state in a minute
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl UsState {
+</span><span class="boring">    fn existed_in(&amp;self, year: u16) -&gt; bool {
+</span><span class="boring">        match self {
+</span><span class="boring">            UsState::Alabama =&gt; year &gt;= 1819,
+</span><span class="boring">            UsState::Alaska =&gt; year &gt;= 1959,
+</span><span class="boring">            // -- snip --
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn describe_state_quarter(coin: Coin) -&gt; Option&lt;String&gt; {
+    if let Coin::Quarter(state) = coin {
+        if state.existed_in(1900) {
+            Some(format!("{state:?} is pretty old, for America!"))
+        } else {
+            Some(format!("{state:?} is relatively new."))
+        }
+    } else {
+        None
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    if let Some(desc) = describe_state_quarter(Coin::Quarter(UsState::Alaska)) {
+</span><span class="boring">        println!("{desc}");
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Déanann sé sin an jab, ach tá sé tar éis an obair a bhrú isteach i gcorp an <code>if let</code>
+ráiteas, agus má tá an obair atá le déanamh níos casta, b'fhéidir go mbeadh sé deacair
+lean go beacht mar a bhaineann na craobhacha barrleibhéil. D’fhéadfaimis leas a bhaint as freisin
+den fhíric go mbíonn luach ag na habairtí chun an <code>state</code> a tháirgeadh ó
+an <code>if let</code> nó le filleadh go luath, mar atá i Liosta 6-8. (D'fhéadfá a leithéid a dhéanamh le a
+<code>match</code>, ar ndóigh!)</p>
+<Listing number="6-8" caption="Using `if let` to produce a value or return early." file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)] // so we can inspect the state in a minute
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl UsState {
+</span><span class="boring">    fn existed_in(&amp;self, year: u16) -&gt; bool {
+</span><span class="boring">        match self {
+</span><span class="boring">            UsState::Alabama =&gt; year &gt;= 1819,
+</span><span class="boring">            UsState::Alaska =&gt; year &gt;= 1959,
+</span><span class="boring">            // -- snip --
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn describe_state_quarter(coin: Coin) -&gt; Option&lt;String&gt; {
+    let state = if let Coin::Quarter(state) = coin {
+        state
+    } else {
+        return None;
+    };
+
+    if state.existed_in(1900) {
+        Some(format!("{state:?} is pretty old, for America!"))
+    } else {
+        Some(format!("{state:?} is relatively new."))
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    if let Some(desc) = describe_state_quarter(Coin::Quarter(UsState::Alaska)) {
+</span><span class="boring">        println!("{desc}");
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Tá sé seo beagán annoying a leanúint ina bhealach féin, áfach! Táirgeann brainse
+amháin den <code>if let</code> luach, agus filleann an ceann eile ón bhfeidhm go hiomlán.</p>
+<p>Chun an patrún coitianta seo a dhéanamh níos deise a chur in iúl, tá <code>let</code>-<code>else</code> ag Rust. Tá an
+glacann comhréir <code>let</code>-<code>else</code> patrún ar an taobh clé agus slonn ar an
+ceart, an-chosúil le <code>if let</code>, ach níl brainse <code>if</code> aige, ach an
+brainse <code>else</code>. Má mheaitseálann an patrún, ceangailfidh sé an luach ón bpatrún
+sa raon feidhme lasmuigh. Má mheaitseálann an patrún <em>not</em>, sruthóidh an clár isteach
+an lámh <code>else</code>, a chaithfidh filleadh ón bhfeidhm.</p>
+<p>I Liostú 6-9, is féidir leat a fheiceáil conas a bhreathnaíonn Liostú 6-8 agus <code>let</code> -<code>else</code> in úsáid agat
+áit <code>if let</code>. Tabhair faoi deara go bhfanann sé “ar an gcosán sona” i bpríomhchorp na
+an fheidhm ar an mbealach seo, gan sreabhadh rialaithe go suntasach difriúil le haghaidh
+dhá chraobh ar an mbealach a rinne an <code>if let</code>.</p>
+<Listing number="6-9" caption="Using `let`-`else` to clarify the flow through the function." file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)] // so we can inspect the state in a minute
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl UsState {
+</span><span class="boring">    fn existed_in(&amp;self, year: u16) -&gt; bool {
+</span><span class="boring">        match self {
+</span><span class="boring">            UsState::Alabama =&gt; year &gt;= 1819,
+</span><span class="boring">            UsState::Alaska =&gt; year &gt;= 1959,
+</span><span class="boring">            // -- snip --
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn describe_state_quarter(coin: Coin) -&gt; Option&lt;String&gt; {
+    let Coin::Quarter(state) = coin else {
+        return None;
+    };
+
+    if state.existed_in(1900) {
+        Some(format!("{state:?} is pretty old, for America!"))
+    } else {
+        Some(format!("{state:?} is relatively new."))
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    if let Some(desc) = describe_state_quarter(Coin::Quarter(UsState::Alaska)) {
+</span><span class="boring">        println!("{desc}");
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Má tá cás agat ina bhfuil loighic ag do chlár atá ró-bhriathartha le
+cuir in iúl ag baint úsáide as <code>match</code>, cuimhnigh go bhfuil <code>if let</code> agus <code>let else</code> i do Rust
+bosca uirlisí chomh maith.</p>
+<h2 id="achoimre-5"><a class="header" href="#achoimre-5">Achoimre</a></h2>
+<p>Táimid clúdaithe anois conas enums a úsáid chun cineálacha saincheaptha a chruthú a d’fhéadfadh a bheith mar cheann de a
+sraith de luachanna áirimh. Thaispeánamar conas <code>Option&lt;T&gt;</code> na leabharlainne caighdeánach
+cabhraíonn cineál leat an córas cineáil a úsáid chun earráidí a chosc. Nuair a bhíonn luachanna enum
+sonraí taobh istigh díobh, is féidir leat <code>match</code> nó <code>if let</code> a úsáid chun iad sin a bhaint agus a úsáid
+luachanna, ag brath ar cé mhéad cás is gá duit a láimhseáil.</p>
+<p>Is féidir le do chláir Rust coincheapa a chur in iúl i d'fhearann ​​anois ag baint úsáide as struchtúir agus
+éinim. Cinntíonn cruthú cineálacha saincheaptha le húsáid i do API sábháilteacht cineáil: an
+Beidh tiomsaitheoir a dhéanamh cinnte do fheidhmeanna a fháil ach amháin luachanna den chineál gach
+feidhm ag súil.</p>
+<p>D'fhonn API dea-eagraithe a sholáthar do d'úsáideoirí atá simplí
+a úsáid agus ní nochtar ach an méid go díreach a bheidh de dhíth ar d’úsáideoirí, déanaimis casadh anois air
+Modúil meirge.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="managing-growing-projects-with-packages-crates-and-modules"><a class="header" href="#managing-growing-projects-with-packages-crates-and-modules">Managing Growing Projects with Packages, Crates, and Modules</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="packages-and-crates"><a class="header" href="#packages-and-crates">Packages and Crates</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="defining-modules-to-control-scope-and-privacy"><a class="header" href="#defining-modules-to-control-scope-and-privacy">Defining Modules to Control Scope and Privacy</a></h1>

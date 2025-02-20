@@ -159,7 +159,314 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="concise-control-flow-with-if-let-and-let-else"><a class="header" href="#concise-control-flow-with-if-let-and-let-else">Concise Control Flow with if let and let else</a></h1>
+                        <h2 id="sreabhadh-rialaithe-gonta-le-if-let-agus-let-else"><a class="header" href="#sreabhadh-rialaithe-gonta-le-if-let-agus-let-else">Sreabhadh Rialaithe Gonta le <code>if let</code> agus <code>let else</code></a></h2>
+<p>Ligeann an chomhréir <code>if let</code> duit <code>if</code> agus <code>let</code> a chur le chéile ar bhealach nach bhfuil chomh briathartha
+láimhseáil luachanna a mheaitseálann patrún amháin agus neamhaird á déanamh ar an gcuid eile. Smaoinigh ar an
+clár i Liostú 6-6 a mheaitseálann ar luach <code>Option&lt;u8&gt;</code> sa
+athróg <code>config_max</code> ach ní theastaíonn uaidh cód a rith ach amháin más é an luach an <code>Some</code>
+athraitheach.</p>
+<Listing number="6-6" caption="A `match` that only cares about executing code when the value is `Some`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let config_max = Some(3u8);
+    match config_max {
+        Some(max) =&gt; println!("The maximum is configured to be {max}"),
+        _ =&gt; (),
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Más <code>Some</code> an luach, priontálaimid an luach sa leagan <code>Some</code> trí cheangal
+an luach don athróg <code>max</code> sa phatrún. Nílimid ag iarraidh aon rud a dhéanamh
+leis an luach <code>None</code>. Chun an slonn <code>match</code> a shásamh, caithfimid <code>_ =&gt;  ()</code> a chur leis tar éis, a phróiseáil ach malairt amháin, a bhfuil cód boilerplate annoying go
+cuir.</p>
+<p>Ina áit sin, d'fhéadfaimis é seo a scríobh ar bhealach níos giorra ag baint úsáide as <code>if let</code>. Seo a leanas
+Iompraíonn an cód mar an gcéanna leis an `match`` i Liostú 6-6:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let config_max = Some(3u8);
+    if let Some(max) = config_max {
+        println!("The maximum is configured to be {max}");
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>Glacann an chomhréir <code>if let</code> patrún agus slonn scartha le cothrom
+comhartha. Oibríonn sé ar an mbealach céanna le <code>match</code>, áit a dtugtar an abairt do na
+<code>match</code> agus is é an patrún a chéad lámh. Sa chás seo, tá an patrún
+<code>Some(max)</code>, agus ceanglaíonn an <code>max</code> leis an luach taobh istigh den <code>Some</code>. Is féidir linn ansin
+úsáid <code>max</code> i gcorp an bhloic <code>if let</code> ar an mbealach céanna a d'úsáid muid <code>max</code> in
+an lámh <code>match</code> comhfhreagrach. Ní ritheann an cód sa bhloc <code>if let</code> ach amháin má tá an
+meaitseálann luach an patrún.</p>
+<p>Ciallaíonn úsáid <code>if let</code> níos lú clóscríobh, níos lú eangú, agus níos lú cód pláta coire.
+Mar sin féin, caillfidh tú an seiceáil uileghabhálach a fhorfheidhmíonn <code>match</code>. Ag roghnú
+idir <code>match</code> agus <code>if let</code> ag brath ar a bhfuil ar siúl agat i do chuid féin
+an staid agus an bhfuil comhbhrón oiriúnach dó nó nach bhfuil
+seiceáil uileghabhálach a chailleadh.</p>
+<p>I bhfocail eile, is féidir leat smaoineamh ar <code>if let</code> mar shiúcra comhréire le haghaidh <code>match</code> sin
+ritheann cód nuair a mheaitseálann an luach patrún amháin agus ansin neamhaird ar gach luach eile.</p>
+<p>Is féidir linn <code>else</code> a chur san áireamh le <code>if let</code>. An bloc cód a théann leis an
+is ionann <code>else</code> agus an bloc cód a rachadh leis an tuiseal <code>_</code> sa
+<code>match</code> atá comhionann leis an abairt <code>if let</code> agus <code>else</code>. Athghairm an
+Sainmhíniú <code>Coin</code> enum i Liosta 6-4, áit a raibh an leagan <code>Quarter</code>
+luach <code>UsState</code>. Dá dteastódh uainn gach bonn neamhcheathrún a chomhaireamh feicimid agus sinn freisin
+ag fógairt staid na ceathrún, d’fhéadfaimis é sin a dhéanamh le <code>match</code>
+abairt, mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let coin = Coin::Penny;
+</span>    let mut count = 0;
+    match coin {
+        Coin::Quarter(state) =&gt; println!("State quarter from {state:?}!"),
+        _ =&gt; count += 1,
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>Nó d’fhéadfaimis nath <code>if let</code> agus <code>else</code> a úsáid, mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let coin = Coin::Penny;
+</span>    let mut count = 0;
+    if let Coin::Quarter(state) = coin {
+        println!("State quarter from {state:?}!");
+    } else {
+        count += 1;
+    }
+<span class="boring">}</span></code></pre></pre>
+<h2 id="ag-fanacht-ar-an-cosán-sásta-le-let-else"><a class="header" href="#ag-fanacht-ar-an-cosán-sásta-le-let-else">Ag fanacht ar an “cosán sásta” le <code>let else</code></a></h2>
+<p>Patrún coitianta amháin is ea roinnt ríomh a dhéanamh nuair a bhíonn luach i láthair agus
+cuir luach réamhshocraithe ar ais ar shlí eile. Ag leanúint ar aghaidh lenár sampla de bhoinn le a
+luach <code>UsState</code>, dá mbeimis ag iarraidh rud éigin greannmhar a rá ag brath ar cén aois an
+stáit ar an ráithe a bhí, d'fhéadfadh muid a thabhairt isteach modh ar <code>UsState</code> a sheiceáil leis an
+aois stáit, mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)] // so we can inspect the state in a minute
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl UsState {
+    fn existed_in(&amp;self, year: u16) -&gt; bool {
+        match self {
+            UsState::Alabama =&gt; year &gt;= 1819,
+            UsState::Alaska =&gt; year &gt;= 1959,
+            // -- snip --
+        }
+    }
+}
+<span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn describe_state_quarter(coin: Coin) -&gt; Option&lt;String&gt; {
+</span><span class="boring">    if let Coin::Quarter(state) = coin {
+</span><span class="boring">        if state.existed_in(1900) {
+</span><span class="boring">            Some(format!("{state:?} is pretty old, for America!"))
+</span><span class="boring">        } else {
+</span><span class="boring">            Some(format!("{state:?} is relatively new."))
+</span><span class="boring">        }
+</span><span class="boring">    } else {
+</span><span class="boring">        None
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    if let Some(desc) = describe_state_quarter(Coin::Quarter(UsState::Alaska)) {
+</span><span class="boring">        println!("{desc}");
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+<p>Ansin d'fhéadfaimis <code>if let</code> a úsáid chun an cineál bonn a mheaitseáil, agus <code>state</code> á thabhairt isteach
+athraitheach laistigh de chorp an choinníll, mar atá i Liosta 6-7.</p>
+<Listing number="6-7" caption="Using" file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)] // so we can inspect the state in a minute
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl UsState {
+</span><span class="boring">    fn existed_in(&amp;self, year: u16) -&gt; bool {
+</span><span class="boring">        match self {
+</span><span class="boring">            UsState::Alabama =&gt; year &gt;= 1819,
+</span><span class="boring">            UsState::Alaska =&gt; year &gt;= 1959,
+</span><span class="boring">            // -- snip --
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn describe_state_quarter(coin: Coin) -&gt; Option&lt;String&gt; {
+    if let Coin::Quarter(state) = coin {
+        if state.existed_in(1900) {
+            Some(format!("{state:?} is pretty old, for America!"))
+        } else {
+            Some(format!("{state:?} is relatively new."))
+        }
+    } else {
+        None
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    if let Some(desc) = describe_state_quarter(Coin::Quarter(UsState::Alaska)) {
+</span><span class="boring">        println!("{desc}");
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Déanann sé sin an jab, ach tá sé tar éis an obair a bhrú isteach i gcorp an <code>if let</code>
+ráiteas, agus má tá an obair atá le déanamh níos casta, b'fhéidir go mbeadh sé deacair
+lean go beacht mar a bhaineann na craobhacha barrleibhéil. D’fhéadfaimis leas a bhaint as freisin
+den fhíric go mbíonn luach ag na habairtí chun an <code>state</code> a tháirgeadh ó
+an <code>if let</code> nó le filleadh go luath, mar atá i Liosta 6-8. (D'fhéadfá a leithéid a dhéanamh le a
+<code>match</code>, ar ndóigh!)</p>
+<Listing number="6-8" caption="Using `if let` to produce a value or return early." file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)] // so we can inspect the state in a minute
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl UsState {
+</span><span class="boring">    fn existed_in(&amp;self, year: u16) -&gt; bool {
+</span><span class="boring">        match self {
+</span><span class="boring">            UsState::Alabama =&gt; year &gt;= 1819,
+</span><span class="boring">            UsState::Alaska =&gt; year &gt;= 1959,
+</span><span class="boring">            // -- snip --
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn describe_state_quarter(coin: Coin) -&gt; Option&lt;String&gt; {
+    let state = if let Coin::Quarter(state) = coin {
+        state
+    } else {
+        return None;
+    };
+
+    if state.existed_in(1900) {
+        Some(format!("{state:?} is pretty old, for America!"))
+    } else {
+        Some(format!("{state:?} is relatively new."))
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    if let Some(desc) = describe_state_quarter(Coin::Quarter(UsState::Alaska)) {
+</span><span class="boring">        println!("{desc}");
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Tá sé seo beagán annoying a leanúint ina bhealach féin, áfach! Táirgeann brainse
+amháin den <code>if let</code> luach, agus filleann an ceann eile ón bhfeidhm go hiomlán.</p>
+<p>Chun an patrún coitianta seo a dhéanamh níos deise a chur in iúl, tá <code>let</code>-<code>else</code> ag Rust. Tá an
+glacann comhréir <code>let</code>-<code>else</code> patrún ar an taobh clé agus slonn ar an
+ceart, an-chosúil le <code>if let</code>, ach níl brainse <code>if</code> aige, ach an
+brainse <code>else</code>. Má mheaitseálann an patrún, ceangailfidh sé an luach ón bpatrún
+sa raon feidhme lasmuigh. Má mheaitseálann an patrún <em>not</em>, sruthóidh an clár isteach
+an lámh <code>else</code>, a chaithfidh filleadh ón bhfeidhm.</p>
+<p>I Liostú 6-9, is féidir leat a fheiceáil conas a bhreathnaíonn Liostú 6-8 agus <code>let</code> -<code>else</code> in úsáid agat
+áit <code>if let</code>. Tabhair faoi deara go bhfanann sé “ar an gcosán sona” i bpríomhchorp na
+an fheidhm ar an mbealach seo, gan sreabhadh rialaithe go suntasach difriúil le haghaidh
+dhá chraobh ar an mbealach a rinne an <code>if let</code>.</p>
+<Listing number="6-9" caption="Using `let`-`else` to clarify the flow through the function." file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)] // so we can inspect the state in a minute
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl UsState {
+</span><span class="boring">    fn existed_in(&amp;self, year: u16) -&gt; bool {
+</span><span class="boring">        match self {
+</span><span class="boring">            UsState::Alabama =&gt; year &gt;= 1819,
+</span><span class="boring">            UsState::Alaska =&gt; year &gt;= 1959,
+</span><span class="boring">            // -- snip --
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn describe_state_quarter(coin: Coin) -&gt; Option&lt;String&gt; {
+    let Coin::Quarter(state) = coin else {
+        return None;
+    };
+
+    if state.existed_in(1900) {
+        Some(format!("{state:?} is pretty old, for America!"))
+    } else {
+        Some(format!("{state:?} is relatively new."))
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    if let Some(desc) = describe_state_quarter(Coin::Quarter(UsState::Alaska)) {
+</span><span class="boring">        println!("{desc}");
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Má tá cás agat ina bhfuil loighic ag do chlár atá ró-bhriathartha le
+cuir in iúl ag baint úsáide as <code>match</code>, cuimhnigh go bhfuil <code>if let</code> agus <code>let else</code> i do Rust
+bosca uirlisí chomh maith.</p>
+<h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
+<p>Táimid clúdaithe anois conas enums a úsáid chun cineálacha saincheaptha a chruthú a d’fhéadfadh a bheith mar cheann de a
+sraith de luachanna áirimh. Thaispeánamar conas <code>Option&lt;T&gt;</code> na leabharlainne caighdeánach
+cabhraíonn cineál leat an córas cineáil a úsáid chun earráidí a chosc. Nuair a bhíonn luachanna enum
+sonraí taobh istigh díobh, is féidir leat <code>match</code> nó <code>if let</code> a úsáid chun iad sin a bhaint agus a úsáid
+luachanna, ag brath ar cé mhéad cás is gá duit a láimhseáil.</p>
+<p>Is féidir le do chláir Rust coincheapa a chur in iúl i d'fhearann ​​anois ag baint úsáide as struchtúir agus
+éinim. Cinntíonn cruthú cineálacha saincheaptha le húsáid i do API sábháilteacht cineáil: an
+Beidh tiomsaitheoir a dhéanamh cinnte do fheidhmeanna a fháil ach amháin luachanna den chineál gach
+feidhm ag súil.</p>
+<p>D'fhonn API dea-eagraithe a sholáthar do d'úsáideoirí atá simplí
+a úsáid agus ní nochtar ach an méid go díreach a bheidh de dhíth ar d’úsáideoirí, déanaimis casadh anois air
+Modúil meirge.</p>
 
                     </main>
 

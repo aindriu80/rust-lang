@@ -159,7 +159,365 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="the-match-control-flow-construct"><a class="header" href="#the-match-control-flow-construct">The match Control Flow Construct</a></h1>
+                        <!-- Sean-cheannteideal. Ná bain amach nó seans go mbrisfidh naisc. -->
+<p><a id="the-match-control-flow-operator"></a></p>
+<h2 id="an-match-tógáil-sreabhadh-rialaithe"><a class="header" href="#an-match-tógáil-sreabhadh-rialaithe">An "match" Tógáil Sreabhadh Rialaithe</a></h2>
+<p>Tá struchtúr sreafa rialaithe thar a bheith cumhachtach ag Rust ar a dtugtar <code>match</code> sin
+ligeann duit luach a chur i gcomparáid le sraith patrún agus ansin a fhorghníomhú
+cód bunaithe ar an patrún a oireann. Is féidir le patrúin a bheith comhdhéanta de luachanna litriúla,
+ainmneacha athraitheacha, saoróga, agus go leor rudaí eile; <a href="ch19-00-patterns.html">Caibidil
+19</a><!-- neamhaird --> clúdaíonn sé na cineálacha éagsúla patrún go léir
+agus cad a dhéanann siad. Tagann cumhacht <code>match</code> as sainiúlacht an
+patrúin agus ar an bhfíric go ndeimhníonn an tiomsaitheoir go bhfuil gach cás féideartha
+láimhsithe.</p>
+<p>Smaoinigh ar shloinneadh <code>match</code> a bheith cosúil le meaisín sórtála boinn: sleamhnaíonn boinn
+síos rian le poill de mhéideanna éagsúla ar a feadh, agus titeann gach bonn tríd
+an chéad pholl a bhuaileann sé a luíonn sé isteach. Ar an mbealach céanna, téann luachanna
+trí gach patrún i <code>match</code>, agus ag an gcéad phatrún "oireann,"
+titeann an luach isteach sa bhloc cód gaolmhar atá le húsáid le linn forghníomhaithe.</p>
+<p>Ag labhairt di ar bhoinn, déanaimis iad a úsáid mar shampla ag baint úsáide as <code>match</code>! Is féidir linn scríobh a
+feidhm a ghlacann bonn SAM anaithnid agus, ar bhealach cosúil leis an gcomhaireamh
+meaisín, socraíonn sé cén bonn atá ann agus cuireann sé a luach ar ais ina cent, mar a thaispeántar
+i Liosta 6-3.</p>
+<Listing number="6-3" caption="An enum and a `match` expression that has the variants of the enum as its patterns">
+<pre><pre class="playground"><code class="language-rust">enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+
+fn value_in_cents(coin: Coin) -&gt; u8 {
+    match coin {
+        Coin::Penny =&gt; 1,
+        Coin::Nickel =&gt; 5,
+        Coin::Dime =&gt; 10,
+        Coin::Quarter =&gt; 25,
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Déanaimis miondealú ar an <code>match</code> san fheidhm <code>value_in_cents</code>. Ar dtús déanaimid liosta
+an eochairfhocal <code>match</code> agus slonn ina dhiaidh sin, arb é an luach é sa chás seo
+<code>coin</code>. Dealraíonn sé seo an-chosúil le slonn coinníollach a úsáidtear le <code>if</code>, ach
+tá difríocht mhór ann: le <code>if</code>, is gá an riocht a mheas go dtí a
+Luach Boole, ach anseo is féidir é a bheith de chineál ar bith. An cineál <code>coin</code> sa sampla seo
+is é an <code>Coin</code> enum a shainmhíníomar ar an gcéad líne.</p>
+<p>Ina dhiaidh sin tá na hairm <code>match</code>. Tá dhá chuid ag lámh: patrún agus roinnt cód. Tá an
+tá patrún sa chéad lámh anseo arb é an luach <code>Coin::Penny</code> agus ansin an <code>=&gt;</code>
+oibreoir a scarann ​​an patrún agus an cód a rith. An cód sa chás seo
+níl ann ach an luach <code>1</code>. Tá gach lámh scartha ón gcéad cheann eile le camóg.</p>
+<p>Nuair a fheidhmíonn an slonn <code>match</code>, déanann sé an luach iarmhartach a chur i gcomparáid le
+patrún gach lámh, in ord. Má mheaitseálann patrún leis an luach, an cód
+a bhaineann leis an bpatrún sin a fhorghníomhú. Mura n-oireann an patrún sin leis an
+luach, leanann an forghníomhú ar aghaidh go dtí an chéad lámh eile, an oiread agus is i meaisín sórtála mona.
+Is féidir linn an oiread arm agus is gá a bheith againn: i Liosta 6-3, tá ceithre lámh ag ár <code>match</code>.</p>
+<p>Is slonn é an cód a bhaineann le gach lámh, agus an luach iarmhartach de
+is é an slonn sa lámh meaitseála an luach a fhaightear ar ais don
+abairt <code>match</code> ar fad.</p>
+<p>De ghnáth ní úsáidimid lúibíní curacha má tá cód lámh an chluiche gearr, mar atá sé
+i Liosta 6-3 áit nach dtugann gach lámh ach luach ar ais. Más mian leat a reáchtáil iolrach
+línte cód i lámh cluiche, ní mór duit úsáid a bhaint as lúibíní chatach, agus an camóg
+Tá leanúint na láimhe roghnach ansin. Mar shampla, priontaí an cód seo a leanas
+"Pingin an t-ádh!" gach uair a thugtar an modh le <code>Coin::Penny</code>, ach fós
+seo ar ais luach deiridh an bhloic, <code>1</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn value_in_cents(coin: Coin) -&gt; u8 {
+    match coin {
+        Coin::Penny =&gt; {
+            println!("Lucky penny!");
+            1
+        }
+        Coin::Nickel =&gt; 5,
+        Coin::Dime =&gt; 10,
+        Coin::Quarter =&gt; 25,
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+<h3 id="patrúin-a-cheanglaíonn-luachanna"><a class="header" href="#patrúin-a-cheanglaíonn-luachanna">Patrúin a Cheanglaíonn Luachanna</a></h3>
+<p>Gné úsáideach eile a bhaineann le hairm mheaitseála ná gur féidir leo ceangal a dhéanamh le codanna an
+luachanna a mheaitseálann an patrún. Seo mar is féidir linn luachanna a bhaint as enum
+athraithigh.</p>
+<p>Mar shampla, déanaimis ceann dár n-athraithigh enum a athrú chun sonraí a choinneáil istigh ann.
+Ó 1999 go dtí 2008, bhuail na Stáit Aontaithe cheathrú le éagsúla
+dearaí do gach ceann de na 50 stát ar thaobh amháin. Ní bhfuair aon bhoinn eile an stát
+dearaí, mar sin níl ach an luach breise seo ag ceathrúna. Is féidir linn an fhaisnéis seo a chur le
+ár <code>enum</code> tríd an leagan <code>Quarter</code> a athrú chun luach <code>UsState</code> a chur san áireamh
+stóráilte istigh ann, rud atá déanta againn i Liostú 6-4.</p>
+<Listing number="6-4" caption="A `Coin` enum in which the `Quarter` variant also holds a `UsState` value">
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)] // so we can inspect the state in a minute
+enum UsState {
+    Alabama,
+    Alaska,
+    // --snip--
+}
+
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Samhlóimis go bhfuil cara ag iarraidh na 50 ceathrú stáit ar fad a bhailiú. Cé go
+Déanaimid ár n-athrú scaoilte a shórtáil de réir cineáil boinn, glaofaimid amach freisin ainm an
+luaigh baint aige le gach ráithe ionas más ceann é nach bhfuil ag ár gcara,
+is féidir leo é a chur lena mbailiúchán.</p>
+<p>Sa slonn meaitseála don chód seo, cuirimid athróg darb ainm <code>state</code> leis an
+patrún a mheaitseálann luachanna an leagain <code>Coin::Quarter</code>. Nuair a
+Meaitseálann <code>Coin::Quarter</code>, beidh an athróg <code>state</code> ina gceangal leis an luach sin
+stát ceathrú. Ansin is féidir linn <code>state</code> a úsáid sa chód don lámh sin, mar sin:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum UsState {
+</span><span class="boring">    Alabama,
+</span><span class="boring">    Alaska,
+</span><span class="boring">    // --snip--
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">enum Coin {
+</span><span class="boring">    Penny,
+</span><span class="boring">    Nickel,
+</span><span class="boring">    Dime,
+</span><span class="boring">    Quarter(UsState),
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn value_in_cents(coin: Coin) -&gt; u8 {
+    match coin {
+        Coin::Penny =&gt; 1,
+        Coin::Nickel =&gt; 5,
+        Coin::Dime =&gt; 10,
+        Coin::Quarter(state) =&gt; {
+            println!("State quarter from {state:?}!");
+            25
+        }
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    value_in_cents(Coin::Quarter(UsState::Alaska));
+</span><span class="boring">}</span></code></pre></pre>
+<p>Dá gcuirfimid <code>value_in_cents(Coin::Quarter(UsState::Alaska))</code>, <code>coin</code>
+bheadh ​​<code>Coin::Quarter(UsState::Alaska)</code>. Nuair a dhéanaimid an luach sin i gcomparáid le gach ceann acu
+de na hairm chluiche, ní mheaitseálann aon cheann acu go dtí go sroicheann muid <code>Coin::Quarter(state)</code>. Ag
+an pointe sin, is é an luach <code>UsState::Alaska</code> a bheidh mar cheangal ar <code>state</code>. Is féidir linn
+ansin bain úsáid as an gceangal sin sa slonn <code>println!</code>, mar sin faigh an taobh istigh
+luaigh luach amach as an malairt <code>coin</code> enum le haghaidh <code>Quarter</code>.</p>
+<h3 id="ag-meaitseáil-le-optiont"><a class="header" href="#ag-meaitseáil-le-optiont">Ag meaitseáil le <code>Option&lt;T&gt;</code></a></h3>
+<p>San alt roimhe seo, bhíomar ag iarraidh an luach <code>T</code> istigh a bhaint as an <code>Some</code>
+cás agus <code>Option&lt;T&gt;</code> in úsáid; is féidir linn <code>Option&lt;T&gt;</code> a láimhseáil freisin ag baint úsáide as <code>match</code>, mar
+rinne muid leis an <code>Coin</code> enum! In ionad boinn a chur i gcomparáid, déanfaimid comparáid idir na
+leaganacha de <code>Option&lt;T&gt;</code>, ach fanann an bealach a oibríonn an slonn <code>match</code> mar an gcéanna
+céanna.</p>
+<p>Ligean le rá gur mhaith linn feidhm a scríobh a ghlacann <code>Option&lt;i32&gt;</code> agus, más rud é
+tá luach istigh, cuireann sé 1 leis an luach sin. Mura bhfuil luach istigh ann,
+ba chóir don fheidhm an luach <code>None</code> a thabhairt ar ais agus gan iarracht a dhéanamh aon cheann a dhéanamh
+oibríochtaí.</p>
+<p>Tá an fheidhm seo an-éasca a scríobh, a bhuíochas sin do <code>match</code>, agus beidh cuma mhaith
+Liostáil 6-5.</p>
+<Listing number="6-5" caption="A function that uses a `match` expression on an `Option<i32>`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+        match x {
+            None =&gt; None,
+            Some(i) =&gt; Some(i + 1),
+        }
+    }
+
+    let five = Some(5);
+    let six = plus_one(five);
+    let none = plus_one(None);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Déanaimis scrúdú níos mine ar an gcéad fhorghníomhú de <code>plus_one</code>. Nuair a ghlaoimid
+<code>plus_one(five)</code>, beidh an athróg <code>x</code> i gcorp <code>plus_one</code>
+luach <code>Some(5)</code>. Déanaimid é sin a chur i gcomparáid le gach lámh cluiche:</p>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span><span class="boring">    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+</span><span class="boring">        match x {
+</span>            None =&gt; None,
+<span class="boring">            Some(i) =&gt; Some(i + 1),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    let five = Some(5);
+</span><span class="boring">    let six = plus_one(five);
+</span><span class="boring">    let none = plus_one(None);
+</span><span class="boring">}</span></code></pre>
+<p>Ní mheaitseálann an luach <code>Some(5)</code> an patrún <code>None</code>, mar sin leanaimid ar aghaidh chuig an
+lámh eile:</p>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span><span class="boring">    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+</span><span class="boring">        match x {
+</span><span class="boring">            None =&gt; None,
+</span>            Some(i) =&gt; Some(i + 1),
+<span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    let five = Some(5);
+</span><span class="boring">    let six = plus_one(five);
+</span><span class="boring">    let none = plus_one(None);
+</span><span class="boring">}</span></code></pre>
+<p>An meaitseálann <code>Some(5)``Some(i)</code>? Déanann sé! Tá an leagan céanna againn. Tá an <code>i</code>
+ceanglaíonn sé leis an luach atá i <code>Some</code>, mar sin glacann <code>i</code> an luach <code>5</code>. An cód i
+déantar lámh an chluiche ansin, mar sin cuirimid 1 le luach <code>i</code> agus cruthaímid a
+luach <code>Some</code> nua lenár <code>6</code> iomlán istigh.</p>
+<p>Anois déanaimis machnamh ar an dara glao ar <code>plus_one</code> i Liostú 6-5, áit a bhfuil <code>x</code>
+<code>None</code>. Cuirimid isteach sa <code>match</code> agus cuirimid i gcomparáid leis an gcéad lámh:</p>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span><span class="boring">    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+</span><span class="boring">        match x {
+</span>            None =&gt; None,
+<span class="boring">            Some(i) =&gt; Some(i + 1),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    let five = Some(5);
+</span><span class="boring">    let six = plus_one(five);
+</span><span class="boring">    let none = plus_one(None);
+</span><span class="boring">}</span></code></pre>
+<p>Meaitseálann sé! Níl aon luach le cur leis, mar sin stopann an clár agus seolann sé an
+luach <code>none</code> ar thaobh na láimhe deise de <code>=&gt;</code>. Mar gheall ar mheaitseáil an chéad lámh, ní eile
+déantar comparáid idir airm.</p>
+<p>Tá sé úsáideach 'meaitseáil' agus enums a chomhcheangal i go leor cásanna. Feicfidh tú é seo
+patrún go leor sa chód meirge: <code>match</code> i gcoinne enum, ceangail athróg leis an
+sonraí taobh istigh, agus ansin a fhorghníomhú cód bunaithe ar sé. Tá sé beagán tricky ar dtús, ach
+a luaithe a rachaidh tú i dtaithí air, ba mhaith leat go mbeadh sé agat i ngach teanga. Tá sé
+go seasta is fearr leat úsáideoir.</p>
+<h3 id="tá-meaitseálacha-uileghabhálach"><a class="header" href="#tá-meaitseálacha-uileghabhálach">Tá Meaitseálacha Uileghabhálach</a></h3>
+<p>Tá gné amháin eile den ‘mheaitseáil’ ar gá dúinn a phlé: ní mór patrúin na n-arm
+gach féidearthacht a chlúdach. Smaoinigh ar an leagan seo dár bhfeidhm <code>plus_one</code>,
+a bhfuil fabht aige agus nach dtiomsóidh:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    fn plus_one(x: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+        match x {
+            Some(i) =&gt; Some(i + 1),
+        }
+    }
+<span class="boring">
+</span><span class="boring">    let five = Some(5);
+</span><span class="boring">    let six = plus_one(five);
+</span><span class="boring">    let none = plus_one(None);
+</span><span class="boring">}</span></code></pre>
+<p>Níor láimhseáil muid an cás <code>None</code>, mar sin cruthóidh an cód seo fabht. Ar ámharaí an tsaoil, tá
+fabht Tá a fhios ag Rust conas a ghabháil. Má dhéanaimid iarracht an cód seo a thiomsú, gheobhaidh muid é
+earráid:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling enums v0.1.0 (file:///projects/enums)
+error[E0004]: non-exhaustive patterns: `None` not covered
+   --&gt; src/main.rs:3:15
+    |
+3   |         match x {
+    |               ^ pattern `None` not covered
+    |
+note: `Option&lt;i32&gt;` defined here
+   --&gt; file:///home/.rustup/toolchains/1.82/lib/rustlib/src/rust/library/core/src/option.rs:571:1
+    |
+571 | pub enum Option&lt;T&gt; {
+    | ^^^^^^^^^^^^^^^^^^
+...
+575 |     None,
+    |     ---- not covered
+    = note: the matched value is of type `Option&lt;i32&gt;`
+help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
+    |
+4   ~             Some(i) =&gt; Some(i + 1),
+5   ~             None =&gt; todo!(),
+    |
+
+For more information about this error, try `rustc --explain E0004`.
+error: could not compile `enums` (bin "enums") due to 1 previous error
+</code></pre>
+<p>Tá a fhios ag Rust nár chlúdaigh muid gach cás féideartha, agus tá a fhios aige fiú cé acu
+patrún dearmadta againn! Tá meaitseanna meirge <em>uileghabhálach</em>: ní mór dúinn gach ceann deireanach a sceite
+féidearthacht ionas go mbeidh an cód bailí. Go háirithe i gcás
+<code>Option&lt;T&gt;</code>, nuair a chuireann Rust cosc ​​orainn dearmad a dhéanamh ar an
+‘Gan cás’, cosnaíonn sé sinn ó bheith ag glacadh leis go bhfuil luach againn nuair a d’fhéadfaimis
+bheith ar neamhní, rud a fhágann go bhfuil an botún billiún dollar a pléadh níos luaithe dodhéanta.</p>
+<h3 id="patrúin-catch-all-agus-an-sealbhóir-Áite-_"><a class="header" href="#patrúin-catch-all-agus-an-sealbhóir-Áite-_">Patrúin Catch-All agus an Sealbhóir Áite <code>_</code></a></h3>
+<p>Ag baint úsáide as enums, is féidir linn a ghlacadh freisin gníomhartha speisialta le haghaidh cúpla luachanna ar leith, ach
+do gach luach eile déan beart réamhshocraithe amháin. Samhlaigh go bhfuil cluiche á chur i bhfeidhm againn
+más rud é, má rollaíonn tú 3 ar rolla dísle, ní bhogann d'imreoir, ach ina ionad sin
+Faigheann hata mhaisiúil nua. Má rollaíonn tú 7, cailleann d'imreoir hata mhaisiúil. Do chách
+luachanna eile, bogann d'imreoir an líon sin spásanna ar an gclár cluiche. Seo chugaibh
+<code>match</code> a chuireann an loighic sin i bhfeidhm, le toradh an rolla dísle
+hardcoded seachas luach randamach, agus gach loighic eile ionadaíocht ag
+feidhmeanna gan chomhlachtaí toisc go bhfuil cur chun feidhme iarbhír na bhfeidhmeanna sin lasmuigh den scóip le haghaidh
+an sampla seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let dice_roll = 9;
+    match dice_roll {
+        3 =&gt; add_fancy_hat(),
+        7 =&gt; remove_fancy_hat(),
+        other =&gt; move_player(other),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+    fn move_player(num_spaces: u8) {}
+<span class="boring">}</span></code></pre></pre>
+<p>Don chéad dá lámh, is iad na patrúin na luachanna litriúla <code>3</code> agus <code>7</code>. Le haghaidh
+an lámh deiridh a chlúdaíonn gach luach féideartha eile, is é an patrún an
+athróg atá roghnaithe againn chun <code>other</code> a ainmniú. An cód a ritheann don lámh <code>other</code>
+Úsáideann sé an athróg trína chur ar aghaidh chuig an bhfeidhm <code>move_player</code>.</p>
+<p>Tiomsaítear an cód seo, cé nach bhfuil na luachanna féideartha go léir liostaithe againn a
+Is féidir le <code>u8</code> a bheith agat, mar beidh an patrún deireanach ag teacht le gach luach nach bhfuil go sonrach
+liostaithe. Comhlíonann an patrún uileghabhálach seo an riachtanas nach mór <code>match</code> a bheith ann
+uileghabhálach. Tabhair faoi deara go gcaithfimid an lámh iomlán a chur suas go deireanach mar go bhfuil an
+déantar patrúin a mheas in ord. Má chuir muid an lámh ghabháil-uile níos luaithe, an ceann eile
+ní rithfeadh airm choíche, mar sin tabharfaidh Rust foláireamh dúinn má chuirimid airm leis tar éis gach rud!</p>
+<p>Tá patrún ag meirge freisin ar féidir linn a úsáid nuair a theastaíonn uainn go mbeidh gach rud againn ach nach dteastaíonn uainn
+<em>use</em> an luach sa phatrún uileghabhálach: Is patrún speisialta é <code>_</code> a mheaitseálann
+luach ar bith agus ní cheanglaíonn sé leis an luach sin. Insíonn sé seo do Rust nach bhfuilimid chun
+bain úsáid as an luach, mar sin ní thabharfaidh Rust rabhadh dúinn faoi athróg nár úsáideadh.</p>
+<p>Athróimid rialacha an chluiche: anois, má rollaíonn tú rud ar bith seachas 3 nó
+a 7, ní mór duit rolladh arís. Ní gá dúinn an luach uileghabhálach a úsáid a thuilleadh, mar sin ní mór dúinn
+Is féidir ár gcód a athrú chun <code>_</code> a úsáid in ionad na hathróige darb ainm <code>other</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let dice_roll = 9;
+    match dice_roll {
+        3 =&gt; add_fancy_hat(),
+        7 =&gt; remove_fancy_hat(),
+        _ =&gt; reroll(),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+    fn reroll() {}
+<span class="boring">}</span></code></pre></pre>
+<p>Comhlíonann an sampla seo an riachtanas uileghabhálachta freisin toisc go bhfuilimid go sainráite
+neamhaird a dhéanamh ar gach luach eile sa lámh dheireanach; níl dearmad déanta againn ar rud ar bith.</p>
+<p>Ar deireadh, athróimid rialacha an chluiche arís eile ionas nach mbeidh aon rud eile ann
+a tharlaíonn ar do sheal má rollaíonn tú rud ar bith seachas 3 nó 7. Is féidir linn a chur in iúl
+sin trí úsáid a bhaint as an luach aonaid (an cineál tuple folamh a luaigh muid in <a href="ch03-02-data-types.html#the-tuple-type">“The Tuple
+Cineál”</a> <!-- neamhaird a dhéanamh --> alt) mar an cód a théann leis an lámh <code>_</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let dice_roll = 9;
+    match dice_roll {
+        3 =&gt; add_fancy_hat(),
+        7 =&gt; remove_fancy_hat(),
+        _ =&gt; (),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+<span class="boring">}</span></code></pre></pre>
+<p>Anseo, táimid ag insint do Rust go sainráite nach bhfuilimid chun aon luach eile a úsáid
+nach bhfuil ag teacht le patrún i lámh níos luaithe, agus nílimid ag iarraidh aon cheann a rith
+cód sa chás seo.</p>
+<p>Tá níos mó faoi phatrúin agus faoi mheaitseáil a chlúdóimid i <a href="ch19-00-patterns.html">Caibidil
+19</a><!-- neamhaird a dhéanamh -->. Faoi láthair, táimid ag dul ar aghaidh go dtí an
+comhréir <code>if let</code>, is féidir a bheith úsáideach i gcásanna ina bhfuil an slonn <code>match</code>
+rud beag focal.</p>
 
                     </main>
 
