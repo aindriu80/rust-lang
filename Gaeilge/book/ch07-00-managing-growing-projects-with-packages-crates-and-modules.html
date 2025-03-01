@@ -159,7 +159,47 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="managing-growing-projects-with-packages-crates-and-modules"><a class="header" href="#managing-growing-projects-with-packages-crates-and-modules">Managing Growing Projects with Packages, Crates, and Modules</a></h1>
+                        <h1 id="tionscadail-atá-ag-fás-a-bhainistiú-le-pacáistí-cliathbhoscaí-agus-modúil"><a class="header" href="#tionscadail-atá-ag-fás-a-bhainistiú-le-pacáistí-cliathbhoscaí-agus-modúil">Tionscadail atá ag Fás a Bhainistiú le Pacáistí, cliathbhoscaí agus Modúil</a></h1>
+<p>De réir mar a scríobhann tú cláir mhóra, tiocfaidh eagrú do chód níos mó agus níos mó
+tábhachtach. Trí fheidhmiúlacht ghaolmhar a ghrúpáil agus cód a scaradh le chéile
+gnéithe, soiléireoidh tú cá háit a bhfaighidh tú cód a chuireann ceann ar leith i bhfeidhm
+gné agus cá háit le dul chun an chaoi a n-oibríonn gné a athrú.</p>
+<p>Tá na cláir atá scríofa againn go dtí seo in aon mhodúl amháin i gcomhad amháin. Mar a
+Fásann an tionscadal, ba cheart duit cód a eagrú trína roinnt ina il-mhodúil
+agus ansin comhaid iolracha. Is féidir le cliathbhoscaí dénártha iolracha agus
+go roghnach cliathbhosca leabharlainne amháin. De réir mar a fhásann pacáiste, is féidir leat páirteanna a bhaint astu
+cliathbhoscaí ar leith a thagann chun bheith ina spleáchais sheachtracha. Clúdaíonn an chaibidil seo gach
+na teicníochtaí seo. I gcás tionscadal an-mhór a chuimsíonn sraith de idirghaolmhar
+pacáistí a fhorbraíonn le chéile, soláthraíonn lasta <em>spásanna oibre</em>, a chlúdóimid
+sa <a href="ch14-03-cargo-workspaces.html">“Lasta Workspaces”</a><!-- neamhaird --> i gCaibidil 14.</p>
+<p>Déanfaimid plé freisin ar shonraí cur chun feidhme a chuimsiú, a ligeann duit athúsáid
+cód ag leibhéal níos airde: nuair a bheidh oibríocht curtha i bhfeidhm agat, is féidir le cód eile
+glaoch ar do chód trína chomhéadan poiblí gan a bheith ar an eolas conas an
+oibreacha forfheidhmithe. Sainmhíníonn an bealach a scríobhann tú cód cé na codanna atá poiblí
+cód eile atá le húsáid agus cé na codanna atá ina sonraí forfheidhmithe príobháideacha atá agat
+an ceart chun athrú a choimeád. Is bealach eile é seo chun teorainn a chur leis an méid sonraí
+caithfidh tú a choinneáil i do cheann.</p>
+<p>Tá raon feidhme ag coincheap gaolmhar: tá a
+sraith ainmneacha a shainmhínítear mar “i raon feidhme.” Nuair a bhíonn léamh, scríobh, agus
+cód a thiomsú, ríomhchláraitheoirí agus tiomsaitheoirí gá go mbeadh a fhios cé acu ar leith
+tagraíonn ainm ag spota ar leith d'athróg, d'fheidhm, do struchtúr, d'enum, do mhodúl,
+tairiseach, nó mír eile agus cad a chiallaíonn an mhír sin. Is féidir leat scopes a chruthú agus
+athrú ar na hainmneacha atá laistigh nó lasmuigh den scóip. Ní féidir dhá mhír a bheith agat leis an
+ainm céanna sa raon feidhme céanna; tá uirlisí ar fáil chun coinbhleachtaí ainmneacha a réiteach.</p>
+<p>Tá roinnt gnéithe ag Rust a ligeann duit do chóid a bhainistiú
+eagraíocht, lena n-áirítear na sonraí atá nochtaithe, cé na sonraí atá príobháideach,
+agus cad iad na hainmneacha atá i ngach raon feidhme i do chláir. Na gnéithe seo, uaireanta
+le chéile dá ngairtear an <em>module system</em>, áirítear:</p>
+<ul>
+<li><strong>Pacáistí:</strong> Gné lasta a ligeann duit cliathbhoscaí a thógáil, a thástáil agus a roinnt</li>
+<li><strong>Cliathbhosca:</strong> Crann modúl a tháirgeann leabharlann nó inrite</li>
+<li><strong>Modúil</strong> agus <strong>úsáid:</strong> Ligeann tú smacht ar an eagraíocht, ar an raon feidhme agus ar an
+príobháideacht cosáin</li>
+<li><strong>Cosáin:</strong> Bealach chun mír a ainmniú, mar struchtúr, feidhm nó modúl</li>
+</ul>
+<p>Sa chaibidil seo, clúdóidh muid na gnéithe seo go léir, pléifimid conas a idirghníomhaíonn siad, agus
+mínigh conas iad a úsáid chun scóip a bhainistiú. Faoi dheireadh, ba chóir go mbeadh soladach agat
+tuiscint ar chóras na modúl agus a bheith in ann oibriú le scopes cosúil le pro!</p>
 
                     </main>
 

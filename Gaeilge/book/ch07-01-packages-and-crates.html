@@ -159,7 +159,62 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="packages-and-crates"><a class="header" href="#packages-and-crates">Packages and Crates</a></h1>
+                        <h2 id="pacáistí-agus-cliathbhoscaí"><a class="header" href="#pacáistí-agus-cliathbhoscaí">Pacáistí agus cliathbhoscaí</a></h2>
+<p>Is iad na chéad chodanna den chóras modúil a chlúdóidh muid ná pacáistí agus cliathbhoscaí.</p>
+<p>Is é <em>crate</em> an méid cód is lú a mheasann an tiomsaitheoir Rust ag a
+am. Fiú má ritheann tú <code>rustc</code> seachas <code>rust</code> agus má éiríonn leat cód foinse amháin
+comhad (mar a rinne muid an bealach ar fad ar ais sa "Scríobh agus Rith Clár Meirge"
+alt de Chaibidil 1), measann an tiomsaitheoir gur cliathbhosca an comhad sin. cliathbhoscaí
+Is féidir modúil a bheith iontu, agus féadfar na modúil a shainiú i gcomhaid eile a fhaigheann
+curtha le chéile leis an gcliathbhosca, mar a fheicfimid sna hailt atá le teacht.</p>
+<p>Is féidir le cliathbhosca teacht i gceann de dhá fhoirm: cliathbhosca dénártha nó cliathbhosca leabharlainne.
+Is cláir iad <em>dénártha cliathbhoscaí</em> is féidir leat a thiomsú d'inrite is féidir leat a rith,
+cosúil le clár ordú-líne nó freastalaí. Caithfidh feidhm a bheith ag gach ceann acu ar a dtugtar
+<code>main</code> a shainmhíníonn cad a tharlaíonn nuair a ritheann an inrite. Na cliathbhoscaí go léir atá againn
+Cruthaíodh go dtí seo cliathbhoscaí dénártha.</p>
+<p>Níl <code>main</code> ag cliathbhoscaí na leabharlainne_, agus ní thiomsaíonn siad chuig an
+inrite. Ina áit sin, sainíonn siad feidhmiúlacht a bheartaítear a roinnt leo
+tionscadail iolracha. Mar shampla, an gcliathbhosca <code>rand</code> a d'úsáideamar i <a href="ch02-00-guessing-game-tutorial.html#generating-a-random-number">Caibidil
+2</a> Soláthraíonn <!-- neamhaird --> feidhmiúlacht a ghineann uimhreacha randamacha.
+An chuid is mó den am nuair a deir Rustaceans “cliathbhosca”, ciallaíonn siad cliathbhosca leabharlainne, agus siad
+“Cliathbhosca” a úsáid go hidirmhalartaithe le coincheap ginearálta ríomhchláraithe na “leabharlainne”.</p>
+<p>Is comhad foinse é an <em>crate root</em> a thosaíonn agus a dhéanann an tiomsaitheoir Rust
+suas bunmhodúl do chliathbhosca (míneoimid modúil go domhain sa
+<a href="ch07-02-defining-modules-to-control-scope-and-privacy.html">“Modúil a Shainmhíniú chun Scóip agus Príobháideacht a Rialú”</a><!-- neamhaird a dhéanamh ar -->
+alt).</p>
+<p>Is éard atá i <em>pacáiste</em> ná beart cliathbhoscaí amháin nó níos mó a sholáthraíonn sraith de
+feidhmiúlacht. Tá comhad <em>Cargo.toml</em> i bpacáiste a chuireann síos ar conas
+na cliathbhoscaí sin a thógáil. Is pacáiste é lasta i ndáiríre ina bhfuil an cliathbhosca dénártha
+don uirlis ordú-líne a bhí in úsáid agat chun do chód a thógáil. An Lasta
+pacáiste freisin tá cliathbhosca leabharlainne ar a mbraitheann an gcliathbhosca dénártha. Eile
+is féidir le tionscadail a bheith ag brath ar an gcliathbhosca leabharlainne lasta chun an loighic chéanna a úsáid leis an Lasta
+úsáidí uirlis ordú-líne. Is féidir an oiread cliathbhoscaí dénártha is tú féin a bheith i bpacáiste
+cosúil le, ach ar a mhéad ach cliathbhosca leabharlainne amháin. Caithfidh pacáiste amháin ar a laghad a bheith ann
+cliathbhosca, cibé an leabharlann nó cliathbhosca dénártha é.</p>
+<p>Siúlfaimid cad a tharlaíonn nuair a chruthaímid pacáiste. Ar dtús cuirimid isteach an
+ordú <code>cargo new my-project</code>:</p>
+<pre><code class="language-console">$ cargo new my-project
+     Created binary (application) `my-project` package
+$ ls my-project
+Cargo.toml
+src
+$ ls my-project/src
+main.rs
+</code></pre>
+<p>Tar éis dúinn <code>cargo new my-project</code> a rith, úsáidimid <code>ls</code> chun a fheiceáil cad a chruthaíonn Cargo. I
+eolaire an tionscadail, tá comhad <em>Cargo.toml</em> ann, rud a thugann pacáiste dúinn.
+Tá eolaire <em>src</em> ann freisin ina bhfuil <em>main.rs</em>. Oscail <em>Cargo.toml</em> isteach
+d’eagarthóir téacs, agus tabhair faoi deara nach bhfuil aon tagairt do <em>src/main.rs</em>. Leanann lasta a
+coinbhinsiún gurb é <em>src/main.rs</em> an fhréamh cliathbhosca de chliathbhosca dhénártha leis an gcéanna
+ainm mar an bpacáiste. Mar an gcéanna, tá a fhios ag lasta go bhfuil an t-eolaire pacáiste
+ina bhfuil <em>src/lib.rs</em>, tá cliathbhosca leabharlainne leis an ainm céanna sa phacáiste
+mar an bpacáiste, agus is é <em>src/lib.rs</em> a fhréamh gcliathbhosca. Gabhann lasta fréamh an chliathbhosca
+comhaid chuig <code>rustc</code> chun an leabharlann nó an dénártha a thógáil.</p>
+<p>Anseo, tá pacáiste againn nach bhfuil ach <em>src/main.rs</em>, rud a chiallaíonn sé amháin
+tá cliathbhosca dénártha darb ainm <code>my-project</code>. Má tá <em>src/main.rs</em> i bpacáiste
+agus <em>src/lib.rs</em>, tá dhá chliathbhosca aige: dénártha agus leabharlann, an dá cheann acu mar an gcéanna
+ainm mar an bpacáiste. Is féidir le cliathbhoscaí dénártha iolracha a bheith ag pacáiste trí chomhaid a chur
+san eolaire <em>src/bin</em>: beidh gach comhad ina chliathbhosca dhénártha ar leith.</p>
 
                     </main>
 

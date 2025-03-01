@@ -6469,12 +6469,1076 @@ feidhm ag súil.</p>
 <p>D'fhonn API dea-eagraithe a sholáthar do d'úsáideoirí atá simplí
 a úsáid agus ní nochtar ach an méid go díreach a bheidh de dhíth ar d’úsáideoirí, déanaimis casadh anois air
 Modúil meirge.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="managing-growing-projects-with-packages-crates-and-modules"><a class="header" href="#managing-growing-projects-with-packages-crates-and-modules">Managing Growing Projects with Packages, Crates, and Modules</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="packages-and-crates"><a class="header" href="#packages-and-crates">Packages and Crates</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="defining-modules-to-control-scope-and-privacy"><a class="header" href="#defining-modules-to-control-scope-and-privacy">Defining Modules to Control Scope and Privacy</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="paths-for-referring-to-an-item-in-the-module-tree"><a class="header" href="#paths-for-referring-to-an-item-in-the-module-tree">Paths for Referring to an Item in the Module Tree</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="bringing-paths-into-scope-with-the-use-keyword"><a class="header" href="#bringing-paths-into-scope-with-the-use-keyword">Bringing Paths Into Scope with the use Keyword</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="separating-modules-into-different-files"><a class="header" href="#separating-modules-into-different-files">Separating Modules into Different Files</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="tionscadail-atá-ag-fás-a-bhainistiú-le-pacáistí-cliathbhoscaí-agus-modúil"><a class="header" href="#tionscadail-atá-ag-fás-a-bhainistiú-le-pacáistí-cliathbhoscaí-agus-modúil">Tionscadail atá ag Fás a Bhainistiú le Pacáistí, cliathbhoscaí agus Modúil</a></h1>
+<p>De réir mar a scríobhann tú cláir mhóra, tiocfaidh eagrú do chód níos mó agus níos mó
+tábhachtach. Trí fheidhmiúlacht ghaolmhar a ghrúpáil agus cód a scaradh le chéile
+gnéithe, soiléireoidh tú cá háit a bhfaighidh tú cód a chuireann ceann ar leith i bhfeidhm
+gné agus cá háit le dul chun an chaoi a n-oibríonn gné a athrú.</p>
+<p>Tá na cláir atá scríofa againn go dtí seo in aon mhodúl amháin i gcomhad amháin. Mar a
+Fásann an tionscadal, ba cheart duit cód a eagrú trína roinnt ina il-mhodúil
+agus ansin comhaid iolracha. Is féidir le cliathbhoscaí dénártha iolracha agus
+go roghnach cliathbhosca leabharlainne amháin. De réir mar a fhásann pacáiste, is féidir leat páirteanna a bhaint astu
+cliathbhoscaí ar leith a thagann chun bheith ina spleáchais sheachtracha. Clúdaíonn an chaibidil seo gach
+na teicníochtaí seo. I gcás tionscadal an-mhór a chuimsíonn sraith de idirghaolmhar
+pacáistí a fhorbraíonn le chéile, soláthraíonn lasta <em>spásanna oibre</em>, a chlúdóimid
+sa <a href="ch14-03-cargo-workspaces.html">“Lasta Workspaces”</a><!-- neamhaird --> i gCaibidil 14.</p>
+<p>Déanfaimid plé freisin ar shonraí cur chun feidhme a chuimsiú, a ligeann duit athúsáid
+cód ag leibhéal níos airde: nuair a bheidh oibríocht curtha i bhfeidhm agat, is féidir le cód eile
+glaoch ar do chód trína chomhéadan poiblí gan a bheith ar an eolas conas an
+oibreacha forfheidhmithe. Sainmhíníonn an bealach a scríobhann tú cód cé na codanna atá poiblí
+cód eile atá le húsáid agus cé na codanna atá ina sonraí forfheidhmithe príobháideacha atá agat
+an ceart chun athrú a choimeád. Is bealach eile é seo chun teorainn a chur leis an méid sonraí
+caithfidh tú a choinneáil i do cheann.</p>
+<p>Tá raon feidhme ag coincheap gaolmhar: tá a
+sraith ainmneacha a shainmhínítear mar “i raon feidhme.” Nuair a bhíonn léamh, scríobh, agus
+cód a thiomsú, ríomhchláraitheoirí agus tiomsaitheoirí gá go mbeadh a fhios cé acu ar leith
+tagraíonn ainm ag spota ar leith d'athróg, d'fheidhm, do struchtúr, d'enum, do mhodúl,
+tairiseach, nó mír eile agus cad a chiallaíonn an mhír sin. Is féidir leat scopes a chruthú agus
+athrú ar na hainmneacha atá laistigh nó lasmuigh den scóip. Ní féidir dhá mhír a bheith agat leis an
+ainm céanna sa raon feidhme céanna; tá uirlisí ar fáil chun coinbhleachtaí ainmneacha a réiteach.</p>
+<p>Tá roinnt gnéithe ag Rust a ligeann duit do chóid a bhainistiú
+eagraíocht, lena n-áirítear na sonraí atá nochtaithe, cé na sonraí atá príobháideach,
+agus cad iad na hainmneacha atá i ngach raon feidhme i do chláir. Na gnéithe seo, uaireanta
+le chéile dá ngairtear an <em>module system</em>, áirítear:</p>
+<ul>
+<li><strong>Pacáistí:</strong> Gné lasta a ligeann duit cliathbhoscaí a thógáil, a thástáil agus a roinnt</li>
+<li><strong>Cliathbhosca:</strong> Crann modúl a tháirgeann leabharlann nó inrite</li>
+<li><strong>Modúil</strong> agus <strong>úsáid:</strong> Ligeann tú smacht ar an eagraíocht, ar an raon feidhme agus ar an
+príobháideacht cosáin</li>
+<li><strong>Cosáin:</strong> Bealach chun mír a ainmniú, mar struchtúr, feidhm nó modúl</li>
+</ul>
+<p>Sa chaibidil seo, clúdóidh muid na gnéithe seo go léir, pléifimid conas a idirghníomhaíonn siad, agus
+mínigh conas iad a úsáid chun scóip a bhainistiú. Faoi dheireadh, ba chóir go mbeadh soladach agat
+tuiscint ar chóras na modúl agus a bheith in ann oibriú le scopes cosúil le pro!</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="pacáistí-agus-cliathbhoscaí"><a class="header" href="#pacáistí-agus-cliathbhoscaí">Pacáistí agus cliathbhoscaí</a></h2>
+<p>Is iad na chéad chodanna den chóras modúil a chlúdóidh muid ná pacáistí agus cliathbhoscaí.</p>
+<p>Is é <em>crate</em> an méid cód is lú a mheasann an tiomsaitheoir Rust ag a
+am. Fiú má ritheann tú <code>rustc</code> seachas <code>rust</code> agus má éiríonn leat cód foinse amháin
+comhad (mar a rinne muid an bealach ar fad ar ais sa "Scríobh agus Rith Clár Meirge"
+alt de Chaibidil 1), measann an tiomsaitheoir gur cliathbhosca an comhad sin. cliathbhoscaí
+Is féidir modúil a bheith iontu, agus féadfar na modúil a shainiú i gcomhaid eile a fhaigheann
+curtha le chéile leis an gcliathbhosca, mar a fheicfimid sna hailt atá le teacht.</p>
+<p>Is féidir le cliathbhosca teacht i gceann de dhá fhoirm: cliathbhosca dénártha nó cliathbhosca leabharlainne.
+Is cláir iad <em>dénártha cliathbhoscaí</em> is féidir leat a thiomsú d'inrite is féidir leat a rith,
+cosúil le clár ordú-líne nó freastalaí. Caithfidh feidhm a bheith ag gach ceann acu ar a dtugtar
+<code>main</code> a shainmhíníonn cad a tharlaíonn nuair a ritheann an inrite. Na cliathbhoscaí go léir atá againn
+Cruthaíodh go dtí seo cliathbhoscaí dénártha.</p>
+<p>Níl <code>main</code> ag cliathbhoscaí na leabharlainne_, agus ní thiomsaíonn siad chuig an
+inrite. Ina áit sin, sainíonn siad feidhmiúlacht a bheartaítear a roinnt leo
+tionscadail iolracha. Mar shampla, an gcliathbhosca <code>rand</code> a d'úsáideamar i <a href="ch02-00-guessing-game-tutorial.html#generating-a-random-number">Caibidil
+2</a> Soláthraíonn <!-- neamhaird --> feidhmiúlacht a ghineann uimhreacha randamacha.
+An chuid is mó den am nuair a deir Rustaceans “cliathbhosca”, ciallaíonn siad cliathbhosca leabharlainne, agus siad
+“Cliathbhosca” a úsáid go hidirmhalartaithe le coincheap ginearálta ríomhchláraithe na “leabharlainne”.</p>
+<p>Is comhad foinse é an <em>crate root</em> a thosaíonn agus a dhéanann an tiomsaitheoir Rust
+suas bunmhodúl do chliathbhosca (míneoimid modúil go domhain sa
+<a href="ch07-02-defining-modules-to-control-scope-and-privacy.html">“Modúil a Shainmhíniú chun Scóip agus Príobháideacht a Rialú”</a><!-- neamhaird a dhéanamh ar -->
+alt).</p>
+<p>Is éard atá i <em>pacáiste</em> ná beart cliathbhoscaí amháin nó níos mó a sholáthraíonn sraith de
+feidhmiúlacht. Tá comhad <em>Cargo.toml</em> i bpacáiste a chuireann síos ar conas
+na cliathbhoscaí sin a thógáil. Is pacáiste é lasta i ndáiríre ina bhfuil an cliathbhosca dénártha
+don uirlis ordú-líne a bhí in úsáid agat chun do chód a thógáil. An Lasta
+pacáiste freisin tá cliathbhosca leabharlainne ar a mbraitheann an gcliathbhosca dénártha. Eile
+is féidir le tionscadail a bheith ag brath ar an gcliathbhosca leabharlainne lasta chun an loighic chéanna a úsáid leis an Lasta
+úsáidí uirlis ordú-líne. Is féidir an oiread cliathbhoscaí dénártha is tú féin a bheith i bpacáiste
+cosúil le, ach ar a mhéad ach cliathbhosca leabharlainne amháin. Caithfidh pacáiste amháin ar a laghad a bheith ann
+cliathbhosca, cibé an leabharlann nó cliathbhosca dénártha é.</p>
+<p>Siúlfaimid cad a tharlaíonn nuair a chruthaímid pacáiste. Ar dtús cuirimid isteach an
+ordú <code>cargo new my-project</code>:</p>
+<pre><code class="language-console">$ cargo new my-project
+     Created binary (application) `my-project` package
+$ ls my-project
+Cargo.toml
+src
+$ ls my-project/src
+main.rs
+</code></pre>
+<p>Tar éis dúinn <code>cargo new my-project</code> a rith, úsáidimid <code>ls</code> chun a fheiceáil cad a chruthaíonn Cargo. I
+eolaire an tionscadail, tá comhad <em>Cargo.toml</em> ann, rud a thugann pacáiste dúinn.
+Tá eolaire <em>src</em> ann freisin ina bhfuil <em>main.rs</em>. Oscail <em>Cargo.toml</em> isteach
+d’eagarthóir téacs, agus tabhair faoi deara nach bhfuil aon tagairt do <em>src/main.rs</em>. Leanann lasta a
+coinbhinsiún gurb é <em>src/main.rs</em> an fhréamh cliathbhosca de chliathbhosca dhénártha leis an gcéanna
+ainm mar an bpacáiste. Mar an gcéanna, tá a fhios ag lasta go bhfuil an t-eolaire pacáiste
+ina bhfuil <em>src/lib.rs</em>, tá cliathbhosca leabharlainne leis an ainm céanna sa phacáiste
+mar an bpacáiste, agus is é <em>src/lib.rs</em> a fhréamh gcliathbhosca. Gabhann lasta fréamh an chliathbhosca
+comhaid chuig <code>rustc</code> chun an leabharlann nó an dénártha a thógáil.</p>
+<p>Anseo, tá pacáiste againn nach bhfuil ach <em>src/main.rs</em>, rud a chiallaíonn sé amháin
+tá cliathbhosca dénártha darb ainm <code>my-project</code>. Má tá <em>src/main.rs</em> i bpacáiste
+agus <em>src/lib.rs</em>, tá dhá chliathbhosca aige: dénártha agus leabharlann, an dá cheann acu mar an gcéanna
+ainm mar an bpacáiste. Is féidir le cliathbhoscaí dénártha iolracha a bheith ag pacáiste trí chomhaid a chur
+san eolaire <em>src/bin</em>: beidh gach comhad ina chliathbhosca dhénártha ar leith.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="modúil-a-shainmhíniú-chun-scóip-agus-príobháideacht-a-rialú"><a class="header" href="#modúil-a-shainmhíniú-chun-scóip-agus-príobháideacht-a-rialú">Modúil a Shainmhíniú chun Scóip agus Príobháideacht a Rialú</a></h2>
+<p>Sa chuid seo, labhróimid faoi mhodúil agus faoi chodanna eile den chóras modúl,
+is é sin <em>paths</em>, a ligeann duit míreanna a ainmniú; an eochairfhocal <code>use</code> a thugann a
+cosán isteach sa raon feidhme; agus an eochairfhocal <code>pub</code> chun míreanna a dhéanamh poiblí. Déanfaimid plé freisin
+an eochairfhocal <code>as</code>, pacáistí seachtracha, agus an t-oibreoir glob.</p>
+<h3 id="modúil-bileog-cheat"><a class="header" href="#modúil-bileog-cheat">Modúil Bileog Cheat</a></h3>
+<p>Sula n-aimsímid sonraí na modúl agus na gcosán, cuirimid scéal tapa ar fáil anseo
+tagairt don chaoi a n-oibríonn modúil, cosáin, an eochairfhocal <code>use</code>, agus an eochairfhocal <code>pub</code>
+sa tiomsaitheoir, agus conas a eagraíonn formhór na bhforbróirí a gcód. Beimid ag dul
+trí shamplaí de gach ceann de na rialacha seo ar fud na caibidle seo, ach tá sé seo a
+áit iontach chun tagairt a dhéanamh dó mar mheabhrúchán ar an gcaoi a n-oibríonn modúil.</p>
+<ul>
+<li><strong>Tosaigh ó fhréamh an gcliathbhosca</strong>: Agus cliathbhosca á thiomsú, an tiomsaitheoir ar dtús
+Breathnaíonn i bhfréamhchomhad an chliathbhosca (de ghnáth <em>src/lib.rs</em> le haghaidh cliathbhosca leabharlainne nó
+<em>src/main.rs</em> le haghaidh cliathbhosca dénártha) le cód a thiomsú.</li>
+<li><strong>Modúil á ndearbhú</strong>: Sa fhréamhchomhad cliathbhosca, is féidir leat modúil nua a dhearbhú;
+a rá go ndearbhaíonn tú modúl “gairdín” le <code>mod garden;</code>. Breathnóidh an tiomsaitheoir
+do chód an mhodúil sna háiteanna seo:</li>
+<li>Inlíne, laistigh de lúibíní curly a thagann in ionad an leathstad tar éis <code>mod  garden</code></li>
+<li>Sa chomhad <em>src/garden.rs</em></li>
+<li>Sa chomhad <em>src/garden/mod.rs</em></li>
+<li><strong>Fomodúil á ndearbhú</strong>: In aon chomhad seachas fréamh an chliabháin, is féidir leat
+fomhodúil a dhearbhú. Mar shampla, b'fhéidir go ndearbhóidh tú <code>mod vegetables;</code> i
+<em>src/gairdín.rs</em>. Lorgóidh an tiomsaitheoir cód an fhomhodúil laistigh de na
+eolaire ainmnithe don mhodúl tuismitheora sna háiteanna seo:</li>
+<li>Inlíne, díreach ag leanúint <code>mod vegetables</code>, laistigh de lúibíní curly ina ionad
+den leathstad</li>
+<li>Sa chomhad <em>src/garden/vegetables.rs</em></li>
+<li>Sa chomhad <em>src/garden/vegetables/mod.rs</em></li>
+<li><strong>Cosáin chun cód a chur i modúil</strong>: Nuair a bheidh modúl mar chuid de do chliabhán, is féidir leat
+déan tagairt don chód sa mhodúl sin ó áit ar bith eile sa chliabhán céanna sin, chomh fada
+mar a cheadaíonn na rialacha príobháideachta, ag baint úsáide as an cosán go dtí an cód. Mar shampla, an
+Gheofar cineál <code>Asparagus</code> sa mhodúl glasraí gairdín ag
+<code>crate::garden::vegetables::Asparagus</code>.</li>
+<li><strong>Príobháideach vs. poiblí</strong>: Tá cód laistigh de mhodúl príobháideach óna thuismitheoir
+modúil de réir réamhshocraithe. Chun modúl a phoibliú, dearbhaigh é le <code>pub mod</code>
+in ionad <code>mod</code>. Chun míreanna laistigh de mhodúl poiblí a dhéanamh poiblí freisin, bain úsáid as
+<code>pub</code> roimh a ndearbhuithe.</li>
+<li><strong>An eochairfhocal <code>use</code></strong>: Laistigh de raon feidhme, cruthaíonn an eochairfhocal <code>use</code> aicearraí chuig
+míreanna chun athrá cosáin fhada a laghdú. In aon scóip is féidir tagairt a dhéanamh do
+<code>crate::garden::vegetables::Asparagus</code>, is féidir leat aicearra a chruthú le <code>use  crate::garden::vegetables::Asparagus;</code>  agus as sin amach ní gá duit ach
+scríobh <code>Asparagus</code> chun úsáid a bhaint as an gcineál sin sa scóip.</li>
+</ul>
+<p>Anseo, cruthaímid cliathbhosca dénártha darb ainm <code>backyard</code> a léiríonn na rialacha seo.
+Tá na comhaid agus na heolairí seo i gcomhadlann an chliabháin, ar a dtugtar <code>backyard</code> freisin:</p>
+<pre><code class="language-text">backyard
+├── Cargo.lock
+├── Cargo.toml
+└── src
+    ├── garden
+    │   └── vegetables.rs
+    ├── garden.rs
+    └── main.rs
+</code></pre>
+<p>Is é an comhad fréimhe cliathbhosca sa chás seo ná <em>src/main.rs</em>, agus tá:</p>
+<Listing file-name="src/main.rs">
+<pre><code class="language-rust noplayground ignore">use crate::garden::vegetables::Asparagus;
+
+pub mod garden;
+
+fn main() {
+    let plant = Asparagus {};
+    println!("I'm growing {plant:?}!");
+}</code></pre>
+</Listing>
+<p>Insíonn an líne <code>pub mod garden;</code> don tiomsaitheoir an cód a aimsíonn sé a chur san áireamh
+<em>src/garden.rs</em>, mar atá:</p>
+<Listing file-name="src/garden.rs">
+<pre><code class="language-rust noplayground ignore">pub mod vegetables;</code></pre>
+</Listing>
+<p>Anseo, ciallaíonn <code>pub mod vegetables;</code> an cód i <em>src/garden/vegetables.rs</em> is
+san áireamh freisin. Is é an cód sin:</p>
+<pre><code class="language-rust noplayground ignore">#[derive(Debug)]
+pub struct Asparagus {}</code></pre>
+<p>Anois déanaimis sonraí na rialacha seo a fháil agus iad a léiriú i ngníomh!</p>
+<h3 id="cód-gaolmhar-a-ghrúpáil-i-modúil"><a class="header" href="#cód-gaolmhar-a-ghrúpáil-i-modúil">Cód Gaolmhar a Ghrúpáil i Modúil</a></h3>
+<p><em>Modules</em> lig dúinn cód a eagrú laistigh de chliathbhosca ar mhaithe le hinléiteacht agus le hathúsáid éasca.
+Ligeann modúil dúinn freisin <em>príobháideacht</em> míreanna a rialú toisc go bhfuil cód laistigh de a
+modúl príobháideach de réir réamhshocraithe. Is sonraí inmheánacha cur chun feidhme iad míreanna príobháideacha
+nach bhfuil ar fáil le húsáid lasmuigh. Is féidir linn a roghnú modúil agus na míreanna a dhéanamh
+laistigh díobh poiblí, a nochtar iad chun ligean do chód seachtrach a úsáid agus a bheith ag brath
+orthu.</p>
+<p>Mar shampla, scríobhaimis cliathbhosca leabharlainne a sholáthraíonn feidhmiúlacht a
+bialann. Déanfaimid sínithe na bhfeidhmeanna a shainiú ach fágfaimid a gcorp
+folamh chun díriú ar eagrú an chóid seachas ar an
+bialann a chur i bhfeidhm.</p>
+<p>I dtionscal na mbialann, déantar tagairt do roinnt codanna de bhialann
+<em>aghaidh an tí</em> agus cinn eile mar <em>chúl an tí</em>. Tá áit os comhair an tí
+tá custaiméirí; cuimsíonn sé seo an áit ina suíonn an t-óstach do chustaiméirí, a thógann na freastalaithe
+orduithe agus íocaíocht, agus déanann tábhairne deochanna. Ar chúl an tí tá an áit a bhfuil an
+oibríonn príomhchócaire agus cócairí sa chistin, glantar miasniteoirí, agus déanann bainisteoirí
+obair riaracháin.</p>
+<p>Chun ár gcliathbhosca a struchtúrú ar an mbealach seo, is féidir linn a feidhmeanna a eagrú ina neadacha
+modúil. Cruthaigh leabharlann nua darb ainm <code>restaurant</code> trí <code>cargo new restaurant --lib</code>. Ansin cuir isteach an cód i Liostú 7-1 isteach <em>src/lib.rs</em> go
+roinnt modúil agus sínithe feidhm a shainiú; is é an cód seo tosaigh an tí
+alt.</p>
+<Listing number="7-1" file-name="src/lib.rs" caption="A `front_of_house` module containing other modules that then contain functions">
+<pre><code class="language-rust noplayground">mod front_of_house {
+    mod hosting {
+        fn add_to_waitlist() {}
+
+        fn seat_at_table() {}
+    }
+
+    mod serving {
+        fn take_order() {}
+
+        fn serve_order() {}
+
+        fn take_payment() {}
+    }
+}</code></pre>
+</Listing>
+<p>Sainmhínímid modúl leis an eochairfhocal <code>mod</code> agus ainm an mhodúil ina dhiaidh
+(sa chás seo, <code>front_of_house</code>). Téann corp an mhodúil ansin taobh istigh de chatach
+lúibíní. Taobh istigh modúil, is féidir linn a chur modúil eile, mar atá sa chás seo leis an
+modúil <code>hosting</code> agus <code>serving</code>. Is féidir le modúil sainmhínithe a bheith acu ar mhodúil eile freisin
+míreanna, mar struchtúir, éinim, tairisigh, tréithe, agus — mar atá i Liostú
+7-1 - feidhmeanna.</p>
+<p>Trí modúil a úsáid, is féidir linn sainmhínithe gaolmhara a ghrúpáil le chéile agus an fáth a ainmniú
+tá gaol acu leis. Is féidir le ríomhchláraitheoirí a úsáideann an cód seo an cód a nascleanúint bunaithe ar an
+grúpaí seachas a bheith ag léamh tríd na sainmhínithe go léir, é a dhéanamh níos éasca
+chun na sainmhínithe a bhaineann leo a fháil. Ríomhchláraitheoirí ag cur feidhmiúlacht nua leis
+Bheadh ​​a fhios ag an gcód seo cá háit a gcuirfí an cód chun an clár a choinneáil eagraithe.</p>
+<p>Níos luaithe, luaigh muid go dtugtar cliathbhosca ar <em>src/main.rs</em> agus <em>src/lib.rs</em>
+fréamhacha. Is é an chúis atá lena n-ainm ná go bhfuil ábhar ceachtar den dá cheann seo
+cruthaíonn comhaid modúl darb ainm <code>crate</code> ag bun struchtúr modúil an chliabháin,
+ar a dtugtar an crann <em>module tree</em>.</p>
+<p>Léiríonn Liostú 7-2 an crann modúl don struchtúr i Liostú 7-1.</p>
+<Listing number="7-2" caption="The module tree for the code in Listing 7-1">
+<pre><code class="language-text">crate
+ └── front_of_house
+     ├── hosting
+     │   ├── add_to_waitlist
+     │   └── seat_at_table
+     └── serving
+         ├── take_order
+         ├── serve_order
+         └── take_payment
+</code></pre>
+</Listing>
+<p>Léiríonn an crann seo conas a neadaíonn cuid de na modúil taobh istigh de mhodúil eile; mar shampla,
+<code>hosting</code> a óstáil taobh istigh de <code>front_of_house</code>. Léiríonn an crann freisin go bhfuil roinnt modúil
+is <em>siblíní</em> iad, rud a chiallaíonn go bhfuil siad sainmhínithe sa mhodúl céanna; <code>hosting</code> agus
+is siblíní iad <code>serving</code> laistigh de <code>front_of_house</code>. Más modúl A é
+atá taobh istigh modúl B, deirimid go bhfuil modúl A an <em>child</em> de mhodúl B agus
+gurb é modúl B an <em>tuismitheoir</em> de mhodúl A. Tabhair faoi deara go bhfuil an crann modúl ar fad
+atá fréamhaithe faoin modúl intuigthe darb ainm <code>crate</code>.</p>
+<p>Seans go gcuirfidh crann na modúl i gcuimhne duit crann eolaire an chórais comhad ar do
+ríomhaire; is comparáid an-oiriúnach é seo! Cosúil le heolairí i gcóras comhaid,
+úsáideann tú modúil chun do chód a eagrú. Agus díreach cosúil le comhaid i eolaire, táimid
+gá bealach chun ár modúil a aimsiú.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="cosáin-chun-tagairt-a-dhéanamh-do-mhír-i-gcrann-an-mhodúil"><a class="header" href="#cosáin-chun-tagairt-a-dhéanamh-do-mhír-i-gcrann-an-mhodúil">Cosáin chun Tagairt a Dhéanamh do Mhír i gCrann an Mhodúil</a></h2>
+<p>Chun Rust a thaispeáint nuair is féidir mír a aimsiú i gcrann modúl, úsáidimid cosán mar an gcéanna
+ar an mbealach a n-úsáidimid cosán agus córas comhaid á nascleanúint. Chun feidhm a ghlaoch, ní mór dúinn
+fios a chosáin.</p>
+<p>Is féidir le cosán a bheith i dhá fhoirm:</p>
+<ul>
+<li>Is é <em>absolute path</em> an cosán iomlán a thosaíonn ó fhréamh gcliathbhosca; le haghaidh cód
+ó chliathbhosca seachtrach, tosaíonn an cosán iomlán le hainm an chliabháin, agus le haghaidh
+cód ón gcliathbhosca reatha, tosaíonn sé leis an <code>crate</code> litriúil.</li>
+<li>Tosaíonn cosán <em>relative</em> ón modúl reatha agus úsáidtear <code>self</code>, <code>super</code>, nó
+aitheantóir sa mhodúl reatha.</li>
+</ul>
+<p>Leanann aitheantóir amháin nó níos mó cosáin iomlána agus choibhneasta araon
+scartha le coilíneachtaí dúbailte (<code>::</code>).</p>
+<p>Ag filleadh ar Liostú 7-1, abair gur mhaith linn an fheidhm <code>add_to_waitlist</code> a ghlaoch.
+Is ionann é seo agus fiafraí: cad é cosán na feidhme <code>add_to_waitlist</code>?
+I Liostáil 7-3 tá Liosta 7-1 le roinnt de na modúil agus feidhmeanna
+bhaintear.</p>
+<p>Taispeánfaimid dhá bhealach chun an fheidhm <code>add_to_waitlist</code> a ghlaoch ó fheidhm nua,
+<code>eat_at_restaurant</code>, sainmhínithe i bhfréamh an chliathbhosca. Tá na cosáin seo ceart, ach
+tá fadhb eile fágtha a chuirfidh cosc ​​ar an sampla seo a chur le chéile
+mar atá. Míneoimid cén fáth i mbeagán focal.</p>
+<p>Tá an fheidhm <code>eat_at_restaurant</code> mar chuid d'API poiblí ár gcliathbhosca leabharlainne, mar sin
+marcálann muid é leis an eochairfhocal <code>pub</code>. Sa <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword">“Cosáin Nochtadh leis an <code>pub</code>
+Eochairfhocal”</a> <!-- neamhaird a dhéanamh ar --> alt, déanfaimid níos mó sonraí faoi <code>pub</code>.</p>
+<Listing number="7-3" file-name="src/lib.rs" caption="Calling the `add_to_waitlist` function using absolute and relative paths">
+<pre><code class="language-rust ignore does_not_compile">mod front_of_house {
+    mod hosting {
+        fn add_to_waitlist() {}
+    }
+}
+
+pub fn eat_at_restaurant() {
+    // Absolute path
+    crate::front_of_house::hosting::add_to_waitlist();
+
+    // Relative path
+    front_of_house::hosting::add_to_waitlist();
+}</code></pre>
+</Listing>
+<p>An chéad uair a ghlaoimid an fheidhm <code>add_to_waitlist</code> i <code>eat_at_restaurant</code>,
+úsáidimid cosán iomlán. Sainmhínítear an fheidhm <code>add_to_waitlist</code> mar an gcéanna
+cliathbhosca mar <code>eat_at_restaurant</code>, rud a chiallaíonn gur féidir linn an eochairfhocal <code>crate</code> a úsáid chun
+tús a chur le cosán iomlán. Áirímid ansin gach ceann de na modúil as a chéile go dtí go ndéanaimid
+déan ár mbealach chuig <code>add_to_waitlist</code>. Is féidir leat córas comhaid a shamhlú leis an gcéanna
+struchtúr: shonraigh muid an cosán <code>/front_of_house/hosting/add_to_waitlist</code> go dtí
+reáchtáil an clár <code>add_to_waitlist</code>; ag baint úsáide as an ainm <code>crate</code> chun tosú as an
+Is cosúil le fréamh an chliabháin úsáid a bhaint as <code>/</code> chun tosú ó fhréamh an chórais comhad i do bhlaosc.</p>
+<p>An dara huair a ghlaoimid <code>add_to_waitlist</code> i <code>eat_at_restaurant</code>, úsáidimid
+cosán coibhneasta. Tosaíonn an cosán le <code>front_of_house</code>, ainm an mhodúil
+sainmhínithe ag an leibhéal céanna de chrann an mhodúil le <code>eat_at_restaurant</code>. Seo an
+bheadh ​​​​coibhéis córas comhaid ag baint úsáide as an gcosán
+<code>front_of_house/hosting/add_to_waitlist</code>. Ag tosú le hainm modúl ciallaíonn
+go bhfuil an cosán coibhneasta.</p>
+<p>Is é an cinneadh a dhéanfaidh tú maidir le conair ghaolmhar nó cosán iomlán a roghnú
+bunaithe ar do thionscadal, agus braitheann sé ar cibé an bhfuil seans níos mó agat bogadh
+cód sainmhínithe míre ar leithligh ó nó in éineacht leis an gcód a úsáideann an
+mír. Mar shampla, má bhog muid an modúl <code>front_of_house</code> agus an
+feidhmíonn <code>eat_at_restaurant</code> isteach i modúl darb ainm <code>customer_experience</code>, bheimis
+gá an cosán iomlán chuig <code>add_to_waitlist</code> a nuashonrú, ach an cosán coibhneasta
+bheadh ​​bailí fós. Mar sin féin, má bhog muid an fheidhm <code>eat_at_restaurant</code>
+ar leithligh isteach i modúl darb ainm <code>dining</code>, an cosán iomlán chuig an
+D'fhanfadh an glao <code>add_to_waitlist</code> mar a chéile, ach bheadh ​​gá leis an gcosán coibhneasta
+a nuashonrú. Is é an rogha atá againn i gcoitinne ná cosáin iomlána a shonrú toisc go bhfuil
+is dóichí go mbeidh muid ag iarraidh sainmhínithe cód agus glaonna míreanna a bhogadh go neamhspleách orthu
+chéile.</p>
+<p>Déanaimis iarracht Liostú 7-3 a thiomsú agus faigh amach cén fáth nach dtiomsóidh sé fós! Tá an
+taispeántar na hearráidí a fhaighimid i Liostú 7-4.</p>
+<Listing number="7-4" caption="Compiler errors from building the code in Listing 7-3">
+<pre><code class="language-console">$ cargo build
+   Compiling restaurant v0.1.0 (file:///projects/restaurant)
+error[E0603]: module `hosting` is private
+ --&gt; src/lib.rs:9:28
+  |
+9 |     crate::front_of_house::hosting::add_to_waitlist();
+  |                            ^^^^^^^  --------------- function `add_to_waitlist` is not publicly re-exported
+  |                            |
+  |                            private module
+  |
+note: the module `hosting` is defined here
+ --&gt; src/lib.rs:2:5
+  |
+2 |     mod hosting {
+  |     ^^^^^^^^^^^
+
+error[E0603]: module `hosting` is private
+  --&gt; src/lib.rs:12:21
+   |
+12 |     front_of_house::hosting::add_to_waitlist();
+   |                     ^^^^^^^  --------------- function `add_to_waitlist` is not publicly re-exported
+   |                     |
+   |                     private module
+   |
+note: the module `hosting` is defined here
+  --&gt; src/lib.rs:2:5
+   |
+2  |     mod hosting {
+   |     ^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0603`.
+error: could not compile `restaurant` (lib) due to 2 previous errors
+</code></pre>
+</Listing>
+<p>Deir na teachtaireachtaí earráide go bhfuil modúl <code>hosting</code> príobháideach. I bhfocail eile, táimid
+bíodh na cosáin chearta agat don mhodúl <code>hosting</code> agus don <code>add_to_waitlist</code>
+feidhm, ach ní ligfidh Rust dúinn iad a úsáid toisc nach bhfuil rochtain aige ar an
+rannóga príobháideacha. I Rust, tá gach mír (feidhmeanna, modhanna, struchtúir, enums,
+modúil, agus tairisigh) príobháideach do mhodúil tuismitheora de réir réamhshocraithe. Más mian leat
+chun mír mar fheidhm nó struchtúr a dhéanamh príobháideach, cuireann tú i modúl é.</p>
+<p>Ní féidir le míreanna i modúl tuismitheora na míreanna príobháideacha taobh istigh de mhodúil leanaí a úsáid, ach
+is féidir le míreanna i modúil leanaí na míreanna i modúil a sinsear a úsáid. Tá sé seo
+mar gheall ar mhodúil leanbh wrap agus a cheilt a gcuid sonraí cur chun feidhme, ach an leanbh
+is féidir le modúil an comhthéacs ina bhfuil siad sainithe a fheiceáil. Chun leanúint ar aghaidh lenár
+meafar, smaoinigh ar na rialacha príobháideachais mar chúloifig a
+bialann: is príobháideach do chustaiméirí bialainne an rud a théann ar aghaidh ann, ach
+is féidir le bainisteoirí oifige gach rud a fheiceáil agus a dhéanamh sa bhialann a oibríonn siad.</p>
+<p>Roghnaigh Rust go mbeadh an córas modúil ag feidhmiú ar an mbealach seo ionas go gcuirfí i bhfolach taobh istigh
+is é sonraí cur chun feidhme an réamhshocrú. Ar an mbealach sin, tá a fhios agat cé na codanna den
+cód istigh is féidir leat a athrú gan an cód seachtrach a bhriseadh. Mar sin féin, tugann Rust
+tá an rogha agat codanna istigh de chód na modúil leanaí a nochtadh don tsinsir sheachtrach
+modúil tríd an eochairfhocal <code>pub</code> a úsáid chun mír a phoibliú.</p>
+<h3 id="conairí-á-nochtadh-leis-an-eochairfhocal-pub"><a class="header" href="#conairí-á-nochtadh-leis-an-eochairfhocal-pub">Conairí á Nochtadh leis an Eochairfhocal <code>pub</code></a></h3>
+<p>Fillfimid ar an earráid i Liostú 7-4 a chuir in iúl dúinn gurb é an modúl <code>hosting</code>
+príobháideach. Ba mhaith linn go mbeadh an fheidhm <code>eat_at_restaurant</code> sa mhodúl tuismitheora
+rochtain ar an bhfeidhm <code>add_to_waitlist</code> sa mhodúl linbh, mar sin marcálann muid an
+modúl <code>hosting</code> leis an eochairfhocal <code>pub</code>, mar a thaispeántar i Liosta 7-5.</p>
+<Listing number="7-5" file-name="src/lib.rs" caption="Declaring the `hosting` module as `pub` to use it from `eat_at_restaurant`">
+<pre><code class="language-rust ignore does_not_compile">mod front_of_house {
+    pub mod hosting {
+        fn add_to_waitlist() {}
+    }
+}
+
+pub fn eat_at_restaurant() {
+    // Absolute path
+    crate::front_of_house::hosting::add_to_waitlist();
+
+    // Relative path
+    front_of_house::hosting::add_to_waitlist();
+}</code></pre>
+</Listing>
+<p>Ar an drochuair, tá earráidí tiomsaitheora fós mar thoradh ar an gcód i Liostú 7-5, mar
+léirithe i Liosta 7-6.</p>
+<Listing number="7-6" caption="Compiler errors from building the code in Listing 7-5">
+<pre><code class="language-console">$ cargo build
+   Compiling restaurant v0.1.0 (file:///projects/restaurant)
+error[E0603]: function `add_to_waitlist` is private
+ --&gt; src/lib.rs:9:37
+  |
+9 |     crate::front_of_house::hosting::add_to_waitlist();
+  |                                     ^^^^^^^^^^^^^^^ private function
+  |
+note: the function `add_to_waitlist` is defined here
+ --&gt; src/lib.rs:3:9
+  |
+3 |         fn add_to_waitlist() {}
+  |         ^^^^^^^^^^^^^^^^^^^^
+
+error[E0603]: function `add_to_waitlist` is private
+  --&gt; src/lib.rs:12:30
+   |
+12 |     front_of_house::hosting::add_to_waitlist();
+   |                              ^^^^^^^^^^^^^^^ private function
+   |
+note: the function `add_to_waitlist` is defined here
+  --&gt; src/lib.rs:3:9
+   |
+3  |         fn add_to_waitlist() {}
+   |         ^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0603`.
+error: could not compile `restaurant` (lib) due to 2 previous errors
+</code></pre>
+</Listing>
+<p>Cad a tharla? Nuair a chuirtear an eochairfhocal <code>pub</code> os comhair <code>mod hosting</code> déanann an
+modúl poiblí. Leis an athrú seo, más féidir linn rochtain a fháil ar <code>front_of_house</code>, is féidir linn
+rochtain a fháil ar <code>hosting</code>. Ach tá na <em>contents</em> de <code>hosting</code> fós príobháideach; ag déanamh an
+ní dhéanann an modúl poiblí a bhfuil ann. An eochairfhocal <code>pub</code> ar mhodúl
+ní ligeann sé ach tagairt a dhéanamh do chód ina mhodúil sinsear, ní rochtain a fháil ar a chód istigh.
+Toisc gur coimeádáin iad modúil, níl mórán ar féidir linn a dhéanamh ach an
+modúl poiblí; caithfimid dul níos faide agus rogha a dhéanamh ceann amháin nó níos mó de na
+míreanna laistigh den mhodúl poiblí chomh maith.</p>
+<p>Deir na hearráidí i Liostú 7-6 go bhfuil an fheidhm <code>add_to_waitlist</code> príobháideach.
+Baineann na rialacha príobháideachais le struchtúir, ainmneacha, feidhmeanna agus modhanna chomh maith
+modúil.</p>
+<p>Déanaimis an fheidhm <code>add_to_waitlist</code> a phoibliú freisin tríd an <code>pub</code> a chur leis
+eochairfhocal roimh a shainmhíniú, mar atá i Liostú 7-7.</p>
+<Listing number="7-7" file-name="src/lib.rs" caption="Adding the `pub` keyword to `mod hosting` and `fn add_to_waitlist` lets us call the function from `eat_at_restaurant`">
+<pre><code class="language-rust noplayground test_harness">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+pub fn eat_at_restaurant() {
+    // Absolute path
+    crate::front_of_house::hosting::add_to_waitlist();
+
+    // Relative path
+    front_of_house::hosting::add_to_waitlist();
+}</code></pre>
+</Listing>
+<p>Anois beidh an cód le chéile! Chun a fháil amach cén fáth a ligeann dúinn úsáid a bhaint as an eochairfhocal <code>pub</code>
+na cosáin seo i <code>eat_at_restaurant</code> maidir leis na rialacha príobháideachais, breathaimis
+ag na cosáin iomlána agus coibhneasta.</p>
+<p>Ar an mbealach iomlán, cuirimid tús le <code>crate</code>, fréamh modúl ár gcliathbhosca
+crann. Sainmhínítear an modúl <code>front_of_house</code> i bhfréamh an chliathbhosca. Cé go
+Níl <code>front_of_house</code> poiblí, toisc go bhfuil an fheidhm <code>eat_at_restaurant</code> ann
+sainithe sa mhodúl céanna le <code>front_of_house</code> (is é sin, <code>eat_at_restaurant</code>
+agus is siblíní iad <code>front_of_house</code>), is féidir linn tagairt a dhéanamh do <code>front_of_house</code> ó
+<code>eat_at_restaurant</code>. Ar aghaidh tá an modúl <code>hosting</code> marcáilte le <code>pub</code>. Is féidir linn
+rochtain a fháil ar an modúl tuismitheora de <code>hosting</code>, ionas gur féidir linn rochtain a fháil ar <code>hosting</code>. Ar deireadh, an
+marcáiltear an fheidhm <code>add_to_waitlist</code> le <code>pub</code> agus is féidir linn rochtain a fháil ar a thuismitheoir
+modúl, mar sin oibríonn an glao feidhm seo!</p>
+<p>Sa chonair choibhneasta, tá an loighic mar an gcéanna leis an gcosán iomlán ach amháin i gcás an
+chéad chéim: seachas tosú ó fhréamh an gcliathbhosca, tosaíonn an cosán ó
+<code>front_of_house</code>. Sainmhínítear an modúl <code>front_of_house</code> laistigh den mhodúl céanna
+mar <code>eat_at_restaurant</code>, mar sin an cosán coibhneasta ag tosú ón modúl ina bhfuil
+Is saothair shainithe é <code>eat_at_restaurant</code>. Ansin, mar gheall ar <code>hosting</code> agus
+marcáiltear <code>add_to_waitlist</code> le <code>pub</code>, oibríonn an chuid eile den chosán, agus seo
+Tá glao feidhm bailí!</p>
+<p>Má tá sé ar intinn agat do chliabhán leabharlainne a chomhroinnt ionas gur féidir le tionscadail eile do chód a úsáid,
+is é do API poiblí do chonradh le húsáideoirí do chliabhán a chinneann conas
+is féidir leo idirghníomhú le do chód. Tá go leor cúinsí maidir le bainistiú
+athruithe ar do API poiblí chun é a dhéanamh níos éasca do dhaoine brath ar do
+cliathbhosca. Tá na breithnithe seo lasmuigh de scóip an leabhair seo; má tá tú
+suim agat san ábhar seo, féach <a href="https://rust-lang.github.io/api-guidelines/">Treoirlínte Rust API</a>.</p>
+<blockquote>
+<h4 id="dea-chleachtais-maidir-le-pacáistí-le-dénártha-agus-leabharlann"><a class="header" href="#dea-chleachtais-maidir-le-pacáistí-le-dénártha-agus-leabharlann">Dea-Chleachtais maidir le Pacáistí le Dénártha agus Leabharlann</a></h4>
+<p>Luaigh muid gur féidir le cliathbhosca dénártha <em>src/main.rs</em> a bheith i bpacáiste
+fréamh chomh maith le fréamh gcliathbhosca leabharlainne <em>src/lib.rs</em>, agus beidh an dá chliathbhosca
+ainm an phacáiste de réir réamhshocraithe. De ghnáth, pacáistí leis an bpatrún seo de
+ina mbeidh leabharlann agus cliathbhosca dénártha araon, beidh go leor cód sa
+cliathbhosca dénártha chun inrite a thosú a ghlaonn cód laistigh de chliathán na leabharlainne.
+Ligeann sé seo do thionscadail eile leas a bhaint as an gcuid is mó den fheidhmiúlacht a chuireann an
+soláthraíonn pacáiste toisc gur féidir cód an chliabháin leabharlainne a roinnt.</p>
+<p>Ba cheart crann an mhodúil a shainiú in <em>src/lib.rs</em>. Ansin, is féidir aon nithe poiblí
+a úsáid sa chliabhán dénártha trí chosáin a thosú le hainm an phacáiste.
+Bíonn an cliathbhosca dénártha ina úsáideoir ar an gcliathbhosca leabharlainne díreach mar a bheadh ​​go hiomlán
+d’úsáidfeadh cliathbhosca seachtrach cliathbhosca na leabharlainne: ní féidir leis ach an API poiblí a úsáid.
+Cuidíonn sé seo leat API maith a dhearadh; ní hamháin gur tusa an t-údar, is tusa freisin
+cliant!</p>
+<p>I <a href="ch12-00-an-io-project.html">Caibidil 12</a><!-- neamhaird a dhéanamh -->, léireoimid an eagraíocht seo
+cleachtadh le clár ordaithe ina mbeidh cliathbhosca dénártha araon
+agus cliathbhosca leabharlainne.</p>
+</blockquote>
+<h3 id="ag-tosú-cosáin-choibhneasta-le-super"><a class="header" href="#ag-tosú-cosáin-choibhneasta-le-super">Ag tosú Cosáin Choibhneasta le <code>super</code></a></h3>
+<p>Is féidir linn cosáin choibhneasta a thógáil a thosaíonn sa mhodúl tuismitheora, seachas
+an modúl reatha nó an fhréamh cliathbhosca, trí úsáid a bhaint as <code>super</code> ag tús an
+cosán. Tá sé seo cosúil le cosán córais comhad a thosú leis an gcomhréir <code>..</code>. Ag baint úsáide as
+ligeann <code>super</code> dúinn tagairt a dhéanamh do mhír a bhfuil a fhios againn atá sa mhodúl tuismitheora,
+rud a d'fhéadfadh an crann modúl a atheagrú níos éasca nuair a bhíonn an modúl go dlúth
+a bhaineann leis an tuismitheoir ach d’fhéadfaí an tuismitheoir a aistriú chuig áit eile sa mhodúl
+crann lá éigin.</p>
+<p>Smaoinigh ar an gcód i Liosta 7-8 a mhúnlaíonn an cás ina bhfuil cócaire
+socraíonn sé ordú mícheart agus tugann sé amach go pearsanta don chustaiméir é. Tá an
+feidhm <code>fix_incorrect_order</code> a shainmhínítear sa mhodúl <code>back_of_house</code> ar a dtugtar an
+feidhm <code>deliver_order</code> arna shainiú sa mhodúl tuismitheora tríd an gcosán chuig a shonrú
+<code>deliver_order</code>, ag tosú le <code>super</code>.</p>
+<Listing number="7-8" file-name="src/lib.rs" caption="Calling a function using a relative path starting with `super`">
+<pre><code class="language-rust noplayground test_harness">fn deliver_order() {}
+
+mod back_of_house {
+    fn fix_incorrect_order() {
+        cook_order();
+        super::deliver_order();
+    }
+
+    fn cook_order() {}
+}</code></pre>
+</Listing>
+<p>Tá an fheidhm <code>fix_incorrect_order</code> sa mhodúl <code>back_of_house</code>, ionas gur féidir linn
+úsáid <code>super</code> chun dul go dtí an modúl tuismitheora de <code>back_of_house</code>, atá sa chás seo
+is <code>crate</code>, an fhréamh. Ón áit sin, lorgaímid <code>deliver_order</code> agus faighimid é.
+Rath! Is dóigh linn go bhfuil an modúl <code>back_of_house</code> agus an fheidhm <code>deliver_order</code>
+is dócha go bhfanfaidh siad sa chaidreamh céanna lena chéile agus go n-aistreofar iad
+le chéile ar cheart dúinn cinneadh a dhéanamh crann modúl an chliathbhosca a atheagrú. Dá bhrí sin, táimid
+úsáid as <code>super</code> mar sin beidh níos lú áiteanna againn chun cód a nuashonrú amach anseo más amhlaidh
+bogtar an cód go modúl eile.</p>
+<h3 id="struchtúir-agus-enums-a-dhéanamh-go-poiblí"><a class="header" href="#struchtúir-agus-enums-a-dhéanamh-go-poiblí">Struchtúir agus Enums a Dhéanamh go Poiblí</a></h3>
+<p>Is féidir linn <code>pub</code> a úsáid freisin chun struchtúir agus enums a ainmniú go poiblí, ach tá a
+roinnt sonraí breise maidir le húsáid <code>pub</code> le struchtúir agus enums. Má úsáidimid <code>pub</code>
+roimh shainmhíniú struchtúr, déanaimid an struchtúr poiblí, ach réimsí an struchtúir
+beidh sé fós príobháideach. Is féidir linn gach réimse a dhéanamh poiblí nó gan a bheith bunaithe ar chás
+bonn. I Liostú 7-9, shainmhíomar struchtúr poiblí <code>back_of_house::Breakfast</code>
+le réimse poiblí <code>toast</code> ach réimse príobháideach <code>seasonal_fruit</code>. Samhlacha seo
+an cás i mbialann inar féidir leis an gcustaiméir an cineál aráin sin a phiocadh
+Tagann béile le béile, ach socraíonn an cócaire cé na torthaí a théann leis an mbéile atá bunaithe
+ar cad atá i séasúr agus i stoc. Athraíonn na torthaí atá ar fáil go tapa, mar sin
+ní féidir le custaiméirí na torthaí a roghnú nó fiú na torthaí a gheobhaidh siad a fheiceáil.</p>
+<Listing number="7-9" file-name="src/lib.rs" caption="A struct with some public fields and some private fields">
+<pre><code class="language-rust noplayground">mod back_of_house {
+    pub struct Breakfast {
+        pub toast: String,
+        seasonal_fruit: String,
+    }
+
+    impl Breakfast {
+        pub fn summer(toast: &amp;str) -&gt; Breakfast {
+            Breakfast {
+                toast: String::from(toast),
+                seasonal_fruit: String::from("peaches"),
+            }
+        }
+    }
+}
+
+pub fn eat_at_restaurant() {
+    // Order a breakfast in the summer with Rye toast
+    let mut meal = back_of_house::Breakfast::summer("Rye");
+    // Change our mind about what bread we'd like
+    meal.toast = String::from("Wheat");
+    println!("I'd like {} toast please", meal.toast);
+
+    // The next line won't compile if we uncomment it; we're not allowed
+    // to see or modify the seasonal fruit that comes with the meal
+    // meal.seasonal_fruit = String::from("blueberries");
+}</code></pre>
+</Listing>
+<p>Toisc go bhfuil an réimse <code>toast</code> sa struchtúr <code>back_of_house::Breakfast</code> poiblí,
+i <code>eat_at_restaurant</code> is féidir linn scríobh agus léamh chuig an réimse <code>toast</code> ag baint úsáide as ponc
+nodaireacht. Tabhair faoi deara nach féidir linn an réimse <code>seasonal_fruit</code> a úsáid i
+<code>eat_at_restaurant</code>, toisc go bhfuil <code>seasonal_fruit</code> príobháideach. Bain triail as uncommenting an
+líne ag modhnú an luach réimse <code>seasonal_fruit</code> féachaint cén earráid a gheobhaidh tú!</p>
+<p>Chomh maith leis sin, tabhair faoi deara toisc go bhfuil réimse príobháideach ag <code>back_of_house::Breakfast</code>, ní mór an
+Ní mór do struchtúr feidhm a bhaineann leis an bpobal a sholáthar a fhoirgníonn an
+mar shampla <code>Bricfeasta</code> (tá <code>summer</code> tugtha againn anseo). Mura raibh <code>Breakfast</code>
+a leithéid d’fheidhm a bheith againn, níorbh fhéidir linn sampla de <code>Breakfast</code> a chruthú i
+<code>eat_at_restaurant</code> mar níorbh fhéidir linn luach an phríobháidigh a shocrú
+réimse <code>seasonal_fruit</code> i <code>eat_at_restaurant</code>.</p>
+<p>I gcodarsnacht leis sin, má dhéanaimid enum poiblí, tá gach leagan dá chuid poiblí ansin. muid
+níl de dhíth ach an <code>pub</code> roimh an eochairfhocal <code>enum</code>, mar a thaispeántar i Liosta 7-10.</p>
+<Listing number="7-10" file-name="src/lib.rs" caption="Designating an enum as public makes all its variants public">
+<pre><code class="language-rust noplayground">mod back_of_house {
+    pub enum Appetizer {
+        Soup,
+        Salad,
+    }
+}
+
+pub fn eat_at_restaurant() {
+    let order1 = back_of_house::Appetizer::Soup;
+    let order2 = back_of_house::Appetizer::Salad;
+}</code></pre>
+</Listing>
+<p>Toisc go ndearnamar an <code>Appetizer</code> enum poiblí, is féidir linn an <code>Soup</code> agus <code>Salad</code> a úsáid
+leaganacha i <code>eat_at_restaurant</code>.</p>
+<p>Ní bhíonn enums an-úsáideach mura bhfuil a gcuid leaganacha poiblí; bheadh ​​sé annoying
+ní mór gach leagan enum a anótáil le <code>pub</code> i ngach cás, mar sin an réamhshocrú
+le haghaidh leagan enum le bheith poiblí. Is minic a bhíonn struchtúir úsáideach gan a gcuid
+réimsí a bheith poiblí, mar sin réimsí struct leanúint riail ghinearálta gach rud
+a bheith príobháideach de réir réamhshocraithe ach amháin má tá <code>pub</code> anótáilte air.</p>
+<p>Tá cás amháin eile a bhaineann le ‘teach tábhairne’ nár chlúdaigh muid, agus is é sin
+an ghné dheireanach den chóras modúil atá againn: an eochairfhocal <code>use</code>. Clúdóidh muid <code>use</code> leis féin
+ar dtús, agus ansin taispeánfaimid conas <code>pub</code> agus <code>use</code> a chur le chéile.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="cosáin-a-thabhairt-isteach-sa-scóip-leis-an-eochairfhocal-use"><a class="header" href="#cosáin-a-thabhairt-isteach-sa-scóip-leis-an-eochairfhocal-use">Cosáin a Thabhairt isteach sa Scóip leis an Eochairfhocal <code>use</code></a></h2>
+<p>Má bhíonn ort na cosáin chun feidhmeanna a ghlaoch a scríobh, d'fhéadfadh sé a bheith deacair agus
+athchleachtach. I Liosta 7-7, cibé acu a roghnaigh muid an cosán iomlán nó an cosán coibhneasta dó
+an fheidhm <code>add_to_waitlist</code>, gach uair a theastaigh uainn <code>add_to_waitlist</code> a ghlaoch
+bhí orainn <code>front_of_house</code> agus <code>hosting</code> a shonrú freisin. Ar ámharaí an tsaoil, tá a
+bealach leis an bpróiseas seo a shimpliú: is féidir linn aicearra chuig cosán a chruthú leis an <code>use</code>
+eochairfhocal uair amháin, agus ansin bain úsáid as an t-ainm níos giorra i ngach áit eile sa raon feidhme.</p>
+<p>I Liostú 7-11, tugaimid an modúl <code>crate::front_of_house::hosting</code> isteach sa
+scóip na feidhme <code>eat_at_restaurant</code> mar sin níl le déanamh againn ach a shonrú
+<code>hosting::add_to_waitlist</code> chun an fheidhm <code>add_to_waitlist</code> a ghlaoch isteach i
+<code>eat_at_restaurant</code>.</p>
+<Listing number="7-11" file-name="src/lib.rs" caption="Bringing a module into scope with `use`">
+<pre><code class="language-rust noplayground test_harness">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+use crate::front_of_house::hosting;
+
+pub fn eat_at_restaurant() {
+    hosting::add_to_waitlist();
+}</code></pre>
+</Listing>
+<p>Nuair a chuirtear <code>use</code> agus cosán isteach i scóip tá sé cosúil le nasc siombalach a chruthú i
+an córas comhaid. Trí <code>use crate::front_of_house::hosting</code> a chur leis an gcliathbhosca
+root, is ainm bailí é <code>hosting</code> anois sa raon feidhme sin, díreach mar a bheadh ​​an <code>hosting</code>
+Bhí modúl sainithe sa fhréamh gcliathbhosca. Cosáin tugtha isteach sa scóip le <code>use</code>
+seiceáil freisin príobháideacht, mar aon cosáin eile.</p>
+<p>Tabhair faoi deara nach gcruthaíonn <code>use</code> ach an aicearra don raon feidhme ar leith ina bhfuil an
+tarlaíonn <code>use</code>. Má dhéantar liostú 7-12, bogtar an fheidhm <code>eat_at_restaurant</code> isteach i gceann nua
+modúl leanbh darb ainm <code>customer</code>, a bhfuil raon feidhme difriúil aige ansin ná an <code>use</code>
+ráiteas, mar sin ní thiomsóidh an comhlacht feidhme.</p>
+<Listing number="7-12" file-name="src/lib.rs" caption="A `use` statement only applies in the scope it’s in">
+<pre><code class="language-rust noplayground test_harness does_not_compile ignore">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+use crate::front_of_house::hosting;
+
+mod customer {
+    pub fn eat_at_restaurant() {
+        hosting::add_to_waitlist();
+    }
+}</code></pre>
+</Listing>
+<p>Léiríonn earráid an tiomsaitheora nach bhfuil feidhm ag an aicearra a thuilleadh laistigh de na
+modúl <code>customer</code>:</p>
+<pre><code class="language-console">$ cargo build
+   Compiling restaurant v0.1.0 (file:///projects/restaurant)
+error[E0433]: failed to resolve: use of undeclared crate or module `hosting`
+  --&gt; src/lib.rs:11:9
+   |
+11 |         hosting::add_to_waitlist();
+   |         ^^^^^^^ use of undeclared crate or module `hosting`
+   |
+help: consider importing this module through its public re-export
+   |
+10 +     use crate::hosting;
+   |
+
+warning: unused import: `crate::front_of_house::hosting`
+ --&gt; src/lib.rs:7:5
+  |
+7 | use crate::front_of_house::hosting;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+For more information about this error, try `rustc --explain E0433`.
+warning: `restaurant` (lib) generated 1 warning
+error: could not compile `restaurant` (lib) due to 1 previous error; 1 warning emitted
+</code></pre>
+<p>Tabhair faoi deara freisin go bhfuil rabhadh ann nach n-úsáidtear an <code>use</code> ina raon feidhme a thuilleadh! Chuig
+deisigh an fhadhb seo, bog an <code>use</code> laistigh den mhodúl <code>customer</code> freisin, nó sa tagairt
+an t-aicearra sa mhodúl tuismitheora le <code>super::hosting</code> laistigh den leanbh
+modúl <code>customer</code>.</p>
+<h3 id="cosáin-Úsáide-idéanacha-á-gcruthú"><a class="header" href="#cosáin-Úsáide-idéanacha-á-gcruthú">Cosáin `Úsáide' Idéanacha á gcruthú</a></h3>
+<p>I Liostú 7-11, b'fhéidir gur shíl tú cén fáth ar shonraigh muid <code>use crate::front_of_house::hosting</code> agus ansin ar a dtugtar <code>hosting::add_to_waitlist</code> isteach
+<code>eat_at_restaurant</code>, seachas an cosán <code>use</code> a shonrú an bealach ar fad amach chuige
+an fheidhm <code>add_to_waitlist</code> chun an toradh céanna a bhaint amach, mar atá i Liostú 7-13.</p>
+<Listing number="7-13" file-name="src/lib.rs" caption="Bringing the `add_to_waitlist` function into scope with `use`, which is unidiomatic">
+<pre><code class="language-rust noplayground test_harness">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+use crate::front_of_house::hosting::add_to_waitlist;
+
+pub fn eat_at_restaurant() {
+    add_to_waitlist();
+}</code></pre>
+</Listing>
+<p>Cé go ndéanann Liostú 7-11 agus Liostú 7-13 an tasc céanna, Liostáil
+Is é 7-11 an gnáthbhealach chun feidhm a thabhairt isteach sa scóip le <code>use</code>. Ag tabhairt
+modúl tuismitheora na feidhme isteach sa scóip le ciallaíonn <code>use</code> go gcaithfimid an
+modúl tuismitheora nuair a ghlaonn tú an fheidhm. Ag sonrú an mhodúil tuismitheora cathain
+Má ghlaonn tú ar an bhfeidhm, is léir nach bhfuil an fheidhm sainithe go háitiúil
+agus athrá ar an gcosán iomlán á íoslaghdú fós. Is é an cód i Liosta 7-13
+ní léir cá bhfuil <code>add_to_waitlist</code> sainmhínithe.</p>
+<p>Ar an láimh eile, agus tú ag tabhairt isteach structs, enums, agus míreanna eile le <code>use</code>,
+tá sé idiomatic an cosán iomlán a shonrú. Léiríonn liostú 7-14 an gnáthbhealach
+chun struchtúr <code>HashMap</code> na leabharlainne caighdeánach a thabhairt isteach i scóip dhénártha
+cliathbhosca.</p>
+<Listing number="7-14" file-name="src/main.rs" caption="Bringing `HashMap` into scope in an idiomatic way">
+<pre><pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut map = HashMap::new();
+    map.insert(1, 2);
+}</code></pre></pre>
+</Listing>
+<p>Níl aon chúis láidir taobh thiar den idiom seo: níl ann ach an coinbhinsiún a bhfuil
+tháinig sé chun cinn, agus tá taithí ag daoine ar chód Rust a léamh agus a scríobh ar an mbealach seo.</p>
+<p>Is í an eisceacht don idiom seo ná má táimid ag tabhairt dhá mhír leis an ainm céanna
+isteach sa scóip le ráitis <code>use</code>, mar ní cheadaíonn Rust é sin. Liostáil 7-15
+léiríonn sé conas dhá chineál <code>Result</code> a thabhairt isteach sa scóip a bhfuil an t-ainm céanna orthu ach
+modúil tuismitheoirí éagsúla, agus conas tagairt a dhéanamh dóibh.</p>
+<Listing number="7-15" file-name="src/lib.rs" caption="Bringing two types with the same name into the same scope requires using their parent modules.">
+<pre><code class="language-rust noplayground">use std::fmt;
+use std::io;
+
+fn function1() -&gt; fmt::Result {
+    // --snip--
+<span class="boring">    Ok(())
+</span>}
+
+fn function2() -&gt; io::Result&lt;()&gt; {
+    // --snip--
+<span class="boring">    Ok(())
+</span>}</code></pre>
+</Listing>
+<p>Mar a fheiceann tú, trí na modúil tuismitheora a úsáid déantar idirdhealú idir an dá chineál <code>Result</code>.
+Más rud é ina ionad sin shonraigh muid <code>use std::fmt::Result</code> agus <code>use std::io::Result</code>, dhéanfaimis
+tá dhá chineál <code>Result</code> sa scóip chéanna, agus ní bheadh ​​a fhios ag Rust cén ceann atá againn
+i gceist nuair a d'úsáideamar <code>Result</code>.</p>
+<h3 id="ainmneacha-nua-a-sholáthar-leis-an-eochairfhocal-as"><a class="header" href="#ainmneacha-nua-a-sholáthar-leis-an-eochairfhocal-as">Ainmneacha Nua a Sholáthar leis an Eochairfhocal <code>as</code></a></h3>
+<p>Tá réiteach eile ar an bhfadhb a bhaineann le dhá chineál den ainm céanna a thabhairt
+isteach sa raon feidhme céanna le <code>use</code>: tar éis an chosáin, is féidir linn a shonrú <code>as</code> agus nua
+ainm áitiúil, nó <em>alias</em>, don chineál. Léiríonn liostú 7-16 bealach eile le scríobh
+an cód i Liostú 7-15 trí cheann amháin den dá chineál <code>Result</code> a athainmniú ag baint úsáide as <code>as</code>.</p>
+<Listing number="7-16" file-name="src/lib.rs" caption="Renaming a type when it’s brought into scope with the `as` keyword">
+<pre><code class="language-rust noplayground">use std::fmt::Result;
+use std::io::Result as IoResult;
+
+fn function1() -&gt; Result {
+    // --snip--
+<span class="boring">    Ok(())
+</span>}
+
+fn function2() -&gt; IoResult&lt;()&gt; {
+    // --snip--
+<span class="boring">    Ok(())
+</span>}</code></pre>
+</Listing>
+<p>Sa dara ráiteas <code>use</code>, roghnaigh muid an t-ainm nua <code>IoResult</code> le haghaidh an
+cineál <code>std::io::Result</code>, nach mbeidh ag teacht salach ar an <code>Result</code> ó <code>std::fmt</code>
+a thugamar isteach sa scóip freisin. Tá Liostáil 7-15 agus Liostú 7-16
+a mheastar a bheith ina ngnáthnós, mar sin tá an rogha suas duitse!</p>
+<h3 id="ainmneacha-á-ath-onnmhairiú-le-pub-use"><a class="header" href="#ainmneacha-á-ath-onnmhairiú-le-pub-use">Ainmneacha á ath-onnmhairiú le <code>pub use</code></a></h3>
+<p>Nuair a thugaimid ainm isteach sa scóip leis an eochairfhocal <code>use</code>, an t-ainm atá ar fáil i
+tá an raon feidhme nua príobháideach. Chun an cód a ghlaonn ár gcód a chumasú chun tagairt a dhéanamh
+an t-ainm sin amhail is dá mbeadh sé sainmhínithe i raon feidhme an chóid sin, is féidir linn <code>pub</code> a chur le chéile
+agus <code>use</code>. Tugtar <em>re-exporting</em> ar an teicníocht seo toisc go bhfuil
+mír isteach sa raon ach freisin an mhír sin a chur ar fáil do dhaoine eile le tabhairt isteach
+a raon feidhme.</p>
+<p>Taispeánann Liostú 7-17 an cód i Liostú 7-11 le <code>use</code> sa mhodúl fréimhe
+athraigh go <code>pub use</code>.</p>
+<Listing number="7-17" file-name="src/lib.rs" caption="Making a name available for any code to use from a new scope with `pub use`">
+<pre><code class="language-rust noplayground test_harness">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+pub use crate::front_of_house::hosting;
+
+pub fn eat_at_restaurant() {
+    hosting::add_to_waitlist();
+}</code></pre>
+</Listing>
+<p>Roimh an athrú seo, bheadh ar chód seachtrach glaoch ar an <code>add_to_waitlist</code>
+feidhm ag baint úsáide as an cosán
+<code>restaurant::front_of_house::hosting::add_to_waitlist()</code>, a mbeadh
+D'éiligh sé go ndéanfaí an modúl <code>front_of_house</code>  a mharcáil mar <code>pub</code>. Anois go bhfuil an <code>pub use</code>
+seo tar éis an modúl <code>hosting</code> ath-onnmhairithe aón modúl fréimhe, cód seachtrach
+in ann an cosán <code>restaurant::hosting::add_to_waitlist()</code> a úsáid ina ionad sin.</p>
+<p>Tá sé úsáideach ath-onnmhairiú nuair a bhíonn struchtúr inmheánach do chód difriúil
+ón gcaoi a smaoineodh ríomhchláraitheoirí a ghlaonn do chód ar an bhfearann. Le haghaidh
+Mar shampla, sa mheafar bialann seo, a cheapann na daoine atá ag rith na bialainne
+faoi ​​“aghaidh an tí” agus “cúl an tí.” Ach custaiméirí ag tabhairt cuairte ar bhialann
+is dócha nach smaoineoidh siad ar na codanna den bhialann sna téarmaí sin. Le
+<code>pub use</code>, is féidir linn ár gcód a scríobh le struchtúr amháin ach rud eile a nochtadh
+struchtúr. Mar gheall air seo déanann ár leabharlann dea-eagraithe do ríomhchláraitheoirí a oibríonn uirthi
+an leabharlann agus ríomhchláraitheoirí ag glaoch ar an leabharlann. Breathnóimid ar shampla eile
+de <code>pub use</code> agus conas a théann sé i bhfeidhm ar dhoiciméadú do chliabhán sa <a href="ch14-02-publishing-to-crates-io.html#exporting-a-convenient-public-api-with-pub-use">“Easpórtáil a
+API Poiblí áisiúil le <code>pub use</code>”</a><!-- neamhaird a dhéanamh ar --> alt de
+Caibidil 14 .</p>
+<h3 id="pacáistí-seachtracha-á-Úsáid"><a class="header" href="#pacáistí-seachtracha-á-Úsáid">Pacáistí Seachtracha á Úsáid</a></h3>
+<p>I gCaibidil 2, rinneamar tionscadal cluiche tomhais a ríomhchlárú a bhain úsáid as seachtrach
+pacáiste ar a dtugtar <code>rand</code> chun uimhreacha randamacha a fháil. Chun <code>rand</code> a úsáid inár dtionscadal, déanaimid
+cuireadh an líne seo le <em>Cargo.toml</em>:</p>
+<p>!-- When updating the version of <code>rand</code> used, also update the version of
+<code>rand</code> used in these files so they all match:</p>
+<ul>
+<li>ch02-00-guessing-game-tutorial.md</li>
+<li>ch14-03-cargo-workspaces.md
+--&gt;</li>
+</ul>
+<Listing file-name="Cargo.toml">
+<pre><code class="language-toml">rand = "0.8.5"
+</code></pre>
+</Listing>
+<p>Nuair a chuirtear <code>rand</code> isteach mar spleáchas i <em>Cargo.toml</em> insíonn do Cargo an
+pacáiste <code>rand</code> agus aon spleáchais ó <a href="https://crates.io/"> crates.io</a> agus
+cuir <code>rand</code> ar fáil dár dtionscadal.</p>
+<p>Ansin, chun sainmhínithe <code>rand</code> a thabhairt isteach i raon feidhme ár bpacáiste, chuireamar a
+líne <code>use</code> ag tosú le hainm an chliabháin, <code>rand</code>, agus liostaigh na míreanna
+bhíomar ag iarraidh a thabhairt isteach sa scóip. Thabhairt chun cuimhne go bhfuil sa <a href="ch02-00-guessing-game-tutorial.html#generating-a-random-number">“Giniúint Randamach
+Uimhir”</a><!-- neamhaird a dhéanamh ar --> alt i gCaibidil 2, thugamar an trait <code>Rng</code>
+isteach sa raon feidhme agus tugadh an fheidhm <code>rand:: thread_rng</code> air:</p>
+<pre><code class="language-meirge  neamhaird"># use std::io;
+use rand::Rng;
+
+fn main() {
+#     println!("Guess the number!");
+# 
+    let secret_number = rand::thread_rng().gen_range(1..=100);
+# 
+#     println!("The secret number is: {secret_number}");
+# 
+#     println!("Please input your guess.");
+# 
+#     let mut guess = String::new();
+# 
+#     io::stdin()
+#         .read_line(&amp;mut guess)
+#         .expect("Failed to read line");
+# 
+#     println!("You guessed: {guess}");
+}
+</code></pre>
+<p>Tá go leor pacáistí curtha ar fáil ag baill de phobal Rust ag
+<a href="https://crates.io/">crates.io</a>, agus aon cheann acu a tharraingt isteach i do phacáiste
+Tá na céimeanna céanna i gceist: iad a liostú i gcomhad <em>Cargo.toml</em> do phacáiste agus
+ag baint úsáide as <code>use</code> chun míreanna óna cliathbhoscaí a thabhairt isteach sa scóip.</p>
+<p>Tabhair faoi deara gur cliathbhosca é an leabharlann chaighdeánach <code>std</code> atá lasmuigh dár gcuid
+pacáiste. Toisc go bhfuil an leabharlann caighdeánach seolta leis an teanga Rust, táimid
+ní gá <em>Cargo.toml</em> a athrú chun <code>std</code> a chur san áireamh. Ach ní mór dúinn tagairt a dhéanamh
+sé le <code>use</code> chun míreanna a thabhairt as sin isteach i raon feidhme ár bpacáiste. Mar shampla,
+le <code>HashMap</code> d'úsáidfimid an líne seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::HashMap;
+<span class="boring">}</span></code></pre></pre>
+<p>Is cosán iomlán é seo ag tosú le <code>std</code>, ainm na leabharlainne caighdeánach
+cliathbhosca.</p>
+<h3 id="conairí-neadaithe-a-Úsáid-chun-liostaí-móra-use-a-ghlanadh"><a class="header" href="#conairí-neadaithe-a-Úsáid-chun-liostaí-móra-use-a-ghlanadh">Conairí Neadaithe a Úsáid chun Liostaí Móra <code>use</code> a ghlanadh</a></h3>
+<p>Má táimid ag baint úsáide as míreanna iolracha atá sainithe sa chliabhán céanna nó sa mhodúl céanna, liostáil
+is féidir le gach mír ar a líne féin go leor spáis ingearach a ghlacadh inár gcomhaid. Le haghaidh
+Mar shampla, an dá ráiteas <code>use</code> seo a bhí againn sa chluiche buille faoi thuairim i Liosta 2-4
+tabhair míreanna ó <code>std</code> isteach sa scóip:</p>
+<Listing file-name="src/main.rs">
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span>// --snip--
+use std::cmp::Ordering;
+use std::io;
+// --snip--
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {guess}");
+</span><span class="boring">
+</span><span class="boring">    match guess.cmp(&amp;secret_number) {
+</span><span class="boring">        Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">        Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">        Ordering::Equal =&gt; println!("You win!"),
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Ina áit sin, is féidir linn cosáin neadaithe a úsáid chun na míreanna céanna a thabhairt isteach i raon feidhme amháin
+líne. Déanaimid é seo trí chomhchuid an chosáin a shonrú, agus dhá cheann ina dhiaidh
+colons, agus ansin lúibíní chatach thart ar liosta de na codanna de na cosáin a
+difriúil, mar a thaispeántar i Liosta 7-18.</p>
+<Listing number="7-18" file-name="src/main.rs" caption="Specifying a nested path to bring multiple items with the same prefix into scope">
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span>// --snip--
+use std::{cmp::Ordering, io};
+// --snip--
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    let guess: u32 = guess.trim().parse().expect("Please type a number!");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {guess}");
+</span><span class="boring">
+</span><span class="boring">    match guess.cmp(&amp;secret_number) {
+</span><span class="boring">        Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">        Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">        Ordering::Equal =&gt; println!("You win!"),
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>I gcláir níos mó, a thabhairt go leor míreanna i raon feidhme as an gcliathbhosca céanna nó
+Is féidir le modúl ag baint úsáide as cosáin neadaithe líon na ráiteas <code>use</code> ar leith a laghdú
+ag teastáil go leor!</p>
+<p>Is féidir linn cosán neadaithe a úsáid ar aon leibhéal i gcosán, rud atá úsáideach nuair a chuirtear le chéile
+dhá ráiteas <code>use</code> a roinneann fobhealach. Mar shampla, taispeánann Liostú 7-19 dhá cheann
+ráitis <code>use</code>: ceann a thugann <code>std::io</code> isteach sa scóip agus ceann a thugann
+<code>std::io::Write</code> isteach sa scóip.</p>
+<Listing number="7-19" file-name="src/lib.rs" caption="Two `use` statements where one is a subpath of the other">
+<pre><code class="language-rust noplayground">use std::io;
+use std::io::Write;</code></pre>
+</Listing>
+<p>Is é an chuid choitianta den dá chonair seo ná <code>std::io</code>, agus sin an chéad cheann iomlán
+cosán. Chun an dá chonair seo a chumasc i ráiteas amháin <code>use</code>, is féidir linn <code>self</code> a úsáid isteach
+an cosán neadaithe, mar a thaispeántar i Liosta 7-20.</p>
+<Listing number="7-20" file-name="src/lib.rs" caption="Combining the paths in Listing 7-19 into one `use` statement">
+<pre><code class="language-rust noplayground">use std::io::{self, Write};</code></pre>
+</Listing>
+<p>Tugann an líne seo <code>std::io</code> agus <code>std::io::Write</code> isteach sa scóip.</p>
+<h3 id="an-toibreoir-glob"><a class="header" href="#an-toibreoir-glob">An tOibreoir Glob</a></h3>
+<p>Más mian linn <em>all</em> míreanna poiblí atá sainithe i gcosán isteach sa raon feidhme a thabhairt, is féidir linn
+sonraigh an cosán sin a leanann an t-oibreoir <code>*</code> glob:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::*;
+<span class="boring">}</span></code></pre></pre>
+<p>Tugann an ráiteas <code>use</code> seo na míreanna poiblí go léir atá sainmhínithe in <code>std::collections</code> isteach
+an raon feidhme reatha. Bí cúramach agus an t-oibreoir glob á úsáid agat! Is féidir le Glob é a dhéanamh
+níos deacra a insint cad iad na hainmneacha atá sa raon feidhme agus cén áit a úsáidtear ainm i do chlár
+shainmhíníodh.</p>
+<p>Is minic a úsáidtear an t-oibreoir glob agus é ag tástáil chun gach rud a thabhairt faoi thástáil
+isteach sa mhodúl <code>tests</code>; Labhróimid faoi sin sa <a href="ch11-01-writing-tests.html#how-to-write-tests">“Conas Scríobh
+Tástálacha”</a><!-- neamhaird --> alt i gCaibidil 11. An t-oibreoir glob
+úsáidtear uaireanta freisin mar chuid den phatrún réamhluí: féach <a href="../std/prelude/index.html#other-preludes">na doiciméid chaighdeánacha leabharlainne</a> <!-- neamhaird -->
+chun tuilleadh eolais a fháil ar an bpatrún sin.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="modúil-a-scaradh-ina-gcomhaid-Éagsúla"><a class="header" href="#modúil-a-scaradh-ina-gcomhaid-Éagsúla">Modúil a Scaradh ina gComhaid Éagsúla</a></h2>
+<p>Go dtí seo, shainmhínigh na samplaí go léir sa chaibidil seo modúil iolracha in aon chomhad amháin.
+Nuair a thagann méadú mór ar mhodúil, b'fhéidir gur mhaith leat a sainmhínithe a aistriú go dtí ceann eile
+comhad chun an cód a dhéanamh níos éasca le nascleanúint a dhéanamh.</p>
+<p>Mar shampla, cuirimis tús leis an gcód i Liostú 7-17 a raibh iolraí ann
+modúil bialann. Bainfimid modúil isteach i gcomhaid in ionad na modúil go léir a bheith againn
+modúil atá sainithe i bhfréamhchomhad an chliabháin. Sa chás seo, tá an comhad fréimhe gcliathbhosca
+<em>src/lib.rs</em>, ach oibríonn an nós imeachta seo freisin le cliathbhoscaí dénártha a bhfuil a fhréamh gcliathbhosca
+Tá an comhad <em>src/main.rs</em>.</p>
+<p>Ar dtús bainfimid an modúl <code>front_of_house</code> as a chomhad féin. Bain an
+cód taobh istigh de na lúibíní chatach don mhodúl <code>front_of_house</code>, ag fágáil amháin
+an <code>mod front_of_house;</code> dearbhú, ionas go mbeidh an cód ag <em>src/lib.rs</em>
+léirithe i Liosta 7-21. Tabhair faoi deara nach dtiomsóidh sé seo go dtí go gcruthóimid an
+<em>src/front_of_house.rs</em> comhad i Liostú 7-22.</p>
+<Listing number="7-21" file-name="src/lib.rs" caption="Declaring the `front_of_house` module whose body will be in *src/front_of_house.rs*">
+<pre><code class="language-rust ignore does_not_compile">mod front_of_house;
+
+pub use crate::front_of_house::hosting;
+
+pub fn eat_at_restaurant() {
+    hosting::add_to_waitlist();
+}</code></pre>
+</Listing>
+<p>Ansin, cuir an cód a bhí sna lúibíní cuartha isteach i gcomhad nua darb ainm
+<em>src/front_of_house.rs</em>, mar a thaispeántar i Liostú 7-22. Tá a fhios ag an tiomsaitheoir breathnú
+sa chomhad seo toisc gur tháinig sé trasna ar dhearbhú an mhodúil sa fhréamh gcliathbhosca
+leis an ainm <code>front_of_house</code>.</p>
+<Listing number="7-22" file-name="src/front_of_house.rs" caption="Definitions inside the `front_of_house` module in *src/front_of_house.rs*">
+<pre><code class="language-rust ignore">pub mod hosting {
+    pub fn add_to_waitlist() {}
+}</code></pre>
+</Listing>
+<p>Tabhair faoi deara nach gá duit ach comhad a luchtú ag baint úsáide as dearbhú <code>mod</code> <em>aon uair</em> i do
+crann modúl. Nuair a bhíonn a fhios ag an tiomsaitheoir tá an comhad mar chuid den tionscadal (agus tá a fhios aige
+áit sa chrann modúl ina bhfuil cónaí ar an gcód mar gheall ar an áit ar chuir tú an <code>mod</code>
+ráiteas), ba cheart go dtagraíonn comhaid eile i do thionscadal do chód an chomhaid luchtaithe
+ag baint úsáide as cosán go dtí an áit a dearbhaíodh é, mar atá clúdaithe sa <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">“Cosáin le haghaidh Tagartha
+chuig Mír i gCrann an Mhodúil”</a><!-- déan neamhaird de -->. I bhfocail eile,
+Is <em>not</em> é <code>mod</code> ná oibríocht "cuir san áireamh" a d'fhéadfadh a bheith feicthe agat i gceann eile
+teangacha ríomhchlárúcháin.</p>
+<p>Ansin, bainfimid an modúl <code>hosting</code> as a chomhad féin. Tá an próiseas beagán
+difriúil toisc go bhfuil <code>hosting</code> ina mhodúl linbh de <code>front_of_house</code>, ní de na
+modúl fréimhe. Cuirfimid an comhad le haghaidh <code>hosting</code> in eolaire nua a bheidh
+ainmnithe as a sinsir sa chrann modúl, sa chás seo <em>src/front_of_house</em>.</p>
+<p>Chun tús a chur le <code>hosting</code> a bhogadh, athraíonn muid <em>src/front_of_house.rs</em> go bhfuil iontu amháin
+dearbhú an mhodúil <code>hosting</code>:</p>
+<Listing file-name="src/front_of_house.rs">
+<pre><code class="language-rust ignore">pub mod hosting;</code></pre>
+</Listing>
+<p>Ansin cruthaímid eolaire <em>src/front_of_house</em> agus comhad <em>hosting.rs</em> chun
+go bhfuil na sainmhínithe a rinneadh sa mhodúl <code>hosting</code>:</p>
+<Listing file-name="src/front_of_house/hosting.rs">
+<pre><code class="language-rust ignore">pub fn add_to_waitlist() {}</code></pre>
+</Listing>
+<p>Dá gcuirfimid <em>hosting.rs</em> san eolaire <em>src</em> ina ionad sin, dhéanfadh an tiomsaitheoir
+bí ag súil go mbeidh an cód <em>hosting.rs</em> i modúl <code>hosting</code> dearbhaithe sa chliathbhosca
+fréamh, agus nach ndearbhaítear é mar leanbh den mhodúl `tosaigh_an tí. Tá an
+rialacha tiomsaitheora maidir leis na comhaid le seiceáil cé na modúil a chiallaíonn cód an
+meaitseálann eolairí agus comhaid níos dlúithe le crann an mhodúil.</p>
+<blockquote>
+<h3 id="conairí-comhad-malartacha"><a class="header" href="#conairí-comhad-malartacha">Conairí Comhad Malartacha</a></h3>
+<p>Go dtí seo tá na conairí comhaid is gnásúla a úsáideann an tiomsaitheoir Rust clúdaithe againn,
+ach tacaíonn Rust le cosán comhaid stíl níos sine freisin. Le haghaidh modúl ainmnithe
+<code>front_of_house</code> dearbhaithe i bhfréamh an gcliathbhosca, lorgóidh an tiomsaitheoir an
+cód an mhodúil i:</p>
+<ul>
+<li><em>src/front_of_house.rs</em> (cad a chlúdaigh muid)</li>
+<li><em>src/front_of_house/mod.rs</em> (stíl níos sine, cosán tacaithe fós)</li>
+</ul>
+<p>I gcás modúl darb ainm <code>hosting</code> is fomhodúl de <code>front_of_house</code> é, an
+lorgóidh tiomsaitheoir cód an mhodúil i:</p>
+<ul>
+<li><em>src/front_of_house/hosting.rs</em> (cad a chlúdaigh muid)</li>
+<li><em>src/front_of_house/hosting/mod.rs</em> (stíl níos sine, cosán tacaithe fós)</li>
+</ul>
+<p>Má úsáideann tú an dá stíl don mhodúl céanna, gheobhaidh tú earráid tiomsaithe.
+Is éard atá i gceist le meascán den dá stíl a úsáid le haghaidh modúil éagsúla sa tionscadal céanna
+ceadaithe, ach d'fhéadfadh sé a bheith mearbhall do dhaoine atá ag seoladh do thionscadal.</p>
+<p>Is é an príomhbhuntáiste a bhaineann leis an stíl a úsáideann comhaid darb ainm <em>mod.rs</em> ná go bhfuil do
+Is féidir go leor comhad darb ainm <em>mod.rs</em> a bheith ag an tionscadal, rud a chuireann mearbhall ort
+nuair a bhíonn siad oscailte agat i d'eagarthóir ag an am céanna.</p>
+</blockquote>
+<p>Táimid tar éis cód gach modúl a aistriú go comhad ar leith, agus tá crann an mhodúil fós ann
+mar an gcéanna. Oibreoidh an fheidhm glaonna i <code>eat_at_restaurant</code> gan aon cheann
+modhnú, cé go bhfuil na sainmhínithe ina gcónaí i gcomhaid éagsúla. seo
+ligeann teicníocht duit modúil a aistriú go comhaid nua de réir mar a fhásann siad i méid.</p>
+<p>Tabhair faoi deara go bhfuil an <code>pub use crate::front_of_house :: hosting</code> ráiteas i
+Níor athraigh <em>src/lib.rs</em> freisin, agus ní bhíonn tionchar ar bith ag <code>use</code> ar na comhaid
+a thiomsaítear mar chuid den chliabhán. Dearbhaíonn an eochairfhocal <code>mod</code> modúil, agus Rust
+Breathnaíonn i gcomhad leis an ainm céanna leis an modúl don chód a théann isteach
+an modúl sin.</p>
+<h2 id="achoimre-6"><a class="header" href="#achoimre-6">Achoimre</a></h2>
+<p>Ligeann Rust duit pacáiste a roinnt ina cliathbhoscaí iolracha agus cliathbhoscaí ina modúil
+is féidir leat tagairt a dhéanamh d'earraí atá sainithe i modúl amháin ó mhodúl eile. Is féidir leat a dhéanamh
+seo trí chosáin iomlána nó choibhneasta a shonrú. Is féidir na cosáin seo a thabhairt isteach
+raon feidhme le ráiteas <code>use</code> ionas gur féidir leat cosán níos giorra a úsáid le haghaidh úsáidí iolracha
+an mhír sa raon feidhme sin. Tá cód an mhodúil príobháideach de réir réamhshocraithe, ach is féidir leat a dhéanamh
+sainmhínithe go poiblí tríd an eochairfhocal <code>pub</code> a chur leis.</p>
+<p>Sa chéad chaibidil eile, féachfaimid ar roinnt struchtúr sonraí bailiúcháin sa
+leabharlann caighdeánach ar féidir leat a úsáid i do chód eagraithe go néata.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="common-collections"><a class="header" href="#common-collections">Common Collections</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="storing-lists-of-values-with-vectors"><a class="header" href="#storing-lists-of-values-with-vectors">Storing Lists of Values with Vectors</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="storing-utf-8-encoded-text-with-strings"><a class="header" href="#storing-utf-8-encoded-text-with-strings">Storing UTF-8 Encoded Text with Strings</a></h1>

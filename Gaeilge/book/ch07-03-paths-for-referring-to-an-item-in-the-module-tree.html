@@ -159,7 +159,361 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="paths-for-referring-to-an-item-in-the-module-tree"><a class="header" href="#paths-for-referring-to-an-item-in-the-module-tree">Paths for Referring to an Item in the Module Tree</a></h1>
+                        <h2 id="cosáin-chun-tagairt-a-dhéanamh-do-mhír-i-gcrann-an-mhodúil"><a class="header" href="#cosáin-chun-tagairt-a-dhéanamh-do-mhír-i-gcrann-an-mhodúil">Cosáin chun Tagairt a Dhéanamh do Mhír i gCrann an Mhodúil</a></h2>
+<p>Chun Rust a thaispeáint nuair is féidir mír a aimsiú i gcrann modúl, úsáidimid cosán mar an gcéanna
+ar an mbealach a n-úsáidimid cosán agus córas comhaid á nascleanúint. Chun feidhm a ghlaoch, ní mór dúinn
+fios a chosáin.</p>
+<p>Is féidir le cosán a bheith i dhá fhoirm:</p>
+<ul>
+<li>Is é <em>absolute path</em> an cosán iomlán a thosaíonn ó fhréamh gcliathbhosca; le haghaidh cód
+ó chliathbhosca seachtrach, tosaíonn an cosán iomlán le hainm an chliabháin, agus le haghaidh
+cód ón gcliathbhosca reatha, tosaíonn sé leis an <code>crate</code> litriúil.</li>
+<li>Tosaíonn cosán <em>relative</em> ón modúl reatha agus úsáidtear <code>self</code>, <code>super</code>, nó
+aitheantóir sa mhodúl reatha.</li>
+</ul>
+<p>Leanann aitheantóir amháin nó níos mó cosáin iomlána agus choibhneasta araon
+scartha le coilíneachtaí dúbailte (<code>::</code>).</p>
+<p>Ag filleadh ar Liostú 7-1, abair gur mhaith linn an fheidhm <code>add_to_waitlist</code> a ghlaoch.
+Is ionann é seo agus fiafraí: cad é cosán na feidhme <code>add_to_waitlist</code>?
+I Liostáil 7-3 tá Liosta 7-1 le roinnt de na modúil agus feidhmeanna
+bhaintear.</p>
+<p>Taispeánfaimid dhá bhealach chun an fheidhm <code>add_to_waitlist</code> a ghlaoch ó fheidhm nua,
+<code>eat_at_restaurant</code>, sainmhínithe i bhfréamh an chliathbhosca. Tá na cosáin seo ceart, ach
+tá fadhb eile fágtha a chuirfidh cosc ​​ar an sampla seo a chur le chéile
+mar atá. Míneoimid cén fáth i mbeagán focal.</p>
+<p>Tá an fheidhm <code>eat_at_restaurant</code> mar chuid d'API poiblí ár gcliathbhosca leabharlainne, mar sin
+marcálann muid é leis an eochairfhocal <code>pub</code>. Sa <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword">“Cosáin Nochtadh leis an <code>pub</code>
+Eochairfhocal”</a> <!-- neamhaird a dhéanamh ar --> alt, déanfaimid níos mó sonraí faoi <code>pub</code>.</p>
+<Listing number="7-3" file-name="src/lib.rs" caption="Calling the `add_to_waitlist` function using absolute and relative paths">
+<pre><code class="language-rust ignore does_not_compile">mod front_of_house {
+    mod hosting {
+        fn add_to_waitlist() {}
+    }
+}
+
+pub fn eat_at_restaurant() {
+    // Absolute path
+    crate::front_of_house::hosting::add_to_waitlist();
+
+    // Relative path
+    front_of_house::hosting::add_to_waitlist();
+}</code></pre>
+</Listing>
+<p>An chéad uair a ghlaoimid an fheidhm <code>add_to_waitlist</code> i <code>eat_at_restaurant</code>,
+úsáidimid cosán iomlán. Sainmhínítear an fheidhm <code>add_to_waitlist</code> mar an gcéanna
+cliathbhosca mar <code>eat_at_restaurant</code>, rud a chiallaíonn gur féidir linn an eochairfhocal <code>crate</code> a úsáid chun
+tús a chur le cosán iomlán. Áirímid ansin gach ceann de na modúil as a chéile go dtí go ndéanaimid
+déan ár mbealach chuig <code>add_to_waitlist</code>. Is féidir leat córas comhaid a shamhlú leis an gcéanna
+struchtúr: shonraigh muid an cosán <code>/front_of_house/hosting/add_to_waitlist</code> go dtí
+reáchtáil an clár <code>add_to_waitlist</code>; ag baint úsáide as an ainm <code>crate</code> chun tosú as an
+Is cosúil le fréamh an chliabháin úsáid a bhaint as <code>/</code> chun tosú ó fhréamh an chórais comhad i do bhlaosc.</p>
+<p>An dara huair a ghlaoimid <code>add_to_waitlist</code> i <code>eat_at_restaurant</code>, úsáidimid
+cosán coibhneasta. Tosaíonn an cosán le <code>front_of_house</code>, ainm an mhodúil
+sainmhínithe ag an leibhéal céanna de chrann an mhodúil le <code>eat_at_restaurant</code>. Seo an
+bheadh ​​​​coibhéis córas comhaid ag baint úsáide as an gcosán
+<code>front_of_house/hosting/add_to_waitlist</code>. Ag tosú le hainm modúl ciallaíonn
+go bhfuil an cosán coibhneasta.</p>
+<p>Is é an cinneadh a dhéanfaidh tú maidir le conair ghaolmhar nó cosán iomlán a roghnú
+bunaithe ar do thionscadal, agus braitheann sé ar cibé an bhfuil seans níos mó agat bogadh
+cód sainmhínithe míre ar leithligh ó nó in éineacht leis an gcód a úsáideann an
+mír. Mar shampla, má bhog muid an modúl <code>front_of_house</code> agus an
+feidhmíonn <code>eat_at_restaurant</code> isteach i modúl darb ainm <code>customer_experience</code>, bheimis
+gá an cosán iomlán chuig <code>add_to_waitlist</code> a nuashonrú, ach an cosán coibhneasta
+bheadh ​​bailí fós. Mar sin féin, má bhog muid an fheidhm <code>eat_at_restaurant</code>
+ar leithligh isteach i modúl darb ainm <code>dining</code>, an cosán iomlán chuig an
+D'fhanfadh an glao <code>add_to_waitlist</code> mar a chéile, ach bheadh ​​gá leis an gcosán coibhneasta
+a nuashonrú. Is é an rogha atá againn i gcoitinne ná cosáin iomlána a shonrú toisc go bhfuil
+is dóichí go mbeidh muid ag iarraidh sainmhínithe cód agus glaonna míreanna a bhogadh go neamhspleách orthu
+chéile.</p>
+<p>Déanaimis iarracht Liostú 7-3 a thiomsú agus faigh amach cén fáth nach dtiomsóidh sé fós! Tá an
+taispeántar na hearráidí a fhaighimid i Liostú 7-4.</p>
+<Listing number="7-4" caption="Compiler errors from building the code in Listing 7-3">
+<pre><code class="language-console">$ cargo build
+   Compiling restaurant v0.1.0 (file:///projects/restaurant)
+error[E0603]: module `hosting` is private
+ --&gt; src/lib.rs:9:28
+  |
+9 |     crate::front_of_house::hosting::add_to_waitlist();
+  |                            ^^^^^^^  --------------- function `add_to_waitlist` is not publicly re-exported
+  |                            |
+  |                            private module
+  |
+note: the module `hosting` is defined here
+ --&gt; src/lib.rs:2:5
+  |
+2 |     mod hosting {
+  |     ^^^^^^^^^^^
+
+error[E0603]: module `hosting` is private
+  --&gt; src/lib.rs:12:21
+   |
+12 |     front_of_house::hosting::add_to_waitlist();
+   |                     ^^^^^^^  --------------- function `add_to_waitlist` is not publicly re-exported
+   |                     |
+   |                     private module
+   |
+note: the module `hosting` is defined here
+  --&gt; src/lib.rs:2:5
+   |
+2  |     mod hosting {
+   |     ^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0603`.
+error: could not compile `restaurant` (lib) due to 2 previous errors
+</code></pre>
+</Listing>
+<p>Deir na teachtaireachtaí earráide go bhfuil modúl <code>hosting</code> príobháideach. I bhfocail eile, táimid
+bíodh na cosáin chearta agat don mhodúl <code>hosting</code> agus don <code>add_to_waitlist</code>
+feidhm, ach ní ligfidh Rust dúinn iad a úsáid toisc nach bhfuil rochtain aige ar an
+rannóga príobháideacha. I Rust, tá gach mír (feidhmeanna, modhanna, struchtúir, enums,
+modúil, agus tairisigh) príobháideach do mhodúil tuismitheora de réir réamhshocraithe. Más mian leat
+chun mír mar fheidhm nó struchtúr a dhéanamh príobháideach, cuireann tú i modúl é.</p>
+<p>Ní féidir le míreanna i modúl tuismitheora na míreanna príobháideacha taobh istigh de mhodúil leanaí a úsáid, ach
+is féidir le míreanna i modúil leanaí na míreanna i modúil a sinsear a úsáid. Tá sé seo
+mar gheall ar mhodúil leanbh wrap agus a cheilt a gcuid sonraí cur chun feidhme, ach an leanbh
+is féidir le modúil an comhthéacs ina bhfuil siad sainithe a fheiceáil. Chun leanúint ar aghaidh lenár
+meafar, smaoinigh ar na rialacha príobháideachais mar chúloifig a
+bialann: is príobháideach do chustaiméirí bialainne an rud a théann ar aghaidh ann, ach
+is féidir le bainisteoirí oifige gach rud a fheiceáil agus a dhéanamh sa bhialann a oibríonn siad.</p>
+<p>Roghnaigh Rust go mbeadh an córas modúil ag feidhmiú ar an mbealach seo ionas go gcuirfí i bhfolach taobh istigh
+is é sonraí cur chun feidhme an réamhshocrú. Ar an mbealach sin, tá a fhios agat cé na codanna den
+cód istigh is féidir leat a athrú gan an cód seachtrach a bhriseadh. Mar sin féin, tugann Rust
+tá an rogha agat codanna istigh de chód na modúil leanaí a nochtadh don tsinsir sheachtrach
+modúil tríd an eochairfhocal <code>pub</code> a úsáid chun mír a phoibliú.</p>
+<h3 id="conairí-á-nochtadh-leis-an-eochairfhocal-pub"><a class="header" href="#conairí-á-nochtadh-leis-an-eochairfhocal-pub">Conairí á Nochtadh leis an Eochairfhocal <code>pub</code></a></h3>
+<p>Fillfimid ar an earráid i Liostú 7-4 a chuir in iúl dúinn gurb é an modúl <code>hosting</code>
+príobháideach. Ba mhaith linn go mbeadh an fheidhm <code>eat_at_restaurant</code> sa mhodúl tuismitheora
+rochtain ar an bhfeidhm <code>add_to_waitlist</code> sa mhodúl linbh, mar sin marcálann muid an
+modúl <code>hosting</code> leis an eochairfhocal <code>pub</code>, mar a thaispeántar i Liosta 7-5.</p>
+<Listing number="7-5" file-name="src/lib.rs" caption="Declaring the `hosting` module as `pub` to use it from `eat_at_restaurant`">
+<pre><code class="language-rust ignore does_not_compile">mod front_of_house {
+    pub mod hosting {
+        fn add_to_waitlist() {}
+    }
+}
+
+pub fn eat_at_restaurant() {
+    // Absolute path
+    crate::front_of_house::hosting::add_to_waitlist();
+
+    // Relative path
+    front_of_house::hosting::add_to_waitlist();
+}</code></pre>
+</Listing>
+<p>Ar an drochuair, tá earráidí tiomsaitheora fós mar thoradh ar an gcód i Liostú 7-5, mar
+léirithe i Liosta 7-6.</p>
+<Listing number="7-6" caption="Compiler errors from building the code in Listing 7-5">
+<pre><code class="language-console">$ cargo build
+   Compiling restaurant v0.1.0 (file:///projects/restaurant)
+error[E0603]: function `add_to_waitlist` is private
+ --&gt; src/lib.rs:9:37
+  |
+9 |     crate::front_of_house::hosting::add_to_waitlist();
+  |                                     ^^^^^^^^^^^^^^^ private function
+  |
+note: the function `add_to_waitlist` is defined here
+ --&gt; src/lib.rs:3:9
+  |
+3 |         fn add_to_waitlist() {}
+  |         ^^^^^^^^^^^^^^^^^^^^
+
+error[E0603]: function `add_to_waitlist` is private
+  --&gt; src/lib.rs:12:30
+   |
+12 |     front_of_house::hosting::add_to_waitlist();
+   |                              ^^^^^^^^^^^^^^^ private function
+   |
+note: the function `add_to_waitlist` is defined here
+  --&gt; src/lib.rs:3:9
+   |
+3  |         fn add_to_waitlist() {}
+   |         ^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0603`.
+error: could not compile `restaurant` (lib) due to 2 previous errors
+</code></pre>
+</Listing>
+<p>Cad a tharla? Nuair a chuirtear an eochairfhocal <code>pub</code> os comhair <code>mod hosting</code> déanann an
+modúl poiblí. Leis an athrú seo, más féidir linn rochtain a fháil ar <code>front_of_house</code>, is féidir linn
+rochtain a fháil ar <code>hosting</code>. Ach tá na <em>contents</em> de <code>hosting</code> fós príobháideach; ag déanamh an
+ní dhéanann an modúl poiblí a bhfuil ann. An eochairfhocal <code>pub</code> ar mhodúl
+ní ligeann sé ach tagairt a dhéanamh do chód ina mhodúil sinsear, ní rochtain a fháil ar a chód istigh.
+Toisc gur coimeádáin iad modúil, níl mórán ar féidir linn a dhéanamh ach an
+modúl poiblí; caithfimid dul níos faide agus rogha a dhéanamh ceann amháin nó níos mó de na
+míreanna laistigh den mhodúl poiblí chomh maith.</p>
+<p>Deir na hearráidí i Liostú 7-6 go bhfuil an fheidhm <code>add_to_waitlist</code> príobháideach.
+Baineann na rialacha príobháideachais le struchtúir, ainmneacha, feidhmeanna agus modhanna chomh maith
+modúil.</p>
+<p>Déanaimis an fheidhm <code>add_to_waitlist</code> a phoibliú freisin tríd an <code>pub</code> a chur leis
+eochairfhocal roimh a shainmhíniú, mar atá i Liostú 7-7.</p>
+<Listing number="7-7" file-name="src/lib.rs" caption="Adding the `pub` keyword to `mod hosting` and `fn add_to_waitlist` lets us call the function from `eat_at_restaurant`">
+<pre><code class="language-rust noplayground test_harness">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+pub fn eat_at_restaurant() {
+    // Absolute path
+    crate::front_of_house::hosting::add_to_waitlist();
+
+    // Relative path
+    front_of_house::hosting::add_to_waitlist();
+}</code></pre>
+</Listing>
+<p>Anois beidh an cód le chéile! Chun a fháil amach cén fáth a ligeann dúinn úsáid a bhaint as an eochairfhocal <code>pub</code>
+na cosáin seo i <code>eat_at_restaurant</code> maidir leis na rialacha príobháideachais, breathaimis
+ag na cosáin iomlána agus coibhneasta.</p>
+<p>Ar an mbealach iomlán, cuirimid tús le <code>crate</code>, fréamh modúl ár gcliathbhosca
+crann. Sainmhínítear an modúl <code>front_of_house</code> i bhfréamh an chliathbhosca. Cé go
+Níl <code>front_of_house</code> poiblí, toisc go bhfuil an fheidhm <code>eat_at_restaurant</code> ann
+sainithe sa mhodúl céanna le <code>front_of_house</code> (is é sin, <code>eat_at_restaurant</code>
+agus is siblíní iad <code>front_of_house</code>), is féidir linn tagairt a dhéanamh do <code>front_of_house</code> ó
+<code>eat_at_restaurant</code>. Ar aghaidh tá an modúl <code>hosting</code> marcáilte le <code>pub</code>. Is féidir linn
+rochtain a fháil ar an modúl tuismitheora de <code>hosting</code>, ionas gur féidir linn rochtain a fháil ar <code>hosting</code>. Ar deireadh, an
+marcáiltear an fheidhm <code>add_to_waitlist</code> le <code>pub</code> agus is féidir linn rochtain a fháil ar a thuismitheoir
+modúl, mar sin oibríonn an glao feidhm seo!</p>
+<p>Sa chonair choibhneasta, tá an loighic mar an gcéanna leis an gcosán iomlán ach amháin i gcás an
+chéad chéim: seachas tosú ó fhréamh an gcliathbhosca, tosaíonn an cosán ó
+<code>front_of_house</code>. Sainmhínítear an modúl <code>front_of_house</code> laistigh den mhodúl céanna
+mar <code>eat_at_restaurant</code>, mar sin an cosán coibhneasta ag tosú ón modúl ina bhfuil
+Is saothair shainithe é <code>eat_at_restaurant</code>. Ansin, mar gheall ar <code>hosting</code> agus
+marcáiltear <code>add_to_waitlist</code> le <code>pub</code>, oibríonn an chuid eile den chosán, agus seo
+Tá glao feidhm bailí!</p>
+<p>Má tá sé ar intinn agat do chliabhán leabharlainne a chomhroinnt ionas gur féidir le tionscadail eile do chód a úsáid,
+is é do API poiblí do chonradh le húsáideoirí do chliabhán a chinneann conas
+is féidir leo idirghníomhú le do chód. Tá go leor cúinsí maidir le bainistiú
+athruithe ar do API poiblí chun é a dhéanamh níos éasca do dhaoine brath ar do
+cliathbhosca. Tá na breithnithe seo lasmuigh de scóip an leabhair seo; má tá tú
+suim agat san ábhar seo, féach <a href="https://rust-lang.github.io/api-guidelines/">Treoirlínte Rust API</a>.</p>
+<blockquote>
+<h4 id="dea-chleachtais-maidir-le-pacáistí-le-dénártha-agus-leabharlann"><a class="header" href="#dea-chleachtais-maidir-le-pacáistí-le-dénártha-agus-leabharlann">Dea-Chleachtais maidir le Pacáistí le Dénártha agus Leabharlann</a></h4>
+<p>Luaigh muid gur féidir le cliathbhosca dénártha <em>src/main.rs</em> a bheith i bpacáiste
+fréamh chomh maith le fréamh gcliathbhosca leabharlainne <em>src/lib.rs</em>, agus beidh an dá chliathbhosca
+ainm an phacáiste de réir réamhshocraithe. De ghnáth, pacáistí leis an bpatrún seo de
+ina mbeidh leabharlann agus cliathbhosca dénártha araon, beidh go leor cód sa
+cliathbhosca dénártha chun inrite a thosú a ghlaonn cód laistigh de chliathán na leabharlainne.
+Ligeann sé seo do thionscadail eile leas a bhaint as an gcuid is mó den fheidhmiúlacht a chuireann an
+soláthraíonn pacáiste toisc gur féidir cód an chliabháin leabharlainne a roinnt.</p>
+<p>Ba cheart crann an mhodúil a shainiú in <em>src/lib.rs</em>. Ansin, is féidir aon nithe poiblí
+a úsáid sa chliabhán dénártha trí chosáin a thosú le hainm an phacáiste.
+Bíonn an cliathbhosca dénártha ina úsáideoir ar an gcliathbhosca leabharlainne díreach mar a bheadh ​​go hiomlán
+d’úsáidfeadh cliathbhosca seachtrach cliathbhosca na leabharlainne: ní féidir leis ach an API poiblí a úsáid.
+Cuidíonn sé seo leat API maith a dhearadh; ní hamháin gur tusa an t-údar, is tusa freisin
+cliant!</p>
+<p>I <a href="ch12-00-an-io-project.html">Caibidil 12</a><!-- neamhaird a dhéanamh -->, léireoimid an eagraíocht seo
+cleachtadh le clár ordaithe ina mbeidh cliathbhosca dénártha araon
+agus cliathbhosca leabharlainne.</p>
+</blockquote>
+<h3 id="ag-tosú-cosáin-choibhneasta-le-super"><a class="header" href="#ag-tosú-cosáin-choibhneasta-le-super">Ag tosú Cosáin Choibhneasta le <code>super</code></a></h3>
+<p>Is féidir linn cosáin choibhneasta a thógáil a thosaíonn sa mhodúl tuismitheora, seachas
+an modúl reatha nó an fhréamh cliathbhosca, trí úsáid a bhaint as <code>super</code> ag tús an
+cosán. Tá sé seo cosúil le cosán córais comhad a thosú leis an gcomhréir <code>..</code>. Ag baint úsáide as
+ligeann <code>super</code> dúinn tagairt a dhéanamh do mhír a bhfuil a fhios againn atá sa mhodúl tuismitheora,
+rud a d'fhéadfadh an crann modúl a atheagrú níos éasca nuair a bhíonn an modúl go dlúth
+a bhaineann leis an tuismitheoir ach d’fhéadfaí an tuismitheoir a aistriú chuig áit eile sa mhodúl
+crann lá éigin.</p>
+<p>Smaoinigh ar an gcód i Liosta 7-8 a mhúnlaíonn an cás ina bhfuil cócaire
+socraíonn sé ordú mícheart agus tugann sé amach go pearsanta don chustaiméir é. Tá an
+feidhm <code>fix_incorrect_order</code> a shainmhínítear sa mhodúl <code>back_of_house</code> ar a dtugtar an
+feidhm <code>deliver_order</code> arna shainiú sa mhodúl tuismitheora tríd an gcosán chuig a shonrú
+<code>deliver_order</code>, ag tosú le <code>super</code>.</p>
+<Listing number="7-8" file-name="src/lib.rs" caption="Calling a function using a relative path starting with `super`">
+<pre><code class="language-rust noplayground test_harness">fn deliver_order() {}
+
+mod back_of_house {
+    fn fix_incorrect_order() {
+        cook_order();
+        super::deliver_order();
+    }
+
+    fn cook_order() {}
+}</code></pre>
+</Listing>
+<p>Tá an fheidhm <code>fix_incorrect_order</code> sa mhodúl <code>back_of_house</code>, ionas gur féidir linn
+úsáid <code>super</code> chun dul go dtí an modúl tuismitheora de <code>back_of_house</code>, atá sa chás seo
+is <code>crate</code>, an fhréamh. Ón áit sin, lorgaímid <code>deliver_order</code> agus faighimid é.
+Rath! Is dóigh linn go bhfuil an modúl <code>back_of_house</code> agus an fheidhm <code>deliver_order</code>
+is dócha go bhfanfaidh siad sa chaidreamh céanna lena chéile agus go n-aistreofar iad
+le chéile ar cheart dúinn cinneadh a dhéanamh crann modúl an chliathbhosca a atheagrú. Dá bhrí sin, táimid
+úsáid as <code>super</code> mar sin beidh níos lú áiteanna againn chun cód a nuashonrú amach anseo más amhlaidh
+bogtar an cód go modúl eile.</p>
+<h3 id="struchtúir-agus-enums-a-dhéanamh-go-poiblí"><a class="header" href="#struchtúir-agus-enums-a-dhéanamh-go-poiblí">Struchtúir agus Enums a Dhéanamh go Poiblí</a></h3>
+<p>Is féidir linn <code>pub</code> a úsáid freisin chun struchtúir agus enums a ainmniú go poiblí, ach tá a
+roinnt sonraí breise maidir le húsáid <code>pub</code> le struchtúir agus enums. Má úsáidimid <code>pub</code>
+roimh shainmhíniú struchtúr, déanaimid an struchtúr poiblí, ach réimsí an struchtúir
+beidh sé fós príobháideach. Is féidir linn gach réimse a dhéanamh poiblí nó gan a bheith bunaithe ar chás
+bonn. I Liostú 7-9, shainmhíomar struchtúr poiblí <code>back_of_house::Breakfast</code>
+le réimse poiblí <code>toast</code> ach réimse príobháideach <code>seasonal_fruit</code>. Samhlacha seo
+an cás i mbialann inar féidir leis an gcustaiméir an cineál aráin sin a phiocadh
+Tagann béile le béile, ach socraíonn an cócaire cé na torthaí a théann leis an mbéile atá bunaithe
+ar cad atá i séasúr agus i stoc. Athraíonn na torthaí atá ar fáil go tapa, mar sin
+ní féidir le custaiméirí na torthaí a roghnú nó fiú na torthaí a gheobhaidh siad a fheiceáil.</p>
+<Listing number="7-9" file-name="src/lib.rs" caption="A struct with some public fields and some private fields">
+<pre><code class="language-rust noplayground">mod back_of_house {
+    pub struct Breakfast {
+        pub toast: String,
+        seasonal_fruit: String,
+    }
+
+    impl Breakfast {
+        pub fn summer(toast: &amp;str) -&gt; Breakfast {
+            Breakfast {
+                toast: String::from(toast),
+                seasonal_fruit: String::from("peaches"),
+            }
+        }
+    }
+}
+
+pub fn eat_at_restaurant() {
+    // Order a breakfast in the summer with Rye toast
+    let mut meal = back_of_house::Breakfast::summer("Rye");
+    // Change our mind about what bread we'd like
+    meal.toast = String::from("Wheat");
+    println!("I'd like {} toast please", meal.toast);
+
+    // The next line won't compile if we uncomment it; we're not allowed
+    // to see or modify the seasonal fruit that comes with the meal
+    // meal.seasonal_fruit = String::from("blueberries");
+}</code></pre>
+</Listing>
+<p>Toisc go bhfuil an réimse <code>toast</code> sa struchtúr <code>back_of_house::Breakfast</code> poiblí,
+i <code>eat_at_restaurant</code> is féidir linn scríobh agus léamh chuig an réimse <code>toast</code> ag baint úsáide as ponc
+nodaireacht. Tabhair faoi deara nach féidir linn an réimse <code>seasonal_fruit</code> a úsáid i
+<code>eat_at_restaurant</code>, toisc go bhfuil <code>seasonal_fruit</code> príobháideach. Bain triail as uncommenting an
+líne ag modhnú an luach réimse <code>seasonal_fruit</code> féachaint cén earráid a gheobhaidh tú!</p>
+<p>Chomh maith leis sin, tabhair faoi deara toisc go bhfuil réimse príobháideach ag <code>back_of_house::Breakfast</code>, ní mór an
+Ní mór do struchtúr feidhm a bhaineann leis an bpobal a sholáthar a fhoirgníonn an
+mar shampla <code>Bricfeasta</code> (tá <code>summer</code> tugtha againn anseo). Mura raibh <code>Breakfast</code>
+a leithéid d’fheidhm a bheith againn, níorbh fhéidir linn sampla de <code>Breakfast</code> a chruthú i
+<code>eat_at_restaurant</code> mar níorbh fhéidir linn luach an phríobháidigh a shocrú
+réimse <code>seasonal_fruit</code> i <code>eat_at_restaurant</code>.</p>
+<p>I gcodarsnacht leis sin, má dhéanaimid enum poiblí, tá gach leagan dá chuid poiblí ansin. muid
+níl de dhíth ach an <code>pub</code> roimh an eochairfhocal <code>enum</code>, mar a thaispeántar i Liosta 7-10.</p>
+<Listing number="7-10" file-name="src/lib.rs" caption="Designating an enum as public makes all its variants public">
+<pre><code class="language-rust noplayground">mod back_of_house {
+    pub enum Appetizer {
+        Soup,
+        Salad,
+    }
+}
+
+pub fn eat_at_restaurant() {
+    let order1 = back_of_house::Appetizer::Soup;
+    let order2 = back_of_house::Appetizer::Salad;
+}</code></pre>
+</Listing>
+<p>Toisc go ndearnamar an <code>Appetizer</code> enum poiblí, is féidir linn an <code>Soup</code> agus <code>Salad</code> a úsáid
+leaganacha i <code>eat_at_restaurant</code>.</p>
+<p>Ní bhíonn enums an-úsáideach mura bhfuil a gcuid leaganacha poiblí; bheadh ​​sé annoying
+ní mór gach leagan enum a anótáil le <code>pub</code> i ngach cás, mar sin an réamhshocrú
+le haghaidh leagan enum le bheith poiblí. Is minic a bhíonn struchtúir úsáideach gan a gcuid
+réimsí a bheith poiblí, mar sin réimsí struct leanúint riail ghinearálta gach rud
+a bheith príobháideach de réir réamhshocraithe ach amháin má tá <code>pub</code> anótáilte air.</p>
+<p>Tá cás amháin eile a bhaineann le ‘teach tábhairne’ nár chlúdaigh muid, agus is é sin
+an ghné dheireanach den chóras modúil atá againn: an eochairfhocal <code>use</code>. Clúdóidh muid <code>use</code> leis féin
+ar dtús, agus ansin taispeánfaimid conas <code>pub</code> agus <code>use</code> a chur le chéile.</p>
 
                     </main>
 
