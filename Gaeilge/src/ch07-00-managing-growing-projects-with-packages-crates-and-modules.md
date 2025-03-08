@@ -12,7 +12,7 @@ go roghnach cliathbhosca leabharlainne amháin. De réir mar a fhásann pacáist
 cliathbhoscaí ar leith a thagann chun bheith ina spleáchais sheachtracha. Clúdaíonn an chaibidil seo gach
 na teicníochtaí seo. I gcás tionscadal an-mhór a chuimsíonn sraith de idirghaolmhar
 pacáistí a fhorbraíonn le chéile, soláthraíonn lasta _spásanna oibre_, a chlúdóimid
-sa [“Lasta Workspaces”][workspaces]<!-- neamhaird --> i gCaibidil 14.
+sa [“Cargo Workspaces”][workspaces]<!-- neamhaird --> i gCaibidil 14.
 
 Déanfaimid plé freisin ar shonraí cur chun feidhme a chuimsiú, a ligeann duit athúsáid
 cód ag leibhéal níos airde: nuair a bheidh oibríocht curtha i bhfeidhm agat, is féidir le cód eile

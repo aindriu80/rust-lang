@@ -159,7 +159,256 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="storing-lists-of-values-with-vectors"><a class="header" href="#storing-lists-of-values-with-vectors">Storing Lists of Values with Vectors</a></h1>
+                        <h2 id="liostaí-luachanna-a-stóráil-le-veicteoirí"><a class="header" href="#liostaí-luachanna-a-stóráil-le-veicteoirí">Liostaí Luachanna a Stóráil le Veicteoirí</a></h2>
+<p>Is é an chéad chineál bailiúcháin a bhreathnóimid air ná <code>Vec&lt;T&gt;</code>, ar a dtugtar <em>veicteoir</em> freisin.
+Ceadaíonn veicteoirí duit níos mó ná luach amháin a stóráil i struchtúr sonraí amháin a
+cuireann sé na luachanna go léir in aice lena chéile i gcuimhne. Ní féidir le veicteoirí ach luachanna a stóráil
+den chineál céanna. Tá siad úsáideach nuair a bhíonn liosta míreanna agat, mar shampla an
+línte téacs i gcomhad nó praghsanna na n-earraí i tralaí siopadóireachta.</p>
+<h3 id="veicteoir-nua-á-chruthú"><a class="header" href="#veicteoir-nua-á-chruthú">Veicteoir Nua á Chruthú</a></h3>
+<p>Chun veicteoir folamh nua a chruthú, tugaimid an fheidhm <code>Vec::new</code>, mar a thaispeántar i
+Liostáil 8-1.</p>
+<p><Listing number="8-1" caption="Ag cruthú veicteoir nua, folamh chun luachanna den chineál `i32`"> a choinneáil</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v: Vec&lt;i32&gt; = Vec::new();
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara gur chuireamar nóta cineáil leis anseo. Toisc nach bhfuil muid ag cur isteach ar bith
+luachanna isteach sa veicteoir seo, níl a fhios ag Rust cén cineál eilimintí atá beartaithe againn
+stór. Is pointe tábhachtach é seo. Cuirtear veicteoirí i bhfeidhm ag baint úsáide as generics;
+clúdóimid conas generics a úsáid le do chineálacha féin i gCaibidil 10. Go dtí seo,
+Bíodh a fhios agat gur féidir cineál ar bith a choinneáil sa chineál <code>Vec&lt;T&gt;</code> a sholáthraíonn an ghnáthleabharlann.
+Nuair a chruthaímid veicteoir chun cineál sonrach a shealbhú, is féidir linn an cineál laistigh a shonrú
+lúibíní uillinn. I Liostú 8-1, tá sé ráite againn le Rust go bhfuil an <code>Vec&lt;T&gt;</code> in <code>v</code>
+coinnigh gnéithe den chineál <code>i32</code>.</p>
+<p>Níos minice, cruthóidh tú <code>Vec&lt;T&gt;</code> le luachanna tosaigh agus déanfaidh Rust tátal
+an cineál luach is mian leat a stóráil, mar sin is annamh a theastaíonn uait an cineál seo a dhéanamh
+nóta. Soláthraíonn Rust an macra <code>vec!</code> go caothúil, a chruthóidh a
+veicteoir nua a shealbhaíonn na luachanna a thugann tú dó. Cruthaíonn liostú 8-2 ceann nua
+<code>Vec&lt;i32&gt;</code> a shealbhaíonn na luachanna <code>1</code>, <code>2</code>, agus <code>3</code>. Is é an cineál slánuimhir <code>i32</code>
+mar sin é an cineál slánuimhir réamhshocraithe, mar a phléamar sa <a href="ch03-02-data-types.html#data-types">“Sonraí
+Cineálacha”</a><!-- neamhaird a dhéanamh ar --> alt de Chaibidil 3.</p>
+<Listing number="8-2" caption="Ag cruthú veicteoir nua ina bhfuil luachanna">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v = vec![1, 2, 3];
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Toisc go bhfuil luachanna tosaigh <code>i32</code> tugtha againn, is féidir le Rust tátal a bhaint as an gcineál <code>v</code>
+is <code>Vec&lt;i32&gt;</code>, agus ní gá an nóta cineáil. Ansin, féachfaimid conas
+chun veicteoir a mhodhnú.</p>
+<h3 id="veicteoir-á-nuashonrú"><a class="header" href="#veicteoir-á-nuashonrú">Veicteoir á nuashonrú</a></h3>
+<p>Chun veicteoir a chruthú agus ansin eilimintí a chur leis, is féidir linn an modh <code>push</code> a úsáid,
+mar a thaispeántar i Liosta 8-3.</p>
+<Listing number="8-3" caption="Ag baint úsáide as an modh `push` chun luachanna a chur le veicteoir">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut v = Vec::new();
+
+    v.push(5);
+    v.push(6);
+    v.push(7);
+    v.push(8);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Mar aon le haon athróg, más mian linn a bheith in ann a luach a athrú, ní mór dúinn
+é a dhéanamh mutable ag baint úsáide as an eochairfhocal <code>mut</code>, mar a pléadh i gCaibidil 3. Na huimhreacha
+a chuirimid taobh istigh go bhfuil gach cineál <code>i32</code>, agus Rust tátal a bhaint as seo ó na sonraí, mar sin
+níl an nóta <code>Vec&lt;i32&gt;</code> ag teastáil uainn.</p>
+<h3 id="léamh-eilimintí-veicteoirí"><a class="header" href="#léamh-eilimintí-veicteoirí">Léamh Eilimintí Veicteoirí</a></h3>
+<p>Tá dhá bhealach ann chun tagairt a dhéanamh do luach atá stóráilte i veicteoir: trí innéacsú nó trí
+ag baint úsáide as an modh <code>get</code>. Sna samplaí seo a leanas, táimid tar éis anótáil a dhéanamh ar na cineálacha
+na luachanna a thugtar ar ais ó na feidhmeanna seo ar mhaithe le soiléireacht bhreise.</p>
+<p>Taispeánann liosta 8-4 an dá mhodh chun luach a rochtain i veicteoir, le hinnéacsú
+comhréir agus an modh <code>get</code>.</p>
+<Listing number="8-4" caption="Ag úsáid comhréir innéacsaithe agus ag baint úsáide as an modh `get` chun rochtain a fháil ar mhír i veicteoir">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v = vec![1, 2, 3, 4, 5];
+
+    let third: &amp;i32 = &amp;v[2];
+    println!("The third element is {third}");
+
+    let third: Option&lt;&amp;i32&gt; = v.get(2);
+    match third {
+        Some(third) =&gt; println!("The third element is {third}"),
+        None =&gt; println!("There is no third element."),
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara roinnt sonraí anseo. Bainimid úsáid as an luach innéacs de <code>2</code> chun an tríú eilimint a fháil
+toisc go bhfuil veicteoirí innéacsaithe de réir uimhreacha, ag tosú ag nialas. Ag baint úsáide as <code>&amp;</code> agus <code>[]</code>
+tugann sé tagairt dúinn don eilimint ag an luach innéacs. Nuair a úsáidimid an <code>get</code>
+modh agus an t-innéacs a rith mar argóint, a fháil againn <code>Option&lt;&amp;T&gt;</code> gur féidir linn
+úsáid le <code>match</code>.</p>
+<p>Soláthraíonn Rust an dá bhealach seo chun tagairt a dhéanamh d'eilimint ionas gur féidir leat a roghnú conas a dhéantar an
+iompraíonn an clár nuair a dhéanann tú iarracht luach innéacs a úsáid lasmuigh de raon na
+eilimintí atá ann cheana féin. Mar shampla, feicimis cad a tharlaíonn nuair a bhíonn veicteoir againn
+cúig eilimint agus ansin déanaimid iarracht teacht ar eilimint ag innéacs 100 le gach ceann díobh
+teicníc, mar a thaispeántar i Liosta 8-5.</p>
+<Listing number="8-5" caption="Ag iarraidh an eilimint ag innéacs 100 a rochtain i veicteoir ina bhfuil cúig eilimint">
+<pre><pre class="playground"><code class="language-rust should_panic panics"><span class="boring">fn main() {
+</span>    let v = vec![1, 2, 3, 4, 5];
+
+    let does_not_exist = &amp;v[100];
+    let does_not_exist = v.get(100);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Nuair a rithfimid an cód seo, beidh an clár i scaoll mar gheall ar an gcéad mhodh <code>[]</code>
+toisc go ndéanann sé tagairt d'eilimint nach bhfuil ann. Tá an modh seo a úsáidtear is fearr nuair a
+ag iarraidh do ríomhchlár tuairteála má tá iarracht rochtain a fháil ar eilimint thar an
+deireadh an veicteora.</p>
+<p>Nuair a théann an modh <code>get</code> thar innéacs atá lasmuigh den veicteoir, filleann sé
+<code>None</code> gan scaoll. D’úsáidfeá an modh seo má tá rochtain agat ar eilimint
+thar raon an veicteora d'fhéadfadh tarlú uaireanta faoin ngnáth
+imthosca. Beidh loighic ag do chód ansin chun ceachtar acu a láimhseáil
+<code>Some(&amp;element)</code> nó <code>None</code>, mar a pléadh i gCaibidil 6. Mar shampla, an t-innéacs
+d'fhéadfadh a bheith ag teacht ó dhuine ag dul isteach uimhir. Má tá siad isteach de thaisme a
+uimhir atá ró-mhór agus faigheann an clár luach <code>None</code>, d'fhéadfá a rá leis an
+úsáideoir cé mhéad míreanna atá sa veicteoir reatha agus tabhair seans eile dóibh
+cuir isteach luach bailí. Bheadh ​​sé sin níos éasca le húsáid ná an clár a thuar
+mar gheall ar typo!</p>
+<p>Nuair a bhíonn tagairt bhailí ag an gclár, forfheidhmíonn an seiceálaí iasachtaí an
+rialacha úinéireachta agus iasachtaíochta (clúdaithe i gCaibidil 4) chun an tagairt seo a áirithiú
+agus aon tagairtí eile d'inneachar an veicteora fós bailí. Athghairm an
+riail a shonraíonn nach féidir leat tagairtí in-shó-shó-aistrithe a bheith agat sa chéanna
+scóip. Tá feidhm ag an riail sin i Liostú 8-6, áit a bhfuil tagairt do-luaineach againn
+leis an gcéad eilimint i veicteoir agus déan iarracht eilimint a chur leis an deireadh. seo
+Ní oibreoidh an clár má dhéanaimid iarracht tagairt a dhéanamh don eilimint sin níos déanaí sa
+feidhm.</p>
+<Listing number="8-6" caption="Attempting to add an element to a vector while holding a reference to an item">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let mut v = vec![1, 2, 3, 4, 5];
+
+    let first = &amp;v[0];
+
+    v.push(6);
+
+    println!("The first element is: {first}");
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Beidh an earráid seo mar thoradh ar an gcód seo a thiomsú:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling collections v0.1.0 (file:///projects/collections)
+error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable
+ --&gt; src/main.rs:6:5
+  |
+4 |     let first = &amp;v[0];
+  |                  - immutable borrow occurs here
+5 |
+6 |     v.push(6);
+  |     ^^^^^^^^^ mutable borrow occurs here
+7 |
+8 |     println!("The first element is: {first}");
+  |                                     ------- immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `collections` (bin "collections") due to 1 previous error
+</code></pre>
+<p>Seans go n-oibreodh an cód i Liostú 8-6: cén fáth ar cheart tagairt a dhéanamh
+don chéad eilimint cúram faoi athruithe ag deireadh an veicteora? Tá an earráid seo
+mar gheall ar an gcaoi a n-oibríonn veicteoirí: toisc go gcuireann veicteoirí na luachanna in aice lena chéile
+mar chuimhne, d'fhéadfadh go mbeadh gá le heilimint nua a chur le deireadh an veicteora
+cuimhne nua a leithdháileadh agus na gnéithe d'aois a chóipeáil chuig an spás nua, más ann
+níl dóthain spáis ann chun na heilimintí go léir a chur in aice lena chéile san áit a bhfuil an veicteoir
+atá stóráilte faoi láthair. Sa chás sin, bheadh ​​an tagairt don chéad eilimint
+ag tagairt do chuimhne dealraithe. Cuireann na rialacha iasachtaíochta cosc ​​ar chláir ó
+ag críochnú sa chás sin.</p>
+<blockquote>
+<p>Nóta: Le haghaidh tuilleadh eolais ar shonraí cur chun feidhme an chineáil <code>Vec&lt;T&gt;</code>, féach <a href="../nomicon/vec/vec.html">“The
+Rustonomicon”</a>.</p>
+</blockquote>
+<h3 id="ag-atriall-thar-na-luachanna-i-veicteoir"><a class="header" href="#ag-atriall-thar-na-luachanna-i-veicteoir">Ag Atriall Thar na Luachanna i Veicteoir</a></h3>
+<p>Chun rochtain a fháil ar gach eilimint i veicteoir ar a seal, dhéanfaimis athrá trí gach ceann de na
+eilimintí seachas innéacsanna a úsáid chun rochtain a fháil ar cheann amháin ag an am. Léiríonn liostú 8-7 conas
+lúb <code>for</code> a úsáid chun tagairtí do-athlasta a fháil do gach eilimint i veicteoir de
+luachanna <code>i32</code> agus priontáil iad.</p>
+<Listing number="8-7" caption="Gach eilimint a phriontáil i veicteoir trí na heilimintí a atriall ag baint úsáide as lúb `for`">
+<pre><code class="language-meirge"># fn main() {
+    let v = vec![100, 32, 57];
+    for i in &amp;v {
+        println!("{i}");
+    }
+# }
+</code></pre>
+</Listing>
+<p>Is féidir linn athrá a dhéanamh freisin ar thagairtí mutable do gach eilimint i veicteoir mutable
+chun athruithe a dhéanamh ar na heilimintí go léir. An lúb <code>for</code> i Liostú 8-8
+cuirfidh sé <code>50</code> le gach eilimint.</p>
+<Listing number="8-8" caption="Iterating over mutable references to elements in a vector">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut v = vec![100, 32, 57];
+    for i in &amp;mut v {
+        *i += 50;
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Chun an luach a thagraíonn an tagairt mutable a athrú, ní mór dúinn úsáid a bhaint as an
+<code>*</code> oibreoir díreference chun an luach in <code>i</code> a bhaint amach sular féidir linn an <code>+=</code> a úsáid
+oibreoir. Labhróimid níos mó faoin oibreoir díreagartha san <a href="ch15-02-deref.html#following-the-pointer-to-the-value-with-the-dereference-operator">“Tar éis an
+Pointeoir don Luach leis an Oibritheoir Dereference”</a><!-- neamhaird -->
+alt de Chaibidil 15 .</p>
+<p>Tá sé sábháilte atriallta thar veicteoir, bíodh sé neamh-inchurtha nó comh-athsholáthair, mar gheall ar an
+rialacha seiceálaithe iasachtaí. Má rinneamar iarracht míreanna a chur isteach nó a bhaint sa <code>for</code>
+comhlachtaí lúb i Liostú 8-7 agus Liostú 8-8, gheobhaimid earráid tiomsaithe
+cosúil leis an gceann a fuair muid leis an gcód i Liosta 8-6. An tagairt do na
+veicteoir a choinníonn an lúb <code>for</code> cosc ​​ar mhodhnú comhuaineach ar an
+veicteoir iomlán.</p>
+<h3 id="enum-a-úsáid-chun-ilchineálacha-a-stóráil"><a class="header" href="#enum-a-úsáid-chun-ilchineálacha-a-stóráil">Enum a úsáid chun Ilchineálacha a Stóráil</a></h3>
+<p>Ní féidir le veicteoirí ach luachanna den chineál céanna a stóráil. Is féidir é seo a
+deacair ; tá cásanna úsáide cinnte le haghaidh gá a stóráil liosta de
+míreanna de chineálacha éagsúla. Ar ámharaí an tsaoil, sainmhínítear na leaganacha de enum
+faoin gcineál enum céanna, mar sin nuair a theastaíonn cineál amháin uainn chun gnéithe de
+cineálacha éagsúla, is féidir linn enum a shainiú agus a úsáid!</p>
+<p>Mar shampla, abair go dteastaíonn uainn luachanna a fháil as a chéile i scarbhileog ina bhfuil
+tá slánuimhreacha i gcuid de na colúin sa ró, roinnt uimhreacha snámhphointe,
+agus roinnt teaghráin. Is féidir linn enum a shainiú a mbeidh na leaganacha éagsúla acu
+cineálacha luacha, agus measfar an cineál céanna a bheith ar na leaganacha uile enum: sin
+den enum. Ansin is féidir linn veicteoir a chruthú chun an enum sin a shealbhú agus mar sin, ar deireadh thiar,
+shealbhú cineálacha éagsúla. Tá sé seo léirithe againn i Liostú 8-9.</p>
+<Listing number="8-9" caption="Defining an `enum` to store values of different types in one vector">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum SpreadsheetCell {
+        Int(i32),
+        Float(f64),
+        Text(String),
+    }
+
+    let row = vec![
+        SpreadsheetCell::Int(3),
+        SpreadsheetCell::Text(String::from("blue")),
+        SpreadsheetCell::Float(10.12),
+    ];
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Caithfidh Rust a fhios cad iad na cineálacha a bheidh sa veicteoir ag am tiomsaithe ionas go mbeidh a fhios aige
+go díreach cé mhéad cuimhne ar an gcarn a bheidh ag teastáil chun gach eilimint a stóráil. muid
+Ní mór a bheith soiléir freisin faoi na cineálacha a cheadaítear sa veicteoir seo. Má meirge
+ceadaítear veicteoir a shealbhú de chineál ar bith, bheadh ​​seans ann go mbeadh ceann amháin nó níos mó de
+dhéanfadh na cineálacha earráidí leis na hoibríochtaí a dhéantar ar ghnéithe de
+an veicteoir. Ag baint úsáide as enum móide slonn <code>match</code> ciallaíonn sé sin go gcinnteoidh Rust
+ag an am tiomsaithe a láimhseáiltear gach cás féideartha, mar a pléadh i gCaibidil 6.</p>
+<p>Mura bhfuil a fhios agat an tsraith uileghabhálach cineálacha a gheobhaidh clár ag am rite
+stóráil i veicteoir, ní oibreoidh an teicníc enum. Ina áit sin, is féidir leat úsáid a bhaint as trait
+réad, a chlúdóimid i gCaibidil 18.</p>
+<p>Anois go bhfuil roinnt de na bealaí is coitianta chun veicteoirí a úsáid pléite againn, bí cinnte
+athbhreithniú a dhéanamh ar <a href="../std/vec/struct.Vec.html">an doiciméadú API</a><!-- neamhaird --> do gach ceann de na go leor
+modhanna úsáideacha arna sainiú ar <code>Vec&lt;T&gt;</code> ag an leabharlann chaighdeánach. Mar shampla, i
+Chomh maith le <code>push</code>, baintear agus cuireann modh <code>pop</code> an eilimint dheireanach ar ais.</p>
+<h3 id="má-thiteann-veicteoir-titeann-a-eilimintí"><a class="header" href="#má-thiteann-veicteoir-titeann-a-eilimintí">Má thiteann Veicteoir Titeann a Eilimintí</a></h3>
+<p>Cosúil le haon <code>struct</code> eile, saortar veicteoir nuair a théann sé as raon feidhme, mar
+atá anótáilte i Liostú 8-10.</p>
+<Listing number="8-10" caption="Showing where the vector and its elements are dropped">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    {
+        let v = vec![1, 2, 3, 4];
+
+        // do stuff with v
+    } // &lt;- v goes out of scope and is freed here
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Nuair a thiteann an veicteoir, scaoiltear a bhfuil ann go léir freisin, rud a chiallaíonn an
+déanfar slánuimhreacha atá aige a ghlanadh suas. Cinntíonn an seiceálaí iasachtaí go bhfuil aon
+ní úsáidtear tagairtí d'inneachar veicteora ach amháin nuair a bhíonn an veicteoir féin
+bailí.</p>
+<p>Bogfaimid ar aghaidh go dtí an chéad chineál bailiúcháin eile: <code>String</code>!</p>
 
                     </main>
 

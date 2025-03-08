@@ -159,7 +159,387 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="storing-utf-8-encoded-text-with-strings"><a class="header" href="#storing-utf-8-encoded-text-with-strings">Storing UTF-8 Encoded Text with Strings</a></h1>
+                        <h2 id="téacs-ionchódaithe-utf-8-a-stóráil-le-teaghráin"><a class="header" href="#téacs-ionchódaithe-utf-8-a-stóráil-le-teaghráin">Téacs Ionchódaithe UTF-8 a Stóráil le Teaghráin</a></h2>
+<p>Labhair muid faoi teaghráin i gCaibidil 4, ach féachfaimid orthu níos doimhne anois.
+Is minic a théann Rustaceans nua i bhfostú ar theaghráin le haghaidh meascán de thrí
+cúiseanna: claonadh Rust chun earráidí féideartha a nochtadh, agus teaghráin níos mó
+struchtúr sonraí casta ná go dtugann go leor ríomhchláraitheoirí creidiúint dóibh as, agus
+UTF-8. Tagann na fachtóirí seo le chéile ar bhealach a d’fhéadfadh a bheith deacair nuair a bhíonn tú
+ag teacht ó theangacha ríomhchlárúcháin eile.</p>
+<p>Pléimid teaghráin i gcomhthéacs bailiúcháin toisc go bhfuil teaghráin
+curtha i bhfeidhm mar bhailiúchán beart, chomh maith le roinnt modhanna úsáideacha a sholáthar
+feidhmiúlacht nuair a léirmhínítear na bearta sin mar théacs. Sa chuid seo, déanfaimid
+labhairt faoi na hoibríochtaí ar <code>String</code> atá ag gach cineál bailiúcháin, mar shampla
+ag cruthú, ag nuashonrú, agus ag léamh. Déanfaimid plé freisin ar na bealaí ina bhfuil <code>String</code>
+difriúil ó na bailiúcháin eile, is é sin an chaoi a ndéantar innéacsú i <code>String</code>
+casta ag na difríochtaí idir conas a dhéanann daoine agus ríomhairí léirmhíniú
+Sonraí <code>String</code>.</p>
+<h3 id="cad-is-teaghrán-ann"><a class="header" href="#cad-is-teaghrán-ann">Cad is Teaghrán ann?</a></h3>
+<p>Déanfaimid sainmhíniú ar dtús cad atá i gceist againn leis an téarma <em>string</em>. Níl ach sreang amháin ag meirge
+clóscríobh sa chroítheanga, is é sin an sreangshlis <code>str</code> a fheictear go hiondúil
+san fhoirm a fuarthas ar iasacht <code>&amp;str</code>. I gCaibidil 4, labhair muid faoi <em>string slices</em>,
+atá ina thagairtí do roinnt sonraí teaghrán ionchódaithe UTF-8 atá stóráilte in áit eile. Teaghrán
+Stóráiltear litreacha, mar shampla, i ndénártha an chláir agus mar sin de
+slisní teaghrán.</p>
+<p>An cineál <code>String</code>, a sholáthraíonn leabharlann caighdeánach Rust seachas
+códaithe sa teanga lárnach, is growable, mutable, úinéireacht, UTF-8 ionchódaithe
+cineál teaghrán. Nuair a thagraíonn Rustaceans do "teaghráin" i Rust, d'fhéadfadh siad a bheith
+ag tagairt do na cineálacha <code>String</code> nó do na cineálacha sreangán <code>&amp;str</code>, ní hamháin ceann amháin
+de na cineálacha sin. Cé go mbaineann an chuid seo den chuid is mó le <code>String</code>, tá an dá chineál
+a úsáidtear go mór i leabharlann caighdeánach Rust, agus 'Teaghrán` agus slisní sreang araon
+atá ionchódaithe UTF-8.</p>
+<h3 id="teaghrán-nua-á-chruthú"><a class="header" href="#teaghrán-nua-á-chruthú">Teaghrán Nua á Chruthú</a></h3>
+<p>Tá go leor de na hoibríochtaí céanna atá ar fáil le <code>Vec&lt;T&gt;</code> ar fáil le <code>String</code>
+chomh maith toisc go gcuirtear <code>String</code> i bhfeidhm i ndáiríre mar chumhdach timpeall veicteoir
+bearta le roinnt ráthaíochtaí breise, srianta, agus cumais. Sampla
+d'fheidhm a oibríonn ar an mbealach céanna le <code>Vec&lt;T&gt;</code> agus is é <code>String</code> an <code>new</code>
+feidhm chun sampla a chruthú, a thaispeántar i Liostú 8-11.</p>
+<Listing number="8-11" caption="Creating a new, empty `String`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::new();
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Cruthaíonn an líne seo teaghrán nua, folamh ar a dtugtar <code>s</code>, ar féidir linn a luchtú isteach ansin
+sonraí. Go minic, beidh roinnt sonraí tosaigh againn agus ba mhaith linn tús a chur leo
+teaghrán. Chuige sin, úsáidimid an modh <code>to_string</code>, atá ar fáil ar aon chineál
+a chuireann an trait <code>Display</code> i bhfeidhm, mar a dhéanann literals teaghrán. Liostáil 8-12 seónna
+dhá shampla.</p>
+<Listing number="8-12" caption="Using the `to_string` method to create a `String` from a string literal">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let data = "initial contents";
+
+    let s = data.to_string();
+
+    // the method also works on a literal directly:
+    let s = "initial contents".to_string();
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Cruthaíonn an cód seo teaghrán ina bhfuil <code>initial contents</code>.</p>
+<p>Is féidir linn an fheidhm <code>String::from</code> a úsáid freisin chun <code>String</code> a chruthú as téad
+litriúil. Tá an cód i Liostú 8-13 comhionann leis an gcód i Liostú 8-12
+a úsáideann <code>to_string</code>.</p>
+<Listing number="8-13" caption="Ag baint úsáide as an bhfeidhm `String::from` chun `String` a chruthú as teaghrán litriúil">
+<pre><code class="language-meirge"># fn main() {
+    let s = String::from("initial contents");
+# }
+</code></pre>
+</Listing>
+<p>Toisc go n-úsáidtear teaghráin le haghaidh an oiread sin rudaí, is féidir linn go leor cineálacha éagsúla a úsáid
+APIs le haghaidh teaghráin, ag soláthar dúinn go leor roghanna. Is féidir le cuid acu cosúil
+iomarcach, ach tá a n-áit acu go léir! Sa chás seo, <code>String::from</code> agus
+<code>to_string</code> déan an rud céanna, mar sin cén ceann a roghnaíonn tú is ábhar do stíl agus
+inléiteacht.</p>
+<p>Cuimhnigh go bhfuil teaghráin ionchódaithe UTF-8, ionas gur féidir linn a chur san áireamh aon ionchódaithe i gceart
+sonraí iontu, mar a thaispeántar i Liosta 8-14.</p>
+<Listing number="8-14" caption="Storing greetings in different languages in strings">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let hello = String::from("السلام عليكم");
+    let hello = String::from("Dobrý den");
+    let hello = String::from("Hello");
+    let hello = String::from("שלום");
+    let hello = String::from("नमस्ते");
+    let hello = String::from("こんにちは");
+    let hello = String::from("안녕하세요");
+    let hello = String::from("你好");
+    let hello = String::from("Olá");
+    let hello = String::from("Здравствуйте");
+    let hello = String::from("Hola");
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Is luachanna <code>String</code> bailí iad seo go léir.</p>
+<h3 id="teaghrán-á-nuashonrú"><a class="header" href="#teaghrán-á-nuashonrú">Teaghrán á nuashonrú</a></h3>
+<p>Is féidir le <code>String</code> fás i méid agus féadann a bhfuil ann athrú, díreach mar a bhíonn san ábhar
+de <code>Vec&lt;T&gt;</code>, má bhrúnn tú tuilleadh sonraí isteach ann. Ina theannta sin, is féidir leat go caothúil
+úsáid an t-oibreoir <code>+</code> nó an macra <code>format!</code> chun luachanna <code>String</code> a chomhcheangal.</p>
+<h4 id="ag-gabháil-le-teaghrán-le-push_str-agus-push"><a class="header" href="#ag-gabháil-le-teaghrán-le-push_str-agus-push">Ag gabháil le Teaghrán le <code>push_str</code> agus <code>push</code></a></h4>
+<p>Is féidir linn <code>String</code> a fhás tríd an modh <code>push_str</code> a úsáid chun sreangán a cheangal,
+mar a léirítear i Liosta 8-15.</p>
+<Listing number="8-15" caption="Appending a string slice to a `String` using the `push_str` method">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from("foo");
+    s.push_str("bar");
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Tar éis an dá líne seo, beidh <code>foobar</code> i <code>s</code>. Glacann an modh <code>push_str</code> a
+slisne teaghrán mar ní gá go dteastaíonn uainn úinéireacht a ghlacadh ar an
+paraiméadar. Mar shampla, sa chód i Liostú 8-16, ba mhaith linn a bheith in ann úsáid a bhaint as
+<code>s2</code> tar éis a bhfuil ann a chur i gceangal le <code>s1</code>.</p>
+<Listing number="8-16" caption="Using a string slice after appending its contents to a `String`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s1 = String::from("foo");
+    let s2 = "bar";
+    s1.push_str(s2);
+    println!("s2 is {s2}");
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Dá nglacfadh an modh <code>push_str</code> úinéireacht ar <code>s2</code>, ní bheimis in ann priontáil
+a luach ar an líne dheireanach. Mar sin féin, oibríonn an cód seo mar a mbeimis ag súil!</p>
+<p>Glacann an modh <code>push</code> carachtar amháin mar pharaiméadar agus cuireann sé leis an
+<code>String</code>. Cuireann liostú 8-17 an litir <em>l</em> le <code>String</code> ag baint úsáide as an <code>push</code>
+modh.</p>
+<Listing number="8-17" caption="Adding one character to a `String` value using `push`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from("lo");
+    s.push('l');
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Mar thoradh air sin, beidh <code>lol</code> i <code>s</code>.</p>
+<h4 id="comhghaolú-leis-an-oibreoir--nó-an-format-macra"><a class="header" href="#comhghaolú-leis-an-oibreoir--nó-an-format-macra">Comhghaolú leis an Oibreoir <code>+</code> nó an <code>format!</code> Macra</a></h4>
+<p>Go minic, beidh tú ag iarraidh dhá theaghrán atá ann cheana féin a chur le chéile. Bealach amháin chun é sin a dhéanamh ná úsáid a bhaint as
+an t-oibreoir <code>+</code>, mar a thaispeántar i Liostú 8-18.</p>
+<Listing number="8-18" caption="Using the `+` operator to combine two `String` values into a new `String` value">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("Hello, ");
+    let s2 = String::from("world!");
+    let s3 = s1 + &amp;s2; // note s1 has been moved here and can no longer be used
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Beidh <code>Hello, world!</code> sa teaghrán <code>s3</code>. Is é an chúis <code>s1</code> a thuilleadh
+bailí tar éis an Chomh maith, agus an chúis a úsáid againn tagairt do <code>s2</code>, tá a dhéanamh
+le síniú an mhodha a thugtar air nuair a úsáidimid an t-oibreoir <code>+</code>.
+Úsáideann an t-oibreoir <code>+</code> an modh <code>add</code>, a bhfuil cuma rud éigin ar a shíniú
+seo:</p>
+<pre><code class="language-rust ignore">fn add(self, s: &amp;str) -&gt; String {</code></pre>
+<p>Sa leabharlann chaighdeánach, feicfidh tú 'cuir' sainithe ag baint úsáide as cineálacha agus gaolmhara
+cineálacha. Anseo, tá cineálacha nithiúla curtha ina n-ionad againn, agus is é sin a tharlaíonn nuair a dhéanaimid
+glaoigh ar an modh seo le luachanna <code>String</code>. Pléifimid cúrsaí cineálacha i gCaibidil 10.
+Tugann an síniú seo na leideanna a theastaíonn uainn chun tuiscint a fháil ar na rudaí casta
+píosaí den oibreoir <code>+</code>.</p>
+<p>Ar dtús, tá <code>&amp;</code> ag <code>s2</code>, rud a chiallaíonn go bhfuil muid ag cur <em>reference</em> den dara ceann
+teaghrán go dtí an chéad teaghrán. Tá sé seo mar gheall ar an bparaiméadar <code>s</code> sa <code>add</code>
+feidhm: ní féidir linn ach <code>&amp;str</code> a chur le <code>String</code>; ní féidir linn dhá <code>String</code> a chur leis
+luachanna le chéile. Ach fan - is é an cineál <code>&amp;s2</code> ná <code>&amp;String</code>, ní <code>&amp;str</code>, mar
+sonraithe sa dara paraiméadar le <code>add</code> leis. Mar sin cén fáth a gcuirtear Liostú 8-18 le chéile?</p>
+<p>Is é an fáth go bhfuilimid in ann <code>&amp;s2</code> a úsáid sa ghlao chun <code>add</code> ná go bhfuil an tiomsaitheoir
+an féidir an argóint <code>&amp;String</code> a <em>chomhéigean</em> go <code>&amp;str</code>. Nuair a thugaimid an <code>add</code>
+modh, úsáideann Rust comhéigean <em>deref</em>, a thiontaíonn anseo <code>&amp;s2</code> go <code>&amp;s2[..]</code>.
+Déanfaimid plé níos doimhne ar chomhéigean deref i gCaibidil 15. Toisc go ndéanann <code>add</code>
+gan úinéireacht a ghlacadh ar an bparaiméadar <code>s</code>, beidh <code>s2</code> fós ina <code>String</code> bailí
+tar éis na hoibríochta seo.</p>
+<p>Ar an dara dul síos, is féidir linn a fheiceáil sa síniú go nglacann <code>add</code> úinéireacht ar <code>self</code>
+toisc go bhfuil <code>&amp;</code> ag <code>self</code>. Ciallaíonn sé seo go mbeidh <code>s1</code> i Liosta 8-18
+bhog sé isteach sa ghlao <code>add</code> agus ní bheidh sé bailí ina dhiaidh sin. Mar sin, cé go
+Breathnaíonn <code>let s3 = s1 + &amp;s2;</code> go ndéanfaidh sé an dá theaghrán a chóipeáil agus ceann nua a chruthú,
+glacann an ráiteas seo úinéireacht ar <code>s1</code>, cuireann cóip den ábhar leis
+de <code>s2</code>, agus ansin filleann úinéireacht an toraidh. I bhfocail eile, tá sé
+cosúil go bhfuil sé ag déanamh go leor cóipeanna, ach níl; tá an cur i bhfeidhm níos mó
+éifeachtach ná cóipeáil.</p>
+<p>Más gá dúinn a concatenate teaghráin iolrach, iompar an oibreora <code>+</code>
+éiríonn anacair:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = s1 + "-" + &amp;s2 + "-" + &amp;s3;
+<span class="boring">}</span></code></pre></pre>
+<p>Ag an bpointe seo, beidh <code>s</code> <code>tic-tac-toe</code>. Le gach ceann de na <code>+</code> agus <code>"</code>
+carachtair, tá sé deacair a fheiceáil cad atá ar siúl. Chun teaghráin a chomhcheangal i
+bealaí níos casta, is féidir linn an macra <code>format!</code> a úsáid ina ionad sin:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = format!("{s1}-{s2}-{s3}");
+<span class="boring">}</span></code></pre></pre>
+<p>Socraíonn an cód seo <code>s</code> go <code>tic-tac-toe</code> freisin. Oibríonn an macra <code>format!</code> mar
+<code>println!</code>, ach in ionad an t-aschur a phriontáil go dtí an scáileán, filleann sé a
+<code>String</code> leis an ábhar. Is mór an leagan den chód a úsáideann <code>format!</code>
+níos éasca le léamh, agus úsáideann an cód ginte ag an macra <code>format!</code> tagairtí
+ionas nach mbeidh úinéireacht ag an nglao seo ar aon cheann dá pharaiméadair.</p>
+<h3 id="innéacsú-i-teaghráin"><a class="header" href="#innéacsú-i-teaghráin">Innéacsú i Teaghráin</a></h3>
+<p>I go leor teangacha ríomhchlárúcháin eile, is féidir rochtain a fháil ar charachtair aonair in a
+Is oibríocht bhailí agus choiteann é sreang trí thagairt a dhéanamh dóibh de réir innéacs. Mar sin féin,
+má dhéanann tú iarracht codanna de <code>String</code> a rochtain ag baint úsáide as comhréir innéacsaithe i Rust, déanfaidh tú
+earráid a fháil. Smaoinigh ar an gcód neamhbhailí i Liostú 8-19.</p>
+<Listing number="8-19" caption="Attempting to use indexing syntax with a String">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s1 = String::from("hello");
+    let h = s1[0];
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Beidh an earráid seo a leanas mar thoradh ar an gcód seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling collections v0.1.0 (file:///projects/collections)
+error[E0277]: the type `str` cannot be indexed by `{integer}`
+ --&gt; src/main.rs:3:16
+  |
+3 |     let h = s1[0];
+  |                ^ string indices are ranges of `usize`
+  |
+  = help: the trait `SliceIndex&lt;str&gt;` is not implemented for `{integer}`, which is required by `String: Index&lt;_&gt;`
+  = note: you can use `.chars().nth()` or `.bytes().nth()`
+          for more information, see chapter 8 in The Book: &lt;https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings&gt;
+  = help: the trait `SliceIndex&lt;[_]&gt;` is implemented for `usize`
+  = help: for that trait implementation, expected `[_]`, found `str`
+  = note: required for `String` to implement `Index&lt;{integer}&gt;`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `collections` (bin "collections") due to 1 previous error
+</code></pre>
+<p>Insíonn an earráid agus an nóta an scéal: Ní thacaíonn teaghráin meirge le hinnéacsú. Ach
+cén fáth nach bhfuil? Chun an cheist sin a fhreagairt, ní mór dúinn plé a dhéanamh ar an gcaoi a stórálann Rust teaghráin isteach
+cuimhne.</p>
+<h4 id="ionadaíocht-inmheánach"><a class="header" href="#ionadaíocht-inmheánach">Ionadaíocht Inmheánach</a></h4>
+<p>Is éard is <code>String</code> ann ná cumhdach thar <code>Vec&lt;u8&gt;</code>. Breathnaímis ar chuid dár gcuid i gceart
+teaghráin shamplacha UTF-8 ionchódaithe ó Liostú 8-14. Ar dtús, an ceann seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let hello = String::from("السلام عليكم");
+</span><span class="boring">    let hello = String::from("Dobrý den");
+</span><span class="boring">    let hello = String::from("Hello");
+</span><span class="boring">    let hello = String::from("שלום");
+</span><span class="boring">    let hello = String::from("नमस्ते");
+</span><span class="boring">    let hello = String::from("こんにちは");
+</span><span class="boring">    let hello = String::from("안녕하세요");
+</span><span class="boring">    let hello = String::from("你好");
+</span><span class="boring">    let hello = String::from("Olá");
+</span><span class="boring">    let hello = String::from("Здравствуйте");
+</span>    let hello = String::from("Hola");
+<span class="boring">}</span></code></pre></pre>
+<p>Sa chás seo, beidh <code>len</code> <code>4</code>, rud a chiallaíonn an veicteoir a stórálann an teaghrán
+Tá <code>"Hola"</code> 4 byte ar fad. Tógann gach ceann de na litreacha seo beart amháin nuair a ionchódaítear iad
+UTF-8. Féadfaidh an líne seo a leanas, áfach, iontas ort (tabhair faoi deara go bhfuil an teaghrán seo
+Tosaíonn leis an bpríomhlitir Choireallach <em>Ze</em>, ní uimhir 3):</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let hello = String::from("السلام عليكم");
+</span><span class="boring">    let hello = String::from("Dobrý den");
+</span><span class="boring">    let hello = String::from("Hello");
+</span><span class="boring">    let hello = String::from("שלום");
+</span><span class="boring">    let hello = String::from("नमस्ते");
+</span><span class="boring">    let hello = String::from("こんにちは");
+</span><span class="boring">    let hello = String::from("안녕하세요");
+</span><span class="boring">    let hello = String::from("你好");
+</span><span class="boring">    let hello = String::from("Olá");
+</span>    let hello = String::from("Здравствуйте");
+<span class="boring">    let hello = String::from("Hola");
+</span><span class="boring">}</span></code></pre></pre>
+<p>Dá gcuirfí ceist ort cé chomh fada is atá an téad, b’fhéidir go ndéarfá 12. Go deimhin, Rust’s
+Is é 24 an freagra: sin líon na mbeart a thógann sé chun “Здравствуйте” a ionchódú i
+UTF-8, toisc go dtógann gach luach scálach Unicode sa téad sin 2 byte de
+stórála. Mar sin, ní bheidh comhghaolú i gcónaí ag innéacs isteach i mbeart na sreinge
+chuig luach scálach Unicode bailí. Chun a léiriú, smaoinigh ar an meirge neamhbhailí seo
+cód:</p>
+<pre><code class="language-rust ignore does_not_compile">let hello = "Здравствуйте";
+let answer = &amp;hello[0];</code></pre>
+<p>Tá a fhios agat cheana féin nach <code>З</code> a bheidh i <code>answer</code>, an chéad litir. Nuair a ionchódaithe
+in UTF-8, is é <code>208</code> an chéad bheart de <code>З</code> agus<code>151</code> an dara beart, mar sin bheadh
+is cosúil gur cheart go mbeadh <code>208</code> mar <code>answer</code>, ach ní carachtar bailí é <code>208</code>
+ar a shon féin. Is dócha nach mbeadh an t-úsáideoir ag iarraidh dá n-iarrfadh siad <code>208</code> a thabhairt ar ais
+don chéad litir den téad seo; áfach, sin iad na sonraí amháin go Rust
+tá ag innéacs beart 0. Go ginearálta ní bhíonn úsáideoirí ag iarraidh an luach beart a thabhairt ar ais, fiú
+mura bhfuil sa teaghrán ach litreacha Laidine: dá mba chód bailí é <code>&amp;"hi"[0]</code> sin
+ar ais an luach beart, thabharfadh sé ar ais <code>104</code>, ní <code>h</code>.</p>
+<p>Is é an freagra, mar sin, ná chun luach agus cúis gan choinne a sheachaint
+fabhtanna nach bhfaighfear amach láithreach, ní thiomsaíonn Rust an cód seo
+ar chor ar bith agus seachnaíonn sé míthuiscintí go luath sa phróiseas forbartha.</p>
+<h4 id="beart-agus-luachanna-scalaracha-agus-cnuasaigh-ghraifim-Ó-mo"><a class="header" href="#beart-agus-luachanna-scalaracha-agus-cnuasaigh-ghraifim-Ó-mo">Beart agus Luachanna Scalaracha agus Cnuasaigh Ghraifim! Ó Mo!</a></h4>
+<p>Pointe eile faoi UTF-8 ná go bhfuil trí bhealach ábhartha ann i ndáiríre
+breathnú ar teaghráin ó thaobh Rust: mar bhearta, luachanna scálach, agus grapheme
+cnuasaigh (an rud is gaire don rud a thabharfaimis <em>letters</em>).</p>
+<p>Má bhreathnaíonn muid ar an bhfocal Hiondúis “नमस्ते” scríofa sa script Devanagari, is é
+stóráilte mar veicteoir de luachanna <code>u8</code> a bhreathnaíonn mar seo:</p>
+<pre><code class="language-text">[224, 164, 168, 224, 164, 174, 224, 164, 184, 224, 165, 141, 224, 164, 164,
+224, 165, 135]
+</code></pre>
+<p>Sin 18 beart agus sin é an chaoi a stórálann ríomhairí na sonraí seo ar deireadh. Má táimid ar
+iad mar luachanna scálacha Unicode, agus is iad sin an cineál <code>char</code> atá ag Rust, iad sin
+Breathnaíonn bytes mar seo:</p>
+<pre><code class="language-text">['न', 'म', 'स', '्', 'त', 'े']
+</code></pre>
+<p>Tá sé luach <code>char</code> anseo, ach ní litreacha iad an ceathrú agus an séú ceann:
+is diacritics iad nach bhfuil ciall acu leo ​​féin. Ar deireadh, má táimid ar
+iad mar bhraislí grapheme, gheobhaimid an rud a thabharfadh duine ar na ceithre litir
+a dhéanann suas an focal Hiondúis:</p>
+<pre><code class="language-text">["न", "म", "स्", "ते"]
+</code></pre>
+<p>Soláthraíonn meirge bealaí éagsúla chun na sonraí teaghrán amh a dhéanann ríomhairí a léirmhíniú
+stóráil ionas gur féidir le gach clár an léiriú a theastaíonn uaidh a roghnú, is cuma
+cén teanga dhaonna ina bhfuil na sonraí.</p>
+<p>Cúis dheiridh nach ligeann Rust dúinn innéacsú a dhéanamh i <code>String</code> chun a
+Is é an carachtar ná go bhfuiltear ag súil go dtógfaidh oibríochtaí innéacsaithe am seasta i gcónaí
+(O(1)). Ach ní féidir a ráthú go bhfuil feidhmíocht le <code>String</code>,
+toisc go mbeadh ar Rust siúl tríd an ábhar ón tús go dtí an
+innéacs lena fháil amach cé mhéad carachtar bailí a bhí ann.</p>
+<h3 id="teaghráin-slicing"><a class="header" href="#teaghráin-slicing">Teaghráin slicing</a></h3>
+<p>Is minic gur droch-smaoineamh é innéacsú i sreang mar ní léir cad é an
+ba cheart go mbeadh cineál aischuir na hoibríochta innéacsaithe teaghrán mar seo a leanas: luach beart, a
+carachtar, braisle grapheme, nó slisne teaghrán. Más gá duit a úsáid i ndáiríre
+innéacsanna chun slisní teaghrán a chruthú, mar sin, iarrann Rust ort a bheith níos sainiúla.</p>
+<p>Seachas <code>[]</code> a úsáid le huimhir shingil, is féidir leat <code>[]</code> a úsáid le a
+raon chun sliseog teaghrán a chruthú ina mbeidh bearta ar leith:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let hello = "Здравствуйте";
+
+let s = &amp;hello[0..4];
+<span class="boring">}</span></code></pre></pre>
+<p>Anseo, beidh <code>s</code> ina <code>&amp;str</code> ina mbeidh na chéad cheithre beart den téad.
+Níos luaithe, luaigh muid go raibh gach ceann de na carachtair dhá bytes, rud a chiallaíonn
+beidh <code>s</code> <code>Зд</code>.</p>
+<p>Dá ndéanfaimis iarracht gan ach cuid de bhearta carachtar a ghearradh le rud éigin mar
+<code>&amp;hello[0..1]</code>, bheadh ​​scaoll ar Rust faoin am rite ar an mbealach céanna agus dá mbeadh sé neamhbhailí
+Rinneadh rochtain ar innéacs i veicteoir:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling collections v0.1.0 (file:///projects/collections)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/debug/collections`
+thread 'main' panicked at src/main.rs:4:19:
+byte index 1 is not a char boundary; it is inside 'З' (bytes 0..2) of `Здравствуйте`
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Ba chóir duit a bheith cúramach nuair a chruthú slices teaghrán le raonta, mar gheall ar a dhéanamh
+mar sin is féidir tuairteála do chlár.</p>
+<h3 id="modhanna-chun-atriall-thar-teaghráin"><a class="header" href="#modhanna-chun-atriall-thar-teaghráin">Modhanna chun atriall thar Teaghráin</a></h3>
+<p>Is é an bealach is fearr chun oibriú ar phíosaí teaghráin ná a bheith soiléir faoi cé acu an bhfuil nó nach bhfuil
+tá carachtair nó beart uait. Le haghaidh luachanna scálacha Unicode aonair, bain úsáid as an
+modh <code>chars</code>. Má ghlaoitear <code>chars</code> ar “Зд” scartar amach agus cuireann sé ar ais dhá luach de
+clóscríobh <code>char</code>, agus is féidir leat an toradh a athrá chun rochtain a fháil ar gach eilimint:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for c in "Зд".chars() {
+    println!("{c}");
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Déanfaidh an cód seo na rudaí seo a leanas a phriontáil:</p>
+<pre><code class="language-text">З
+д
+</code></pre>
+<p>De rogha air sin, cuireann an modh <code>bytes</code> gach beart amh ar ais, agus b'fhéidir gurb é sin
+oiriúnach do d'fhearann:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for b in "Зд".bytes() {
+    println!("{b}");
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Déanfaidh an cód seo na ceithre bheart a chuimsíonn an teaghrán seo a phriontáil:</p>
+<pre><code class="language-text">208
+151
+208
+180
+</code></pre>
+<p>Ach a bheith cinnte a mheabhrú go bhféadfadh luachanna scálach Unicode bailí a bheith comhdhéanta de níos mó
+ná beart amháin.</p>
+<p>Is éard atá i gceist le braislí grapheme a fháil ó theaghráin, mar atá le script Devanagari
+casta, mar sin ní sholáthraíonn an leabharlann chaighdeánach an fheidhmiúlacht seo. cliathbhoscaí
+ar fáil ar <a href="https://crates.io/">crates.io</a> <!-- neamhaird --> más é seo an
+feidhmiúlacht atá uait.</p>
+<h3 id="níl-teaghráin-chomh-simplí-sin"><a class="header" href="#níl-teaghráin-chomh-simplí-sin">Níl Teaghráin Chomh Simplí sin</a></h3>
+<p>Mar achoimre, tá teaghráin casta. Déanann teangacha cláir éagsúla
+roghanna éagsúla maidir le conas an chastacht seo a chur i láthair don ríomhchláraitheoir. Meirge
+roghnaigh láimhseáil cheart sonraí <code>String</code> an t-iompar réamhshocraithe
+do gach clár Rust, rud a chiallaíonn go gcaithfidh ríomhchláraitheoirí níos mó machnaimh a dhéanamh
+láimhseáil sonraí UTF-8 roimh ré. Léiríonn an chomhbhabhtáil seo níos mó de chastacht na
+teaghráin ná mar is léir i dteangacha ríomhchlárúcháin eile, ach cuireann sé cosc ​​ort
+ó bheith ort earráidí a bhaineann le carachtair neamh-ASCII a láimhseáil níos déanaí i do
+saolré forbartha.</p>
+<p>Is é an dea-scéal ná go dtugann an leabharlann chaighdeánach go leor feidhmiúlacht tógtha
+as na cineálacha <code>String</code> agus <code>&amp;str</code> chun cabhrú leis na cásanna casta seo a láimhseáil
+i gceart. Bí cinnte a sheiceáil amach an doiciméadú le haghaidh modhanna úsáideacha mar
+<code>contains</code> le haghaidh cuardach i teaghrán agus <code>replace</code> chun codanna de a
+téad le teaghrán eile.</p>
+<p>Aistrímid chuig rud éigin nach bhfuil chomh casta: léarscáileanna hash!</p>
 
                     </main>
 

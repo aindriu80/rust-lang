@@ -6481,7 +6481,7 @@ go roghnach cliathbhosca leabharlainne amháin. De réir mar a fhásann pacáist
 cliathbhoscaí ar leith a thagann chun bheith ina spleáchais sheachtracha. Clúdaíonn an chaibidil seo gach
 na teicníochtaí seo. I gcás tionscadal an-mhór a chuimsíonn sraith de idirghaolmhar
 pacáistí a fhorbraíonn le chéile, soláthraíonn lasta <em>spásanna oibre</em>, a chlúdóimid
-sa <a href="ch14-03-cargo-workspaces.html">“Lasta Workspaces”</a><!-- neamhaird --> i gCaibidil 14.</p>
+sa <a href="ch14-03-cargo-workspaces.html">“Cargo Workspaces”</a><!-- neamhaird --> i gCaibidil 14.</p>
 <p>Déanfaimid plé freisin ar shonraí cur chun feidhme a chuimsiú, a ligeann duit athúsáid
 cód ag leibhéal níos airde: nuair a bheidh oibríocht curtha i bhfeidhm agat, is féidir le cód eile
 glaoch ar do chód trína chomhéadan poiblí gan a bheith ar an eolas conas an
@@ -7539,10 +7539,901 @@ an mhír sa raon feidhme sin. Tá cód an mhodúil príobháideach de réir réa
 sainmhínithe go poiblí tríd an eochairfhocal <code>pub</code> a chur leis.</p>
 <p>Sa chéad chaibidil eile, féachfaimid ar roinnt struchtúr sonraí bailiúcháin sa
 leabharlann caighdeánach ar féidir leat a úsáid i do chód eagraithe go néata.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="common-collections"><a class="header" href="#common-collections">Common Collections</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="storing-lists-of-values-with-vectors"><a class="header" href="#storing-lists-of-values-with-vectors">Storing Lists of Values with Vectors</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="storing-utf-8-encoded-text-with-strings"><a class="header" href="#storing-utf-8-encoded-text-with-strings">Storing UTF-8 Encoded Text with Strings</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="storing-keys-with-associated-values-in-hash-maps"><a class="header" href="#storing-keys-with-associated-values-in-hash-maps">Storing Keys with Associated Values in Hash Maps</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bailiúcháin-choitianta"><a class="header" href="#bailiúcháin-choitianta">Bailiúcháin Choitianta</a></h1>
+<p>Áirítear i leabharlann chaighdeánach Rust roinnt struchtúir sonraí an-úsáideacha ar a dtugtar
+<em>bailiúcháin</em>. Is ionann formhór na gcineálacha sonraí eile agus luach sonrach amháin, ach
+is féidir luachanna iolracha a bheith sna bailiúcháin. Murab ionann agus an eagar-tógtha i agus tuple
+cineálacha, na sonraí a díríonn na bailiúcháin seo orthu a stóráil ar an gcarn, rud a chiallaíonn
+ní gá méid na sonraí a bheith ar eolas ag am tiomsaithe agus is féidir leis fás nó
+Laghdaigh de réir mar a ritheann an clár. Tá cumais éagsúla ag gach cineál bailiúcháin
+agus costais, agus roghnaigh ceann oiriúnach do do chás reatha a
+scil a fhorbróidh tú thar am. Sa chaibidil seo, pléifimid trí cinn
+bailiúcháin a úsáidtear go minic i gcláir Rust:</p>
+<ul>
+<li>Ligeann <em>vector</em> duit líon athraitheach luachanna a stóráil in aice lena chéile.</li>
+<li>Is bailiúchán carachtar é <em>string</em>. Tá an cineál <code>String</code> luaite againn
+roimhe seo, ach sa chaibidil seo beidh muid ag caint faoi go domhain.</li>
+<li>Ligeann <em>hash map</em> duit luach a cheangal le heochair ar leith. Tá sé a
+cur i bhfeidhm ar leith an struchtúir sonraí níos ginearálta ar a dtugtar <em>map</em>.</li>
+</ul>
+<p>Chun foghlaim faoi na cineálacha bailiúcháin eile a chuireann an leabharlann chaighdeánach ar fáil,
+féach <a href="../std/collections/index.html">na doiciméid</a>.</p>
+<p>Pléifimid conas veicteoirí, teaghráin agus léarscáileanna hash a chruthú agus a nuashonrú freisin
+mar a dhéanann gach speisialta.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="liostaí-luachanna-a-stóráil-le-veicteoirí"><a class="header" href="#liostaí-luachanna-a-stóráil-le-veicteoirí">Liostaí Luachanna a Stóráil le Veicteoirí</a></h2>
+<p>Is é an chéad chineál bailiúcháin a bhreathnóimid air ná <code>Vec&lt;T&gt;</code>, ar a dtugtar <em>veicteoir</em> freisin.
+Ceadaíonn veicteoirí duit níos mó ná luach amháin a stóráil i struchtúr sonraí amháin a
+cuireann sé na luachanna go léir in aice lena chéile i gcuimhne. Ní féidir le veicteoirí ach luachanna a stóráil
+den chineál céanna. Tá siad úsáideach nuair a bhíonn liosta míreanna agat, mar shampla an
+línte téacs i gcomhad nó praghsanna na n-earraí i tralaí siopadóireachta.</p>
+<h3 id="veicteoir-nua-á-chruthú"><a class="header" href="#veicteoir-nua-á-chruthú">Veicteoir Nua á Chruthú</a></h3>
+<p>Chun veicteoir folamh nua a chruthú, tugaimid an fheidhm <code>Vec::new</code>, mar a thaispeántar i
+Liostáil 8-1.</p>
+<p><Listing number="8-1" caption="Ag cruthú veicteoir nua, folamh chun luachanna den chineál `i32`"> a choinneáil</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v: Vec&lt;i32&gt; = Vec::new();
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara gur chuireamar nóta cineáil leis anseo. Toisc nach bhfuil muid ag cur isteach ar bith
+luachanna isteach sa veicteoir seo, níl a fhios ag Rust cén cineál eilimintí atá beartaithe againn
+stór. Is pointe tábhachtach é seo. Cuirtear veicteoirí i bhfeidhm ag baint úsáide as generics;
+clúdóimid conas generics a úsáid le do chineálacha féin i gCaibidil 10. Go dtí seo,
+Bíodh a fhios agat gur féidir cineál ar bith a choinneáil sa chineál <code>Vec&lt;T&gt;</code> a sholáthraíonn an ghnáthleabharlann.
+Nuair a chruthaímid veicteoir chun cineál sonrach a shealbhú, is féidir linn an cineál laistigh a shonrú
+lúibíní uillinn. I Liostú 8-1, tá sé ráite againn le Rust go bhfuil an <code>Vec&lt;T&gt;</code> in <code>v</code>
+coinnigh gnéithe den chineál <code>i32</code>.</p>
+<p>Níos minice, cruthóidh tú <code>Vec&lt;T&gt;</code> le luachanna tosaigh agus déanfaidh Rust tátal
+an cineál luach is mian leat a stóráil, mar sin is annamh a theastaíonn uait an cineál seo a dhéanamh
+nóta. Soláthraíonn Rust an macra <code>vec!</code> go caothúil, a chruthóidh a
+veicteoir nua a shealbhaíonn na luachanna a thugann tú dó. Cruthaíonn liostú 8-2 ceann nua
+<code>Vec&lt;i32&gt;</code> a shealbhaíonn na luachanna <code>1</code>, <code>2</code>, agus <code>3</code>. Is é an cineál slánuimhir <code>i32</code>
+mar sin é an cineál slánuimhir réamhshocraithe, mar a phléamar sa <a href="ch03-02-data-types.html#data-types">“Sonraí
+Cineálacha”</a><!-- neamhaird a dhéanamh ar --> alt de Chaibidil 3.</p>
+<Listing number="8-2" caption="Ag cruthú veicteoir nua ina bhfuil luachanna">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v = vec![1, 2, 3];
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Toisc go bhfuil luachanna tosaigh <code>i32</code> tugtha againn, is féidir le Rust tátal a bhaint as an gcineál <code>v</code>
+is <code>Vec&lt;i32&gt;</code>, agus ní gá an nóta cineáil. Ansin, féachfaimid conas
+chun veicteoir a mhodhnú.</p>
+<h3 id="veicteoir-á-nuashonrú"><a class="header" href="#veicteoir-á-nuashonrú">Veicteoir á nuashonrú</a></h3>
+<p>Chun veicteoir a chruthú agus ansin eilimintí a chur leis, is féidir linn an modh <code>push</code> a úsáid,
+mar a thaispeántar i Liosta 8-3.</p>
+<Listing number="8-3" caption="Ag baint úsáide as an modh `push` chun luachanna a chur le veicteoir">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut v = Vec::new();
+
+    v.push(5);
+    v.push(6);
+    v.push(7);
+    v.push(8);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Mar aon le haon athróg, más mian linn a bheith in ann a luach a athrú, ní mór dúinn
+é a dhéanamh mutable ag baint úsáide as an eochairfhocal <code>mut</code>, mar a pléadh i gCaibidil 3. Na huimhreacha
+a chuirimid taobh istigh go bhfuil gach cineál <code>i32</code>, agus Rust tátal a bhaint as seo ó na sonraí, mar sin
+níl an nóta <code>Vec&lt;i32&gt;</code> ag teastáil uainn.</p>
+<h3 id="léamh-eilimintí-veicteoirí"><a class="header" href="#léamh-eilimintí-veicteoirí">Léamh Eilimintí Veicteoirí</a></h3>
+<p>Tá dhá bhealach ann chun tagairt a dhéanamh do luach atá stóráilte i veicteoir: trí innéacsú nó trí
+ag baint úsáide as an modh <code>get</code>. Sna samplaí seo a leanas, táimid tar éis anótáil a dhéanamh ar na cineálacha
+na luachanna a thugtar ar ais ó na feidhmeanna seo ar mhaithe le soiléireacht bhreise.</p>
+<p>Taispeánann liosta 8-4 an dá mhodh chun luach a rochtain i veicteoir, le hinnéacsú
+comhréir agus an modh <code>get</code>.</p>
+<Listing number="8-4" caption="Ag úsáid comhréir innéacsaithe agus ag baint úsáide as an modh `get` chun rochtain a fháil ar mhír i veicteoir">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v = vec![1, 2, 3, 4, 5];
+
+    let third: &amp;i32 = &amp;v[2];
+    println!("The third element is {third}");
+
+    let third: Option&lt;&amp;i32&gt; = v.get(2);
+    match third {
+        Some(third) =&gt; println!("The third element is {third}"),
+        None =&gt; println!("There is no third element."),
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara roinnt sonraí anseo. Bainimid úsáid as an luach innéacs de <code>2</code> chun an tríú eilimint a fháil
+toisc go bhfuil veicteoirí innéacsaithe de réir uimhreacha, ag tosú ag nialas. Ag baint úsáide as <code>&amp;</code> agus <code>[]</code>
+tugann sé tagairt dúinn don eilimint ag an luach innéacs. Nuair a úsáidimid an <code>get</code>
+modh agus an t-innéacs a rith mar argóint, a fháil againn <code>Option&lt;&amp;T&gt;</code> gur féidir linn
+úsáid le <code>match</code>.</p>
+<p>Soláthraíonn Rust an dá bhealach seo chun tagairt a dhéanamh d'eilimint ionas gur féidir leat a roghnú conas a dhéantar an
+iompraíonn an clár nuair a dhéanann tú iarracht luach innéacs a úsáid lasmuigh de raon na
+eilimintí atá ann cheana féin. Mar shampla, feicimis cad a tharlaíonn nuair a bhíonn veicteoir againn
+cúig eilimint agus ansin déanaimid iarracht teacht ar eilimint ag innéacs 100 le gach ceann díobh
+teicníc, mar a thaispeántar i Liosta 8-5.</p>
+<Listing number="8-5" caption="Ag iarraidh an eilimint ag innéacs 100 a rochtain i veicteoir ina bhfuil cúig eilimint">
+<pre><pre class="playground"><code class="language-rust should_panic panics"><span class="boring">fn main() {
+</span>    let v = vec![1, 2, 3, 4, 5];
+
+    let does_not_exist = &amp;v[100];
+    let does_not_exist = v.get(100);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Nuair a rithfimid an cód seo, beidh an clár i scaoll mar gheall ar an gcéad mhodh <code>[]</code>
+toisc go ndéanann sé tagairt d'eilimint nach bhfuil ann. Tá an modh seo a úsáidtear is fearr nuair a
+ag iarraidh do ríomhchlár tuairteála má tá iarracht rochtain a fháil ar eilimint thar an
+deireadh an veicteora.</p>
+<p>Nuair a théann an modh <code>get</code> thar innéacs atá lasmuigh den veicteoir, filleann sé
+<code>None</code> gan scaoll. D’úsáidfeá an modh seo má tá rochtain agat ar eilimint
+thar raon an veicteora d'fhéadfadh tarlú uaireanta faoin ngnáth
+imthosca. Beidh loighic ag do chód ansin chun ceachtar acu a láimhseáil
+<code>Some(&amp;element)</code> nó <code>None</code>, mar a pléadh i gCaibidil 6. Mar shampla, an t-innéacs
+d'fhéadfadh a bheith ag teacht ó dhuine ag dul isteach uimhir. Má tá siad isteach de thaisme a
+uimhir atá ró-mhór agus faigheann an clár luach <code>None</code>, d'fhéadfá a rá leis an
+úsáideoir cé mhéad míreanna atá sa veicteoir reatha agus tabhair seans eile dóibh
+cuir isteach luach bailí. Bheadh ​​sé sin níos éasca le húsáid ná an clár a thuar
+mar gheall ar typo!</p>
+<p>Nuair a bhíonn tagairt bhailí ag an gclár, forfheidhmíonn an seiceálaí iasachtaí an
+rialacha úinéireachta agus iasachtaíochta (clúdaithe i gCaibidil 4) chun an tagairt seo a áirithiú
+agus aon tagairtí eile d'inneachar an veicteora fós bailí. Athghairm an
+riail a shonraíonn nach féidir leat tagairtí in-shó-shó-aistrithe a bheith agat sa chéanna
+scóip. Tá feidhm ag an riail sin i Liostú 8-6, áit a bhfuil tagairt do-luaineach againn
+leis an gcéad eilimint i veicteoir agus déan iarracht eilimint a chur leis an deireadh. seo
+Ní oibreoidh an clár má dhéanaimid iarracht tagairt a dhéanamh don eilimint sin níos déanaí sa
+feidhm.</p>
+<Listing number="8-6" caption="Attempting to add an element to a vector while holding a reference to an item">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let mut v = vec![1, 2, 3, 4, 5];
+
+    let first = &amp;v[0];
+
+    v.push(6);
+
+    println!("The first element is: {first}");
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Beidh an earráid seo mar thoradh ar an gcód seo a thiomsú:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling collections v0.1.0 (file:///projects/collections)
+error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable
+ --&gt; src/main.rs:6:5
+  |
+4 |     let first = &amp;v[0];
+  |                  - immutable borrow occurs here
+5 |
+6 |     v.push(6);
+  |     ^^^^^^^^^ mutable borrow occurs here
+7 |
+8 |     println!("The first element is: {first}");
+  |                                     ------- immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `collections` (bin "collections") due to 1 previous error
+</code></pre>
+<p>Seans go n-oibreodh an cód i Liostú 8-6: cén fáth ar cheart tagairt a dhéanamh
+don chéad eilimint cúram faoi athruithe ag deireadh an veicteora? Tá an earráid seo
+mar gheall ar an gcaoi a n-oibríonn veicteoirí: toisc go gcuireann veicteoirí na luachanna in aice lena chéile
+mar chuimhne, d'fhéadfadh go mbeadh gá le heilimint nua a chur le deireadh an veicteora
+cuimhne nua a leithdháileadh agus na gnéithe d'aois a chóipeáil chuig an spás nua, más ann
+níl dóthain spáis ann chun na heilimintí go léir a chur in aice lena chéile san áit a bhfuil an veicteoir
+atá stóráilte faoi láthair. Sa chás sin, bheadh ​​an tagairt don chéad eilimint
+ag tagairt do chuimhne dealraithe. Cuireann na rialacha iasachtaíochta cosc ​​ar chláir ó
+ag críochnú sa chás sin.</p>
+<blockquote>
+<p>Nóta: Le haghaidh tuilleadh eolais ar shonraí cur chun feidhme an chineáil <code>Vec&lt;T&gt;</code>, féach <a href="../nomicon/vec/vec.html">“The
+Rustonomicon”</a>.</p>
+</blockquote>
+<h3 id="ag-atriall-thar-na-luachanna-i-veicteoir"><a class="header" href="#ag-atriall-thar-na-luachanna-i-veicteoir">Ag Atriall Thar na Luachanna i Veicteoir</a></h3>
+<p>Chun rochtain a fháil ar gach eilimint i veicteoir ar a seal, dhéanfaimis athrá trí gach ceann de na
+eilimintí seachas innéacsanna a úsáid chun rochtain a fháil ar cheann amháin ag an am. Léiríonn liostú 8-7 conas
+lúb <code>for</code> a úsáid chun tagairtí do-athlasta a fháil do gach eilimint i veicteoir de
+luachanna <code>i32</code> agus priontáil iad.</p>
+<Listing number="8-7" caption="Gach eilimint a phriontáil i veicteoir trí na heilimintí a atriall ag baint úsáide as lúb `for`">
+<pre><code class="language-meirge"># fn main() {
+    let v = vec![100, 32, 57];
+    for i in &amp;v {
+        println!("{i}");
+    }
+# }
+</code></pre>
+</Listing>
+<p>Is féidir linn athrá a dhéanamh freisin ar thagairtí mutable do gach eilimint i veicteoir mutable
+chun athruithe a dhéanamh ar na heilimintí go léir. An lúb <code>for</code> i Liostú 8-8
+cuirfidh sé <code>50</code> le gach eilimint.</p>
+<Listing number="8-8" caption="Iterating over mutable references to elements in a vector">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut v = vec![100, 32, 57];
+    for i in &amp;mut v {
+        *i += 50;
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Chun an luach a thagraíonn an tagairt mutable a athrú, ní mór dúinn úsáid a bhaint as an
+<code>*</code> oibreoir díreference chun an luach in <code>i</code> a bhaint amach sular féidir linn an <code>+=</code> a úsáid
+oibreoir. Labhróimid níos mó faoin oibreoir díreagartha san <a href="ch15-02-deref.html#following-the-pointer-to-the-value-with-the-dereference-operator">“Tar éis an
+Pointeoir don Luach leis an Oibritheoir Dereference”</a><!-- neamhaird -->
+alt de Chaibidil 15 .</p>
+<p>Tá sé sábháilte atriallta thar veicteoir, bíodh sé neamh-inchurtha nó comh-athsholáthair, mar gheall ar an
+rialacha seiceálaithe iasachtaí. Má rinneamar iarracht míreanna a chur isteach nó a bhaint sa <code>for</code>
+comhlachtaí lúb i Liostú 8-7 agus Liostú 8-8, gheobhaimid earráid tiomsaithe
+cosúil leis an gceann a fuair muid leis an gcód i Liosta 8-6. An tagairt do na
+veicteoir a choinníonn an lúb <code>for</code> cosc ​​ar mhodhnú comhuaineach ar an
+veicteoir iomlán.</p>
+<h3 id="enum-a-úsáid-chun-ilchineálacha-a-stóráil"><a class="header" href="#enum-a-úsáid-chun-ilchineálacha-a-stóráil">Enum a úsáid chun Ilchineálacha a Stóráil</a></h3>
+<p>Ní féidir le veicteoirí ach luachanna den chineál céanna a stóráil. Is féidir é seo a
+deacair ; tá cásanna úsáide cinnte le haghaidh gá a stóráil liosta de
+míreanna de chineálacha éagsúla. Ar ámharaí an tsaoil, sainmhínítear na leaganacha de enum
+faoin gcineál enum céanna, mar sin nuair a theastaíonn cineál amháin uainn chun gnéithe de
+cineálacha éagsúla, is féidir linn enum a shainiú agus a úsáid!</p>
+<p>Mar shampla, abair go dteastaíonn uainn luachanna a fháil as a chéile i scarbhileog ina bhfuil
+tá slánuimhreacha i gcuid de na colúin sa ró, roinnt uimhreacha snámhphointe,
+agus roinnt teaghráin. Is féidir linn enum a shainiú a mbeidh na leaganacha éagsúla acu
+cineálacha luacha, agus measfar an cineál céanna a bheith ar na leaganacha uile enum: sin
+den enum. Ansin is féidir linn veicteoir a chruthú chun an enum sin a shealbhú agus mar sin, ar deireadh thiar,
+shealbhú cineálacha éagsúla. Tá sé seo léirithe againn i Liostú 8-9.</p>
+<Listing number="8-9" caption="Defining an `enum` to store values of different types in one vector">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum SpreadsheetCell {
+        Int(i32),
+        Float(f64),
+        Text(String),
+    }
+
+    let row = vec![
+        SpreadsheetCell::Int(3),
+        SpreadsheetCell::Text(String::from("blue")),
+        SpreadsheetCell::Float(10.12),
+    ];
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Caithfidh Rust a fhios cad iad na cineálacha a bheidh sa veicteoir ag am tiomsaithe ionas go mbeidh a fhios aige
+go díreach cé mhéad cuimhne ar an gcarn a bheidh ag teastáil chun gach eilimint a stóráil. muid
+Ní mór a bheith soiléir freisin faoi na cineálacha a cheadaítear sa veicteoir seo. Má meirge
+ceadaítear veicteoir a shealbhú de chineál ar bith, bheadh ​​seans ann go mbeadh ceann amháin nó níos mó de
+dhéanfadh na cineálacha earráidí leis na hoibríochtaí a dhéantar ar ghnéithe de
+an veicteoir. Ag baint úsáide as enum móide slonn <code>match</code> ciallaíonn sé sin go gcinnteoidh Rust
+ag an am tiomsaithe a láimhseáiltear gach cás féideartha, mar a pléadh i gCaibidil 6.</p>
+<p>Mura bhfuil a fhios agat an tsraith uileghabhálach cineálacha a gheobhaidh clár ag am rite
+stóráil i veicteoir, ní oibreoidh an teicníc enum. Ina áit sin, is féidir leat úsáid a bhaint as trait
+réad, a chlúdóimid i gCaibidil 18.</p>
+<p>Anois go bhfuil roinnt de na bealaí is coitianta chun veicteoirí a úsáid pléite againn, bí cinnte
+athbhreithniú a dhéanamh ar <a href="../std/vec/struct.Vec.html">an doiciméadú API</a><!-- neamhaird --> do gach ceann de na go leor
+modhanna úsáideacha arna sainiú ar <code>Vec&lt;T&gt;</code> ag an leabharlann chaighdeánach. Mar shampla, i
+Chomh maith le <code>push</code>, baintear agus cuireann modh <code>pop</code> an eilimint dheireanach ar ais.</p>
+<h3 id="má-thiteann-veicteoir-titeann-a-eilimintí"><a class="header" href="#má-thiteann-veicteoir-titeann-a-eilimintí">Má thiteann Veicteoir Titeann a Eilimintí</a></h3>
+<p>Cosúil le haon <code>struct</code> eile, saortar veicteoir nuair a théann sé as raon feidhme, mar
+atá anótáilte i Liostú 8-10.</p>
+<Listing number="8-10" caption="Showing where the vector and its elements are dropped">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    {
+        let v = vec![1, 2, 3, 4];
+
+        // do stuff with v
+    } // &lt;- v goes out of scope and is freed here
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Nuair a thiteann an veicteoir, scaoiltear a bhfuil ann go léir freisin, rud a chiallaíonn an
+déanfar slánuimhreacha atá aige a ghlanadh suas. Cinntíonn an seiceálaí iasachtaí go bhfuil aon
+ní úsáidtear tagairtí d'inneachar veicteora ach amháin nuair a bhíonn an veicteoir féin
+bailí.</p>
+<p>Bogfaimid ar aghaidh go dtí an chéad chineál bailiúcháin eile: <code>String</code>!</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="téacs-ionchódaithe-utf-8-a-stóráil-le-teaghráin"><a class="header" href="#téacs-ionchódaithe-utf-8-a-stóráil-le-teaghráin">Téacs Ionchódaithe UTF-8 a Stóráil le Teaghráin</a></h2>
+<p>Labhair muid faoi teaghráin i gCaibidil 4, ach féachfaimid orthu níos doimhne anois.
+Is minic a théann Rustaceans nua i bhfostú ar theaghráin le haghaidh meascán de thrí
+cúiseanna: claonadh Rust chun earráidí féideartha a nochtadh, agus teaghráin níos mó
+struchtúr sonraí casta ná go dtugann go leor ríomhchláraitheoirí creidiúint dóibh as, agus
+UTF-8. Tagann na fachtóirí seo le chéile ar bhealach a d’fhéadfadh a bheith deacair nuair a bhíonn tú
+ag teacht ó theangacha ríomhchlárúcháin eile.</p>
+<p>Pléimid teaghráin i gcomhthéacs bailiúcháin toisc go bhfuil teaghráin
+curtha i bhfeidhm mar bhailiúchán beart, chomh maith le roinnt modhanna úsáideacha a sholáthar
+feidhmiúlacht nuair a léirmhínítear na bearta sin mar théacs. Sa chuid seo, déanfaimid
+labhairt faoi na hoibríochtaí ar <code>String</code> atá ag gach cineál bailiúcháin, mar shampla
+ag cruthú, ag nuashonrú, agus ag léamh. Déanfaimid plé freisin ar na bealaí ina bhfuil <code>String</code>
+difriúil ó na bailiúcháin eile, is é sin an chaoi a ndéantar innéacsú i <code>String</code>
+casta ag na difríochtaí idir conas a dhéanann daoine agus ríomhairí léirmhíniú
+Sonraí <code>String</code>.</p>
+<h3 id="cad-is-teaghrán-ann"><a class="header" href="#cad-is-teaghrán-ann">Cad is Teaghrán ann?</a></h3>
+<p>Déanfaimid sainmhíniú ar dtús cad atá i gceist againn leis an téarma <em>string</em>. Níl ach sreang amháin ag meirge
+clóscríobh sa chroítheanga, is é sin an sreangshlis <code>str</code> a fheictear go hiondúil
+san fhoirm a fuarthas ar iasacht <code>&amp;str</code>. I gCaibidil 4, labhair muid faoi <em>string slices</em>,
+atá ina thagairtí do roinnt sonraí teaghrán ionchódaithe UTF-8 atá stóráilte in áit eile. Teaghrán
+Stóráiltear litreacha, mar shampla, i ndénártha an chláir agus mar sin de
+slisní teaghrán.</p>
+<p>An cineál <code>String</code>, a sholáthraíonn leabharlann caighdeánach Rust seachas
+códaithe sa teanga lárnach, is growable, mutable, úinéireacht, UTF-8 ionchódaithe
+cineál teaghrán. Nuair a thagraíonn Rustaceans do "teaghráin" i Rust, d'fhéadfadh siad a bheith
+ag tagairt do na cineálacha <code>String</code> nó do na cineálacha sreangán <code>&amp;str</code>, ní hamháin ceann amháin
+de na cineálacha sin. Cé go mbaineann an chuid seo den chuid is mó le <code>String</code>, tá an dá chineál
+a úsáidtear go mór i leabharlann caighdeánach Rust, agus 'Teaghrán` agus slisní sreang araon
+atá ionchódaithe UTF-8.</p>
+<h3 id="teaghrán-nua-á-chruthú"><a class="header" href="#teaghrán-nua-á-chruthú">Teaghrán Nua á Chruthú</a></h3>
+<p>Tá go leor de na hoibríochtaí céanna atá ar fáil le <code>Vec&lt;T&gt;</code> ar fáil le <code>String</code>
+chomh maith toisc go gcuirtear <code>String</code> i bhfeidhm i ndáiríre mar chumhdach timpeall veicteoir
+bearta le roinnt ráthaíochtaí breise, srianta, agus cumais. Sampla
+d'fheidhm a oibríonn ar an mbealach céanna le <code>Vec&lt;T&gt;</code> agus is é <code>String</code> an <code>new</code>
+feidhm chun sampla a chruthú, a thaispeántar i Liostú 8-11.</p>
+<Listing number="8-11" caption="Creating a new, empty `String`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::new();
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Cruthaíonn an líne seo teaghrán nua, folamh ar a dtugtar <code>s</code>, ar féidir linn a luchtú isteach ansin
+sonraí. Go minic, beidh roinnt sonraí tosaigh againn agus ba mhaith linn tús a chur leo
+teaghrán. Chuige sin, úsáidimid an modh <code>to_string</code>, atá ar fáil ar aon chineál
+a chuireann an trait <code>Display</code> i bhfeidhm, mar a dhéanann literals teaghrán. Liostáil 8-12 seónna
+dhá shampla.</p>
+<Listing number="8-12" caption="Using the `to_string` method to create a `String` from a string literal">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let data = "initial contents";
+
+    let s = data.to_string();
+
+    // the method also works on a literal directly:
+    let s = "initial contents".to_string();
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Cruthaíonn an cód seo teaghrán ina bhfuil <code>initial contents</code>.</p>
+<p>Is féidir linn an fheidhm <code>String::from</code> a úsáid freisin chun <code>String</code> a chruthú as téad
+litriúil. Tá an cód i Liostú 8-13 comhionann leis an gcód i Liostú 8-12
+a úsáideann <code>to_string</code>.</p>
+<Listing number="8-13" caption="Ag baint úsáide as an bhfeidhm `String::from` chun `String` a chruthú as teaghrán litriúil">
+<pre><code class="language-meirge"># fn main() {
+    let s = String::from("initial contents");
+# }
+</code></pre>
+</Listing>
+<p>Toisc go n-úsáidtear teaghráin le haghaidh an oiread sin rudaí, is féidir linn go leor cineálacha éagsúla a úsáid
+APIs le haghaidh teaghráin, ag soláthar dúinn go leor roghanna. Is féidir le cuid acu cosúil
+iomarcach, ach tá a n-áit acu go léir! Sa chás seo, <code>String::from</code> agus
+<code>to_string</code> déan an rud céanna, mar sin cén ceann a roghnaíonn tú is ábhar do stíl agus
+inléiteacht.</p>
+<p>Cuimhnigh go bhfuil teaghráin ionchódaithe UTF-8, ionas gur féidir linn a chur san áireamh aon ionchódaithe i gceart
+sonraí iontu, mar a thaispeántar i Liosta 8-14.</p>
+<Listing number="8-14" caption="Storing greetings in different languages in strings">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let hello = String::from("السلام عليكم");
+    let hello = String::from("Dobrý den");
+    let hello = String::from("Hello");
+    let hello = String::from("שלום");
+    let hello = String::from("नमस्ते");
+    let hello = String::from("こんにちは");
+    let hello = String::from("안녕하세요");
+    let hello = String::from("你好");
+    let hello = String::from("Olá");
+    let hello = String::from("Здравствуйте");
+    let hello = String::from("Hola");
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Is luachanna <code>String</code> bailí iad seo go léir.</p>
+<h3 id="teaghrán-á-nuashonrú"><a class="header" href="#teaghrán-á-nuashonrú">Teaghrán á nuashonrú</a></h3>
+<p>Is féidir le <code>String</code> fás i méid agus féadann a bhfuil ann athrú, díreach mar a bhíonn san ábhar
+de <code>Vec&lt;T&gt;</code>, má bhrúnn tú tuilleadh sonraí isteach ann. Ina theannta sin, is féidir leat go caothúil
+úsáid an t-oibreoir <code>+</code> nó an macra <code>format!</code> chun luachanna <code>String</code> a chomhcheangal.</p>
+<h4 id="ag-gabháil-le-teaghrán-le-push_str-agus-push"><a class="header" href="#ag-gabháil-le-teaghrán-le-push_str-agus-push">Ag gabháil le Teaghrán le <code>push_str</code> agus <code>push</code></a></h4>
+<p>Is féidir linn <code>String</code> a fhás tríd an modh <code>push_str</code> a úsáid chun sreangán a cheangal,
+mar a léirítear i Liosta 8-15.</p>
+<Listing number="8-15" caption="Appending a string slice to a `String` using the `push_str` method">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from("foo");
+    s.push_str("bar");
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Tar éis an dá líne seo, beidh <code>foobar</code> i <code>s</code>. Glacann an modh <code>push_str</code> a
+slisne teaghrán mar ní gá go dteastaíonn uainn úinéireacht a ghlacadh ar an
+paraiméadar. Mar shampla, sa chód i Liostú 8-16, ba mhaith linn a bheith in ann úsáid a bhaint as
+<code>s2</code> tar éis a bhfuil ann a chur i gceangal le <code>s1</code>.</p>
+<Listing number="8-16" caption="Using a string slice after appending its contents to a `String`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s1 = String::from("foo");
+    let s2 = "bar";
+    s1.push_str(s2);
+    println!("s2 is {s2}");
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Dá nglacfadh an modh <code>push_str</code> úinéireacht ar <code>s2</code>, ní bheimis in ann priontáil
+a luach ar an líne dheireanach. Mar sin féin, oibríonn an cód seo mar a mbeimis ag súil!</p>
+<p>Glacann an modh <code>push</code> carachtar amháin mar pharaiméadar agus cuireann sé leis an
+<code>String</code>. Cuireann liostú 8-17 an litir <em>l</em> le <code>String</code> ag baint úsáide as an <code>push</code>
+modh.</p>
+<Listing number="8-17" caption="Adding one character to a `String` value using `push`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from("lo");
+    s.push('l');
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Mar thoradh air sin, beidh <code>lol</code> i <code>s</code>.</p>
+<h4 id="comhghaolú-leis-an-oibreoir--nó-an-format-macra"><a class="header" href="#comhghaolú-leis-an-oibreoir--nó-an-format-macra">Comhghaolú leis an Oibreoir <code>+</code> nó an <code>format!</code> Macra</a></h4>
+<p>Go minic, beidh tú ag iarraidh dhá theaghrán atá ann cheana féin a chur le chéile. Bealach amháin chun é sin a dhéanamh ná úsáid a bhaint as
+an t-oibreoir <code>+</code>, mar a thaispeántar i Liostú 8-18.</p>
+<Listing number="8-18" caption="Using the `+` operator to combine two `String` values into a new `String` value">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("Hello, ");
+    let s2 = String::from("world!");
+    let s3 = s1 + &amp;s2; // note s1 has been moved here and can no longer be used
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Beidh <code>Hello, world!</code> sa teaghrán <code>s3</code>. Is é an chúis <code>s1</code> a thuilleadh
+bailí tar éis an Chomh maith, agus an chúis a úsáid againn tagairt do <code>s2</code>, tá a dhéanamh
+le síniú an mhodha a thugtar air nuair a úsáidimid an t-oibreoir <code>+</code>.
+Úsáideann an t-oibreoir <code>+</code> an modh <code>add</code>, a bhfuil cuma rud éigin ar a shíniú
+seo:</p>
+<pre><code class="language-rust ignore">fn add(self, s: &amp;str) -&gt; String {</code></pre>
+<p>Sa leabharlann chaighdeánach, feicfidh tú 'cuir' sainithe ag baint úsáide as cineálacha agus gaolmhara
+cineálacha. Anseo, tá cineálacha nithiúla curtha ina n-ionad againn, agus is é sin a tharlaíonn nuair a dhéanaimid
+glaoigh ar an modh seo le luachanna <code>String</code>. Pléifimid cúrsaí cineálacha i gCaibidil 10.
+Tugann an síniú seo na leideanna a theastaíonn uainn chun tuiscint a fháil ar na rudaí casta
+píosaí den oibreoir <code>+</code>.</p>
+<p>Ar dtús, tá <code>&amp;</code> ag <code>s2</code>, rud a chiallaíonn go bhfuil muid ag cur <em>reference</em> den dara ceann
+teaghrán go dtí an chéad teaghrán. Tá sé seo mar gheall ar an bparaiméadar <code>s</code> sa <code>add</code>
+feidhm: ní féidir linn ach <code>&amp;str</code> a chur le <code>String</code>; ní féidir linn dhá <code>String</code> a chur leis
+luachanna le chéile. Ach fan - is é an cineál <code>&amp;s2</code> ná <code>&amp;String</code>, ní <code>&amp;str</code>, mar
+sonraithe sa dara paraiméadar le <code>add</code> leis. Mar sin cén fáth a gcuirtear Liostú 8-18 le chéile?</p>
+<p>Is é an fáth go bhfuilimid in ann <code>&amp;s2</code> a úsáid sa ghlao chun <code>add</code> ná go bhfuil an tiomsaitheoir
+an féidir an argóint <code>&amp;String</code> a <em>chomhéigean</em> go <code>&amp;str</code>. Nuair a thugaimid an <code>add</code>
+modh, úsáideann Rust comhéigean <em>deref</em>, a thiontaíonn anseo <code>&amp;s2</code> go <code>&amp;s2[..]</code>.
+Déanfaimid plé níos doimhne ar chomhéigean deref i gCaibidil 15. Toisc go ndéanann <code>add</code>
+gan úinéireacht a ghlacadh ar an bparaiméadar <code>s</code>, beidh <code>s2</code> fós ina <code>String</code> bailí
+tar éis na hoibríochta seo.</p>
+<p>Ar an dara dul síos, is féidir linn a fheiceáil sa síniú go nglacann <code>add</code> úinéireacht ar <code>self</code>
+toisc go bhfuil <code>&amp;</code> ag <code>self</code>. Ciallaíonn sé seo go mbeidh <code>s1</code> i Liosta 8-18
+bhog sé isteach sa ghlao <code>add</code> agus ní bheidh sé bailí ina dhiaidh sin. Mar sin, cé go
+Breathnaíonn <code>let s3 = s1 + &amp;s2;</code> go ndéanfaidh sé an dá theaghrán a chóipeáil agus ceann nua a chruthú,
+glacann an ráiteas seo úinéireacht ar <code>s1</code>, cuireann cóip den ábhar leis
+de <code>s2</code>, agus ansin filleann úinéireacht an toraidh. I bhfocail eile, tá sé
+cosúil go bhfuil sé ag déanamh go leor cóipeanna, ach níl; tá an cur i bhfeidhm níos mó
+éifeachtach ná cóipeáil.</p>
+<p>Más gá dúinn a concatenate teaghráin iolrach, iompar an oibreora <code>+</code>
+éiríonn anacair:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = s1 + "-" + &amp;s2 + "-" + &amp;s3;
+<span class="boring">}</span></code></pre></pre>
+<p>Ag an bpointe seo, beidh <code>s</code> <code>tic-tac-toe</code>. Le gach ceann de na <code>+</code> agus <code>"</code>
+carachtair, tá sé deacair a fheiceáil cad atá ar siúl. Chun teaghráin a chomhcheangal i
+bealaí níos casta, is féidir linn an macra <code>format!</code> a úsáid ina ionad sin:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("tic");
+    let s2 = String::from("tac");
+    let s3 = String::from("toe");
+
+    let s = format!("{s1}-{s2}-{s3}");
+<span class="boring">}</span></code></pre></pre>
+<p>Socraíonn an cód seo <code>s</code> go <code>tic-tac-toe</code> freisin. Oibríonn an macra <code>format!</code> mar
+<code>println!</code>, ach in ionad an t-aschur a phriontáil go dtí an scáileán, filleann sé a
+<code>String</code> leis an ábhar. Is mór an leagan den chód a úsáideann <code>format!</code>
+níos éasca le léamh, agus úsáideann an cód ginte ag an macra <code>format!</code> tagairtí
+ionas nach mbeidh úinéireacht ag an nglao seo ar aon cheann dá pharaiméadair.</p>
+<h3 id="innéacsú-i-teaghráin"><a class="header" href="#innéacsú-i-teaghráin">Innéacsú i Teaghráin</a></h3>
+<p>I go leor teangacha ríomhchlárúcháin eile, is féidir rochtain a fháil ar charachtair aonair in a
+Is oibríocht bhailí agus choiteann é sreang trí thagairt a dhéanamh dóibh de réir innéacs. Mar sin féin,
+má dhéanann tú iarracht codanna de <code>String</code> a rochtain ag baint úsáide as comhréir innéacsaithe i Rust, déanfaidh tú
+earráid a fháil. Smaoinigh ar an gcód neamhbhailí i Liostú 8-19.</p>
+<Listing number="8-19" caption="Attempting to use indexing syntax with a String">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s1 = String::from("hello");
+    let h = s1[0];
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Beidh an earráid seo a leanas mar thoradh ar an gcód seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling collections v0.1.0 (file:///projects/collections)
+error[E0277]: the type `str` cannot be indexed by `{integer}`
+ --&gt; src/main.rs:3:16
+  |
+3 |     let h = s1[0];
+  |                ^ string indices are ranges of `usize`
+  |
+  = help: the trait `SliceIndex&lt;str&gt;` is not implemented for `{integer}`, which is required by `String: Index&lt;_&gt;`
+  = note: you can use `.chars().nth()` or `.bytes().nth()`
+          for more information, see chapter 8 in The Book: &lt;https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings&gt;
+  = help: the trait `SliceIndex&lt;[_]&gt;` is implemented for `usize`
+  = help: for that trait implementation, expected `[_]`, found `str`
+  = note: required for `String` to implement `Index&lt;{integer}&gt;`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `collections` (bin "collections") due to 1 previous error
+</code></pre>
+<p>Insíonn an earráid agus an nóta an scéal: Ní thacaíonn teaghráin meirge le hinnéacsú. Ach
+cén fáth nach bhfuil? Chun an cheist sin a fhreagairt, ní mór dúinn plé a dhéanamh ar an gcaoi a stórálann Rust teaghráin isteach
+cuimhne.</p>
+<h4 id="ionadaíocht-inmheánach"><a class="header" href="#ionadaíocht-inmheánach">Ionadaíocht Inmheánach</a></h4>
+<p>Is éard is <code>String</code> ann ná cumhdach thar <code>Vec&lt;u8&gt;</code>. Breathnaímis ar chuid dár gcuid i gceart
+teaghráin shamplacha UTF-8 ionchódaithe ó Liostú 8-14. Ar dtús, an ceann seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let hello = String::from("السلام عليكم");
+</span><span class="boring">    let hello = String::from("Dobrý den");
+</span><span class="boring">    let hello = String::from("Hello");
+</span><span class="boring">    let hello = String::from("שלום");
+</span><span class="boring">    let hello = String::from("नमस्ते");
+</span><span class="boring">    let hello = String::from("こんにちは");
+</span><span class="boring">    let hello = String::from("안녕하세요");
+</span><span class="boring">    let hello = String::from("你好");
+</span><span class="boring">    let hello = String::from("Olá");
+</span><span class="boring">    let hello = String::from("Здравствуйте");
+</span>    let hello = String::from("Hola");
+<span class="boring">}</span></code></pre></pre>
+<p>Sa chás seo, beidh <code>len</code> <code>4</code>, rud a chiallaíonn an veicteoir a stórálann an teaghrán
+Tá <code>"Hola"</code> 4 byte ar fad. Tógann gach ceann de na litreacha seo beart amháin nuair a ionchódaítear iad
+UTF-8. Féadfaidh an líne seo a leanas, áfach, iontas ort (tabhair faoi deara go bhfuil an teaghrán seo
+Tosaíonn leis an bpríomhlitir Choireallach <em>Ze</em>, ní uimhir 3):</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let hello = String::from("السلام عليكم");
+</span><span class="boring">    let hello = String::from("Dobrý den");
+</span><span class="boring">    let hello = String::from("Hello");
+</span><span class="boring">    let hello = String::from("שלום");
+</span><span class="boring">    let hello = String::from("नमस्ते");
+</span><span class="boring">    let hello = String::from("こんにちは");
+</span><span class="boring">    let hello = String::from("안녕하세요");
+</span><span class="boring">    let hello = String::from("你好");
+</span><span class="boring">    let hello = String::from("Olá");
+</span>    let hello = String::from("Здравствуйте");
+<span class="boring">    let hello = String::from("Hola");
+</span><span class="boring">}</span></code></pre></pre>
+<p>Dá gcuirfí ceist ort cé chomh fada is atá an téad, b’fhéidir go ndéarfá 12. Go deimhin, Rust’s
+Is é 24 an freagra: sin líon na mbeart a thógann sé chun “Здравствуйте” a ionchódú i
+UTF-8, toisc go dtógann gach luach scálach Unicode sa téad sin 2 byte de
+stórála. Mar sin, ní bheidh comhghaolú i gcónaí ag innéacs isteach i mbeart na sreinge
+chuig luach scálach Unicode bailí. Chun a léiriú, smaoinigh ar an meirge neamhbhailí seo
+cód:</p>
+<pre><code class="language-rust ignore does_not_compile">let hello = "Здравствуйте";
+let answer = &amp;hello[0];</code></pre>
+<p>Tá a fhios agat cheana féin nach <code>З</code> a bheidh i <code>answer</code>, an chéad litir. Nuair a ionchódaithe
+in UTF-8, is é <code>208</code> an chéad bheart de <code>З</code> agus<code>151</code> an dara beart, mar sin bheadh
+is cosúil gur cheart go mbeadh <code>208</code> mar <code>answer</code>, ach ní carachtar bailí é <code>208</code>
+ar a shon féin. Is dócha nach mbeadh an t-úsáideoir ag iarraidh dá n-iarrfadh siad <code>208</code> a thabhairt ar ais
+don chéad litir den téad seo; áfach, sin iad na sonraí amháin go Rust
+tá ag innéacs beart 0. Go ginearálta ní bhíonn úsáideoirí ag iarraidh an luach beart a thabhairt ar ais, fiú
+mura bhfuil sa teaghrán ach litreacha Laidine: dá mba chód bailí é <code>&amp;"hi"[0]</code> sin
+ar ais an luach beart, thabharfadh sé ar ais <code>104</code>, ní <code>h</code>.</p>
+<p>Is é an freagra, mar sin, ná chun luach agus cúis gan choinne a sheachaint
+fabhtanna nach bhfaighfear amach láithreach, ní thiomsaíonn Rust an cód seo
+ar chor ar bith agus seachnaíonn sé míthuiscintí go luath sa phróiseas forbartha.</p>
+<h4 id="beart-agus-luachanna-scalaracha-agus-cnuasaigh-ghraifim-Ó-mo"><a class="header" href="#beart-agus-luachanna-scalaracha-agus-cnuasaigh-ghraifim-Ó-mo">Beart agus Luachanna Scalaracha agus Cnuasaigh Ghraifim! Ó Mo!</a></h4>
+<p>Pointe eile faoi UTF-8 ná go bhfuil trí bhealach ábhartha ann i ndáiríre
+breathnú ar teaghráin ó thaobh Rust: mar bhearta, luachanna scálach, agus grapheme
+cnuasaigh (an rud is gaire don rud a thabharfaimis <em>letters</em>).</p>
+<p>Má bhreathnaíonn muid ar an bhfocal Hiondúis “नमस्ते” scríofa sa script Devanagari, is é
+stóráilte mar veicteoir de luachanna <code>u8</code> a bhreathnaíonn mar seo:</p>
+<pre><code class="language-text">[224, 164, 168, 224, 164, 174, 224, 164, 184, 224, 165, 141, 224, 164, 164,
+224, 165, 135]
+</code></pre>
+<p>Sin 18 beart agus sin é an chaoi a stórálann ríomhairí na sonraí seo ar deireadh. Má táimid ar
+iad mar luachanna scálacha Unicode, agus is iad sin an cineál <code>char</code> atá ag Rust, iad sin
+Breathnaíonn bytes mar seo:</p>
+<pre><code class="language-text">['न', 'म', 'स', '्', 'त', 'े']
+</code></pre>
+<p>Tá sé luach <code>char</code> anseo, ach ní litreacha iad an ceathrú agus an séú ceann:
+is diacritics iad nach bhfuil ciall acu leo ​​féin. Ar deireadh, má táimid ar
+iad mar bhraislí grapheme, gheobhaimid an rud a thabharfadh duine ar na ceithre litir
+a dhéanann suas an focal Hiondúis:</p>
+<pre><code class="language-text">["न", "म", "स्", "ते"]
+</code></pre>
+<p>Soláthraíonn meirge bealaí éagsúla chun na sonraí teaghrán amh a dhéanann ríomhairí a léirmhíniú
+stóráil ionas gur féidir le gach clár an léiriú a theastaíonn uaidh a roghnú, is cuma
+cén teanga dhaonna ina bhfuil na sonraí.</p>
+<p>Cúis dheiridh nach ligeann Rust dúinn innéacsú a dhéanamh i <code>String</code> chun a
+Is é an carachtar ná go bhfuiltear ag súil go dtógfaidh oibríochtaí innéacsaithe am seasta i gcónaí
+(O(1)). Ach ní féidir a ráthú go bhfuil feidhmíocht le <code>String</code>,
+toisc go mbeadh ar Rust siúl tríd an ábhar ón tús go dtí an
+innéacs lena fháil amach cé mhéad carachtar bailí a bhí ann.</p>
+<h3 id="teaghráin-slicing"><a class="header" href="#teaghráin-slicing">Teaghráin slicing</a></h3>
+<p>Is minic gur droch-smaoineamh é innéacsú i sreang mar ní léir cad é an
+ba cheart go mbeadh cineál aischuir na hoibríochta innéacsaithe teaghrán mar seo a leanas: luach beart, a
+carachtar, braisle grapheme, nó slisne teaghrán. Más gá duit a úsáid i ndáiríre
+innéacsanna chun slisní teaghrán a chruthú, mar sin, iarrann Rust ort a bheith níos sainiúla.</p>
+<p>Seachas <code>[]</code> a úsáid le huimhir shingil, is féidir leat <code>[]</code> a úsáid le a
+raon chun sliseog teaghrán a chruthú ina mbeidh bearta ar leith:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let hello = "Здравствуйте";
+
+let s = &amp;hello[0..4];
+<span class="boring">}</span></code></pre></pre>
+<p>Anseo, beidh <code>s</code> ina <code>&amp;str</code> ina mbeidh na chéad cheithre beart den téad.
+Níos luaithe, luaigh muid go raibh gach ceann de na carachtair dhá bytes, rud a chiallaíonn
+beidh <code>s</code> <code>Зд</code>.</p>
+<p>Dá ndéanfaimis iarracht gan ach cuid de bhearta carachtar a ghearradh le rud éigin mar
+<code>&amp;hello[0..1]</code>, bheadh ​​scaoll ar Rust faoin am rite ar an mbealach céanna agus dá mbeadh sé neamhbhailí
+Rinneadh rochtain ar innéacs i veicteoir:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling collections v0.1.0 (file:///projects/collections)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/debug/collections`
+thread 'main' panicked at src/main.rs:4:19:
+byte index 1 is not a char boundary; it is inside 'З' (bytes 0..2) of `Здравствуйте`
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Ba chóir duit a bheith cúramach nuair a chruthú slices teaghrán le raonta, mar gheall ar a dhéanamh
+mar sin is féidir tuairteála do chlár.</p>
+<h3 id="modhanna-chun-atriall-thar-teaghráin"><a class="header" href="#modhanna-chun-atriall-thar-teaghráin">Modhanna chun atriall thar Teaghráin</a></h3>
+<p>Is é an bealach is fearr chun oibriú ar phíosaí teaghráin ná a bheith soiléir faoi cé acu an bhfuil nó nach bhfuil
+tá carachtair nó beart uait. Le haghaidh luachanna scálacha Unicode aonair, bain úsáid as an
+modh <code>chars</code>. Má ghlaoitear <code>chars</code> ar “Зд” scartar amach agus cuireann sé ar ais dhá luach de
+clóscríobh <code>char</code>, agus is féidir leat an toradh a athrá chun rochtain a fháil ar gach eilimint:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for c in "Зд".chars() {
+    println!("{c}");
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Déanfaidh an cód seo na rudaí seo a leanas a phriontáil:</p>
+<pre><code class="language-text">З
+д
+</code></pre>
+<p>De rogha air sin, cuireann an modh <code>bytes</code> gach beart amh ar ais, agus b'fhéidir gurb é sin
+oiriúnach do d'fhearann:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for b in "Зд".bytes() {
+    println!("{b}");
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Déanfaidh an cód seo na ceithre bheart a chuimsíonn an teaghrán seo a phriontáil:</p>
+<pre><code class="language-text">208
+151
+208
+180
+</code></pre>
+<p>Ach a bheith cinnte a mheabhrú go bhféadfadh luachanna scálach Unicode bailí a bheith comhdhéanta de níos mó
+ná beart amháin.</p>
+<p>Is éard atá i gceist le braislí grapheme a fháil ó theaghráin, mar atá le script Devanagari
+casta, mar sin ní sholáthraíonn an leabharlann chaighdeánach an fheidhmiúlacht seo. cliathbhoscaí
+ar fáil ar <a href="https://crates.io/">crates.io</a> <!-- neamhaird --> más é seo an
+feidhmiúlacht atá uait.</p>
+<h3 id="níl-teaghráin-chomh-simplí-sin"><a class="header" href="#níl-teaghráin-chomh-simplí-sin">Níl Teaghráin Chomh Simplí sin</a></h3>
+<p>Mar achoimre, tá teaghráin casta. Déanann teangacha cláir éagsúla
+roghanna éagsúla maidir le conas an chastacht seo a chur i láthair don ríomhchláraitheoir. Meirge
+roghnaigh láimhseáil cheart sonraí <code>String</code> an t-iompar réamhshocraithe
+do gach clár Rust, rud a chiallaíonn go gcaithfidh ríomhchláraitheoirí níos mó machnaimh a dhéanamh
+láimhseáil sonraí UTF-8 roimh ré. Léiríonn an chomhbhabhtáil seo níos mó de chastacht na
+teaghráin ná mar is léir i dteangacha ríomhchlárúcháin eile, ach cuireann sé cosc ​​ort
+ó bheith ort earráidí a bhaineann le carachtair neamh-ASCII a láimhseáil níos déanaí i do
+saolré forbartha.</p>
+<p>Is é an dea-scéal ná go dtugann an leabharlann chaighdeánach go leor feidhmiúlacht tógtha
+as na cineálacha <code>String</code> agus <code>&amp;str</code> chun cabhrú leis na cásanna casta seo a láimhseáil
+i gceart. Bí cinnte a sheiceáil amach an doiciméadú le haghaidh modhanna úsáideacha mar
+<code>contains</code> le haghaidh cuardach i teaghrán agus <code>replace</code> chun codanna de a
+téad le teaghrán eile.</p>
+<p>Aistrímid chuig rud éigin nach bhfuil chomh casta: léarscáileanna hash!</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="eochracha-le-luachanna-gaolmhara-a-stóráil-i-léarscáileanna-hash"><a class="header" href="#eochracha-le-luachanna-gaolmhara-a-stóráil-i-léarscáileanna-hash">Eochracha le Luachanna Gaolmhara a Stóráil i Léarscáileanna Hash</a></h2>
+<p>Is é an <em>hash map</em> an ceann deireanach dár mbailiúcháin choiteanna. An cineál <code>HashMap&lt;K, V&gt;</code>
+stórálann sé mapáil d'eochracha den chineál <code>K</code> le luachanna de chineál <code>V</code> ag baint úsáide as <em>hashing
+function</em>, a chinneann conas a chuireann sé na heochracha agus na luachanna seo i gcuimhne.
+Tacaíonn go leor teangacha ríomhchláraithe leis an gcineál seo struchtúr sonraí, ach is minic a bhíonn siad
+úsáid ainm eile, mar shampla <em>hash</em>, <em>map</em>, <em>object</em>, <em>hash table</em>,
+<em>dictionary</em>, nó <em>associative array</em>, gan ach roinnt a ainmniú.</p>
+<p>Tá léarscáileanna hash úsáideach nuair is mian leat sonraí a chuardach ní trí innéacs a úsáid, mar
+is féidir leat le veicteoirí, ach ag baint úsáide as eochair is féidir a bheith de chineál ar bith. Mar shampla,
+i gcluiche, d’fhéadfá súil a choinneáil ar scór gach foirne ar léarscáil hash ina bhfuil
+is ainm foirne é gach eochair agus is ionann na luachanna agus scór gach foirne. Tugtar foireann
+ainm, is féidir leat a scór a fháil ar ais.</p>
+<p>Rachaimid thar an API bunúsach de léarscáileanna hash sa chuid seo, ach go leor rudaí eile
+folaithe sna feidhmeanna atá sainmhínithe ar <code>HashMap&lt;K, V&gt;</code> ag an leabharlann chaighdeánach.
+Mar is gnáth, seiceáil na doiciméid chaighdeánacha leabharlainne le haghaidh tuilleadh eolais.</p>
+<h3 id="hash-léarscáil-nua-a-chruthú"><a class="header" href="#hash-léarscáil-nua-a-chruthú">Hash Léarscáil Nua a Chruthú</a></h3>
+<p>Bealach amháin le léarscáil hash folamh a chruthú ná <code>new</code> a úsáid agus gnéithe a chur leis
+<code>insert</code>. I Liostáil 8-20, táimid ag coinneáil súil ar scóir dhá fhoireann a bhfuil
+is iad na hainmneacha <em>Gorm</em> agus <em>Buí</em>. Tosaíonn an fhoireann Gorm le 10 bpointe, agus an
+Tosaíonn foireann buí le 50.</p>
+<Listing number="8-20" caption="Creating a new hash map and inserting some keys and values">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara go gcaithfimid an <code>HashMap</code> a úsáid ar dtús ón gcuid bailiúcháin de
+an leabharlann caighdeánach. As ár dtrí bhailiúchán coitianta, is é an ceann seo an ceann is lú
+a úsáidtear go minic, mar sin níl sé san áireamh sna gnéithe a thugtar isteach sa raon feidhme
+go huathoibríoch sa réamhrá. Tá níos lú tacaíochta ag léarscáileanna hash freisin ó na
+leabharlann caighdeánach; níl aon mhacra ionsuite ann chun iad a thógáil, mar shampla.</p>
+<p>Díreach cosúil le veicteoirí, stórálann léarscáileanna hash a gcuid sonraí ar an gcarn. Tá an <code>HashMap</code> seo
+eochracha den chineál <code>String</code> agus luachanna an chineáil <code>i32</code>. Cosúil le veicteoirí, tá léarscáileanna hash
+aonchineálach: caithfidh an cineál céanna a bheith ag gach ceann de na heochracha, agus na luachanna go léir
+Ní mór go mbeadh an cineál céanna.</p>
+<h3 id="ag-fáil-rochtana-ar-luachanna-i-hash-léarscáil"><a class="header" href="#ag-fáil-rochtana-ar-luachanna-i-hash-léarscáil">Ag fáil rochtana ar Luachanna i Hash Léarscáil</a></h3>
+<p>Is féidir linn luach a fháil ón léarscáil hash trína eochair don <code>get</code>
+modh, mar a thaispeántar i Liosta 8-21.</p>
+<Listing number="8-21" caption="Accessing the score for the Blue team stored in the hash map">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+
+    let team_name = String::from("Blue");
+    let score = scores.get(&amp;team_name).copied().unwrap_or(0);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Anseo, beidh an luach a bhaineann leis an bhfoireann Gorm ag <code>score</code>, agus an
+Beidh an toradh <code>10</code>. Filleann an modh <code>get</code> <code>Option&lt;&amp;V&gt;</code>; mura bhfuil
+luach na heochair sin sa léarscáil hash, tabharfaidh <code>get</code> ar ais <code>None</code>. An clár seo
+láimhseálann sé an <code>Option</code> trí ghlaoch ar <code>copied</code> chun <code>Option&lt;i32&gt;</code> a fháil seachas
+<code>Option&lt;&amp;i32&gt;</code>, ansin <code>unwrap_or</code> chun <code>score</code> a shocrú go nialas mura bhfuil <code>scores</code>
+bíodh iontráil agat don eochair.</p>
+<p>Is féidir linn athrá a dhéanamh ar gach péire eochairluacha ar léarscáil hash ar an mbealach céanna is a dhéanaimid
+Déan le veicteoirí, ag baint úsáide as lúb <code>for</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+
+    for (key, value) in &amp;scores {
+        println!("{key}: {value}");
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>Déanfaidh an cód seo gach péire a phriontáil in ord treallach:</p>
+<pre><code class="language-text">Yellow: 50
+Blue: 10
+</code></pre>
+<h3 id="léarscáileanna-hash-agus-Úinéireacht"><a class="header" href="#léarscáileanna-hash-agus-Úinéireacht">Léarscáileanna Hash agus Úinéireacht</a></h3>
+<p>I gcás cineálacha a chuireann an trait <code>Copy</code> i bhfeidhm, mar <code>i32</code>, déantar na luachanna a chóipeáil
+isteach sa léarscáil hash. I gcás luachanna faoi úinéireacht mar <code>String</code>, bogfar na luachanna agus
+beidh an léarscáil hash ina úinéir ar na luachanna sin, mar a léirítear i Liosta 8-22.</p>
+<Listing number="8-22" caption="Showing that keys and values are owned by the hash map once they’re inserted">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let field_name = String::from("Favorite color");
+    let field_value = String::from("Blue");
+
+    let mut map = HashMap::new();
+    map.insert(field_name, field_value);
+    // field_name and field_value are invalid at this point, try using them and
+    // see what compiler error you get!
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Nílimid in ann na hathróga <code>field_name</code> agus <code>field_value</code> a úsáid ina dhiaidh
+tá siad bogtha isteach sa léarscáil hash leis an nglao <code>insert</code>.</p>
+<p>Má chuirimid tagairtí do luachanna isteach sa léarscáil hash, ní bhogfar na luachanna
+isteach sa léarscáil hash. Ní mór na luachanna a díríonn na tagairtí dóibh a bheith bailí ag
+ar a laghad chomh fada agus atá an léarscáil hash bailí. Labhróimid níos mó faoi na ceisteanna seo i
+an [“Tagairtí a Bhailíochtú le
+Saoil”][bailíochtú-tagairtí-le-saoil]<!-- neamhaird a dhéanamh ar --> alt i
+Caibidil 10 .</p>
+<h3 id="léarscáil-hash-á-nuashonrú"><a class="header" href="#léarscáil-hash-á-nuashonrú">Léarscáil Hash á nuashonrú</a></h3>
+<p>Cé gur féidir fás ar líon na bpéirí eochair agus luacha, is féidir le gach eochair uathúil
+gan ach luach amháin a bheith bainteach leis ag an am (ach ní vice versa: do
+Mar shampla, d'fhéadfadh an luach <code>10</code> a bheith ag an bhfoireann Gorm agus ag an bhfoireann Bhuí araon
+stóráilte sa léarscáil hash <code>scores</code>).</p>
+<p>Nuair is mian leat na sonraí a athrú i léarscáil hash, caithfidh tú cinneadh a dhéanamh conas
+láimhseáil an cás nuair a bhíonn luach sannta ag eochair cheana féin. D'fhéadfá ionad an
+luach d'aois leis an luach nua, go hiomlán neamhaird a dhéanamh ar an luach d'aois. D'fhéadfá
+choinneáil ar an luach d'aois agus neamhaird a dhéanamh ar an luach nua, ach amháin ag cur an luach nua má tá an
+eochair <em>níl</em> luach aici cheana féin. Nó d’fhéadfá an seanluach agus an
+luach nua. Breathnaímid ar conas gach ceann díobh seo a dhéanamh!</p>
+<h4 id="luach-a-fhorscríobh"><a class="header" href="#luach-a-fhorscríobh">Luach a Fhorscríobh</a></h4>
+<p>Má chuirimid eochair agus luach isteach i léarscáil hash agus ansin cuir isteach an eochair chéanna
+le luach difriúil, cuirfear an luach a bhaineann leis an eochair sin in ionad.
+Cé go nglaonn an cód i Liostú 8-23 <code>insert</code> faoi dhó, beidh an léarscáil hash
+níl ach péire eochairluacha amháin ann toisc go bhfuil luach an Ghorm á chur isteach againn
+eochair na foirne an dá uair.</p>
+<Listing number="8-23" caption="Replacing a value stored with a particular key">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Blue"), 25);
+
+    println!("{scores:?}");
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Priontálfaidh an cód seo <code>{"Blue": 25}</code>. Tá luach bunaidh <code>10</code> curtha
+forscríofa.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="only-inserting-a-value-if-the-key-has-no-value"></a></p>
+<h4 id="ag-cur-eochair-agus-luach-leis-mura-bhfuil-eochair-i-láthair"><a class="header" href="#ag-cur-eochair-agus-luach-leis-mura-bhfuil-eochair-i-láthair">Ag Cur Eochair agus Luach Leis Mura bhfuil Eochair i Láthair</a></h4>
+<p>Is gnách seiceáil an bhfuil eochair ar leith sa léarscáil hash cheana féin
+le luach agus ansin na gníomhartha seo a leanas a dhéanamh: má tá an eochair ann i
+an léarscáil hash, ba cheart go bhfanfadh an luach reatha mar atá sé; má tá an eochair
+nach bhfuil ann, cuir isteach é agus luach air.</p>
+<p>Tá API speisialta ag léarscáileanna hash don <code>entry</code> seo a thógann an eochair duit
+ag iarraidh a sheiceáil mar pharaiméadar. Is énum luach aischuir an mhodha <code>entry</code>
+ar a dtugtar <code>Entry</code> a léiríonn luach a d'fhéadfadh a bheith ann nó nach bhféadfadh. Déarfainn
+ba mhaith linn a sheiceáil an bhfuil luach ag baint leis an eochair don fhoireann Bhuí
+leis. Mura ndéanann sé, ba mhaith linn an luach <code>50</code> a chur isteach, agus mar an gcéanna le haghaidh an
+Foireann gorm. Ag baint úsáide as an <code>entry</code> API, tá an chuma ar an gcód Liostú 8-24.</p>
+<Listing number="8-24" caption="Using the `entry` method to only insert if the key does not already have a value">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let mut scores = HashMap::new();
+    scores.insert(String::from("Blue"), 10);
+
+    scores.entry(String::from("Yellow")).or_insert(50);
+    scores.entry(String::from("Blue")).or_insert(50);
+
+    println!("{scores:?}");
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Sainmhínítear an modh <code>or_insert</code> ar <code>Entry</code> chun tagairt shochorraithe a thabhairt ar ais dó
+an luach don eochair 'Iontráil' chomhfhreagrach má tá an eochair sin ann, agus mura bhfuil, é
+cuireann sé an paraiméadar isteach mar an luach nua don eochair seo agus cuireann sé mutable ar ais
+tagairt don luach nua. Tá an teicníc seo i bhfad níos glaine ná mar a scríobh an
+loighic féin agus, ina theannta sin, imríonn níos nicely leis an seiceálaí iasachtaí.</p>
+<p>Má ritheann tú an cód i Liostú 8-24, priontálfar <code>{"Yellow": 50, "Blue": 10}</code>. Tá an
+cuirfidh an chéad ghlao ar <code>entry</code> isteach an eochair don fhoireann Bhuí leis an luach
+<code>50</code> toisc nach bhfuil luach ag an bhfoireann Buí cheana féin. An dara glaoch chuig
+Ní athróidh <code>entry</code> an léarscáil hash mar tá an t-ainm ag an bhfoireann Gorm cheana féin
+luach <code>10</code>.</p>
+<h4 id="luach-bunaithe-ar-an-seanluach-a-nuashonrú"><a class="header" href="#luach-bunaithe-ar-an-seanluach-a-nuashonrú">Luach Bunaithe ar an Seanluach a Nuashonrú</a></h4>
+<p>Cás úsáide coitianta eile le haghaidh léarscáileanna hash ná luach eochair a chuardach agus ansin
+é a nuashonrú bunaithe ar an seanluach. Mar shampla, taispeánann Liostú 8-25 cód sin
+comhaireamh cé mhéad uair gach focal le feiceáil i roinnt téacs. Bainimid úsáid as léarscáil hash le
+na focail mar eochracha agus incrimint an luach súil a choinneáil ar cé mhéad uair atá againn
+chonaic an focal sin. Más é seo an chéad uair a bhfuil focal feicthe againn, cuirfimid isteach ar dtús
+an luach <code>0</code>.</p>
+<Listing number="8-25" caption="Counting occurrences of words using a hash map that stores words and counts">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::collections::HashMap;
+
+    let text = "hello world wonderful world";
+
+    let mut map = HashMap::new();
+
+    for word in text.split_whitespace() {
+        let count = map.entry(word).or_insert(0);
+        *count += 1;
+    }
+
+    println!("{map:?}");
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Priontálfaidh an cód seo <code>{"world": 2, "hello": 1, "wonderful": 1}</code>. Seans go bhfeicfeá
+na péirí eochairluacha céanna priontáilte in ord difriúil: aisghairm ón
+<a href="ch08-03-hash-maps.html#accessing-values-in-a-hash-map">“Luachanna a Rochtana i Hash Map”</a><!-- neamhaird a dhéanamh ar --> alt sin
+tarlaíonn atriall thar léarscáil hash in ord treallach.</p>
+<p>Filleann an modh <code>split_whitespace</code> atriator thar fhomhíreanna, scartha le
+spás bán, den luach i <code>text</code>. Filleann an modh <code>or_insert</code> comhshó
+tagairt (<code>&amp;mut V</code>) don luach don eochair shonraithe. Anseo, déanaimid é sin a stóráil
+tagairt chomhshóite san athróg <code>count</code>, mar sin chun an luach sin a shannadh,
+ní mór dúinn ar dtús tagairt a dhéanamh do <code>count</code> ag baint úsáide as an réiltín (<code>*</code>). An mutable
+téann an tagairt as an scóip ag deireadh na lúb <code>for</code>, mar sin seo go léir
+tá athruithe sábháilte agus ceadaithe ag na rialacha iasachtaithe.</p>
+<h3 id="feidhmeanna-hashing"><a class="header" href="#feidhmeanna-hashing">Feidhmeanna Hashing</a></h3>
+<p>De réir réamhshocraithe, úsáideann <code>HashMap</code> feidhm hashing ar a dtugtar <em>SipHash</em> is féidir a sholáthar
+frithsheasmhacht in aghaidh ionsaithe diúltaithe seirbhíse (DoS) a bhaineann le hash
+táblaí<sup class="footnote-reference"><a href="#siphash">1</a></sup> <!-- neamhaird a dhéanamh -->. Ní hé seo an algartam hashing is tapúla
+ar fáil, ach an trádáil-uaire le haghaidh slándála níos fearr a thagann leis an titim isteach
+feidhmíocht is fiú é. Má tá tú próifíl do chód agus a fháil go bhfuil an réamhshocraithe
+tá feidhm hash ró-mhall chun do chuspóirí, is féidir leat aistriú go feidhm eile
+trí hasher difriúil a shonrú. Is cineál é <em>hasher</em> a chuireann an
+Tréith <code>BuildHasher</code>. Labhróimid faoi thréithe agus conas iad a chur i bhfeidhm
+<a href="ch10-02-traits.html">Caibidil 10</a><!-- déan neamhaird de -->. Ní gá duit a chur i bhfeidhm
+do hasher féin ón tús; <a href="https://crates.io/">crates.io</a> <!-- neamhaird -->
+tá leabharlanna roinnte ag úsáideoirí Rust eile a sholáthraíonn hashers a chuireann go leor i bhfeidhm
+halgartaim hashing coitianta.</p>
+<div class="footnote-definition" id="siphash"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://en.wikipedia.org/wiki/SipHash"> https://en.wikipedia.org/wiki/SipHash</a></p>
+</div>
+<h2 id="achoimre-7"><a class="header" href="#achoimre-7">Achoimre</a></h2>
+<p>Soláthróidh veicteoirí, teaghráin, agus léarscáileanna hash cuid mhór feidhmiúlachta
+riachtanach i gcláir nuair is gá duit sonraí a stóráil, a rochtain agus a mhodhnú. Seo iad
+roinnt cleachtaí ba chóir duit a bheith feistithe anois le réiteach:</p>
+<ol>
+<li>Nuair a thugtar liosta slánuimhreacha, úsáid veicteoir agus cuir ar ais an t-airmheán (agus é sórtáilte,
+an luach sa suíomh lár) agus mód (an luach is mó a tharlaíonn
+go minic ; beidh léarscáil hash ina chuidiú anseo) den liosta.</li>
+<li>Teaghráin a thiontú go Laidin muc. Bogtar an chéad chonsan de gach focal go dtí
+cuirtear deireadh an fhocail agus <em>ay</em> leis, mar sin déantar <em>irst-fay</em>. Focail
+a thosaíonn le guta tar éis <em>hay</em> a chur leis an deireadh ina ionad sin (éiríonn <em>apple</em>
+<em>apple-hay</em>). Coinnigh i gcuimhne na sonraí faoi ionchódú UTF-8!</li>
+<li>Ag baint úsáide as léarscáil hash agus veicteoirí, cruthaigh comhéadan téacs chun ligean d'úsáideoir cur leis
+ainmneacha fostaithe do roinn i gcuideachta; mar shampla, “Cuir Sally le
+Innealtóireacht" nó "Cuir Amir le Díolacháin." Ansin lig an t-úsáideoir a fháil ar liosta de na
+daoine i roinn nó gach duine sa chuideachta de réir roinne, curtha in eagar
+in ord aibítre.</li>
+</ol>
+<p>Déanann doiciméadú caighdeánach API na leabharlainne cur síos ar mhodhanna a veicteálann, teaghráin,
+agus tá léarscáileanna hash a bheidh ina gcuidiú do na cleachtaí seo!</p>
+<p>Táimid ag dul isteach i gcláir níos casta ina dteipfidh ar oibríochtaí, mar sin de
+am iontach chun láimhseáil earráidí a phlé. Déanfaimid é sin chugainn!</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="error-handling"><a class="header" href="#error-handling">Error Handling</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="unrecoverable-errors-with-panic"><a class="header" href="#unrecoverable-errors-with-panic">Unrecoverable Errors with panic!</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recoverable-errors-with-result"><a class="header" href="#recoverable-errors-with-result">Recoverable Errors with Result</a></h1>
