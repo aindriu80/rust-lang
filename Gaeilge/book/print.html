@@ -8434,10 +8434,954 @@ in ord aibítre.</li>
 agus tá léarscáileanna hash a bheidh ina gcuidiú do na cleachtaí seo!</p>
 <p>Táimid ag dul isteach i gcláir níos casta ina dteipfidh ar oibríochtaí, mar sin de
 am iontach chun láimhseáil earráidí a phlé. Déanfaimid é sin chugainn!</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="error-handling"><a class="header" href="#error-handling">Error Handling</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="unrecoverable-errors-with-panic"><a class="header" href="#unrecoverable-errors-with-panic">Unrecoverable Errors with panic!</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="recoverable-errors-with-result"><a class="header" href="#recoverable-errors-with-result">Recoverable Errors with Result</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="to-panic-or-not-to-panic"><a class="header" href="#to-panic-or-not-to-panic">To panic! or Not to panic!</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="láimhseáil-earráide"><a class="header" href="#láimhseáil-earráide">Láimhseáil Earráide</a></h1>
+<p>Is fíoras saoil iad earráidí i mbogearraí, mar sin tá roinnt gnéithe ag Rust le haghaidh
+láimhseáil cásanna ina dtéann rud éigin mícheart. I go leor cásanna, éilíonn Rust
+tú a admháil go bhféadfadh earráid a bheith ann agus gníomh éigin a dhéanamh roimh do
+tiomsóidh cód. Déanann an riachtanas seo do chlár níos láidre trína chinntiú
+go bhfaighidh tú amach earráidí agus go láimhseálfaidh tú iad go cuí sula mbíonn
+do chód imscartha chuig táirgeadh!</p>
+<p>Déanann Rust earráidí a ghrúpáil i dhá mhórchatagóir: <em>aisghabhála</em> agus <em>do-aisghabhála</em>
+earráidí. I gcás earráide inghnóthaithe, mar earráid <em>file not found</em>, is mó a dhéanaimid
+dócha gur mhaith leat ach an fhadhb a thuairisciú don úsáideoir agus an oibríocht a dhéanamh arís.
+Is comharthaí de fhabhtanna iad earráidí do-aisghabhála i gcónaí, mar shampla ag iarraidh rochtain a
+suíomh níos faide ná deireadh sraithe, agus mar sin ba mhaith linn stop a chur láithreach ar an
+clár.</p>
+<p>Ní dhéanann formhór na dteangacha idirdhealú idir an dá chineál seo earráidí agus láimhseálann siad
+araon ar an mbealach céanna, ag baint úsáide as meicníochtaí mar eisceachtaí. Níl Rust ag
+eisceachtaí. Ina áit sin, tá an cineál <code>Result &lt;T, E&gt;</code> aige le haghaidh earráidí inghnóthaithe agus
+an macra <code>panic!</code> a stopann cur i gcrích nuair a thagann an clár trasna ar
+earráid do-aisghabhála. Clúdaíonn an chaibidil seo glaoch ar <code>panic!</code> ar dtús agus ansin cainteanna
+faoi ​​luachanna <code>Result&lt;T, E&gt;</code> a thabhairt ar ais. Ina theannta sin, déanfaimid iniúchadh
+breithnithe agus cinneadh á dhéanamh ar cheart iarracht a dhéanamh teacht ar ais ó earráid nó stopadh
+forghníomhú.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="earráidí-do-aisghabhála-le-panic"><a class="header" href="#earráidí-do-aisghabhála-le-panic">Earráidí do-aisghabhála le <code>panic!</code></a></h2>
+<p>Uaireanta tarlaíonn rudaí dona i do chód, agus níl aon rud ar féidir leat a dhéanamh faoi
+é. Sna cásanna seo, tá an macra <code>panic!</code> ag Rust. Tá dhá bhealach a chur faoi deara a
+scaoll i gcleachtas: trí ghníomh a dhéanamh a chuireann scaoll ar ár gcód (amhail
+rochtain a fháil ar eagar thar an deireadh) nó trí ghlaoch go sainráite ar an macra <code>panic!</code>.
+Sa dá chás, is cúis le scaoll inár gclár. De réir réamhshocraithe, déanfaidh na scaoll seo
+cló teachtaireacht teip, unwind, glan suas an chairn, agus scor. Tríd an
+athróg timpeallacht, is féidir leat freisin Rust taispeáint an chairn glaoch nuair a
+tarlaíonn scaoll chun é a dhéanamh níos éasca foinse an scaoll a rianú.</p>
+<blockquote>
+<h3 id="an-cruach-a-dhíscaoileadh-nó-tobscoir-mar-fhreagairt-ar-scaoill"><a class="header" href="#an-cruach-a-dhíscaoileadh-nó-tobscoir-mar-fhreagairt-ar-scaoill">An Cruach a Dhíscaoileadh nó Tobscoir mar Fhreagairt ar Scaoill</a></h3>
+<p>De réir réamhshocraithe, nuair a tharlaíonn scaoll tosaíonn an clár <em>unwinding</em>, rud a chiallaíonn
+Siúlann Rust cúltaca an chairn agus glanann sé suas na sonraí ó gach feidhm é
+cruinnithe. Mar sin féin, tá go leor oibre ag siúl siar agus ag glanadh suas. Rust,
+mar sin, is féidir leat rogha eile a roghnú láithreach <em>aborting</em>,
+a chríochnaíonn an clár gan glanadh suas.</p>
+<p>Beidh gá ansin an chuimhne a bhí in úsáid ag an gclár a ghlanadh suas ag an
+córas oibriúcháin. Más rud é i do thionscadal ní mór duit an dénártha iarmhartach a dhéanamh mar
+beag agus is féidir, is féidir leat athrú ó scaoileadh go dtí deireadh a chur le scaoll ag
+ag cur <code>panic = 'abort'</code> leis na rannáin <code>[profile]</code> cuí i do
+<em>Cargo.toml</em> comhad. Mar shampla, más mian leat deireadh a chur le scaoll i mód scaoileadh,
+cuir é seo leis:</p>
+<pre><code class="language-toml">[profile.release]
+scaoll = 'abort'
+
+</code></pre>
+</blockquote>
+<p>Déanaimis iarracht <code>panic!</code> a ghlaoch i gclár simplí:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust should_panic panics">fn main() {
+    panic!("crash and burn");
+}</code></pre></pre>
+</Listing>
+<p>Nuair a bheidh an clár á rith agat, feicfidh tú rud éigin mar seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling panic v0.1.0 (file:///projects/panic)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.25s
+     Running `target/debug/panic`
+thread 'main' panicked at src/main.rs:2:5:
+crash and burn
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Is cúis leis an nglao go <code>panic!</code> an teachtaireacht earráide atá sa dá líne dheireanacha.
+Taispeánann an chéad líne ár dteachtaireacht scaoll agus an áit inár gcód foinse
+tharla an scaoll: léiríonn <em>src/main.rs:2:5</em> gurb í an dara líne í,
+an cúigiú carachtar dár gcomhad <em>src/main.rs</em>.</p>
+<p>Sa chás seo, tá an líne a luaitear mar chuid dár gcód, agus má théann muid chuige sin
+líne, feicimid an glao macra <code>panic!</code>. I gcásanna eile, d'fhéadfadh an glaoch <code>panic!</code>
+bheith sa chód a ghlaonn ár gcód air, agus ainm an chomhaid agus uimhir na líne arna dtuairisciú ag
+cód duine éigin eile a bheidh sa teachtaireacht earráide ina bhfuil an macra <code>panic!</code>
+ar a dtugtar, ní líne ár gcód ba chúis leis an nglao scaoll ar deireadh thiar.</p>
+<!-- Old heading. Do not remove or links may break. -->
+<p><a id="using-a-panic-backtrace"></a></p>
+<p>Is féidir linn úsáid a bhaint as aisrian na bhfeidhmeanna a tháinig an glaoch <code>panic!</code> uathu go figiúr
+amach an chuid dár gcód atá ag cruthú na faidhbe. Chun tuiscint a fháil ar conas é a úsáid
+cúl-lorg <code>panic!</code>, breathnaímis ar shampla eile agus féachaimis cén chaoi a bhfuil sé
+tagann glao <code>panic!</code> ó leabharlann mar gheall ar fhabht inár gcód seachas
+ónár gcód ag glaoch ar an macra go díreach. Tá cód éigin ag baint le liostú 9-1
+iarrachtaí rochtain a fháil ar innéacs i veicteoir atá thar raon na n-innéacsanna bailí.</p>
+<Listing number="9-1" file-name="src/main.rs" caption="Attempting to access an element beyond the end of a vector, which will cause a call to `panic!`">
+<pre><pre class="playground"><code class="language-rust should_panic panics">fn main() {
+    let v = vec![1, 2, 3];
+
+    v[99];
+}</code></pre></pre>
+</Listing>
+<p>Anseo, táimid ag iarraidh rochtain a fháil ar an 100ú eilimint dár veicteoir (atá ag
+innéacs 99 toisc go dtosaíonn an t-innéacsú ag nialas), ach níl ach trí cinn ag an veicteoir
+eilimintí. Sa chás seo, beidh Rust scaoll. Ag baint úsáide as <code>[]</code> atá ceaptha a thabhairt ar ais
+eilimint, ach má éiríonn leat innéacs neamhbhailí, níl aon eilimint a chuireann Rust
+d'fhéadfadh filleadh anseo a bheadh ​​ceart.</p>
+<p>In C, níl aon sainmhíniú ar iarracht léamh thar dheireadh struchtúir sonraí
+iompar. D'fhéadfá a fháil cibé rud atá ag an suíomh i gcuimhne a bheadh
+fhreagraíonn don eilimint sin sa struchtúr sonraí, cé go bhfuil an chuimhne
+nach mbaineann leis an struchtúr sin. Tugtar <em>buffer overread</em> air seo agus is féidir
+leochaileachtaí slándála a bheith mar thoradh air má tá ionsaitheoir in ann an t-innéacs a ionramháil
+sa chaoi is gur féidir sonraí a léamh níor cheart ligean dóibh a stóráiltear ina dhiaidh sin
+an struchtúr sonraí.</p>
+<p>Chun do chlár a chosaint ar an gcineál seo leochaileachta, má dhéanann tú iarracht an
+eilimint ag innéacs nach bhfuil ann, stopfaidh Rust a fhorghníomhú agus diúltóidh sé
+ar aghaidh. Déanaimis iarracht é agus féach:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling panic v0.1.0 (file:///projects/panic)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
+     Running `target/debug/panic`
+thread 'main' panicked at src/main.rs:4:6:
+index out of bounds: the len is 3 but the index is 99
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Léiríonn an earráid seo líne 4 dár <em>main.rs</em> áit a ndéanaimid iarracht an t-innéacs a rochtain
+<code>99</code> den veicteoir in <code>v</code>.</p>
+<p>Insíonn an líne <code>nóta:</code> dúinn gur féidir linn an timpeallacht <code>RUST_BACKTRACE</code> a shocrú
+athróg chun aisrian a fháil ar cad go díreach a tharla chun an earráid a chur faoi deara. A
+Is éard atá i <em>backtrace</em> ná liosta de na feidhmeanna go léir a glaodh chun é seo a bhaint amach
+pointe. Oibríonn backtraces in Rust mar a dhéanann siad i dteangacha eile: an eochair do
+Is é an t-aisrian a léamh ná tosú ón mbarr agus léamh go dtí go bhfeiceann tú comhaid leat
+scríobh. Sin an áit a dtáinig an fhadhb. Na línte os cionn an spota sin
+an cód a d'iarr do chód; tá na línte thíos cód a dtugtar do
+cód. D'fhéadfadh go n-áireofaí ar na línte roimh agus tar éis croíchód Rust, caighdeánach
+cód leabharlainne, nó cliathbhoscaí atá in úsáid agat. Déanaimis iarracht cúl-lorg a fháil
+ag socrú an athróg timpeallachta <code>RUST_BACKTRACE</code> chuig aon luach seachas <code>0</code>.
+Léiríonn liostú 9-2 aschur atá cosúil leis an méid a fheicfidh tú.</p>
+<!-- manual-regeneration
+cd listings/ch09-error-handling/listing-09-01
+RUST_BACKTRACE=1 cargo run
+copy the backtrace output below
+check the backtrace number mentioned in the text below the listing
+-->
+<Listing number="9-2" caption="The backtrace generated by a call to `panic!` displayed when the environment variable `RUST_BACKTRACE` is set">
+<pre><code class="language-console">$ RUST_BACKTRACE=1 cargo run
+thread 'main' panicked at src/main.rs:4:6:
+index out of bounds: the len is 3 but the index is 99
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/std/src/panicking.rs:662:5
+   1: core::panicking::panic_fmt
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/panicking.rs:74:14
+   2: core::panicking::panic_bounds_check
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/panicking.rs:276:5
+   3: &lt;usize as core::slice::index::SliceIndex&lt;[T]&gt;&gt;::index
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/slice/index.rs:302:10
+   4: core::slice::index::&lt;impl core::ops::index::Index&lt;I&gt; for [T]&gt;::index
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/slice/index.rs:16:9
+   5: &lt;alloc::vec::Vec&lt;T,A&gt; as core::ops::index::Index&lt;I&gt;&gt;::index
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/alloc/src/vec/mod.rs:2920:9
+   6: panic::main
+             at ./src/main.rs:4:6
+   7: core::ops::function::FnOnce::call_once
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/ops/function.rs:250:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+</code></pre>
+</Listing>
+<p>Sin go leor aschur! D'fhéadfadh an t-aschur cruinn a fheiceann tú a bheith difriúil ag brath
+ar do chóras oibriúcháin agus leagan Rust. D'fhonn backtracks a fháil leis seo
+faisnéis, ní mór siombailí dífhabhtaithe a chumasú. Tá siombailí dífhabhtaithe cumasaithe ag
+réamhshocraithe nuair a úsáidtear <code>cargo build</code> nó <code>cargo run</code> gan an bhratach <code>--release</code>,
+mar atá againn anseo.</p>
+<p>San aschur i Liostú 9-2, léiríonn líne 6 den chúlrian go dtí an líne inár
+tionscadal is cúis leis an bhfadhb: líne 4 de <em>src/main.rs</em>. Más rud é nach bhfuil muid ag iarraidh
+ár gclár chun scaoll, ba chóir dúinn tús a chur lenár n-imscrúdú ag an suíomh a luaitear
+go dtí an chéad líne ina luaitear comhad a scríobh muid. I Liosta 9-1, áit a bhfuilimid
+scríobh d'aon ghnó cód a bheadh ​​scaoll, is é an bealach a shocrú ar an scaoll gan
+iarraidh eilimint thar raon na n-innéacsanna veicteora. Nuair a bheidh do cód
+scaoll amach anseo, beidh ort a dhéanamh amach cén gníomh atá á dhéanamh ag an gcód
+cad iad na luachanna is cúis leis an scaoll agus cad ba cheart don chód a dhéanamh ina ionad sin.</p>
+<p>Tiocfaidh muid ar ais chuig <code>panic!</code> agus nuair ba cheart agus nár cheart dúinn <code>panic!</code> a úsáid chun
+láimhseáil coinníollacha earráide sa [“Chun <code>panic!</code> nó Gan
+<code>panic!</code>”][go-scaoll-nó-ní-scaoll]<!-- neamhaird a dhéanamh ar --> alt níos déanaí sa mhír seo
+caibidil. Ansin, féachfaimid ar conas a ghnóthú ó earráid ag baint úsáide as <code>Result</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="earráidí-inghnóthaithe-le-result"><a class="header" href="#earráidí-inghnóthaithe-le-result">Earráidí Inghnóthaithe le <code>Result</code></a></h2>
+<p>Níl formhór na n-earráidí tromchúiseach go leor chun a cheangal ar an gclár stop iomlán.
+Uaireanta nuair a theipeann ar fheidhm is ar chúis is féidir leat a léirmhíniú go héasca
+agus freagra a thabhairt ar. Mar shampla, má dhéanann tú iarracht comhad a oscailt agus go mainneoidh an oibríocht sin
+toisc nach bhfuil an comhad ann, b'fhéidir gur mhaith leat an comhad a chruthú ina ionad
+an próiseas a fhoirceannadh.</p>
+<p>Athghairm ó <a href="ch02-00-guessing-game-tutorial.html#handling-potential-failure-with-result">“Láimhseáil Teip Féideartha le <code>Result</code>”</a><!--
+neamhaird a dhéanamh ar --> i gCaibidil 2 go bhfuil dhá shainmhíniú ar an enum <code>Result</code>
+leaganacha, <code>Ok</code> agus <code>Err</code>, mar a leanas:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum Result&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Is paraiméadair chineálacha iad na <code>T</code> agus <code>E</code>: pléifimid cineálacha níos mó
+mionsonraí i gCaibidil 10. Ní mór duit fios a bheith agat anois go seasann <code>T</code>
+an cineál luacha a thabharfar ar ais i gcás ratha laistigh den <code>Ok</code>
+athraitheach, agus seasann <code>E</code> don chineál earráide a thabharfar ar ais in a
+cás teipe laistigh den leagan <code>Err</code>. Toisc go bhfuil na cineálacha cineálacha seo ag <code>Result</code>
+paraiméadair, is féidir linn an cineál <code>Result</code> agus na feidhmeanna a shainmhínítear air a úsáid
+go leor cásanna éagsúla ina bhfuil an luach ratha agus luach earráide ba mhaith linn a
+féadfaidh an t-aischur a bheith difriúil.</p>
+<p>Glaoimis ar fheidhm a thugann luach `Torthaí' ar ais toisc go bhféadfadh an fheidhm
+teip. I Liosta 9-3 déanaimid iarracht comhad a oscailt.</p>
+<Listing number="9-3" file-name="src/main.rs" caption="Opening a file">
+<pre><pre class="playground"><code class="language-rust">use std::fs::File;
+
+fn main() {
+    let greeting_file_result = File::open("hello.txt");
+}</code></pre></pre>
+</Listing>
+<p>Is é an cineál fillte ar <code>File::open</code> <code>Result&lt;T, E&gt;</code>. An paraiméadar cineálach <code>T</code>
+comhlánaithe ag cur i bhfeidhm <code>File::open</code> le cineál an
+luach ratha, <code>std::fs::File</code>, atá ina láimhseáil comhaid. An cineál <code>E</code> a úsáidtear i
+Is é an luach earráide <code>std :: io :: Error</code>. Ciallaíonn an cineál fillte seo an glao chuig
+Seans go n-éireodh le <code>File::open</code> agus go seolfar láimhseáil comhaid ar féidir linn a léamh uaidh nó
+scríobh chuig. Seans go dteipfeadh ar an nglao feidhme freisin: mar shampla, seans nach mbeadh an comhad
+ann, nó seans nach bhfuil cead againn an comhad a rochtain. An <code>File::open</code>
+ní mór go mbeadh bealach ag feidhm a insint dúinn cé acu ar éirigh leis nó ar theip air agus ag
+an t-am céanna a thabhairt dúinn ceachtar an láimhseáil comhad nó faisnéis earráid. seo
+Is é an fhaisnéis go díreach a thugann an <code>Result</code> enum in iúl.</p>
+<p>Sa chás go n-éiríonn le <code>File::open</code>, an luach san athróg
+Beidh <code>greeting_file_result</code> ina shampla de <code>Ok</code> ina bhfuil láimhseáil comhaid.
+Sa chás go dteipeann air, beidh an luach in <code>greeting_file_result</code> mar luach
+instance of <code>Err</code> ina bhfuil tuilleadh eolais faoin gcineál earráide a
+tharla.</p>
+<p>Ní mór dúinn cur leis an gcód i Liostú 9-3 chun gníomhartha éagsúla a dhéanamh ag brath
+ar an luach tuairisceáin <code>File::open</code>. Léiríonn liostú 9-4 bealach amháin chun an
+<code>Result</code> ag baint úsáide as uirlis bhunúsach, an abairt <code>match</code> a phléamar ann
+Caibidil 6 .</p>
+<Listing number="9-4" file-name="src/main.rs" caption="Using a `match` expression to handle the `Result` variants that might be returned">
+<pre><pre class="playground"><code class="language-rust should_panic">use std::fs::File;
+
+fn main() {
+    let greeting_file_result = File::open("hello.txt");
+
+    let greeting_file = match greeting_file_result {
+        Ok(file) =&gt; file,
+        Err(error) =&gt; panic!("Problem opening the file: {error:?}"),
+    };
+}</code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara, cosúil leis an enum <code>Option</code>, go raibh an <code>Result</code> enum agus a leagan
+tugtha isteach sa scóip ag an réamhrá, mar sin ní gá dúinn <code>Result::</code> a shonrú
+roimh na leaganacha <code>Ok</code> agus <code>Err</code> sna hairm <code>match</code>.</p>
+<p>Nuair a bhíonn an toradh <code>Ok</code>, seolfaidh an cód seo an luach <code>file</code> istigh as
+an leagan <code>Ok</code>, agus ansin sannaimid an luach láimhseála comhaid sin don athróg
+<code>greeting_file</code>. Tar éis an <code>match</code>, is féidir linn an láimhseáil comhaid a úsáid le haghaidh léamh nó
+ag scríobh.</p>
+<p>Láimhseálann an lámh eile den <code>match</code> an cás óna bhfaighimid luach <code>Err</code> uaidh
+<code>File::open</code>. Sa sampla seo, roghnaigh muid an macra <code>panic!</code> a ghlaoch. Más rud é
+níl aon chomhad darb ainm <em>hello.txt</em> inár n-eolaire reatha agus ritheann muid é seo
+cód, feicfimid an t-aschur seo a leanas ón macra <code>panic!</code>:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling error-handling v0.1.0 (file:///projects/error-handling)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running `target/debug/error-handling`
+thread 'main' panicked at src/main.rs:8:23:
+Problem opening the file: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Mar is gnách, cuireann an t-aschur seo in iúl dúinn go díreach cad a chuaigh mícheart.</p>
+<h3 id="ag-meaitseáil-ar-earráidí-difriúla"><a class="header" href="#ag-meaitseáil-ar-earráidí-difriúla">Ag Meaitseáil ar Earráidí Difriúla</a></h3>
+<p>Beidh <code>panic!</code> sa chód i Liostú 9-4 is cuma cén fáth ar theip ar <code>File::open</code>.
+Mar sin féin, ba mhaith linn gníomhartha éagsúla a dhéanamh ar chúiseanna teipe éagsúla. Más rud é
+Theip ar <code>Comhad::open</code> toisc nach bhfuil an comhad ann, ba mhaith linn an comhad a chruthú
+agus cuir an láimhseáil ar ais chuig an gcomhad nua. Má theip ar <code>File::open</code> d'aon cheann eile
+cúis - mar shampla, toisc nach raibh cead againn an comhad a oscailt - táimid fós
+Ba mhaith liom an cód a <code>panic!</code> ar an mbealach céanna a rinne sé i Liosta 9-4. Chun seo, táimid
+cuir slonn <code>match</code> istigh leis, a thaispeántar i Liostú 9-5.</p>
+<Listing number="9-5" file-name="src/main.rs" caption="Handling different kinds of errors in different ways">
+<!-- ignore this test because otherwise it creates hello.txt which causes other
+tests to fail lol -->
+<pre><code class="language-rust ignore">use std::fs::File;
+use std::io::ErrorKind;
+
+fn main() {
+    let greeting_file_result = File::open("hello.txt");
+
+    let greeting_file = match greeting_file_result {
+        Ok(file) =&gt; file,
+        Err(error) =&gt; match error.kind() {
+            ErrorKind::NotFound =&gt; match File::create("hello.txt") {
+                Ok(fc) =&gt; fc,
+                Err(e) =&gt; panic!("Problem creating the file: {e:?}"),
+            },
+            other_error =&gt; {
+                panic!("Problem opening the file: {other_error:?}");
+            }
+        },
+    };
+}</code></pre>
+</Listing>
+<p>Is é an cineál luacha a fhilleann <code>File::open</code> taobh istigh den leagan <code>Err</code>
+<code>io::Error</code>, ar struchtúr é a sholáthraíonn an leabharlann chaighdeánach. An struchtúr seo
+tá modh <code>kind</code> aige ar féidir linn glaoch air chun luach <code>io::ErrorKind</code> a fháil. An enum
+Soláthraíonn an leabharlann chaighdeánach <code>io::ErrorKind</code> agus tá leaganacha eile ann
+ag léiriú na gcineálacha éagsúla earráidí a d'fhéadfadh teacht as <code>io</code>
+oibríocht. Is é an leagan is mian linn a úsáid ná <code>ErrorKind::NotFound</code>, a thugann le fios
+níl an comhad atáimid ag iarraidh a oscailt ann fós. Mar sin táimid ag meaitseáil ar
+<code>greeting_file_result</code>, ach tá meaitseáil istigh againn freisin ar <code>error.kind()</code>.</p>
+<p>Is é an coinníoll ba mhaith linn a sheiceáil sa chluiche inmheánach ná an bhfuil an luach ar ais
+le <code>error.kind()</code> an leagan <code>NotFound</code> den enum <code>ErrorKind</code>. Má tá,
+déanaimid iarracht an comhad a chruthú le <code>File::create</code>. Mar sin féin, mar gheall ar <code>File::create</code>
+d'fhéadfadh teip freisin, ní mór dúinn an dara lámh sa abairt <code>match</code> istigh. Nuair a bheidh an
+ní féidir an comhad a chruthú, priontáiltear teachtaireacht earráide eile. An dara lámh de
+fanann an <code>match</code> seachtrach mar an gcéanna, mar sin scaoll an chláir ar aon earráid seachas
+an earráid chomhaid atá ar iarraidh.</p>
+<blockquote>
+<h4 id="roghanna-eile-seachas-match-a-úsáid-le-resultt-e"><a class="header" href="#roghanna-eile-seachas-match-a-úsáid-le-resultt-e">Roghanna eile seachas <code>match</code> a úsáid le <code>Result&lt;T, E&gt;</code></a></h4>
+<p>Sin go leor <code>match</code>! Tá an abairt <code>match</code> an-úsáideach ach an-úsáideach freisin
+i bhfad primitive. I gCaibidil 13, foghlaimeoidh tú faoi dhúnadh, a úsáidtear
+le go leor de na modhanna atá sainmhínithe ar <code>Result&lt;T, E&gt;</code>. Is féidir na modhanna seo a bheith níos mó
+gonta ná <code>match</code> a úsáid agus luachanna <code>Result&lt;T, E&gt;</code> i do chód á láimhseáil.</p>
+<p>Mar shampla, seo bealach eile chun an loighic chéanna a scríobh mar a léirítear i Liostú
+9-5, an uair seo ag baint úsáide as dúnta agus an modh <code>unwrap_or_else</code>:</p>
+<!-- NÍ FÉIDIR Sliocht FÉACH https://github.com/rust-lang/mdBook/issues/1127 -->
+<pre><code class="language-rust ignore">use std::fs::File;
+use std::io::ErrorKind;
+
+fn main() {
+    let greeting_file = File::open("hello.txt").unwrap_or_else(|error| {
+        if error.kind() == ErrorKind::NotFound {
+            File::create("hello.txt").unwrap_or_else(|error| {
+                panic!("Problem creating the file: {error:?}");
+            })
+        } else {
+            panic!("Problem opening the file: {error:?}");
+        }
+    });
+}</code></pre>
+<p>Cé go bhfuil an t-iompar céanna ag an gcód seo agus atá i Liostú 9-5, níl sé ann
+aon nathanna <code>match</code> atá níos glaine le léamh. Tar ar ais chuig an sampla seo
+tar éis duit Caibidil 13 a léamh, agus breathnaigh ar an modh <code>unwrap_or_else</code> sa
+doiciméid chaighdeánacha leabharlainne. Is féidir le go leor níos mó de na modhanna seo a ghlanadh ollmhór
+neadaigh na habairtí <code>match</code> agus tú ag déileáil le hearráidí.</p>
+</blockquote>
+<h4 id="aicearraí-le-haghaidh-scaoill-ar-earráid-unwrap-agus-expect"><a class="header" href="#aicearraí-le-haghaidh-scaoill-ar-earráid-unwrap-agus-expect">Aicearraí le haghaidh Scaoill ar Earráid: <code>unwrap</code> agus <code>expect</code></a></h4>
+<p>Oibríonn baint úsáide as <code>match</code> go maith go leor, ach féadann sé a bheith beagán briathartha agus ní bhíonn sé i gcónaí
+rún a chur in iúl go maith. Tá go leor modhanna cúntóra ag an gcineál <code>Result&lt;T, E&gt;</code>
+sainithe air chun tascanna éagsúla, níos sainiúla a dhéanamh. Is é an modh <code>unwrap</code> a
+modh aicearra curtha i bhfeidhm díreach cosúil leis an slonn <code>match</code> a scríobh muid ann
+Liostáil 9-4. Más é an luach <code>Result</code> an leagan <code>Ok</code>', fillfidh <code>unwrap</code>
+an luach taobh istigh den <code>Ok</code>. Más é an <code>Result</code> an leagan <code>Err</code>, déanfaidh <code>unwrap</code>
+cuir glaoch ar an macra <code>panic!</code> dúinn. Seo sampla de <code>unwrap</code> i ngníomh:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust should_panic">use std::fs::File;
+
+fn main() {
+    let greeting_file = File::open("hello.txt").unwrap();
+}</code></pre></pre>
+</Listing>
+<p>Má rithimid an cód seo gan comhad <em>hello.txt</em>, feicfidh muid teachtaireacht earráide uaidh
+an glao <code>panic!</code> a dhéanann an modh <code>unwrap</code>:</p>
+<!-- manual-regeneration
+cd listings/ch09-error-handling/no-listing-04-unwrap
+cargo run
+copy and paste relevant text
+-->
+<pre><code class="language-text">thread 'main' panicked at src/main.rs:4:49:
+called `Result::unwrap()` on an `Err` value: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+</code></pre>
+<p>Mar an gcéanna, ligeann an modh <code>expect</code> dúinn an teachtaireacht earráide <code>panic!</code> a roghnú freisin.
+Is féidir úsáid a bhaint as <code>expect</code> in ionad <code>unwrap</code>' agus ag soláthar teachtaireachtaí earráide maithe
+do rún agus a dhéanamh rianú síos an fhoinse scaoll níos éasca. Comhréir na
+Breathnaíonn <code>expect</code> mar seo:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust should_panic">use std::fs::File;
+
+fn main() {
+    let greeting_file = File::open("hello.txt")
+        .expect("hello.txt should be included in this project");
+}</code></pre></pre>
+</Listing>
+<p>Bainimid úsáid as <code>expect</code> ar an mbealach céanna le <code>unwrap</code>: chun láimhseáil an chomhaid nó glao a chur ar ais
+an macra <code>panic!</code>. An teachtaireacht earráide a úsáideann <code>expect</code> ina ghlao ar <code>panic!</code>
+an paraiméadar a thabharfaimid ar aghaidh chuig <code>expect</code>, seachas an réamhshocrú
+teachtaireacht <code>panic!</code> a úsáideann <code>unwrap</code>. Seo an chuma atá air:</p>
+<!-- manual-regeneration
+cd listings/ch09-error-handling/no-listing-05-expect
+cargo run
+copy and paste relevant text
+-->
+<pre><code class="language-text">thread 'main' panicked at src/main.rs:5:10:
+hello.txt should be included in this project: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+</code></pre>
+<p>I gcód cáilíochta táirgthe, roghnaíonn an chuid is mó de na Rustaceans <code>expect</code> seachas
+<code>unwrap</code> agus tabhair comhthéacs níos mó faoi na fáthanna a bhfuiltear ag súil go mbeidh an oibríocht i gcónaí
+éirigh. Ar an mbealach sin, má chruthaítear go bhfuil do chuid boinn tuisceana mícheart riamh, tá níos mó agat
+faisnéis le húsáid le linn dífhabhtaithe.</p>
+<h3 id="earráidí-iomadaithe"><a class="header" href="#earráidí-iomadaithe">Earráidí Iomadaithe</a></h3>
+<p>Nuair a ghlaonn feidhmiú feidhme rud éigin a d’fhéadfadh teip, ina ionad
+láimhseáil an earráid laistigh den fheidhm féin is féidir leat an earráid ar ais chuig an
+cód glaonna ionas gur féidir leis cinneadh a dhéanamh ar cad atá le déanamh. Tugtar <em>iomadú</em> air seo
+an earráid agus tugann sé níos mó smachta ar an gcód glaonna, áit a bhféadfadh níos mó a bheith ann
+faisnéis nó loighic a ordaíonn conas ba chóir an earráid a láimhseáil ná cad
+atá ar fáil duit i gcomhthéacs do chód.</p>
+<p>Mar shampla, taispeánann Liostú 9-6 feidhm a léann ainm úsáideora ó chomhad. Más rud é
+níl an comhad ann nó ní féidir é a léamh, cuirfidh an fheidhm seo na hearráidí sin ar ais
+chuig an gcód ar a dtugtar an fheidhm.</p>
+<Listing number="9-6" file-name="src/main.rs" caption="A function that returns errors to the calling code using `match`">
+<!-- Deliberately not using rustdoc_include here; the `main` function in the
+file panics. We do want to include it for reader experimentation purposes, but
+don't want to include it for rustdoc testing purposes. -->
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::fs::File;
+use std::io::{self, Read};
+
+fn read_username_from_file() -&gt; Result&lt;String, io::Error&gt; {
+    let username_file_result = File::open("hello.txt");
+
+    let mut username_file = match username_file_result {
+        Ok(file) =&gt; file,
+        Err(e) =&gt; return Err(e),
+    };
+
+    let mut username = String::new();
+
+    match username_file.read_to_string(&amp;mut username) {
+        Ok(_) =&gt; Ok(username),
+        Err(e) =&gt; Err(e),
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Is féidir an fheidhm seo a scríobh ar bhealach i bhfad níos giorra, ach táimid chun tosú ag
+go leor de a dhéanamh de láimh chun láimhseáil earráidí a iniúchadh; ag deireadh,
+taispeánfaimid an bealach is giorra. Breathnaímid ar an gcineál aischuir den fheidhm
+ar dtús: <code>Result&lt;String, io::Error&gt;</code>. Ciallaíonn sé seo go bhfuil an fheidhm ag filleadh a
+luach an chineáil <code>Result&lt;T, E&gt;</code>, áit a bhfuil an paraiméadar cineálach <code>T</code> curtha
+líonadh isteach leis an gcineál coincréite <code>String</code> agus an cineál cineálach <code>E</code> curtha
+líonadh isteach leis an gcineál coincréite <code>io::Error</code>.</p>
+<p>Má éiríonn leis an bhfeidhm seo gan aon fhadhbanna, is é an cód a ghlaonn seo
+gheobhaidh an fheidhm luach <code>Ok</code> a shealbhaíonn <code>String</code> - an <code>username</code> sin
+léigh an fheidhm seo ón gcomhad. Má bhíonn aon fhadhbanna ag an bhfeidhm seo, beidh an
+gheobhaidh cód glaonna luach <code>Err</code> a bhfuil sampla de <code>io::Error</code> ann
+go bhfuil tuilleadh eolais faoi cad a bhí ar na fadhbanna. Roghnaigh muid
+<code>io::Error</code> mar chineál tuairisceáin na feidhme seo toisc go dtarlaíonn sé gurb é sin an
+cineál an luach earráide a fuarthas ar ais ón dá oibríocht a bhfuilimid ag glaoch isteach
+corp na feidhme seo a d’fhéadfadh a theipeann: an fheidhm <code>File::open</code> agus an
+modh <code>read_to_string</code>.</p>
+<p>Tosaíonn corp na feidhme trí ghlao a chur ar an bhfeidhm <code>File::open</code>. Ansin muid
+láimhseáil an luach <code>Result</code> le <code>match</code> cosúil leis an <code>match</code> i Liostú 9-4.
+Má éiríonn le <code>File::open</code>, láimhseáil an chomhaid san athróg patrún <code>file</code>
+thiocfaidh chun bheith ina luach san athróg mutable <code>username_file</code> agus an fheidhm
+leanann. Sa chás <code>Err</code>, in ionad <code>panic!</code> a ghlaoch, úsáidimid an <code>return</code>
+eochairfhocal a thabhairt ar ais go luath amach as an fheidhm go hiomlán agus pas a fháil sa luach earráide
+ó <code>File::open</code>, anois san athróg patrún <code>e</code>, ar ais go dtí an cód glaonna mar
+luach earráide na feidhme seo.</p>
+<p>Mar sin, má tá láimhseáil comhaid againn in <code>username_file</code>, cruthaíonn an fheidhm ansin a
+nua <code>String</code> in athróg <code>username</code> agus cuireann sé an modh <code>read_to_string</code> ar siúl
+láimhseáil an chomhaid in <code>username_file</code> chun ábhar an chomhaid a léamh isteach
+<code>username</code>. Tugann an modh <code>read_to_string</code> <code>Result</code> ar ais freisin mar gheall air
+b'fhéidir go dteipfeadh, cé gur éirigh le <code>File::open</code>. Mar sin teastaíonn <code>comait</code> eile uainn
+láimhseáil an <code>Result</code> sin: má éiríonn le <code>read_to_string</code>, ansin tá an fheidhm atá againn
+éirigh leis, agus cuirimid an t-ainm úsáideora ar ais ón gcomhad atá in <code>username</code> anois
+fillte i <code>Ok</code>. Má theipeann ar <code>read_to_string</code>, cuirimid ar ais an luach earráide sa
+ar an mbealach céanna a thugamar ar ais an luach earráide sa <code>match</code> a láimhseáil an
+luach aischuir <code>File::open</code>. Mar sin féin, ní gá dúinn a rá go soiléir
+<code>return</code>, mar is é seo an slonn deiridh san fheidhm.</p>
+<p>Ansin láimhseálfaidh an cód a ghlaonn an cód seo luach <code>Ok</code> a fháil
+ina bhfuil ainm úsáideora nó luach <code>Err</code> ina bhfuil <code>io::Error</code>. Tá sé
+suas go dtí an cód glaonna chun cinneadh a dhéanamh cad ba cheart a dhéanamh leis na luachanna sin. Má tá an glaoch
+Faigheann cód luach <code>Err</code>, d'fhéadfadh sé <code>panic!</code> a ghlaoch agus an clár a thuairteáil, bain úsáid as a
+ainm úsáideora réamhshocraithe, nó féach ar an ainm úsáideora ó áit éigin eile seachas comhad, le haghaidh
+shampla. Níl go leor faisnéise againn maidir le cad é an cód glaonna i ndáiríre
+ag iarraidh a dhéanamh, mar sin táimid ag iomadú gach eolas faoi rath nó earráid aníos le haghaidh
+é a láimhseáil go cuí.</p>
+<p>Tá patrún seo na n-earráidí iomadaithe chomh coitianta i Rust go soláthraíonn Rust an
+oibreoir comhartha ceiste <code>?</code> chun é seo a dhéanamh níos éasca.</p>
+<h4 id="aicearra-le-haghaidh-earráidí-iomadaithe-an-t-oibreoir-"><a class="header" href="#aicearra-le-haghaidh-earráidí-iomadaithe-an-t-oibreoir-">Aicearra le haghaidh Earráidí Iomadaithe: an t-oibreoir <code>?</code></a></h4>
+<p>Léiríonn liostú 9-7 cur i bhfeidhm <code>read_username_from_file</code> a bhfuil an
+feidhmiúlacht chéanna agus atá i Liostú 9-6, ach úsáideann an cur i bhfeidhm seo an <code>?</code>
+oibreoir.</p>
+<Listing number="9-7" file-name="src/main.rs" caption="A function that returns errors to the calling code using the `?` operator">
+<!-- Deliberately not using rustdoc_include here; the `main` function in the
+file panics. We do want to include it for reader experimentation purposes, but
+don't want to include it for rustdoc testing purposes. -->
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::fs::File;
+use std::io::{self, Read};
+
+fn read_username_from_file() -&gt; Result&lt;String, io::Error&gt; {
+    let mut username_file = File::open("hello.txt")?;
+    let mut username = String::new();
+    username_file.read_to_string(&amp;mut username)?;
+    Ok(username)
+}
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Sainmhínítear an <code>?</code> a chuirtear i ndiaidh luach <code>Result</code> chun oibriú ar an mbealach céanna beagnach
+mar na habairtí <code>match</code> a shainmhíomar chun na luachanna <code>Result</code> sa Liostú a láimhseáil
+9-6. Más <code>OK</code> luach an <code>Result</code>, déanfaidh an luach taobh istigh den <code>Ok</code>
+faigh ar ais ón slonn seo, agus leanfaidh an clár ar aghaidh. Má tá an luach
+is an <code>Err</code>, cuirfear an <code>Err</code> ar ais ón bhfeidhm iomlán amhail is dá mbeadh
+d'úsáid an eochairfhocal <code>return</code> ionas go n-aistrítear luach na hearráide chuig an nglao
+cód.</p>
+<p>Tá difríocht idir cad a dhéanann an slonn <code>match</code> ó Liosta 9-6
+agus cad a dhéanann an t-oibreoir <code>?</code>: luachanna earráide ar a dtugtar an t-oibreoir <code>?</code>
+orthu dul tríd an bhfeidhm <code>ó</code>, sainmhínithe sa <code>Ó</code> trait sa
+leabharlann caighdeánach, a úsáidtear chun luachanna a thiontú ó chineál amháin go cineál eile.
+Nuair a ghlaonn an t-oibreoir <code>?</code> ar an bhfeidhm <code>ó</code>, is é an cineál earráide a fhaightear
+thiontú go cineál earráide atá sainithe i gcineál tuairisceáin an tsrutha
+feidhm. Tá sé seo úsáideach nuair a fhilleann feidhm cineál earráide amháin chun a léiriú
+na bealaí ar fad a d'fhéadfadh feidhm a theipeann, fiú dá dteipfeadh ar pháirteanna do go leor cineálacha éagsúla
+cúiseanna.</p>
+<p>Mar shampla, d'fhéadfaimis an fheidhm <code>read_username_from_file</code> a athrú i Liostú
+9-7 chun cineál earráide saincheaptha darb ainm <code>OurError</code> a shainímid a thabhairt ar ais. Má táimid freisin
+sainmhínigh <code>impl From&lt;io::Error&gt; for OurError</code> chun sampla de
+<code>OurError</code> ó <code>io::Error</code>, ansin glaonna an t-oibreoir <code>?</code> i gcorp na
+Cuirfidh <code>read_username_from_file</code> glaoch ar <code>ó</code> agus tiontóidh sé na cineálacha earráide gan
+gá cód ar bith eile a chur leis an bhfeidhm.</p>
+<p>I gcomhthéacs Liostú 9-7, beidh an <code>?</code> ag deireadh an ghlao <code>File::open</code>
+cuir an luach taobh istigh de <code>OK</code> ar ais chuig an athróg <code>username_file</code>. Más earráid
+tharlaíonn, beidh an t-oibreoir <code>?</code> ar ais go luath as an fheidhm iomlán agus a thabhairt
+aon luach 'Earráid' leis an gcód glaonna. Baineann an rud céanna leis an <code>?</code> ag an
+deireadh an ghlao <code>read_to_string</code>.</p>
+<p>Cuireann an t-oibreoir <code>?</code> deireadh le go leor pláta coire agus déanann sé an fheidhm seo
+cur i bhfeidhm níos simplí. D'fhéadfaimis an cód seo a ghiorrú níos faide fiú trí shlabhraiú
+glaonna modh díreach tar éis an <code>?</code>, mar a thaispeántar i Liosta 9-8.</p>
+<Listing number="9-8" file-name="src/main.rs" caption="Chaining method calls after the `?` operator">
+<!-- Deliberately not using rustdoc_include here; the `main` function in the
+file panics. We do want to include it for reader experimentation purposes, but
+don't want to include it for rustdoc testing purposes. -->
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::fs::File;
+use std::io::{self, Read};
+
+fn read_username_from_file() -&gt; Result&lt;String, io::Error&gt; {
+    let mut username = String::new();
+
+    File::open("hello.txt")?.read_to_string(&amp;mut username)?;
+
+    Ok(username)
+}
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Táimid tar éis cruthú na <code>String</code> nua in <code>username</code> a bhogadh go dtí tús na
+an fheidhm; níl aon athrú ar an gcuid sin. In ionad athróg a chruthú
+<code>username_file</code>, shlabhraíomar an glao go <code>read_to_string</code> díreach ar an
+toradh <code>Comhad::open("hello.txt")?</code>. Tá <code>?</code> fós againn ag deireadh an
+glao <code>read_to_string</code>, agus tugaimid ar ais fós luach <code>OK</code> ina bhfuil <code>username</code>
+nuair a éiríonn leis an dá <code>File::open</code> agus <code>read_to_string</code> seachas filleadh
+earráidí. Tá an fheidhmiúlacht mar an gcéanna arís agus atá i Liostú 9-6 agus Liostú 9-7;
+níl anseo ach bealach difriúil, níos eirgeanamaíochta chun é a scríobh.</p>
+<p>Léiríonn liostú 9-9 bealach chun é seo a dhéanamh níos giorra fós trí úsáid a bhaint as <code>fs::read_to_string</code>.</p>
+<Listing number="9-9" file-name="src/main.rs" caption="Using `fs::read_to_string` instead of opening and then reading the file">
+<!-- Deliberately not using rustdoc_include here; the `main` function in the
+file panics. We do want to include it for reader experimentation purposes, but
+don't want to include it for rustdoc testing purposes. -->
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::fs;
+use std::io;
+
+fn read_username_from_file() -&gt; Result&lt;String, io::Error&gt; {
+    fs::read_to_string("hello.txt")
+}
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Is oibríocht choitianta go leor é comhad a léamh ina teaghrán, mar sin an caighdeán
+soláthraíonn an leabharlann an fheidhm áisiúil <code>fs::read_to_string</code> a osclaíonn an
+comhad, cruthaíonn sé <code>String</code> nua, léann inneachar an chomhaid, cuireann sé an t-ábhar
+isteach sa <code>String</code> sin, agus ar ais é. Ar ndóigh, ag baint úsáide as <code>fs::read_to_string</code>
+Ní thugann sé seo an deis dúinn an láimhseáil earráide go léir a mhíniú, mar sin rinneamar é
+an bealach is faide ar dtús.</p>
+<h4 id="an-Áit-ar-féidir-an-toibreoir--a-Úsáid"><a class="header" href="#an-Áit-ar-féidir-an-toibreoir--a-Úsáid">An Áit ar féidir an tOibreoir <code>?</code> a Úsáid</a></h4>
+<p>Ní féidir an t-oibreoir <code>?</code> a úsáid ach amháin i bhfeidhmeanna a bhfuil a gcineál fillte comhoiriúnach
+leis an luach a úsáidtear an <code>?</code> ar. Tá sé seo toisc go bhfuil an t-oibreoir <code>?</code> sainmhínithe
+chun luach a chur ar ais go luath as an bhfeidhm, ar an mbealach céanna
+mar an slonn <code>match</code> a shainmhíníomar i Liostú 9-6. I Liosta 9-6, tá an
+Bhí <code>match</code> ag baint úsáide as luach <code>Result</code>, agus thug an lámh fillte luath ar ais an
+luach <code>Err(e)</code>. Caithfidh <code>Result</code> a bheith i gcineál aischuir na feidhme ionas go mbeidh
+tá sé ag luí leis an <code>return</code> seo.</p>
+<p>I Liostú 9-10, breathnaímid ar an earráid a gheobhaidh muid má úsáidimid an t-oibreoir <code>?</code>
+i bhfeidhm <code>main</code> le cineál tuairisceáin nach luíonn leis an gcineál
+an luach a úsáidimid <code>?</code> ar.</p>
+<Listing number="9-10" file-name="src/main.rs" caption="Attempting to use the `?` in the `main` function that returns `()` won’t compile.">
+<pre><code class="language-rust ignore does_not_compile">use std::fs::File;
+
+fn main() {
+    let greeting_file = File::open("hello.txt")?;
+}</code></pre>
+</Listing>
+<p>Osclaíonn an cód seo comhad, rud a d'fhéadfadh teip. Leanann an t-oibreoir <code>?</code> an <code>Result</code>
+luach ar ais le <code>File::open</code>, ach tá an cineál tuairisceáin ag an bpríomhfheidhm seo
+<code>()</code>, ní <code>Result</code>. Nuair a dhéanaimid an cód seo a thiomsú, faigheann muid an earráid seo a leanas
+teachtaireacht:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling error-handling v0.1.0 (file:///projects/error-handling)
+error[E0277]: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
+ --&gt; src/main.rs:4:48
+  |
+3 | fn main() {
+  | --------- this function should return `Result` or `Option` to accept `?`
+4 |     let greeting_file = File::open("hello.txt")?;
+  |                                                ^ cannot use the `?` operator in a function that returns `()`
+  |
+  = help: the trait `FromResidual&lt;Result&lt;Infallible, std::io::Error&gt;&gt;` is not implemented for `()`
+help: consider adding return type
+  |
+3 ~ fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+4 |     let greeting_file = File::open("hello.txt")?;
+5 +     Ok(())
+  |
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `error-handling` (bin "error-handling") due to 1 previous error
+</code></pre>
+<p>Léiríonn an earráid seo nach bhfuil cead againn ach an t-oibreoir <code>?</code> a úsáid in a
+feidhm a fhilleann <code>Result</code>, <code>Option</code>, nó cineál eile a chuireann i bhfeidhm
+<code>FromResidual</code>.</p>
+<p>Chun an earráid a shocrú, tá dhá rogha agat. Rogha amháin is ea an cineál tuairisceáin a athrú
+d’fheidhm a bheith comhoiriúnach leis an luach atá á úsáid agat as an oibreoir <code>?</code>
+ar chomh fada agus nach bhfuil aon srianta agat chun é sin a chosc. Is é an rogha eile a
+bain úsáid as <code>match</code> nó ceann de na modhanna <code>Result&lt;T, E&gt;</code> chun <code>Result&lt;T, E&gt;</code> a láimhseáil
+pé slí is cuí.</p>
+<p>Luaigh an teachtaireacht earráide freisin gur féidir <code>?</code> a úsáid le luachanna <code>Option&lt;T&gt;</code>
+chomh maith. Mar is amhlaidh le húsáid <code>?</code> ar <code>Result</code>, ní féidir leat ach <code>?</code> a úsáid ar <code>Option</code> in a
+feidhm a thugann <code>Option</code> ar ais. Iompar an oibreora <code>?</code> nuair a ghlaoitear air
+ar <code>Option&lt;T&gt;</code> atá cosúil lena hiompraíocht nuair a ghlaoitear air ar <code>Result&lt;T, E&gt;</code>:
+más é an luach <code>None</code>, cuirfear an <code>None</code> ar ais go luath ón bhfeidhm ag
+an pointe sin. Más <code>Some</code> an luach, is é an luach taobh istigh den <code>Some</code> an
+luach iarmhartach an slonn, agus leanann an fheidhm. Ag liostú 9-11 tá
+sampla d’fheidhm a aimsíonn carachtar deiridh na chéad líne sa
+téacs tugtha.</p>
+<Listing number="9-11" caption="Using the `?` operator on an `Option<T>` value">
+<pre><pre class="playground"><code class="language-rust">fn last_char_of_first_line(text: &amp;str) -&gt; Option&lt;char&gt; {
+    text.lines().next()?.chars().last()
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    assert_eq!(
+</span><span class="boring">        last_char_of_first_line("Hello, world\nHow are you today?"),
+</span><span class="boring">        Some('d')
+</span><span class="boring">    );
+</span><span class="boring">
+</span><span class="boring">    assert_eq!(last_char_of_first_line(""), None);
+</span><span class="boring">    assert_eq!(last_char_of_first_line("\nhi"), None);
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Filleann an fheidhm seo <code>Option &lt;char&gt;</code> toisc go bhfuil seans ann go bhfuil
+carachtar ann, ach is féidir freisin nach bhfuil. Glacann an cód seo an
+argóint slisnithe teaghrán <code>text</code> agus glaoitear an modh <code>lines</code> air, a fhilleann
+iterator thar na línte sa téad. Toisc gur mian leis an fheidhm seo
+scrúdaigh an chéad líne, glaonn sé <code>next</code> ar an atrialltóir chun an chéad luach a fháil
+ón iterator. Más é <code>text</code> an teaghrán folamh, déanfaidh an glao seo go <code>next</code>
+tabhair <code>None</code> ar ais, agus sa chás sin úsáidimid <code>?</code> chun <code>None</code> a stopadh agus a thabhairt ar ais ó
+<code>last_char_of_first_line</code>. Murab é <code>text</code> an teaghrán folamh, déanfaidh <code>next</code>
+cuir ar ais luach <code>Some</code> ina bhfuil sreangán den chéad líne i <code>text</code>.</p>
+<p>Sliocht an <code>?</code> an téad sliseog, agus is féidir linn <code>chars</code> a ghlaoch ar an téadshlis sin
+chun iterator a fháil ar a charachtair. Tá suim againn sa charachtar deireanach i
+an chéad líne seo, mar sin tugaimid <code>last</code> chun an mhír dheiridh san atrialltóir a thabhairt ar ais.
+Is <code>Option</code> é seo mar is féidir gur folamh an chéad líne
+téad ; mar shampla, má thosaíonn <code>text</code> le líne bhán ach go bhfuil carachtair air
+línte eile, mar atá in <code>"\nhi"</code>. Mar sin féin, má tá carachtar deireanach ar an gcéad
+líne, cuirfear ar ais é sa leagan <code>Some</code>. An t-oibreoir <code>?</code> sa lár
+tugann sé bealach gonta dúinn leis an loighic seo a chur in iúl, rud a ligeann dúinn cur i bhfeidhm an
+feidhm i líne amháin. Mura bhféadfaimis an t-oibreoir <code>?</code> a úsáid ar <code>Option</code>, bheimis
+caithfidh siad an loighic seo a chur i bhfeidhm ag baint úsáide as tuilleadh glaonna modha nó slonn <code>match</code>.</p>
+<p>Tabhair faoi deara gur féidir leat an t-oibreoir <code>?</code> a úsáid ar <code>Result</code> in fheidhm a fhilleann
+<code>Result</code>, agus is féidir leat an t-oibreoir <code>?</code> a úsáid ar <code>Option</code> san fheidhm a
+Filleann sé <code>Option</code>, ach ní féidir leat a mheascadh agus a mheaitseáil. Ní dhéanfaidh an t-oibreoir <code>?</code>
+tiontaigh <code>Result</code> go huathoibríoch go <code>Option</code> nó vice versa; sna cásanna sin,
+is féidir leat modhanna a úsáid mar an modh <code>ok</code> ar <code>Result</code> nó an modh <code>ok_or</code> ar
+<code>Option</code> chun an comhshó a dhéanamh go sainráite.</p>
+<p>Go dtí seo, filleann na <code>main</code> ar fad a d'úsáideamar <code>()</code>. Is í an fheidhm <code>main</code>
+speisialta toisc gurb é pointe iontrála agus pointe scoir ríomhchláir inrite é,
+agus tá srianta ar an gcineál tuairisceáin is féidir a bheith ag an gclár
+iompar mar a bheifí ag súil leis.</p>
+<p>Ar ámharaí an tsaoil, is féidir le <code>main</code> <code>Result&lt;(), E&gt;</code> a thabhairt ar ais freisin. Tá an cód ag liostú 9-12
+ó Liostú 9-10, ach d'athraigh muid an cineál fillte <code>main</code> le bheith
+<code>Result&lt;(), Box&lt;dyn Error&gt;&gt;</code> agus chuir sé luach fillte <code>Ok(())</code> leis go dtí an deireadh. seo
+tiomsófar an cód anois.</p>
+<Listing number="9-12" file-name="src/main.rs" caption="Changing `main` to return `Result<(), E>` allows the use of the `?` operator on `Result` values.">
+<pre><code class="language-rust ignore">use std::error::Error;
+use std::fs::File;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let greeting_file = File::open("hello.txt")?;
+
+    Ok(())
+}</code></pre>
+</Listing>
+<p>Is é an cineál <code>Box&lt;dyn Error&gt;</code> ná <em>trait object</em>, a labhróimid faoi sa
+<a href="ch18-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">“Ag baint úsáide as Réada Trait a Ligeann Luachanna Éagsúla
+Cineálacha”</a><!-- neamhaird a dhéanamh ar --> alt i gCaibidil 18. Faoi láthair, is féidir leat
+léigh <code>Box&lt;dyn Error&gt;</code> a chiallaíonn "earráid de chineál ar bith." Ag baint úsáide as <code>?</code> ar <code>Result</code>
+luach i bhfeidhm <code>main</code> leis an gcineál earráide <code>Box&lt;dyn Error&gt;</code> ceadaithe
+toisc go gceadaíonn sé aon luach <code>Err</code> a thabhairt ar ais go luath. Cé go bhfuil an comhlacht ar
+ní thabharfaidh an <code>main</code> seo ar ais ach earráidí den chineál <code>std ::io :: Error</code>, le
+ag sonrú <code>Box&lt;dyn Error&gt;</code>, leanfaidh an síniú seo de bheith ceart fiú má
+cuirtear tuilleadh cód a thugann earráidí eile ar ais le corp na <code>main</code>.</p>
+<p>Nuair a fhilleann feidhm <code>main</code> <code>Result&lt;(), E&gt;</code>, scoirfidh an inrite le
+luach <code>0</code> má fhilleann <code>main``Ok(())</code> agus scoirfidh sé le luach neamhzero má
+Tugann <code>main</code> luach <code>Err</code> ar ais. Inrite atá scríofa i slánuimhreacha tuairisceáin C nuair
+scoireann siad: cuireann cláir a scoir an slánuimhir <code>0</code> ar ais go rathúil, agus cláir
+an earráid sin cuir slánuimhir éigin ar ais seachas <code>0</code>. Tugann Rust ar ais slánuimhreacha ó
+inrite a bheith ag luí leis an gcoinbhinsiún seo.</p>
+<p>Féadfaidh an <code>main</code> aon chineálacha a chuireann i bhfeidhm <a href="../std/process/trait.Termination.html">an
+<code>std::process::Termination</code> trait</a> <!-- neamhaird -->, ina bhfuil
+feidhm <code>report</code> a thugann <code>ExitCode</code> ar ais. Téigh i gcomhairle leis an leabharlann chaighdeánach
+doiciméadú le haghaidh tuilleadh eolais ar chur i bhfeidhm na tréithe <code>Termination</code> le haghaidh
+do chineálacha féin.</p>
+<p>Anois go bhfuil na sonraí pléite againn maidir le ‘scaoll!’ a ghlaoch nó ‘Toradh’ a sheoladh ar ais,
+filleadh ar an topaic maidir le conas a chinneadh cé acu is cuí a úsáid ina
+cásanna.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="go-panic-nó-gan-panic"><a class="header" href="#go-panic-nó-gan-panic">Go <code>panic!</code> nó Gan <code>panic!</code></a></h2>
+<p>Mar sin, conas a shocraíonn tú cathain ba cheart duit <code>panic!</code> a ghlaoch agus cathain ba cheart duit filleadh
+<code>Result</code>? Nuair a scaoll cód, níl aon bhealach a ghnóthú. D’fhéadfá <code>panic!</code> a ghlaoch
+i gcás aon earráide, cibé an bhfuil bealach féideartha ann chun aisghabháil nó nach bhfuil, ach
+ansin tá tú ag déanamh an chinnidh nach féidir cás a aisghabháil ar son
+an cód glaonna. Nuair a roghnaíonn tú luach <code>Result</code> a thabhairt ar ais, tugann tú an
+roghanna cód glaonna. D'fhéadfadh an cód glaonna a roghnú chun iarracht a dhéanamh a ghnóthú i
+ar bhealach atá feiliúnach dá chás, nó d’fhéadfadh sé a chinneadh go ndéanfaí ‘Earráid’
+Tá luach sa chás seo do-aisghabhála, mar sin is féidir glaoch ar <code>panic!</code> agus cas do
+earráid in-aisghabhála isteach i gceann do-aisghabhála. Mar sin, is éard atá i gceist le <code>Result</code> a thabhairt ar ais
+rogha réamhshocraithe maith nuair a bhíonn feidhm á sainiú agat a d’fhéadfadh teip a bheith uirthi.</p>
+<p>I gcásanna mar shamplaí, cód fréamhshamhail, agus tástálacha, tá sé níos mó
+cuí cód a scríobh a scanraíonn seachas <code>Result</code> a thabhairt ar ais. Déanaimis
+fiosraigh cén fáth, ansin pléigh cásanna nach féidir leis an tiomsaitheoir é sin a insint
+Tá teip dodhéanta, ach is féidir leat mar an duine. Críochnóidh an chaibidil le
+roinnt treoirlínte ginearálta maidir le conas a chinneadh cé acu an scaoll i gcód na leabharlainne.</p>
+<h3 id="samplaí-cód-fréamhshamhail-agus-tástálacha"><a class="header" href="#samplaí-cód-fréamhshamhail-agus-tástálacha">Samplaí, Cód Fréamhshamhail, agus Tástálacha</a></h3>
+<p>Agus sampla á scríobh agat chun coincheap éigin a léiriú, lena n-áirítear freisin
+is féidir le cód láidir láimhseála earráidí an sampla a dhéanamh níos soiléire. I samplaí, tá
+thuigtear gurb é atá i gceist le glao ar mhodh cosúil le <code>unwrap</code> a d'fhéadfadh scaoll a dhéanamh ná a
+ionadsealbhóir don tslí ar mhaith leat go láimhseálfadh d’iarratas earráidí, is féidir
+difriúil bunaithe ar a bhfuil an chuid eile de do chód a dhéanamh.</p>
+<p>Mar an gcéanna, bíonn na modhanna <code>unwrap</code> agus <code>expect</code> an-áisiúil agus fréamhshamhaltú á dhéanamh,
+sula mbeidh tú réidh chun cinneadh a dhéanamh conas earráidí a láimhseáil. Fágann siad marcóirí soiléire isteach
+do chód le haghaidh nuair a bheidh tú réidh chun do chlár a dhéanamh níos láidre.</p>
+<p>Má theipeann ar ghlao modha i dtástáil, ba mhaith leat go dteipfeadh ar an tástáil iomlán, fiú dá mbeadh
+ní hé an modh sin an fheidhmiúlacht atá á thástáil. Toisc go bhfuil <code>panic!</code> mar thástáil
+marcáilte mar theip, agus is é <code>unwrap</code> nó <code>expect</code> go díreach cad ba cheart
+tarlú.</p>
+<h3 id="cásanna-ina-bhfuil-breis-eolais-agat-ná-an-tiomsaitheoir"><a class="header" href="#cásanna-ina-bhfuil-breis-eolais-agat-ná-an-tiomsaitheoir">Cásanna ina Bhfuil Breis Eolais Agat Ná An Tiomsaitheoir</a></h3>
+<p>Bheadh ​​sé oiriúnach freisin <code>unwrap</code> nó <code>expect</code> a ghlaoch nuair a bhíonn roinnt agat
+loighic eile a chinntíonn go mbeidh luach <code>Ok</code> ag an <code>Result</code>, ach an loighic
+nach rud é a thuigeann an tiomsaitheoir. Beidh luach <code>Result</code> fós agat
+nach mór duit a láimhseáil: is cuma cén oibríocht atá á glaoch agat fós
+féidearthacht teip i gcoitinne, cé go bhfuil sé dodhéanta go loighciúil
+do chás ar leith. Más féidir leat a chinntiú tríd an gcód a iniúchadh de láimh
+nach mbeidh leagan <code>Err</code> agat choíche, tá sé breá inghlactha glaoch a chur air
+<code>unwrap</code>, agus níos fearr fós a dhoiciméadú ar an gcúis a cheapann tú nach mbeidh riamh agat
+Leagan <code>Err</code> sa téacs <code>expect</code>. Seo sampla:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::net::IpAddr;
+
+    let home: IpAddr = "127.0.0.1"
+        .parse()
+        .expect("Hardcoded IP address should be valid");
+<span class="boring">}</span></code></pre></pre>
+<p>Táimid ag cruthú sampla <code>IpAddr</code> trí teaghrán crua-chóid a pharsáil. Is féidir linn a fheiceáil
+gur seoladh IP bailí é <code>127.0.0.1</code>, mar sin tá sé inghlactha <code>expect</code> a úsáid
+anseo. Mar sin féin, le teaghrán bailí, códaithe, ní athraíonn an cineál tuairisceáin
+den mhodh <code>parse</code>: faigheann muid luach <code>Result</code> fós, agus gheobhaidh an tiomsaitheoir
+déanaimid fós an <code>Result</code> a láimhseáil amhail is gur féidir an leagan <code>Err</code> a dhéanamh
+mar nach bhfuil an tiomsaitheoir cliste go leor chun a fheiceáil go bhfuil an teaghrán seo i gcónaí a
+seoladh IP bailí. Má tháinig an teaghrán seoladh IP ó úsáideoir seachas a bheith
+hardcoded isteach sa chlár agus mar sin <em>raibh</em> seans teipe,
+Is cinnte gur mhaith linn an <code>Result</code> a láimhseáil ar bhealach níos láidre ina ionad sin.
+Má luann tú an toimhde go bhfuil an seoladh IP seo códaithe crua, spreagfar sinn é sin a dhéanamh
+athrú <code>expect</code> go cód láimhseála earráidí níos fearr más rud é, sa todhchaí, ní mór dúinn a fháil
+an seoladh IP ó fhoinse éigin eile ina ionad sin.</p>
+<h3 id="treoirlínte-do-láimhseáil-earráidí"><a class="header" href="#treoirlínte-do-láimhseáil-earráidí">Treoirlínte do Láimhseáil Earráidí</a></h3>
+<p>Tá sé inmholta go mbeadh do chód scaoll nuair is féidir go bhféadfadh do chód
+deireadh suas i droch-staid. Sa chomhthéacs seo, is éard atá i <em>droch-staid</em> ná nuair a bhíonn roinnt toimhde ann,
+Tá ráthaíocht, conradh, nó malairtí briste, mar shampla nuair a bhíonn luachanna neamhbhailí,
+cuirtear luachanna contrártha, nó luachanna atá in easnamh ar aghaidh chuig do chód - móide ceann amháin nó
+níos mó díobh seo a leanas:</p>
+<ul>
+<li>Is é an droch-staid rud éigin gan choinne, i gcomparáid le rud éigin go
+is dócha go dtarlóidh sé ó am go chéile, cosúil le húsáideoir sonraí a iontráil mícheart
+formáid.</li>
+<li>Ní mór do chód tar éis an phointe seo a bheith ag brath ar gan a bheith sa droch-staid seo,
+seachas seiceáil le haghaidh na faidhbe ag gach céim.</li>
+<li>Níl bealach maith ann chun an fhaisnéis seo a ionchódú sna cineálacha a úsáideann tú. Déanfaimid
+oibriú trí shampla dá bhfuil i gceist againn sna <a href="ch18-03-oo-design-patterns.html#encoding-states-and-behavior-as-types">“Stáit Ionchódaithe agus Iompar
+mar Cineálacha”</a><!-- neamhaird --> alt de Chaibidil 18.</li>
+</ul>
+<p>Má ghlaonn duine éigin ar do chód agus má chuireann sé/sí luachanna isteach nach bhfuil ciall leo, beidh
+is fearr earráid a thabhairt ar ais más féidir leat ionas gur féidir le húsáideoir na leabharlainne cinneadh a dhéanamh ar cad é
+ba mhaith leo a dhéanamh sa chás sin. Mar sin féin, i gcásanna ina bhféadfaí leanúint ar aghaidh
+neamhchinnte nó díobhálach, b’fhéidir gurb é an rogha is fearr <code>panic!</code> a ghlaoch agus foláireamh a thabhairt do na
+duine a úsáideann do leabharlann chun an fabht ina gcód ionas gur féidir leo é a dheisiú le linn
+forbartha. Mar an gcéanna, is minic a bhíonn <code>panic!</code> oiriúnach má tá tú ag glaoch
+cód seachtrach atá as do smacht agus tugann sé ar ais staid neamhbhailí go
+níl aon bhealach agat le socrú.</p>
+<p>Nuair a bhíonntear ag súil le teip, áfach, tá sé níos oiriúnaí <code>Result</code> a thabhairt ar ais
+ná glaoch <code>panic!</code> a dhéanamh. I measc na samplaí tá parsálaí míchumtha a thabhairt
+sonraí nó iarratas HTTP a thugann stádas ar ais a thugann le fios go bhfuil ráta bainte amach agat
+teorainn. Sna cásanna seo, nuair a chuirtear <code>Result</code> ar ais, léirítear gur teip é
+an fhéidearthacht a bhfuiltear ag súil leis go gcaithfidh an cód glaonna cinneadh a dhéanamh maidir le conas déileáil leis.</p>
+<p>Nuair a dhéanann do chód oibríocht a d’fhéadfadh úsáideoir a chur i mbaol má tá
+ar a dtugtar ag baint úsáide as luachanna neamhbhailí, ba chóir do chód a fhíorú go bhfuil na luachanna bailí ar dtús
+agus scaoll mura bhfuil na luachanna bailí. Is ar chúiseanna sábháilteachta is mó a dhéantar é seo:
+Má dhéanann tú iarracht oibriú ar shonraí neamhbhailí is féidir do chód a nochtadh d'leochaileachtaí.
+Is é seo an phríomhchúis go nglaofaidh an leabharlann chaighdeánach <code>panic!</code> má dhéanann tú iarracht
+rochtain chuimhne as-theorainneacha: ag iarraidh rochtain a fháil ar chuimhne nach léi
+is fadhb choitianta slándála é an struchtúr sonraí reatha. Is minic a bhíonn feidhmeanna
+<em>contracts</em>: ní ráthaítear a n-iompraíocht ach amháin má shásaíonn na hionchuir ar leith
+riachtanais. Tá ciall ag baint le panicking nuair a sháraítear an conradh mar a
+léiríonn sárú conartha fabht ar thaobh an ghlaoiteora i gcónaí, agus ní cineál é
+earráid is mian leat go mbeadh ar an gcód glaonna a láimhseáil go sainráite. Go deimhin, tá
+aon bhealach réasúnta chun glaoch cód a ghnóthú; an <em>ríomhchláraitheoirí</em> glaonna ag teastáil
+chun an cód a shocrú. Conarthaí le haghaidh feidhm, go háirithe nuair a bheidh sárú
+ina chúis le scaoll, a mhíniú sa doiciméadú API don fheidhm.</p>
+<p>Mar sin féin, bheadh go leor seiceálacha earráide i do chuid feidhmeanna go léir briathar
+agus annoying. Go fortunately, is féidir leat córas cineál Rust a úsáid (agus mar sin an cineál
+seiceáil a rinne an tiomsaitheoir) go leor de na seiceálacha a dhéanamh ar do shon. Má tá do
+tá cineál áirithe ag feidhm mar pharaiméadar, is féidir leat dul ar aghaidh le do chóid
+loighic a fhios agam gur chinntigh an tiomsaitheoir cheana féin go bhfuil luach bailí agat. Le haghaidh
+Mar shampla, má tá cineál agat seachas <code>Option</code>, tá súil ag do chlár
+bíodh <em>rud éigin</em> agat seachas <em>rud ar bith</em>. Ní gá do chód a láimhseáil mar sin
+dhá chás do na leaganacha <code>Some</code> agus <code>None</code>: ní bheidh ach cás amháin ann do
+cinnte go bhfuil luach. Ní bheidh cód ag iarraidh rud ar bith a chur ar aghaidh chuig d'fheidhm
+fiú tiomsú, mar sin ní gá d'fheidhm a sheiceáil don chás sin ag am rite.
+Sampla eile is ea úsáid a bhaint as cineál slánuimhir gan síniú mar <code>u32</code>, rud a chinntíonn
+ní bhíonn an paraiméadar diúltach riamh.</p>
+<h3 id="cineálacha-saincheaptha-á-gcruthú-le-haghaidh-bailíochtú"><a class="header" href="#cineálacha-saincheaptha-á-gcruthú-le-haghaidh-bailíochtú">Cineálacha Saincheaptha á gCruthú le haghaidh Bailíochtú</a></h3>
+<p>Glacaimis an smaoineamh córas cineál Rust a úsáid chun a chinntiú go bhfuil luach bailí againn
+céim amháin eile agus féach ar chineál saincheaptha a chruthú le haghaidh bailíochtaithe. Athghairm an
+cluiche buille faoi thuairim i gCaibidil 2 inar iarr ár gcód ar an úsáideoir buille faoi thuairim a thabhairt ar uimhir
+idir 1 agus 100. muid ndeimhnithe riamh go raibh buille faoi thuairim an úsáideora eatarthu siúd
+uimhreacha roimh é a sheiceáil i gcoinne ár n-uimhir rúnda; ní dhearnamar ach é sin a bhailíochtú
+bhí an buille faoi thuairim dearfach. Sa chás seo, ní raibh na hiarmhairtí an-dona: ár
+bheadh ​​an t-aschur “Ró-ard” nó “Ró-íseal” fós ceart. Ach bheadh ​​​​sé a
+feabhsú úsáideach chun an t-úsáideoir a threorú i dtreo tomhais bhailí agus a bhfuil éagsúlachtaí acu
+iompar nuair a dhéanann an t-úsáideoir buille faoi thuairim uimhir atá as raon i gcomparáid le nuair a bhíonn an
+cineálacha úsáideoirí, mar shampla, litreacha ina ionad.</p>
+<p>Bealach amháin chun é seo a dhéanamh ná an buille faoi thuairim a pharsáil mar <code>i32</code> in ionad ach a
+<code>u32</code> chun uimhreacha a d'fhéadfadh a bheith diúltach a cheadú, agus ansin cuir seic le haghaidh an
+uimhir a bheith i raon, mar sin:</p>
+<Listing file-name="src/main.rs">
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span>    loop {
+        // --snip--
+
+<span class="boring">        println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">        let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">        io::stdin()
+</span><span class="boring">            .read_line(&amp;mut guess)
+</span><span class="boring">            .expect("Failed to read line");
+</span><span class="boring">
+</span>        let guess: i32 = match guess.trim().parse() {
+            Ok(num) =&gt; num,
+            Err(_) =&gt; continue,
+        };
+
+        if guess &lt; 1 || guess &gt; 100 {
+            println!("The secret number will be between 1 and 100.");
+            continue;
+        }
+
+        match guess.cmp(&amp;secret_number) {
+            // --snip--
+<span class="boring">            Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">            Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">            Ordering::Equal =&gt; {
+</span><span class="boring">                println!("You win!");
+</span><span class="boring">                break;
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span>    }
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Seiceálann an slonn <code>if</code> cibé an bhfuil ár luach as raon, insíonn sé don úsáideoir
+faoin bhfadhb, agus glaonna <code>continue</code> chun tús a chur leis an gcéad atriall eile den lúb
+agus iarr buille faoi thuairim eile. Tar éis an abairt <code>if</code>, is féidir linn dul ar aghaidh leis an
+comparáidí idir <code>guess</code> agus an uimhir rúnda a fhios agam go bhfuil <code>guess</code>
+idir 1 agus 100.</p>
+<p>Mar sin féin, ní réiteach idéalach é seo: dá mba rud é go raibh sé ríthábhachtach go ndéanfaí an
+níor fheidhmigh an clár ach ar luachanna idir 1 agus 100, agus bhí go leor feidhmeanna aige
+leis an riachtanas seo, go mbeadh seiceáil mar seo i ngach feidhm
+tedious (agus d'fhéadfadh tionchar a imirt ar fheidhmíocht).</p>
+<p>Ina áit sin, is féidir linn cineál nua a dhéanamh agus na bailíochtaithe a chur i bhfeidhm le cruthú
+sampla den chineál seachas na bailíochtaithe a athrá i ngach áit. Sin
+mar sin, tá sé sábháilte d'fheidhmeanna an cineál nua a úsáid ina sínithe agus
+úsáid go muiníneach as na luachanna a fhaigheann siad. Léiríonn liostú 9-13 bealach amháin chun a
+Cineál <code>Guess</code> nach gcruthóidh ach sampla de <code>Guess</code> má tá an fheidhm <code>new</code>
+a fhaigheann luach idir 1 agus 100.</p>
+<Listing number="9-13" caption="A `Guess` type that will only continue with values between 1 and 100">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Guess {
+    value: i32,
+}
+
+impl Guess {
+    pub fn new(value: i32) -&gt; Guess {
+        if value &lt; 1 || value &gt; 100 {
+            panic!("Guess value must be between 1 and 100, got {value}.");
+        }
+
+        Guess { value }
+    }
+
+    pub fn value(&amp;self) -&gt; i32 {
+        self.value
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Ar dtús déanaimid sainmhíniú ar struchtúr darb ainm <code>Guess</code> a bhfuil réimse darb ainm <code>value</code> sin
+tá <code>i32</code> aige. Seo an áit a stórálfar an uimhir.</p>
+<p>Ansin cuirimid feidhm ghaolmhar i bhfeidhm darb ainm <code>new</code> ar <code>Guess</code> a chruthaíonn
+samplaí de luachanna <code>Guess</code>. Sainmhínítear an fheidhm <code>new</code> go bhfuil ceann aici
+paraiméadar darb ainm <code>value</code> den chineál <code>i32</code> agus <code>Guess</code> a thabhairt ar ais. An cód sa
+Déanann corp na feidhme <code>new</code> tástáil ar 'luach' lena chinntiú go bhfuil sé idir 1 agus 100.
+Mura n-éiríonn le ‘value’ an triail seo, déanaimid glao <code>panic!</code> a chuirfidh foláireamh
+an ríomhchláraitheoir atá ag scríobh an cód glaonna go bhfuil fabht a theastaíonn uathu
+a shocrú, mar go gcruthófaí <code>Guess</code> le <code>value</code> lasmuigh den raon seo
+an conradh a bhfuil <code>Guess::new</code> ag brath air a shárú. Na coinníollacha ina
+Seans gur cheart <code>Guess::new</code> a phlé ina API poiblí
+doiciméadú; clúdóimid coinbhinsiúin doiciméadaithe a léiríonn an fhéidearthacht
+de <code>panic!</code> sna doiciméid API a chruthaíonn tú i gCaibidil 14. Más rud é
+éiríonn le <code>value</code> an triail, cruthaímid <code>Guess</code> nua lena shraith réimse <code>value</code>
+chuig an bparaiméadar <code>value</code> agus seol ar ais an <code>Guess</code>.</p>
+<p>Ansin, cuirimid modh darb ainm <code>value</code> i bhfeidhm a fhaigheann <code>self</code> ar iasacht, nach bhfuil aon cheann aige
+paraiméadair eile, agus tuairisceáin <code>i32</code>. Uaireanta tugtar modh den chineál seo
+a <em>getter</em> toisc go bhfuil sé mar chuspóir aige roinnt sonraí a fháil óna réimsí agus iad a sheoladh ar ais
+é. Tá an modh poiblí seo riachtanach toisc go bhfuil réimse <code>value</code> an <code>Guess</code>
+Tá struchtúr príobháideach. Tá sé tábhachtach go mbeadh an réimse <code>value</code> príobháideach mar sin cód
+ag baint úsáide as an struchtúr <code>Guess</code> ní cheadaítear <code>value</code> a shocrú go díreach: cód lasmuigh
+caithfidh an modúl an fheidhm <code>Guess::new</code> a úsáid chun sampla de
+<code>Guess</code>, ag cinntiú mar sin nach bhfuil aon bhealach le <code>Guess</code> <code>value</code> a bheith aige sin
+nach bhfuil seiceáilte ag na coinníollacha san fheidhm <code>Guess::new</code>.</p>
+<p>D'fhéadfadh feidhm a bhfuil paraiméadar aici nó nach dtugann ach uimhreacha idir 1 agus 100 ar ais
+ansin dearbhaigh ina shíniú go nglacann sé nó go dtugann sé ar ais <code>Guess</code> seachas
+<code>i32</code> agus ní bheadh ​​air aon seiceálacha breise a dhéanamh ina chorp.</p>
+<h2 id="achoimre-8"><a class="header" href="#achoimre-8">Achoimre</a></h2>
+<p>Tá gnéithe láimhseála earráidí Rust deartha chun cabhrú leat cód níos daingne a scríobh.
+Léiríonn an macra <code>panic!</code> go bhfuil do chlár i riocht nach féidir leis a láimhseáil agus
+ligeann duit insint don phróiseas chun stop a chur in ionad iarracht a dhéanamh dul ar aghaidh le neamhbhailí nó
+luachanna míchearta. Úsáideann an enum <code>Result</code> córas cineáil Rust chun é sin a chur in iúl
+seans go dteipfidh ar oibríochtaí ar bhealach a d'fhéadfadh do chód a ghnóthú. Is féidir leat úsáid a bhaint as
+<code>Result</code> chun cód a ghlaonn do chód a insint go gcaithfidh sé acmhainneacht a láimhseáil
+rath nó teip chomh maith. Ag baint úsáide as <code>panic!</code> agus <code>Result</code> sa chuí
+Déanfaidh cásanna do chód níos iontaofa i bhfianaise fadhbanna dosheachanta.</p>
+<p>Anois go bhfuil bealaí úsáideacha feicthe agat a n-úsáideann an leabharlann chaighdeánach generics leo
+sna huimhreacha <code>Option</code> agus <code>Result</code>, labhróimid faoin gcaoi a n-oibríonn generics agus conas a oibríonn tú
+Is féidir iad a úsáid i do chód.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="generic-types-traits-and-lifetimes"><a class="header" href="#generic-types-traits-and-lifetimes">Generic Types, Traits, and Lifetimes</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="generic-data-types"><a class="header" href="#generic-data-types">Generic Data Types</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="traits-defining-shared-behavior"><a class="header" href="#traits-defining-shared-behavior">Traits: Defining Shared Behavior</a></h1>

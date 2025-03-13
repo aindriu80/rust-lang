@@ -159,7 +159,155 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="unrecoverable-errors-with-panic"><a class="header" href="#unrecoverable-errors-with-panic">Unrecoverable Errors with panic!</a></h1>
+                        <h2 id="earráidí-do-aisghabhála-le-panic"><a class="header" href="#earráidí-do-aisghabhála-le-panic">Earráidí do-aisghabhála le <code>panic!</code></a></h2>
+<p>Uaireanta tarlaíonn rudaí dona i do chód, agus níl aon rud ar féidir leat a dhéanamh faoi
+é. Sna cásanna seo, tá an macra <code>panic!</code> ag Rust. Tá dhá bhealach a chur faoi deara a
+scaoll i gcleachtas: trí ghníomh a dhéanamh a chuireann scaoll ar ár gcód (amhail
+rochtain a fháil ar eagar thar an deireadh) nó trí ghlaoch go sainráite ar an macra <code>panic!</code>.
+Sa dá chás, is cúis le scaoll inár gclár. De réir réamhshocraithe, déanfaidh na scaoll seo
+cló teachtaireacht teip, unwind, glan suas an chairn, agus scor. Tríd an
+athróg timpeallacht, is féidir leat freisin Rust taispeáint an chairn glaoch nuair a
+tarlaíonn scaoll chun é a dhéanamh níos éasca foinse an scaoll a rianú.</p>
+<blockquote>
+<h3 id="an-cruach-a-dhíscaoileadh-nó-tobscoir-mar-fhreagairt-ar-scaoill"><a class="header" href="#an-cruach-a-dhíscaoileadh-nó-tobscoir-mar-fhreagairt-ar-scaoill">An Cruach a Dhíscaoileadh nó Tobscoir mar Fhreagairt ar Scaoill</a></h3>
+<p>De réir réamhshocraithe, nuair a tharlaíonn scaoll tosaíonn an clár <em>unwinding</em>, rud a chiallaíonn
+Siúlann Rust cúltaca an chairn agus glanann sé suas na sonraí ó gach feidhm é
+cruinnithe. Mar sin féin, tá go leor oibre ag siúl siar agus ag glanadh suas. Rust,
+mar sin, is féidir leat rogha eile a roghnú láithreach <em>aborting</em>,
+a chríochnaíonn an clár gan glanadh suas.</p>
+<p>Beidh gá ansin an chuimhne a bhí in úsáid ag an gclár a ghlanadh suas ag an
+córas oibriúcháin. Más rud é i do thionscadal ní mór duit an dénártha iarmhartach a dhéanamh mar
+beag agus is féidir, is féidir leat athrú ó scaoileadh go dtí deireadh a chur le scaoll ag
+ag cur <code>panic = 'abort'</code> leis na rannáin <code>[profile]</code> cuí i do
+<em>Cargo.toml</em> comhad. Mar shampla, más mian leat deireadh a chur le scaoll i mód scaoileadh,
+cuir é seo leis:</p>
+<pre><code class="language-toml">[profile.release]
+scaoll = 'abort'
+
+</code></pre>
+</blockquote>
+<p>Déanaimis iarracht <code>panic!</code> a ghlaoch i gclár simplí:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust should_panic panics">fn main() {
+    panic!("crash and burn");
+}</code></pre></pre>
+</Listing>
+<p>Nuair a bheidh an clár á rith agat, feicfidh tú rud éigin mar seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling panic v0.1.0 (file:///projects/panic)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.25s
+     Running `target/debug/panic`
+thread 'main' panicked at src/main.rs:2:5:
+crash and burn
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Is cúis leis an nglao go <code>panic!</code> an teachtaireacht earráide atá sa dá líne dheireanacha.
+Taispeánann an chéad líne ár dteachtaireacht scaoll agus an áit inár gcód foinse
+tharla an scaoll: léiríonn <em>src/main.rs:2:5</em> gurb í an dara líne í,
+an cúigiú carachtar dár gcomhad <em>src/main.rs</em>.</p>
+<p>Sa chás seo, tá an líne a luaitear mar chuid dár gcód, agus má théann muid chuige sin
+líne, feicimid an glao macra <code>panic!</code>. I gcásanna eile, d'fhéadfadh an glaoch <code>panic!</code>
+bheith sa chód a ghlaonn ár gcód air, agus ainm an chomhaid agus uimhir na líne arna dtuairisciú ag
+cód duine éigin eile a bheidh sa teachtaireacht earráide ina bhfuil an macra <code>panic!</code>
+ar a dtugtar, ní líne ár gcód ba chúis leis an nglao scaoll ar deireadh thiar.</p>
+<!-- Old heading. Do not remove or links may break. -->
+<p><a id="using-a-panic-backtrace"></a></p>
+<p>Is féidir linn úsáid a bhaint as aisrian na bhfeidhmeanna a tháinig an glaoch <code>panic!</code> uathu go figiúr
+amach an chuid dár gcód atá ag cruthú na faidhbe. Chun tuiscint a fháil ar conas é a úsáid
+cúl-lorg <code>panic!</code>, breathnaímis ar shampla eile agus féachaimis cén chaoi a bhfuil sé
+tagann glao <code>panic!</code> ó leabharlann mar gheall ar fhabht inár gcód seachas
+ónár gcód ag glaoch ar an macra go díreach. Tá cód éigin ag baint le liostú 9-1
+iarrachtaí rochtain a fháil ar innéacs i veicteoir atá thar raon na n-innéacsanna bailí.</p>
+<Listing number="9-1" file-name="src/main.rs" caption="Attempting to access an element beyond the end of a vector, which will cause a call to `panic!`">
+<pre><pre class="playground"><code class="language-rust should_panic panics">fn main() {
+    let v = vec![1, 2, 3];
+
+    v[99];
+}</code></pre></pre>
+</Listing>
+<p>Anseo, táimid ag iarraidh rochtain a fháil ar an 100ú eilimint dár veicteoir (atá ag
+innéacs 99 toisc go dtosaíonn an t-innéacsú ag nialas), ach níl ach trí cinn ag an veicteoir
+eilimintí. Sa chás seo, beidh Rust scaoll. Ag baint úsáide as <code>[]</code> atá ceaptha a thabhairt ar ais
+eilimint, ach má éiríonn leat innéacs neamhbhailí, níl aon eilimint a chuireann Rust
+d'fhéadfadh filleadh anseo a bheadh ​​ceart.</p>
+<p>In C, níl aon sainmhíniú ar iarracht léamh thar dheireadh struchtúir sonraí
+iompar. D'fhéadfá a fháil cibé rud atá ag an suíomh i gcuimhne a bheadh
+fhreagraíonn don eilimint sin sa struchtúr sonraí, cé go bhfuil an chuimhne
+nach mbaineann leis an struchtúr sin. Tugtar <em>buffer overread</em> air seo agus is féidir
+leochaileachtaí slándála a bheith mar thoradh air má tá ionsaitheoir in ann an t-innéacs a ionramháil
+sa chaoi is gur féidir sonraí a léamh níor cheart ligean dóibh a stóráiltear ina dhiaidh sin
+an struchtúr sonraí.</p>
+<p>Chun do chlár a chosaint ar an gcineál seo leochaileachta, má dhéanann tú iarracht an
+eilimint ag innéacs nach bhfuil ann, stopfaidh Rust a fhorghníomhú agus diúltóidh sé
+ar aghaidh. Déanaimis iarracht é agus féach:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling panic v0.1.0 (file:///projects/panic)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
+     Running `target/debug/panic`
+thread 'main' panicked at src/main.rs:4:6:
+index out of bounds: the len is 3 but the index is 99
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>Léiríonn an earráid seo líne 4 dár <em>main.rs</em> áit a ndéanaimid iarracht an t-innéacs a rochtain
+<code>99</code> den veicteoir in <code>v</code>.</p>
+<p>Insíonn an líne <code>nóta:</code> dúinn gur féidir linn an timpeallacht <code>RUST_BACKTRACE</code> a shocrú
+athróg chun aisrian a fháil ar cad go díreach a tharla chun an earráid a chur faoi deara. A
+Is éard atá i <em>backtrace</em> ná liosta de na feidhmeanna go léir a glaodh chun é seo a bhaint amach
+pointe. Oibríonn backtraces in Rust mar a dhéanann siad i dteangacha eile: an eochair do
+Is é an t-aisrian a léamh ná tosú ón mbarr agus léamh go dtí go bhfeiceann tú comhaid leat
+scríobh. Sin an áit a dtáinig an fhadhb. Na línte os cionn an spota sin
+an cód a d'iarr do chód; tá na línte thíos cód a dtugtar do
+cód. D'fhéadfadh go n-áireofaí ar na línte roimh agus tar éis croíchód Rust, caighdeánach
+cód leabharlainne, nó cliathbhoscaí atá in úsáid agat. Déanaimis iarracht cúl-lorg a fháil
+ag socrú an athróg timpeallachta <code>RUST_BACKTRACE</code> chuig aon luach seachas <code>0</code>.
+Léiríonn liostú 9-2 aschur atá cosúil leis an méid a fheicfidh tú.</p>
+<!-- manual-regeneration
+cd listings/ch09-error-handling/listing-09-01
+RUST_BACKTRACE=1 cargo run
+copy the backtrace output below
+check the backtrace number mentioned in the text below the listing
+-->
+<Listing number="9-2" caption="The backtrace generated by a call to `panic!` displayed when the environment variable `RUST_BACKTRACE` is set">
+<pre><code class="language-console">$ RUST_BACKTRACE=1 cargo run
+thread 'main' panicked at src/main.rs:4:6:
+index out of bounds: the len is 3 but the index is 99
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/std/src/panicking.rs:662:5
+   1: core::panicking::panic_fmt
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/panicking.rs:74:14
+   2: core::panicking::panic_bounds_check
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/panicking.rs:276:5
+   3: &lt;usize as core::slice::index::SliceIndex&lt;[T]&gt;&gt;::index
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/slice/index.rs:302:10
+   4: core::slice::index::&lt;impl core::ops::index::Index&lt;I&gt; for [T]&gt;::index
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/slice/index.rs:16:9
+   5: &lt;alloc::vec::Vec&lt;T,A&gt; as core::ops::index::Index&lt;I&gt;&gt;::index
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/alloc/src/vec/mod.rs:2920:9
+   6: panic::main
+             at ./src/main.rs:4:6
+   7: core::ops::function::FnOnce::call_once
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/ops/function.rs:250:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+</code></pre>
+</Listing>
+<p>Sin go leor aschur! D'fhéadfadh an t-aschur cruinn a fheiceann tú a bheith difriúil ag brath
+ar do chóras oibriúcháin agus leagan Rust. D'fhonn backtracks a fháil leis seo
+faisnéis, ní mór siombailí dífhabhtaithe a chumasú. Tá siombailí dífhabhtaithe cumasaithe ag
+réamhshocraithe nuair a úsáidtear <code>cargo build</code> nó <code>cargo run</code> gan an bhratach <code>--release</code>,
+mar atá againn anseo.</p>
+<p>San aschur i Liostú 9-2, léiríonn líne 6 den chúlrian go dtí an líne inár
+tionscadal is cúis leis an bhfadhb: líne 4 de <em>src/main.rs</em>. Más rud é nach bhfuil muid ag iarraidh
+ár gclár chun scaoll, ba chóir dúinn tús a chur lenár n-imscrúdú ag an suíomh a luaitear
+go dtí an chéad líne ina luaitear comhad a scríobh muid. I Liosta 9-1, áit a bhfuilimid
+scríobh d'aon ghnó cód a bheadh ​​scaoll, is é an bealach a shocrú ar an scaoll gan
+iarraidh eilimint thar raon na n-innéacsanna veicteora. Nuair a bheidh do cód
+scaoll amach anseo, beidh ort a dhéanamh amach cén gníomh atá á dhéanamh ag an gcód
+cad iad na luachanna is cúis leis an scaoll agus cad ba cheart don chód a dhéanamh ina ionad sin.</p>
+<p>Tiocfaidh muid ar ais chuig <code>panic!</code> agus nuair ba cheart agus nár cheart dúinn <code>panic!</code> a úsáid chun
+láimhseáil coinníollacha earráide sa [“Chun <code>panic!</code> nó Gan
+<code>panic!</code>”][go-scaoll-nó-ní-scaoll]<!-- neamhaird a dhéanamh ar --> alt níos déanaí sa mhír seo
+caibidil. Ansin, féachfaimid ar conas a ghnóthú ó earráid ag baint úsáide as <code>Result</code>.</p>
 
                     </main>
 

@@ -159,7 +159,252 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="to-panic-or-not-to-panic"><a class="header" href="#to-panic-or-not-to-panic">To panic! or Not to panic!</a></h1>
+                        <h2 id="go-panic-nó-gan-panic"><a class="header" href="#go-panic-nó-gan-panic">Go <code>panic!</code> nó Gan <code>panic!</code></a></h2>
+<p>Mar sin, conas a shocraíonn tú cathain ba cheart duit <code>panic!</code> a ghlaoch agus cathain ba cheart duit filleadh
+<code>Result</code>? Nuair a scaoll cód, níl aon bhealach a ghnóthú. D’fhéadfá <code>panic!</code> a ghlaoch
+i gcás aon earráide, cibé an bhfuil bealach féideartha ann chun aisghabháil nó nach bhfuil, ach
+ansin tá tú ag déanamh an chinnidh nach féidir cás a aisghabháil ar son
+an cód glaonna. Nuair a roghnaíonn tú luach <code>Result</code> a thabhairt ar ais, tugann tú an
+roghanna cód glaonna. D'fhéadfadh an cód glaonna a roghnú chun iarracht a dhéanamh a ghnóthú i
+ar bhealach atá feiliúnach dá chás, nó d’fhéadfadh sé a chinneadh go ndéanfaí ‘Earráid’
+Tá luach sa chás seo do-aisghabhála, mar sin is féidir glaoch ar <code>panic!</code> agus cas do
+earráid in-aisghabhála isteach i gceann do-aisghabhála. Mar sin, is éard atá i gceist le <code>Result</code> a thabhairt ar ais
+rogha réamhshocraithe maith nuair a bhíonn feidhm á sainiú agat a d’fhéadfadh teip a bheith uirthi.</p>
+<p>I gcásanna mar shamplaí, cód fréamhshamhail, agus tástálacha, tá sé níos mó
+cuí cód a scríobh a scanraíonn seachas <code>Result</code> a thabhairt ar ais. Déanaimis
+fiosraigh cén fáth, ansin pléigh cásanna nach féidir leis an tiomsaitheoir é sin a insint
+Tá teip dodhéanta, ach is féidir leat mar an duine. Críochnóidh an chaibidil le
+roinnt treoirlínte ginearálta maidir le conas a chinneadh cé acu an scaoll i gcód na leabharlainne.</p>
+<h3 id="samplaí-cód-fréamhshamhail-agus-tástálacha"><a class="header" href="#samplaí-cód-fréamhshamhail-agus-tástálacha">Samplaí, Cód Fréamhshamhail, agus Tástálacha</a></h3>
+<p>Agus sampla á scríobh agat chun coincheap éigin a léiriú, lena n-áirítear freisin
+is féidir le cód láidir láimhseála earráidí an sampla a dhéanamh níos soiléire. I samplaí, tá
+thuigtear gurb é atá i gceist le glao ar mhodh cosúil le <code>unwrap</code> a d'fhéadfadh scaoll a dhéanamh ná a
+ionadsealbhóir don tslí ar mhaith leat go láimhseálfadh d’iarratas earráidí, is féidir
+difriúil bunaithe ar a bhfuil an chuid eile de do chód a dhéanamh.</p>
+<p>Mar an gcéanna, bíonn na modhanna <code>unwrap</code> agus <code>expect</code> an-áisiúil agus fréamhshamhaltú á dhéanamh,
+sula mbeidh tú réidh chun cinneadh a dhéanamh conas earráidí a láimhseáil. Fágann siad marcóirí soiléire isteach
+do chód le haghaidh nuair a bheidh tú réidh chun do chlár a dhéanamh níos láidre.</p>
+<p>Má theipeann ar ghlao modha i dtástáil, ba mhaith leat go dteipfeadh ar an tástáil iomlán, fiú dá mbeadh
+ní hé an modh sin an fheidhmiúlacht atá á thástáil. Toisc go bhfuil <code>panic!</code> mar thástáil
+marcáilte mar theip, agus is é <code>unwrap</code> nó <code>expect</code> go díreach cad ba cheart
+tarlú.</p>
+<h3 id="cásanna-ina-bhfuil-breis-eolais-agat-ná-an-tiomsaitheoir"><a class="header" href="#cásanna-ina-bhfuil-breis-eolais-agat-ná-an-tiomsaitheoir">Cásanna ina Bhfuil Breis Eolais Agat Ná An Tiomsaitheoir</a></h3>
+<p>Bheadh ​​sé oiriúnach freisin <code>unwrap</code> nó <code>expect</code> a ghlaoch nuair a bhíonn roinnt agat
+loighic eile a chinntíonn go mbeidh luach <code>Ok</code> ag an <code>Result</code>, ach an loighic
+nach rud é a thuigeann an tiomsaitheoir. Beidh luach <code>Result</code> fós agat
+nach mór duit a láimhseáil: is cuma cén oibríocht atá á glaoch agat fós
+féidearthacht teip i gcoitinne, cé go bhfuil sé dodhéanta go loighciúil
+do chás ar leith. Más féidir leat a chinntiú tríd an gcód a iniúchadh de láimh
+nach mbeidh leagan <code>Err</code> agat choíche, tá sé breá inghlactha glaoch a chur air
+<code>unwrap</code>, agus níos fearr fós a dhoiciméadú ar an gcúis a cheapann tú nach mbeidh riamh agat
+Leagan <code>Err</code> sa téacs <code>expect</code>. Seo sampla:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::net::IpAddr;
+
+    let home: IpAddr = "127.0.0.1"
+        .parse()
+        .expect("Hardcoded IP address should be valid");
+<span class="boring">}</span></code></pre></pre>
+<p>Táimid ag cruthú sampla <code>IpAddr</code> trí teaghrán crua-chóid a pharsáil. Is féidir linn a fheiceáil
+gur seoladh IP bailí é <code>127.0.0.1</code>, mar sin tá sé inghlactha <code>expect</code> a úsáid
+anseo. Mar sin féin, le teaghrán bailí, códaithe, ní athraíonn an cineál tuairisceáin
+den mhodh <code>parse</code>: faigheann muid luach <code>Result</code> fós, agus gheobhaidh an tiomsaitheoir
+déanaimid fós an <code>Result</code> a láimhseáil amhail is gur féidir an leagan <code>Err</code> a dhéanamh
+mar nach bhfuil an tiomsaitheoir cliste go leor chun a fheiceáil go bhfuil an teaghrán seo i gcónaí a
+seoladh IP bailí. Má tháinig an teaghrán seoladh IP ó úsáideoir seachas a bheith
+hardcoded isteach sa chlár agus mar sin <em>raibh</em> seans teipe,
+Is cinnte gur mhaith linn an <code>Result</code> a láimhseáil ar bhealach níos láidre ina ionad sin.
+Má luann tú an toimhde go bhfuil an seoladh IP seo códaithe crua, spreagfar sinn é sin a dhéanamh
+athrú <code>expect</code> go cód láimhseála earráidí níos fearr más rud é, sa todhchaí, ní mór dúinn a fháil
+an seoladh IP ó fhoinse éigin eile ina ionad sin.</p>
+<h3 id="treoirlínte-do-láimhseáil-earráidí"><a class="header" href="#treoirlínte-do-láimhseáil-earráidí">Treoirlínte do Láimhseáil Earráidí</a></h3>
+<p>Tá sé inmholta go mbeadh do chód scaoll nuair is féidir go bhféadfadh do chód
+deireadh suas i droch-staid. Sa chomhthéacs seo, is éard atá i <em>droch-staid</em> ná nuair a bhíonn roinnt toimhde ann,
+Tá ráthaíocht, conradh, nó malairtí briste, mar shampla nuair a bhíonn luachanna neamhbhailí,
+cuirtear luachanna contrártha, nó luachanna atá in easnamh ar aghaidh chuig do chód - móide ceann amháin nó
+níos mó díobh seo a leanas:</p>
+<ul>
+<li>Is é an droch-staid rud éigin gan choinne, i gcomparáid le rud éigin go
+is dócha go dtarlóidh sé ó am go chéile, cosúil le húsáideoir sonraí a iontráil mícheart
+formáid.</li>
+<li>Ní mór do chód tar éis an phointe seo a bheith ag brath ar gan a bheith sa droch-staid seo,
+seachas seiceáil le haghaidh na faidhbe ag gach céim.</li>
+<li>Níl bealach maith ann chun an fhaisnéis seo a ionchódú sna cineálacha a úsáideann tú. Déanfaimid
+oibriú trí shampla dá bhfuil i gceist againn sna <a href="ch18-03-oo-design-patterns.html#encoding-states-and-behavior-as-types">“Stáit Ionchódaithe agus Iompar
+mar Cineálacha”</a><!-- neamhaird --> alt de Chaibidil 18.</li>
+</ul>
+<p>Má ghlaonn duine éigin ar do chód agus má chuireann sé/sí luachanna isteach nach bhfuil ciall leo, beidh
+is fearr earráid a thabhairt ar ais más féidir leat ionas gur féidir le húsáideoir na leabharlainne cinneadh a dhéanamh ar cad é
+ba mhaith leo a dhéanamh sa chás sin. Mar sin féin, i gcásanna ina bhféadfaí leanúint ar aghaidh
+neamhchinnte nó díobhálach, b’fhéidir gurb é an rogha is fearr <code>panic!</code> a ghlaoch agus foláireamh a thabhairt do na
+duine a úsáideann do leabharlann chun an fabht ina gcód ionas gur féidir leo é a dheisiú le linn
+forbartha. Mar an gcéanna, is minic a bhíonn <code>panic!</code> oiriúnach má tá tú ag glaoch
+cód seachtrach atá as do smacht agus tugann sé ar ais staid neamhbhailí go
+níl aon bhealach agat le socrú.</p>
+<p>Nuair a bhíonntear ag súil le teip, áfach, tá sé níos oiriúnaí <code>Result</code> a thabhairt ar ais
+ná glaoch <code>panic!</code> a dhéanamh. I measc na samplaí tá parsálaí míchumtha a thabhairt
+sonraí nó iarratas HTTP a thugann stádas ar ais a thugann le fios go bhfuil ráta bainte amach agat
+teorainn. Sna cásanna seo, nuair a chuirtear <code>Result</code> ar ais, léirítear gur teip é
+an fhéidearthacht a bhfuiltear ag súil leis go gcaithfidh an cód glaonna cinneadh a dhéanamh maidir le conas déileáil leis.</p>
+<p>Nuair a dhéanann do chód oibríocht a d’fhéadfadh úsáideoir a chur i mbaol má tá
+ar a dtugtar ag baint úsáide as luachanna neamhbhailí, ba chóir do chód a fhíorú go bhfuil na luachanna bailí ar dtús
+agus scaoll mura bhfuil na luachanna bailí. Is ar chúiseanna sábháilteachta is mó a dhéantar é seo:
+Má dhéanann tú iarracht oibriú ar shonraí neamhbhailí is féidir do chód a nochtadh d'leochaileachtaí.
+Is é seo an phríomhchúis go nglaofaidh an leabharlann chaighdeánach <code>panic!</code> má dhéanann tú iarracht
+rochtain chuimhne as-theorainneacha: ag iarraidh rochtain a fháil ar chuimhne nach léi
+is fadhb choitianta slándála é an struchtúr sonraí reatha. Is minic a bhíonn feidhmeanna
+<em>contracts</em>: ní ráthaítear a n-iompraíocht ach amháin má shásaíonn na hionchuir ar leith
+riachtanais. Tá ciall ag baint le panicking nuair a sháraítear an conradh mar a
+léiríonn sárú conartha fabht ar thaobh an ghlaoiteora i gcónaí, agus ní cineál é
+earráid is mian leat go mbeadh ar an gcód glaonna a láimhseáil go sainráite. Go deimhin, tá
+aon bhealach réasúnta chun glaoch cód a ghnóthú; an <em>ríomhchláraitheoirí</em> glaonna ag teastáil
+chun an cód a shocrú. Conarthaí le haghaidh feidhm, go háirithe nuair a bheidh sárú
+ina chúis le scaoll, a mhíniú sa doiciméadú API don fheidhm.</p>
+<p>Mar sin féin, bheadh go leor seiceálacha earráide i do chuid feidhmeanna go léir briathar
+agus annoying. Go fortunately, is féidir leat córas cineál Rust a úsáid (agus mar sin an cineál
+seiceáil a rinne an tiomsaitheoir) go leor de na seiceálacha a dhéanamh ar do shon. Má tá do
+tá cineál áirithe ag feidhm mar pharaiméadar, is féidir leat dul ar aghaidh le do chóid
+loighic a fhios agam gur chinntigh an tiomsaitheoir cheana féin go bhfuil luach bailí agat. Le haghaidh
+Mar shampla, má tá cineál agat seachas <code>Option</code>, tá súil ag do chlár
+bíodh <em>rud éigin</em> agat seachas <em>rud ar bith</em>. Ní gá do chód a láimhseáil mar sin
+dhá chás do na leaganacha <code>Some</code> agus <code>None</code>: ní bheidh ach cás amháin ann do
+cinnte go bhfuil luach. Ní bheidh cód ag iarraidh rud ar bith a chur ar aghaidh chuig d'fheidhm
+fiú tiomsú, mar sin ní gá d'fheidhm a sheiceáil don chás sin ag am rite.
+Sampla eile is ea úsáid a bhaint as cineál slánuimhir gan síniú mar <code>u32</code>, rud a chinntíonn
+ní bhíonn an paraiméadar diúltach riamh.</p>
+<h3 id="cineálacha-saincheaptha-á-gcruthú-le-haghaidh-bailíochtú"><a class="header" href="#cineálacha-saincheaptha-á-gcruthú-le-haghaidh-bailíochtú">Cineálacha Saincheaptha á gCruthú le haghaidh Bailíochtú</a></h3>
+<p>Glacaimis an smaoineamh córas cineál Rust a úsáid chun a chinntiú go bhfuil luach bailí againn
+céim amháin eile agus féach ar chineál saincheaptha a chruthú le haghaidh bailíochtaithe. Athghairm an
+cluiche buille faoi thuairim i gCaibidil 2 inar iarr ár gcód ar an úsáideoir buille faoi thuairim a thabhairt ar uimhir
+idir 1 agus 100. muid ndeimhnithe riamh go raibh buille faoi thuairim an úsáideora eatarthu siúd
+uimhreacha roimh é a sheiceáil i gcoinne ár n-uimhir rúnda; ní dhearnamar ach é sin a bhailíochtú
+bhí an buille faoi thuairim dearfach. Sa chás seo, ní raibh na hiarmhairtí an-dona: ár
+bheadh ​​an t-aschur “Ró-ard” nó “Ró-íseal” fós ceart. Ach bheadh ​​​​sé a
+feabhsú úsáideach chun an t-úsáideoir a threorú i dtreo tomhais bhailí agus a bhfuil éagsúlachtaí acu
+iompar nuair a dhéanann an t-úsáideoir buille faoi thuairim uimhir atá as raon i gcomparáid le nuair a bhíonn an
+cineálacha úsáideoirí, mar shampla, litreacha ina ionad.</p>
+<p>Bealach amháin chun é seo a dhéanamh ná an buille faoi thuairim a pharsáil mar <code>i32</code> in ionad ach a
+<code>u32</code> chun uimhreacha a d'fhéadfadh a bheith diúltach a cheadú, agus ansin cuir seic le haghaidh an
+uimhir a bheith i raon, mar sin:</p>
+<Listing file-name="src/main.rs">
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span>    loop {
+        // --snip--
+
+<span class="boring">        println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">        let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">        io::stdin()
+</span><span class="boring">            .read_line(&amp;mut guess)
+</span><span class="boring">            .expect("Failed to read line");
+</span><span class="boring">
+</span>        let guess: i32 = match guess.trim().parse() {
+            Ok(num) =&gt; num,
+            Err(_) =&gt; continue,
+        };
+
+        if guess &lt; 1 || guess &gt; 100 {
+            println!("The secret number will be between 1 and 100.");
+            continue;
+        }
+
+        match guess.cmp(&amp;secret_number) {
+            // --snip--
+<span class="boring">            Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">            Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">            Ordering::Equal =&gt; {
+</span><span class="boring">                println!("You win!");
+</span><span class="boring">                break;
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span>    }
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Seiceálann an slonn <code>if</code> cibé an bhfuil ár luach as raon, insíonn sé don úsáideoir
+faoin bhfadhb, agus glaonna <code>continue</code> chun tús a chur leis an gcéad atriall eile den lúb
+agus iarr buille faoi thuairim eile. Tar éis an abairt <code>if</code>, is féidir linn dul ar aghaidh leis an
+comparáidí idir <code>guess</code> agus an uimhir rúnda a fhios agam go bhfuil <code>guess</code>
+idir 1 agus 100.</p>
+<p>Mar sin féin, ní réiteach idéalach é seo: dá mba rud é go raibh sé ríthábhachtach go ndéanfaí an
+níor fheidhmigh an clár ach ar luachanna idir 1 agus 100, agus bhí go leor feidhmeanna aige
+leis an riachtanas seo, go mbeadh seiceáil mar seo i ngach feidhm
+tedious (agus d'fhéadfadh tionchar a imirt ar fheidhmíocht).</p>
+<p>Ina áit sin, is féidir linn cineál nua a dhéanamh agus na bailíochtaithe a chur i bhfeidhm le cruthú
+sampla den chineál seachas na bailíochtaithe a athrá i ngach áit. Sin
+mar sin, tá sé sábháilte d'fheidhmeanna an cineál nua a úsáid ina sínithe agus
+úsáid go muiníneach as na luachanna a fhaigheann siad. Léiríonn liostú 9-13 bealach amháin chun a
+Cineál <code>Guess</code> nach gcruthóidh ach sampla de <code>Guess</code> má tá an fheidhm <code>new</code>
+a fhaigheann luach idir 1 agus 100.</p>
+<Listing number="9-13" caption="A `Guess` type that will only continue with values between 1 and 100">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Guess {
+    value: i32,
+}
+
+impl Guess {
+    pub fn new(value: i32) -&gt; Guess {
+        if value &lt; 1 || value &gt; 100 {
+            panic!("Guess value must be between 1 and 100, got {value}.");
+        }
+
+        Guess { value }
+    }
+
+    pub fn value(&amp;self) -&gt; i32 {
+        self.value
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Ar dtús déanaimid sainmhíniú ar struchtúr darb ainm <code>Guess</code> a bhfuil réimse darb ainm <code>value</code> sin
+tá <code>i32</code> aige. Seo an áit a stórálfar an uimhir.</p>
+<p>Ansin cuirimid feidhm ghaolmhar i bhfeidhm darb ainm <code>new</code> ar <code>Guess</code> a chruthaíonn
+samplaí de luachanna <code>Guess</code>. Sainmhínítear an fheidhm <code>new</code> go bhfuil ceann aici
+paraiméadar darb ainm <code>value</code> den chineál <code>i32</code> agus <code>Guess</code> a thabhairt ar ais. An cód sa
+Déanann corp na feidhme <code>new</code> tástáil ar 'luach' lena chinntiú go bhfuil sé idir 1 agus 100.
+Mura n-éiríonn le ‘value’ an triail seo, déanaimid glao <code>panic!</code> a chuirfidh foláireamh
+an ríomhchláraitheoir atá ag scríobh an cód glaonna go bhfuil fabht a theastaíonn uathu
+a shocrú, mar go gcruthófaí <code>Guess</code> le <code>value</code> lasmuigh den raon seo
+an conradh a bhfuil <code>Guess::new</code> ag brath air a shárú. Na coinníollacha ina
+Seans gur cheart <code>Guess::new</code> a phlé ina API poiblí
+doiciméadú; clúdóimid coinbhinsiúin doiciméadaithe a léiríonn an fhéidearthacht
+de <code>panic!</code> sna doiciméid API a chruthaíonn tú i gCaibidil 14. Más rud é
+éiríonn le <code>value</code> an triail, cruthaímid <code>Guess</code> nua lena shraith réimse <code>value</code>
+chuig an bparaiméadar <code>value</code> agus seol ar ais an <code>Guess</code>.</p>
+<p>Ansin, cuirimid modh darb ainm <code>value</code> i bhfeidhm a fhaigheann <code>self</code> ar iasacht, nach bhfuil aon cheann aige
+paraiméadair eile, agus tuairisceáin <code>i32</code>. Uaireanta tugtar modh den chineál seo
+a <em>getter</em> toisc go bhfuil sé mar chuspóir aige roinnt sonraí a fháil óna réimsí agus iad a sheoladh ar ais
+é. Tá an modh poiblí seo riachtanach toisc go bhfuil réimse <code>value</code> an <code>Guess</code>
+Tá struchtúr príobháideach. Tá sé tábhachtach go mbeadh an réimse <code>value</code> príobháideach mar sin cód
+ag baint úsáide as an struchtúr <code>Guess</code> ní cheadaítear <code>value</code> a shocrú go díreach: cód lasmuigh
+caithfidh an modúl an fheidhm <code>Guess::new</code> a úsáid chun sampla de
+<code>Guess</code>, ag cinntiú mar sin nach bhfuil aon bhealach le <code>Guess</code> <code>value</code> a bheith aige sin
+nach bhfuil seiceáilte ag na coinníollacha san fheidhm <code>Guess::new</code>.</p>
+<p>D'fhéadfadh feidhm a bhfuil paraiméadar aici nó nach dtugann ach uimhreacha idir 1 agus 100 ar ais
+ansin dearbhaigh ina shíniú go nglacann sé nó go dtugann sé ar ais <code>Guess</code> seachas
+<code>i32</code> agus ní bheadh ​​air aon seiceálacha breise a dhéanamh ina chorp.</p>
+<h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
+<p>Tá gnéithe láimhseála earráidí Rust deartha chun cabhrú leat cód níos daingne a scríobh.
+Léiríonn an macra <code>panic!</code> go bhfuil do chlár i riocht nach féidir leis a láimhseáil agus
+ligeann duit insint don phróiseas chun stop a chur in ionad iarracht a dhéanamh dul ar aghaidh le neamhbhailí nó
+luachanna míchearta. Úsáideann an enum <code>Result</code> córas cineáil Rust chun é sin a chur in iúl
+seans go dteipfidh ar oibríochtaí ar bhealach a d'fhéadfadh do chód a ghnóthú. Is féidir leat úsáid a bhaint as
+<code>Result</code> chun cód a ghlaonn do chód a insint go gcaithfidh sé acmhainneacht a láimhseáil
+rath nó teip chomh maith. Ag baint úsáide as <code>panic!</code> agus <code>Result</code> sa chuí
+Déanfaidh cásanna do chód níos iontaofa i bhfianaise fadhbanna dosheachanta.</p>
+<p>Anois go bhfuil bealaí úsáideacha feicthe agat a n-úsáideann an leabharlann chaighdeánach generics leo
+sna huimhreacha <code>Option</code> agus <code>Result</code>, labhróimid faoin gcaoi a n-oibríonn generics agus conas a oibríonn tú
+Is féidir iad a úsáid i do chód.</p>
 
                     </main>
 
