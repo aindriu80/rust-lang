@@ -108,7 +108,7 @@ mar an gcéanna. Oibreoidh an fheidhm glaonna i `eat_at_restaurant` gan aon chea
 modhnú, cé go bhfuil na sainmhínithe ina gcónaí i gcomhaid éagsúla. seo
 ligeann teicníocht duit modúil a aistriú go comhaid nua de réir mar a fhásann siad i méid.
 
-Tabhair faoi deara go bhfuil an `pub use crate::front_of_house :: hosting` ráiteas i
+Tabhair faoi deara go bhfuil an `pub use crate::front_of_house::hosting` ráiteas i
 Níor athraigh _src/lib.rs_ freisin, agus ní bhíonn tionchar ar bith ag `use` ar na comhaid
 a thiomsaítear mar chuid den chliabhán. Dearbhaíonn an eochairfhocal `mod` modúil, agus Rust
 Breathnaíonn i gcomhad leis an ainm céanna leis an modúl don chód a théann isteach

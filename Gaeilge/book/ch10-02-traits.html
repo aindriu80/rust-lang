@@ -159,7 +159,546 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="traits-defining-shared-behavior"><a class="header" href="#traits-defining-shared-behavior">Traits: Defining Shared Behavior</a></h1>
+                        <h2 id="tréithe-ag-sainmhíniú-iompar-comhroinnte"><a class="header" href="#tréithe-ag-sainmhíniú-iompar-comhroinnte">Tréithe: Ag Sainmhíniú Iompar Comhroinnte</a></h2>
+<p>Sainmhíníonn <em>trait</em> an fheidhmiúlacht atá ag cineál ar leith agus ar féidir leis a roinnt
+cineálacha eile. Is féidir linn tréithe a úsáid chun iompar roinnte a shainiú ar bhealach teibí. muid
+is féidir <em>trait bounds</em> a úsáid chun a shonrú gur féidir le cineál cineálach a bheith ina chineál ar bith a bhfuil
+iompar áirithe.</p>
+<blockquote>
+<p>Nóta: Tá tréithe cosúil le gné ar a dtugtar go minic <em>interfaces</em> i gceann eile
+teangacha, cé go bhfuil roinnt difríochtaí ann.</p>
+</blockquote>
+<h3 id="tréith-á-sainmhíniú"><a class="header" href="#tréith-á-sainmhíniú">Tréith á Sainmhíniú</a></h3>
+<p>Is éard atá in iompar cineáil na modhanna ar féidir linn glaoch orthu ar an gcineál sin. Difriúil
+roinneann cineálacha an t-iompar céanna más féidir linn na modhanna céanna a ghlaoch orthu sin go léir
+cineálacha. Is bealach iad sainmhínithe tréithe chun sínithe modhanna a ghrúpáil le chéile chun
+sraith iompraíochtaí a shainiú atá riachtanach chun cuspóir éigin a bhaint amach.</p>
+<p>Mar shampla, lig dúinn a rá go bhfuil struchtúir iolracha againn a bhfuil cineálacha éagsúla agus
+méideanna téacs: struchtúr <code>NewsArticle</code> a choinníonn scéal nuachta comhdaithe in a
+suíomh ar leith agus <code>Tweet</code> ar féidir, ar a mhéad, 280 carachtar a bheith ann
+le meiteashonraí a thugann le fios cé acu tweet nua, retweet nó freagra a bhí ann
+chuig tweet eile.</p>
+<p>Ba mhaith linn cliathbhosca leabharlainne comhbhailitheoir meán a dhéanamh darb ainm <code>aggregator</code> is féidir
+taispeáin achoimrí ar shonraí a d'fhéadfaí a stóráil in <code>NewsArticle</code> nó <code>Tweet</code>
+shampla. Chun seo a dhéanamh, tá achoimre de dhíth orainn ó gach cineál, agus iarrfaimid é sin
+achoimre trí mhodh <code>summarize</code> a ghlaoch ar shampla. Léiríonn liostú 10-12 an
+sainmhíniú ar thréith <code>Summary</code> phoiblí a chuireann an t-iompar seo in iúl.</p>
+<Listing number="10-12" file-name="src/lib.rs" caption="A `Summary` trait that consists of the behavior provided by a `summarize` method">
+<pre><code class="language-rust noplayground">pub trait Summary {
+    fn summarize(&amp;self) -&gt; String;
+}</code></pre>
+</Listing>
+<p>Anseo, dearbhaímid tréith ag baint úsáide as an eochairfhocal <code>trait</code> agus ansin ainm an trait,
+atá <code>Summary</code> sa chás seo. Dearbhaímid freisin gur <code>Summary</code> an trait ionas go
+is féidir le cliathbhoscaí ag brath ar an gcliathbhosca seo úsáid a bhaint as an tréith seo freisin, mar a fheicfimid ann
+cúpla sampla. Taobh istigh de na lúibíní curly, dearbhaímid na sínithe modh
+a chuireann síos ar iompraíocht na gcineálacha a chuireann an trait seo i bhfeidhm, atá i
+is é an cás seo ná <code>fn summarize(&amp;self) -&gt; String</code>.</p>
+<p>Tar éis an síniú modh, in ionad cur i bhfeidhm a sholáthar laistigh de chatach
+lúibíní, úsáidimid leathstad. Ní mór do gach cineál a chuireann an tréith seo chun feidhme a sholáthar
+a iompar saincheaptha féin le haghaidh an comhlacht ar an modh. Cuirfidh an tiomsaitheoir i bhfeidhm
+go mbeidh an modh <code>summarize</code> ag aon chineál a bhfuil an trait <code>Summary</code> aige
+sainmhínithe go díreach leis an síniú seo.</p>
+<p>Is féidir le tréith modhanna iolracha a bheith ina chorp: tá na sínithe modh liostaithe
+ceann in aghaidh an líne, agus críochnaíonn gach líne i leathstad.</p>
+<h3 id="tréith-ar-chineál-a-chur-i-bhfeidhm"><a class="header" href="#tréith-ar-chineál-a-chur-i-bhfeidhm">Tréith ar Chineál a Chur i bhFeidhm</a></h3>
+<p>Anois go bhfuil sínithe inmhianaithe na modhanna <code>Summary</code> sainithe againn,
+is féidir linn é a chur i bhfeidhm ar na cineálacha inár gcomhbhailitheoir meáin. Liostáil 10-13 seónna
+cur i bhfeidhm na tréithe <code>Summary</code> ar an struchtúr <code>NewsArticle</code> a úsáideann
+an ceannlíne, an t-údar, agus an suíomh chun luach aischuir a chruthú
+<code>summarize</code>. Maidir leis an struchtúr <code>Tweet</code>, sainmhínímid <code>summarize</code> mar an t-ainm úsáideora
+ina dhiaidh sin téacs iomlán an tweet, ag glacadh leis go bhfuil an t-ábhar tweet
+teoranta do 280 carachtar cheana féin.</p>
+<Listing number="10-13" file-name="src/lib.rs" caption="Implementing the `Summary` trait on the `NewsArticle` and `Tweet` types">
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct NewsArticle {
+    pub headline: String,
+    pub location: String,
+    pub author: String,
+    pub content: String,
+}
+
+impl Summary for NewsArticle {
+    fn summarize(&amp;self) -&gt; String {
+        format!("{}, by {} ({})", self.headline, self.author, self.location)
+    }
+}
+
+pub struct Tweet {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub retweet: bool,
+}
+
+impl Summary for Tweet {
+    fn summarize(&amp;self) -&gt; String {
+        format!("{}: {}", self.username, self.content)
+    }
+}</code></pre>
+</Listing>
+<p>Tá cur i bhfeidhm tréith ar chineál cosúil le modhanna rialta a chur i bhfeidhm. Tá an
+difríocht is ea gur tar éis <code>impl</code>, cuirimid an t-ainm trait ba mhaith linn a chur i bhfeidhm,
+ansin bain úsáid as an eochairfhocal <code>for</code>, agus ansin sonraigh ainm an chineáil a theastaíonn uainn
+an trait a chur i bhfeidhm le haghaidh. Laistigh den bhloc <code>impl</code>, chuireamar na sínithe modha
+atá sainmhínithe ag an sainiú trait. In ionad leathstad a chur leis i ndiaidh gach ceann acu
+síniú, úsáidimid lúibíní curly agus líon isteach an comhlacht modh leis an sainiúil
+iompar a theastaíonn uainn go mbeadh modhanna an trait don chineál áirithe.</p>
+<p>Anois go bhfuil an trait <code>Summary</code> ar <code>NewsArticle</code> agus
+<code>Tweet</code>, is féidir le húsáideoirí an chliabháin na modhanna trait a ghlaoch ar chásanna de
+<code>NewsArticle</code> agus <code>Tweet</code> ar an mbealach céanna a dtugaimid modhanna rialta orthu. An t-aon
+difríocht ná go gcaithfidh an t-úsáideoir an tréith a thabhairt isteach sa raon feidhme chomh maith leis an
+cineálacha. Seo sampla den chaoi a bhféadfadh cliathbhosca dénártha ár <code>aggregator</code> a úsáid
+cliathbhosca leabharlainne:</p>
+<pre><code class="language-rust ignore">use aggregator::{Summary, Tweet};
+
+fn main() {
+    let tweet = Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        retweet: false,
+    };
+
+    println!("1 new tweet: {}", tweet.summarize());
+}</code></pre>
+<p>Priontálann an cód seo <code>1 new tweet: horse_ebooks: of course, as you probably already know, people</code>.</p>
+<p>Is féidir le cliathbhoscaí eile a bhraitheann ar an gcliathbhosca <code>aggregator</code> an <code>Summary</code> a thabhairt freisin
+tréith isteach sa scóip chun <code>Summary</code> a chur i bhfeidhm ar a gcineálacha féin. Srian amháin le
+Tabhair faoi deara nach féidir linn tréith a chur i bhfeidhm ar chineál ach amháin má tá an trait nó an
+cineál, nó iad araon, áitiúil dár gcliathbhosca. Mar shampla, is féidir linn caighdeán a chur i bhfeidhm
+tréithe leabharlainne cosúil le <code>Display</code> ar chineál saincheaptha mar <code>Tweet</code> mar chuid dár
+feidhmiúlacht cliathbhosca <code>aggregator</code> toisc go bhfuil an cineál <code>Tweet</code> áitiúil dár gcuid
+cliathbhosca <code>aggregator</code>. Is féidir linn freisin <code>Summary</code> ar <code>Vec&lt;T&gt;</code> a chur i bhfeidhm inár
+cliathbhosca <code>aggregator</code> toisc go bhfuil an trait <code>Summary</code> áitiúil dár <code>aggregator</code>
+cliathbhosca.</p>
+<p>Ach ní féidir linn tréithe seachtracha a chur i bhfeidhm ar chineálacha seachtracha. Mar shampla, ní féidir linn
+cuir an trait <code>Display</code> ar <code>Vec&lt;T&gt;</code> i bhfeidhm laistigh dár gcliathbhosca <code>aggregator</code> toisc
+Sainmhínítear <code>Display</code> agus <code>Vec&lt;T&gt;</code> araon sa ghnáthleabharlann agus níl siad
+áitiúil dár gcliathbhosca <code>aggregator</code>. Is cuid de mhaoin ar a dtugtar an srian seo
+<em>coherence</em>, agus go sonrach an riail <em>orphan</em>, ainmnithe amhlaidh mar gheall ar an
+níl cineál tuismitheora i láthair. Cinntíonn an riail seo nach féidir cód daoine eile
+briseadh do chód agus vice versa. Gan an riail, d'fhéadfadh dhá chliabhán a chur i bhfeidhm
+an tréith chéanna don chineál céanna, agus ní bheadh ​​a fhios ag Rust cén cur i bhfeidhm
+a úsáid.</p>
+<h3 id="feidhmithe-réamhshocraithe"><a class="header" href="#feidhmithe-réamhshocraithe">Feidhmithe Réamhshocraithe</a></h3>
+<p>Uaireanta bíonn sé úsáideach iompar réamhshocraithe a bheith agat le haghaidh cuid de na modhanna nó gach ceann díobh
+i tréith in ionad feidhmiúcháin a éileamh do gach modh ar gach cineál.
+Ansin, de réir mar a chuirimid an trait i bhfeidhm ar chineál áirithe, is féidir linn a choinneáil nó a shárú
+iompraíocht réamhshocraithe gach modha.</p>
+<p>I Liostú 10-14, sonraímid teaghrán réamhshocraithe don mhodh <code>summarize</code> den
+Tréith <code>Summary</code> in ionad an síniú modha amháin a shainiú, mar a rinneamar i
+Liostáil 10-12.</p>
+<Listing number="10-14" file-name="src/lib.rs" caption="Defining a `Summary` trait with a default implementation of the `summarize` method">
+<pre><code class="language-rust noplayground">pub trait Summary {
+    fn summarize(&amp;self) -&gt; String {
+        String::from("(Read more...)")
+    }
+}
+<span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Chun feidhmchlár réamhshocraithe a úsáid chun achoimre a dhéanamh ar chásanna de <code>NewsArticle</code>, déanaimid
+sonraigh bloc <code>impl</code> folamh le <code>impl Summary for NewsArticle {}</code>.</p>
+<p>Cé nach bhfuilimid ag sainiú an mhodha <code>summarize</code> ar <code>NewsArticle</code> a thuilleadh
+go díreach, chuireamar cur i bhfeidhm réamhshocraithe ar fáil agus shonraigh muid é sin
+Cuireann <code>NewsArticle</code> an trait <code>Summary</code> i bhfeidhm. Mar thoradh air sin, is féidir linn glaoch fós
+an modh <code>summarize</code> ar shampla de <code>NewsArticle</code>, mar seo:</p>
+<pre><code class="language-rust ignore"><span class="boring">use aggregator::{self, NewsArticle, Summary};
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    let article = NewsArticle {
+        headline: String::from("Penguins win the Stanley Cup Championship!"),
+        location: String::from("Pittsburgh, PA, USA"),
+        author: String::from("Iceburgh"),
+        content: String::from(
+            "The Pittsburgh Penguins once again are the best \
+             hockey team in the NHL.",
+        ),
+    };
+
+    println!("New article available! {}", article.summarize());
+<span class="boring">}</span></code></pre>
+<p>Priontálann an cód seo <code>New article available! (Read more...)</code>.</p>
+<p>Ní gá dúinn aon rud a athrú chun forfheidhmiú réamhshocraithe a chruthú
+cur i bhfeidhm <code>Summary</code> ar <code>Tweet</code> i Liosta 10-13. Is é an chúis atá leis sin
+is ionann an chomhréir chun cur i bhfeidhm réamhshocraithe a shárú agus an chomhréir
+chun modh trait a chur i bhfeidhm nach bhfuil cur i bhfeidhm réamhshocraithe aige.</p>
+<p>Is féidir le cur i bhfeidhm réamhshocraithe modhanna eile sa tréith chéanna a ghlaoch, fiú amháin más iad sin
+níl cur i bhfeidhm réamhshocraithe ag modhanna eile. Ar an mbealach seo, is féidir le trait
+go leor feidhmiúlacht úsáideach a sholáthar agus ní gá ach na hoibreoirí a shonrú
+cuid bheag de. Mar shampla, d'fhéadfaimis an tréithe <code>Summary</code> a shainiú chun a
+modh <code>summarize_author</code> a bhfuil a chur i bhfeidhm ag teastáil, agus ansin sainigh a
+modh <code>summarize</code> a bhfuil cur i bhfeidhm réamhshocraithe aige a ghlaonn an
+modh <code>summarize_author</code>:</p>
+<pre><code class="language-rust noplayground">pub trait Summary {
+    fn summarize_author(&amp;self) -&gt; String;
+
+    fn summarize(&amp;self) -&gt; String {
+        format!("(Read more from {}...)", self.summarize_author())
+    }
+}
+<span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize_author(&amp;self) -&gt; String {
+</span><span class="boring">        format!("@{}", self.username)
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<p>Chun an leagan seo de <code>Summary</code> a úsáid, ní gá dúinn ach <code>summarize_author</code> a shainiú
+nuair a chuirimid an trait i bhfeidhm ar chineál:</p>
+<pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize_author(&amp;self) -&gt; String;
+</span><span class="boring">
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("(Read more from {}...)", self.summarize_author())
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Summary for Tweet {
+    fn summarize_author(&amp;self) -&gt; String {
+        format!("@{}", self.username)
+    }
+}</code></pre>
+<p>Tar éis dúinn <code>summarize_author</code> a shainiú, is féidir linn <code>summarize</code> a ghlaoch ar chásanna an
+Beidh <code>Tweet</code> struct, agus cur i bhfeidhm réamhshocraithe <code>summarize</code> glaoch ar an
+sainmhíniú ar <code>summarize_author</code> atá curtha ar fáil againn. Toisc go bhfuil muid curtha i bhfeidhm
+<code>summarize_author</code>, thug an trait <code>Summary</code> iompar an
+modh <code>summarize</code> gan a cheangal orainn a thuilleadh cód a scríobh. Seo a bhfuil
+is cosúil:</p>
+<pre><code class="language-rust ignore"><span class="boring">use aggregator::{self, Summary, Tweet};
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    let tweet = Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        retweet: false,
+    };
+
+    println!("1 new tweet: {}", tweet.summarize());
+<span class="boring">}</span></code></pre>
+<p>Priontálann an cód seo <code>1 new tweet: (Read more from @horse_ebooks...)</code>.</p>
+<p>Tabhair faoi deara nach féidir an forfheidhmiú réamhshocraithe a ghlaoch ó
+cur i bhfeidhm an mhodha chéanna sin a shárú.</p>
+<h3 id="tréithe-mar-pharaiméadair"><a class="header" href="#tréithe-mar-pharaiméadair">Tréithe mar Pharaiméadair</a></h3>
+<p>Anois go bhfuil a fhios agat conas tréithe a shainiú agus a chur i bhfeidhm, is féidir linn iniúchadh a dhéanamh ar conas iad a úsáid
+tréithe a shainiú feidhmeanna a ghlacann go leor cineálacha éagsúla. Bainfimid úsáid as an
+Tréith <code>Summary</code> chuireamar i bhfeidhm ar na cineálacha <code>NewsArticle</code> agus <code>Tweet</code> in
+Ag liostú 10-13 chun feidhm <code>notify</code> a shainiú a dtugtar an modh <code>summarize</code> air
+ar a pharaiméadar <code>item</code>, atá de shaghas éigin a chuireann an <code>Summary</code> i bhfeidhm
+trait. Chun seo a dhéanamh, úsáidimid an chomhréir <code>impl Trait</code>, mar seo:</p>
+<pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}, by {} ({})", self.headline, self.author, self.location)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn notify(item: &amp;impl Summary) {
+    println!("Breaking news! {}", item.summarize());
+}</code></pre>
+<p>In ionad cineál nithiúil don pharaiméadar <code>item</code>, sonraímid an <code>impl</code>
+eochairfhocal agus an t-ainm trait. Glacann an paraiméadar seo le haon chineál a chuireann an
+tréith shonraithe. I gcorp an <code>notify</code>, is féidir linn glaoch ar aon mhodhanna ar <code>item</code>
+a thagann as an trait <code>Summary</code>, mar shampla <code>summarize</code>. Is féidir linn <code>notify</code> a ghlaoch
+agus pas a fháil in aon chás de <code>NewsArticle</code> nó <code>Tweet</code>. Cód a ghlaonn an
+feidhmiú le haon chineál eile, mar shampla <code>String</code> nó <code>i32</code>, ní thiomsóidh
+toisc nach gcuireann na cineálacha sin <code>Summary</code> i bhfeidhm.</p>
+<!-- Sean-cheannteidil. Ná bain amach nó seans go mbrisfidh naisc. -->
+<p><a id="fixing-the-more-function-with-trait-bounds"></a></p>
+<h4 id="comhréir-trait-bound"><a class="header" href="#comhréir-trait-bound">Comhréir Trait Bound</a></h4>
+<p>Feidhmíonn an chomhréir <code>impl Trait</code> do chásanna simplí ach is comhréir é i ndáiríre
+siúcra le haghaidh foirm níos faide ar a dtugtar <em>trait bound</em>; Breathnaíonn sé mar seo:</p>
+<pre><code class="language-rust ignore">pub fn notify&lt;T: Summary&gt;(item: &amp;T) {
+    println!("Breaking news! {}", item.summarize());
+}</code></pre>
+<p>Tá an fhoirm níos faide seo comhionann leis an sampla sa roinn roimhe seo ach tá
+níos briathar. Cuirimid teorainneacha tréithe leis an dearbhú den chineál cineálach
+paraiméadar tar éis idirstad agus laistigh de lúibíní uillinn.</p>
+<p>Tá an chomhréir <code>impl Trait</code> áisiúil agus cruthaíonn sé cód níos gonta go simplí
+cásanna, agus is féidir leis an gcomhréir tréithe níos iomláine castacht a chur in iúl i gcásanna eile
+cásanna. Mar shampla, is féidir dhá pharaiméadar a bheith againn a chuireann <code>Summary</code> i bhfeidhm. Ag déanamh
+mar sin tá cuma mar seo ar chomhréir <code>impl Trait</code>:</p>
+<pre><code class="language-rust ignore">pub fn notify(item1: &amp;impl Summary, item2: &amp;impl Summary) {</code></pre>
+<p>Is cuí <code>impl Trait</code> a úsáid má theastaíonn uainn go gceadódh an fheidhm seo <code>item1</code> agus
+cineálacha éagsúla a bheith ag <code>item2</code> (chomh fada agus a chuireann an dá chineál <code>Summary</code> i bhfeidhm). Más rud é
+ba mhaith linn iallach a chur ar an dá paraiméadair a bheith ar an gcineál céanna, áfach, ní mór dúinn a úsáid a
+trait faoi cheangal, mar seo:</p>
+<pre><code class="language-rust ignore">pub fn notify&lt;T: Summary&gt;(item1: &amp;T, item2: &amp;T) {</code></pre>
+<p>Sonraítear an cineál cineálach <code>T</code> mar an cineál <code>item1</code> agus <code>item2</code>
+paraiméadair srianta ar an bhfeidhm den sórt sin go bhfuil an cineál nithiúla an luach
+a rith mar argóint ar son <code>item1</code> agus caithfidh <code>item2</code> a bheith mar an gcéanna.</p>
+<h4 id="ag-sonrú-na-dtréithe-iolracha-leis-an-gcomhréir-"><a class="header" href="#ag-sonrú-na-dtréithe-iolracha-leis-an-gcomhréir-">Ag sonrú na dTréithe Iolracha leis an gComhréir <code>+</code></a></h4>
+<p>Is féidir linn níos mó ná tréith amháin a shonrú freisin. Abair go raibh muid ag iarraidh <code>notify</code> a úsáid
+formáidiú taispeána chomh maith le <code>summarize</code> ar <code>item</code>: sonraímid sa <code>notify</code>
+sainmhíniú go gcaithfidh <code>item</code> <code>Display</code> agus <code>Summary</code> araon a chur i bhfeidhm. Is féidir linn a dhéanamh
+mar sin ag baint úsáide as an chomhréir <code>+</code>:</p>
+<pre><code class="language-rust ignore">pub fn notify(item: &amp;(impl Summary + Display)) {</code></pre>
+<p>Tá an chomhréir <code>+</code> bailí freisin le teorainneacha tréithe ar chineálacha cineálacha:</p>
+<pre><code class="language-rust ignore">pub fn notify&lt;T: Summary + Display&gt;(item: &amp;T) {</code></pre>
+<p>Leis an dá theorainn tréith sonraithe, is féidir le corp an <code>notify</code> <code>summarize</code> a ghlaoch
+agus úsáid <code>{}</code> chun <code>item</code> a fhormáidiú.</p>
+<h4 id="tréith-níos-soiléire-teorainneacha-le-clásail-áit"><a class="header" href="#tréith-níos-soiléire-teorainneacha-le-clásail-áit">Tréith níos Soiléire Teorainneacha le Clásail <code>áit</code></a></h4>
+<p>Tá míbhuntáistí ag baint le húsáid an iomarca teorainneacha trait. Tá a thréith féin ag gach cineálach
+teorainneacha, mar sin is féidir go leor feidhmeanna a bhfuil paraiméadair chineálacha iolracha acu
+faisnéis faoi cheangal idir ainm na feidhme agus a liosta paraiméadar,
+rud a fhágann gur deacair síniú na feidhme a léamh. Ar an gcúis seo, tá malartach ag Rust
+Comhréir chun teorainneacha tréithe a shonrú taobh istigh de chlásal <code>where</code> i ndiaidh na feidhme
+síniú. Mar sin, in ionad é seo a scríobh:</p>
+<pre><code class="language-rust ignore">fn some_function&lt;T: Display + Clone, U: Clone + Debug&gt;(t: &amp;T, u: &amp;U) -&gt; i32 {</code></pre>
+<p>we can use a <code>where</code> clause, like this:</p>
+<pre><code class="language-rust ignore">fn some_function&lt;T, U&gt;(t: &amp;T, u: &amp;U) -&gt; i32
+where
+    T: Display + Clone,
+    U: Clone + Debug,
+{
+<span class="boring">    unimplemented!()
+</span><span class="boring">}</span></code></pre>
+<p>Níl an oiread sin bearrtha ar shíniú na feidhme seo: ainm na feidhme, liosta paraiméadar,
+agus cineál fillte gar dá chéile, cosúil le feidhm gan go leor tréithe
+teorainneacha.</p>
+<h3 id="cineálacha-filleadh-a-chuireann-tréithe-i-bhfeidhm"><a class="header" href="#cineálacha-filleadh-a-chuireann-tréithe-i-bhfeidhm">Cineálacha Filleadh a chuireann Tréithe i bhFeidhm</a></h3>
+<p>Is féidir linn an chomhréir <code>impl Trait</code> a úsáid freisin sa suíomh fillte chun aischur a
+luach de shaghas éigin a chuireann trait i bhfeidhm, mar a thaispeántar anseo:</p>
+<pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}, by {} ({})", self.headline, self.author, self.location)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn returns_summarizable() -&gt; impl Summary {
+    Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        retweet: false,
+    }
+}</code></pre>
+<p>Trí úsáid a bhaint as <code>impl Summary</code> don chineál tuairisceáin, sonraímid go bhfuil an
+Filleann an fheidhm <code>returns_summarizable</code> cineál éigin a chuireann an <code>Summary</code> i bhfeidhm
+trait gan an cineál coincréit a ainmniú. Sa chás seo, <code>returns_summarizable</code>
+seolann sé <code>Tweet</code> ar ais, ach ní gá go mbeadh a fhios sin ag an gcód a ghlaonn an fheidhm seo.</p>
+<p>Tá an cumas chun cineál tuairisceáin a shonrú de réir na tréithe a chuireann sé i bhfeidhm amháin
+úsáideach go háirithe i gcomhthéacs dúnadh agus atrialltóirí, a chlúdaímid iontu
+Caibidil 13. Cruthaíonn dúnta agus iterators cineálacha nach bhfuil a fhios ach ag an tiomsaitheoir nó
+cineálacha atá an-fhada a shonrú. Ligeann an chomhréir <code>impl Trait</code> tú go gonta
+sonraigh go bhfilleann feidhm cineál éigin a chuireann an trait <code>Iterator</code> i bhfeidhm
+gan gá le cineál an-fhada a scríobh amach.</p>
+<p>Mar sin féin, ní féidir leat <code>impl Trait</code> a úsáid ach amháin má tá cineál amháin á sheoladh ar ais agat. Le haghaidh
+mar shampla, an cód seo a sheolann ceachtar <code>NewsArticle</code> nó <code>Tweet</code> leis an
+ní n-oibreodh an cineál tuairisceáin atá sonraithe mar <code>impl Summary</code>:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}, by {} ({})", self.headline, self.author, self.location)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn returns_summarizable(switch: bool) -&gt; impl Summary {
+    if switch {
+        NewsArticle {
+            headline: String::from(
+                "Penguins win the Stanley Cup Championship!",
+            ),
+            location: String::from("Pittsburgh, PA, USA"),
+            author: String::from("Iceburgh"),
+            content: String::from(
+                "The Pittsburgh Penguins once again are the best \
+                 hockey team in the NHL.",
+            ),
+        }
+    } else {
+        Tweet {
+            username: String::from("horse_ebooks"),
+            content: String::from(
+                "of course, as you probably already know, people",
+            ),
+            reply: false,
+            retweet: false,
+        }
+    }
+}</code></pre>
+<p>Ní cheadaítear 'Nuacht-Airteagal' nó 'Tweet' a thabhairt ar ais de bharr srianta
+thart ar an gcaoi a gcuirtear an chomhréir <code>impl Trait</code> i bhfeidhm sa tiomsaitheoir. Clúdóidh muid
+conas feidhm a scríobh leis an iompar seo sa <a href="ch18-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">“Ag Úsáid Réada Tréith a Ligeann Luachanna de Chineálacha Éagsúla”</a><!--
+neamhaird a dhéanamh ar --> alt de Chaibidil 18.</p>
+<h3 id="ag-Úsáid-teorainneacha-trait-chun-modhanna-a-chur-i-bhfeidhm-go-coinníollach"><a class="header" href="#ag-Úsáid-teorainneacha-trait-chun-modhanna-a-chur-i-bhfeidhm-go-coinníollach">Ag Úsáid Teorainneacha Trait chun Modhanna a Chur i bhFeidhm go Coinníollach</a></h3>
+<p>Trí úsáid a bhaint as tréith atá faoi cheangal le bloc <code>impl</code> a úsáideann paraiméadair chineálacha,
+is féidir linn modhanna a chur i bhfeidhm go coinníollach le haghaidh cineálacha a chuireann an sonraithe i bhfeidhm
+tréithe. Mar shampla, cuireann an cineál <code>Pair&lt;T&gt;</code> i Liosta 10-15 i bhfeidhm i gcónaí an
+feidhm <code>new</code> chun sampla nua de <code>Pair&lt;T&gt;</code> a thabhairt ar ais (aisghlaoch ón
+<a href="ch05-03-method-syntax.html#defining-methods">“Modhanna a Shainmhíniú”</a><!-- neamhaird a dhéanamh ar --> roinn de Chaibidil 5 a dhéanann <code>Self</code>
+is ailias cineál é don chineál bloc <code>impl</code>, atá sa chás seo
+<code>Pair&lt;T&gt;</code>). Ach sa chéad bhloc <code>impl</code> eile, ní chuireann <code>Pair&lt;T&gt;</code> i bhfeidhm ach an
+modh <code>cmp_display</code> má chuireann a chineál inmheánach <code>T</code> an trait <code>PartialOrd</code> i bhfeidhm
+a chumasaíonn comparáid <em>agus</em> an tréithe <code>Display</code> a chumasaíonn priontáil.</p>
+<Listing number="10-15" file-name="src/lib.rs" caption="Conditionally implementing methods on a generic type depending on trait bounds">
+<pre><code class="language-rust noplayground">use std::fmt::Display;
+
+struct Pair&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+impl&lt;T&gt; Pair&lt;T&gt; {
+    fn new(x: T, y: T) -&gt; Self {
+        Self { x, y }
+    }
+}
+
+impl&lt;T: Display + PartialOrd&gt; Pair&lt;T&gt; {
+    fn cmp_display(&amp;self) {
+        if self.x &gt;= self.y {
+            println!("The largest member is x = {}", self.x);
+        } else {
+            println!("The largest member is y = {}", self.y);
+        }
+    }
+}</code></pre>
+</Listing>
+<p>Is féidir linn freisin tréith a chur i bhfeidhm go coinníollach d'aon chineál a chuireann i bhfeidhm
+tréith eile. Cur i bhfeidhm tréith ar aon chineál a shásaíonn an tréith
+tugtar <em>blanket implementations</em> ar theorainneacha agus úsáidtear go forleathan iad sna
+Leabharlann chaighdeánach meirge. Mar shampla, cuireann an leabharlann chaighdeánach an
+Tréith <code>ToString</code> ar aon chineál a chuireann an trait <code>Display</code> i bhfeidhm. An <code>impl</code>
+Breathnaíonn an bloc sa ghnáthleabharlann cosúil leis an gcód seo:</p>
+<pre><code class="language-rust ignore">impl&lt;T: Display&gt; ToString for T {
+    // --snip--
+}</code></pre>
+<p>Toisc go bhfuil an cur i bhfeidhm cuimsitheach seo ag an leabharlann chaighdeánach, is féidir linn an
+modh <code>to_string</code> arna shainiú ag an tréith <code>ToString</code> ar aon chineál a fheidhmíonn
+an trait <code>Display</code>. Mar shampla, is féidir linn slánuimhreacha a thiontú ina gcuid comhfhreagrach
+Luachanna <code>String</code> mar seo toisc go gcuireann slánuimhreacha <code>Display</code> i bhfeidhm:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = 3.to_string();
+<span class="boring">}</span></code></pre></pre>
+<p>Tá cur i bhfeidhm blaincéid le feiceáil sa doiciméadú don trait sa
+Alt “Feidhmitheoirí”.</p>
+<p>Ligeann tréithe agus teorainneacha tréithe dúinn cód a scríobh a úsáideann paraiméadair chineálacha chun
+dúbailt a laghdú ach sonraigh freisin don tiomsaitheoir gur mian linn an cineálach
+cineál a bhfuil iompar ar leith. Is féidir leis an tiomsaitheoir an tréith faoi cheangal a úsáid ansin
+faisnéis le seiceáil go soláthraíonn na cineálacha coincréite go léir a úsáidtear lenár gcód an
+iompar ceart. I dteangacha atá clóscríofa go dinimiciúil, gheobhaimid earráid ag
+am rite má ghlaomar modh ar chineál nár shainigh an modh. Ach
+Bogann Rust na hearráidí seo chun am a thiomsú agus mar sin tá iallach orainn na fadhbanna a réiteach
+sula mbeidh ár gcód fiú in ann a rith. Ina theannta sin, ní gá dúinn cód a scríobh
+a sheiceálann iompar ag am rite toisc go bhfuil seiceáil déanta againn cheana féin tráth an tiomsaithe
+am. Má dhéantar amhlaidh, feabhsaíonn sé an fheidhmíocht gan an tsolúbthacht a thabhairt suas
+de chineálacha.</p>
 
                     </main>
 

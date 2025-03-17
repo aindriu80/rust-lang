@@ -40,7 +40,7 @@ teip. I Liosta 9-3 déanaimid iarracht comhad a oscailt.
 Is é an cineál fillte ar `File::open` `Result<T, E>`. An paraiméadar cineálach `T`
 comhlánaithe ag cur i bhfeidhm `File::open` le cineál an
 luach ratha, `std::fs::File`, atá ina láimhseáil comhaid. An cineál `E` a úsáidtear i
-Is é an luach earráide `std :: io :: Error`. Ciallaíonn an cineál fillte seo an glao chuig
+Is é an luach earráide `std::io::Error`. Ciallaíonn an cineál fillte seo an glao chuig
 Seans go n-éireodh le `File::open` agus go seolfar láimhseáil comhaid ar féidir linn a léamh uaidh nó
 scríobh chuig. Seans go dteipfeadh ar an nglao feidhme freisin: mar shampla, seans nach mbeadh an comhad
 ann, nó seans nach bhfuil cead againn an comhad a rochtain. An `File::open`
@@ -508,7 +508,7 @@ Cineálacha”][trait-objects]<!-- neamhaird a dhéanamh ar --> alt i gCaibidil 
 léigh `Box<dyn Error>` a chiallaíonn "earráid de chineál ar bith." Ag baint úsáide as `?` ar `Result`
 luach i bhfeidhm `main` leis an gcineál earráide `Box<dyn Error>` ceadaithe
 toisc go gceadaíonn sé aon luach `Err` a thabhairt ar ais go luath. Cé go bhfuil an comhlacht ar
-ní thabharfaidh an `main` seo ar ais ach earráidí den chineál `std ::io :: Error`, le
+ní thabharfaidh an `main` seo ar ais ach earráidí den chineál `std::io::Error`, le
 ag sonrú `Box<dyn Error>`, leanfaidh an síniú seo de bheith ceart fiú má
 cuirtear tuilleadh cód a thugann earráidí eile ar ais le corp na `main`.
 

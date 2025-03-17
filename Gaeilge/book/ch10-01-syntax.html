@@ -159,7 +159,402 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="generic-data-types"><a class="header" href="#generic-data-types">Generic Data Types</a></h1>
+                        <h2 id="cineálacha-ginearálta-sonraí"><a class="header" href="#cineálacha-ginearálta-sonraí">Cineálacha Ginearálta Sonraí</a></h2>
+<p>Bainimid úsáid as generics chun sainmhínithe a chruthú le haghaidh míreanna cosúil le sínithe feidhm nó
+structs, ar féidir linn a úsáid ansin le go leor cineálacha sonraí nithiúla éagsúla. Déanaimis
+breathnú ar dtús ar conas feidhmeanna, struchtúir, enums, agus modhanna a shainiú ag baint úsáide as
+cineálach. Ansin pléifimid conas a théann cineálacha cineálacha i bhfeidhm ar fheidhmíocht cód.</p>
+<h3 id="i-sainmhínithe-feidhme"><a class="header" href="#i-sainmhínithe-feidhme">I Sainmhínithe Feidhme</a></h3>
+<p>Nuair a shainítear feidhm a úsáideann generics, cuirimid na cineálacha cineálacha sa
+síniú na feidhme ina mbeadh muid a shonrú de ghnáth ar na cineálacha sonraí an
+paraiméadair agus luach tuairisceáin. Déanann sé sin ár gcód níos solúbtha agus cuireann sé ar fáil
+níos mó feidhmiúlachta do ghlaoiteoirí ar ár bhfeidhm agus dúbailt cóid a chosc.</p>
+<p>Ag leanúint lenár bhfeidhm <code>largest</code>, léiríonn Liostú 10-4 dhá fheidhm a
+Faigheann an dá cheann an luach is mó i slice. Déanfaimid iad seo a chomhcheangal ina n-aonar ansin
+feidhm a úsáideann generics.</p>
+<Listing number="10-4" file-name="src/main.rs" caption="Two functions that differ only in their names and in the types in their signatures">
+<pre><pre class="playground"><code class="language-rust">fn largest_i32(list: &amp;[i32]) -&gt; &amp;i32 {
+    let mut largest = &amp;list[0];
+
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn largest_char(list: &amp;[char]) -&gt; &amp;char {
+    let mut largest = &amp;list[0];
+
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let result = largest_i32(&amp;number_list);
+    println!("The largest number is {result}");
+<span class="boring">    assert_eq!(*result, 100);
+</span>
+    let char_list = vec!['y', 'm', 'a', 'q'];
+
+    let result = largest_char(&amp;char_list);
+    println!("The largest char is {result}");
+<span class="boring">    assert_eq!(*result, 'y');
+</span>}</code></pre></pre>
+</Listing>
+<p>Is í an fheidhm <code>largest_i32</code> an ceann a bhaineamar amach i Liostú 10-3 a aimsíonn
+an <code>i32</code> is mó i slisne. Faigheann an fheidhm <code>largest_char</code> an ceann is mó
+<code>char</code> i slisne. Tá an cód céanna ag na comhlachtaí feidhme, mar sin cuirimis deireadh leis
+an dúbailt trí pharaiméadar cineálach a thabhairt isteach in aon fheidhm amháin.</p>
+<p>Chun na cineálacha a pharaiméadarú i bhfeidhm aonair nua, ní mór dúinn an cineál a ainmniú
+paraiméadar, díreach mar a dhéanaimid do na paraiméadair luacha go dtí feidhm. Is féidir leat úsáid a bhaint as
+aon aitheantóir mar ainm paraiméadar cineáil. Ach úsáidfimid <code>T</code> mar gheall ar, le
+coinbhinsiún, tá ainmneacha paraiméadar cineál i Rust gearr, go minic ach litir amháin, agus
+Is é Coinbhinsiún Cineál-ainmnithe Rust UpperCamelCase. Gearr do <em>type</em>, is é <code>T</code> an
+rogha réamhshocraithe an chuid is mó de ríomhchláraitheoirí Rust.</p>
+<p>Nuair a úsáidimid paraiméadar i gcorp na feidhme, ní mór dúinn a dhearbhú an
+ainm paraiméadar sa síniú ionas go mbeidh a fhios ag an tiomsaitheoir cad a chiallaíonn an t-ainm sin.
+Mar an gcéanna, nuair a úsáidimid ainm paraiméadar cineál i síniú feidhm, ní mór dúinn
+chun an t-ainm paraiméadar cineál a dhearbhú sula n-úsáidfimid é. Chun an cineálach a shainiú
+an fheidhm <code>largest</code>, cuirimid dearbhuithe cineál-ainm taobh istigh de lúibíní uillinne,
+<code>&lt;&gt;</code>, idir ainm na feidhme agus liosta na bparaiméadar, mar seo:</p>
+<pre><code class="language-rust ignore">fn largest&lt;T&gt;(list: &amp;[T]) -&gt; &amp;T {</code></pre>
+<p>Léimid an sainmhíniú seo mar seo a leanas: tá an fheidhm <code>largest</code> cineálach thar chineál éigin
+<code>T</code>. Tá paraiméadar amháin ag an bhfeidhm seo darb ainm <code>list</code>, ar sliseog luachanna é
+den chineál <code>T</code>. Tabharfaidh an fheidhm <code>largest</code> tagairt ar ais do luach an
+cineál céanna <code>T</code>.</p>
+<p>Léiríonn liostú 10-5 an sainmhíniú comhcheangailte ar fheidhm <code>largest</code> ag baint úsáide as an gcineál cineálach
+cineál sonraí ina shíniú. Léiríonn an liostú freisin conas is féidir linn glaoch ar an bhfeidhm
+le slice de luachanna <code>i32</code> nó luachanna <code>char</code>. Tabhair faoi deara nach ndéanfaidh an cód seo
+le chéile go fóill, ach déanfaimid é a shocrú níos déanaí sa chaibidil seo.</p>
+<Listing number="10-5" file-name="src/main.rs" caption="The `largest` function using generic type parameters; this doesn’t compile yet">
+<pre><code class="language-rust ignore does_not_compile">fn largest&lt;T&gt;(list: &amp;[T]) -&gt; &amp;T {
+    let mut largest = &amp;list[0];
+
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let result = largest(&amp;number_list);
+    println!("The largest number is {result}");
+
+    let char_list = vec!['y', 'm', 'a', 'q'];
+
+    let result = largest(&amp;char_list);
+    println!("The largest char is {result}");
+}</code></pre>
+</Listing>
+<p>Má thiomsaimid an cód seo faoi láthair, gheobhaidh muid an earráid seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0369]: binary operation `&gt;` cannot be applied to type `&amp;T`
+ --&gt; src/main.rs:5:17
+  |
+5 |         if item &gt; largest {
+  |            ---- ^ ------- &amp;T
+  |            |
+  |            &amp;T
+  |
+help: consider restricting type parameter `T`
+  |
+1 | fn largest&lt;T: std::cmp::PartialOrd&gt;(list: &amp;[T]) -&gt; &amp;T {
+  |             ++++++++++++++++++++++
+
+For more information about this error, try `rustc --explain E0369`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+</code></pre>
+<p>Luann an téacs cabhrach <code>std::cmp::PartialOrd</code>, atá ina <em>trait</em>, agus táimid ag
+ag dul chun labhairt faoi thréithe sa chéad alt eile. Chun anois, tá a fhios go bhfuil an earráid seo
+Deirtear nach n-oibreoidh an corp <code>largest</code> do gach cineál <code>T</code>
+d'fhéadfadh a bheith. Toisc gur mian linn luachanna de chineál <code>T</code> sa chorp a chur i gcomparáid, is féidir linn
+ná húsáid ach cineálacha ar féidir a luachanna a ordú. Chun comparáidí a chumasú, an caighdeán
+Tá an tréithe <code>std::cmp::PartialOrd</code> ag an leabharlann is féidir leat a chur i bhfeidhm ar chineálacha
+(féach Aguisín C le haghaidh tuilleadh ar an tréith seo). Trí na téacsanna cabhrach a leanúint
+Mar mholadh, cuirimid srian leis na cineálacha atá bailí do <code>T</code> amháin dóibh siúd a chuireann i bhfeidhm
+Beidh <code>PartialOrd</code> agus an sampla seo le chéile, mar gheall ar an leabharlann caighdeánach
+cuireann <code>PartialOrd</code> i bhfeidhm ar <code>i32</code> agus <code>char</code> araon.</p>
+<h3 id="i-sainmhínithe-struchtúr"><a class="header" href="#i-sainmhínithe-struchtúr">I Sainmhínithe Struchtúr</a></h3>
+<p>Is féidir linn struchtúir a shainiú freisin chun paraiméadar cineál cineálach a úsáid i gceann amháin nó níos mó
+réimsí ag baint úsáide as an chomhréir <code>&lt;&gt;</code>. Sainmhíníonn liostú 10-6 struchtúr <code>Point&lt;T&gt;</code> le coinneáil
+Comhordaíonn <code>x</code> agus <code>y</code> luachanna de chineál ar bith.</p>
+<Listing number="10-6" file-name="src/main.rs" caption="A `Point<T>` struct that holds `x` and `y` values of type `T`">
+<pre><pre class="playground"><code class="language-rust">struct Point&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+fn main() {
+    let integer = Point { x: 5, y: 10 };
+    let float = Point { x: 1.0, y: 4.0 };
+}</code></pre></pre>
+</Listing>
+<p>Tá an chomhréir chun cineálacha a úsáid i sainmhínithe struchtúir cosúil leis an gceann a úsáidtear i
+sainmhínithe feidhm. Ar dtús dearbhaímid ainm an pharaiméadar cineál taobh istigh
+lúibíní uillinn díreach tar éis ainm an struct. Ansin úsáidimid an cineálach
+clóscríobh an sainmhíniú ar struct nuair a shonróimis sonraí nithiúla ar shlí eile
+cineálacha.</p>
+<p>Tabhair faoi deara toisc nár úsáideamar ach cineál cineálach amháin chun <code>Point &lt;T&gt;</code> a shainiú, seo
+deir an sainmhíniú go bhfuil an struchtúr <code>Point&lt;T&gt;</code> cineálach thar cineál éigin <code>T</code>, agus
+is iad na réimsí <code>x</code> agus <code>y</code> <em>an dá chineál</em> sin, is cuma cén cineál sin. Más rud é
+cruthaímid sampla de <code>Point&lt;T&gt;</code> a bhfuil luachanna de chineálacha éagsúla aige, mar atá i
+Ag liostú 10-7, ní thiomsóidh ár gcód.</p>
+<Listing number="10-7" file-name="src/main.rs" caption="The fields `x` and `y` must be the same type because both have the same generic data type `T`.">
+<pre><code class="language-rust ignore does_not_compile">struct Point&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+fn main() {
+    let wont_work = Point { x: 5, y: 4.0 };
+}</code></pre>
+</Listing>
+<p>Sa sampla seo, nuair a shannaimid an luach slánuimhir <code>5</code> go <code>x</code>, ligimid an
+tá a fhios ag tiomsaitheoir gur slánuimhir a bheidh sa chineál cineálach <code>T</code> don chás seo de
+<code>Point&lt;T&gt;</code>. Ansin nuair a shonraimid <code>4.0</code> le haghaidh <code>y</code>, rud a shainigh muid go mbeadh an
+cineál céanna le <code>x</code>, gheobhaidh muid earráid cineál neamhréire mar seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:7:38
+  |
+7 |     let wont_work = Point { x: 5, y: 4.0 };
+  |                                      ^^^ expected integer, found floating-point number
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+</code></pre>
+<p>Struchtúr <code>Point</code> a shainiú ina bhfuil <code>x</code> agus <code>y</code> araon cineálach ach a bhféadfadh go mbeadh
+cineálacha éagsúla, is féidir linn paraiméadair ilchineálacha cineálacha a úsáid. Mar shampla, i
+Ag liostú 10-8, athraíonn muid an sainmhíniú ar <code>Point</code> le bheith cineálach thar chineálacha <code>T</code>
+agus <code>U</code> áit a bhfuil <code>x</code> den chineál <code>T</code> agus <code>y</code> den chineál <code>U</code>.</p>
+<Listing number="10-8" file-name="src/main.rs" caption="A `Point<T, U>` generic over two types so that `x` and `y` can be values of different types">
+<pre><pre class="playground"><code class="language-rust">struct Point&lt;T, U&gt; {
+    x: T,
+    y: U,
+}
+
+fn main() {
+    let both_integer = Point { x: 5, y: 10 };
+    let both_float = Point { x: 1.0, y: 4.0 };
+    let integer_and_float = Point { x: 5, y: 4.0 };
+}</code></pre></pre>
+</Listing>
+<p>Anois ceadaítear na cásanna go léir de <code>Point</code> a thaispeántar! Is féidir leat an oiread cineálach a úsáid
+paraiméadair cineál i sainmhíniú mar is mian leat, ach ag baint úsáide as níos mó ná cúpla a dhéanann
+do chód deacair a léamh. Má aimsíonn tú go bhfuil go leor cineálacha cineálacha de dhíth ort
+do chód, d'fhéadfadh sé a léiriú go bhfuil gá le do chód a athstruchtúrú go dtí níos lú
+píosaí.</p>
+<h3 id="i-sainmhínithe-enum"><a class="header" href="#i-sainmhínithe-enum">I Sainmhínithe Enum</a></h3>
+<p>Mar a rinneamar le struchtúir, is féidir linn enums a shainiú chun cineálacha sonraí cineálacha a choinneáil ina gcuid
+athraithigh. Breathnaímis ar an <code>Option&lt;T&gt;</code> atá sa chaighdeán
+soláthairtí leabharlainne, a d’úsáideamar i gCaibidil 6:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum Option&lt;T&gt; {
+    Some(T),
+    None,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Ba cheart go ndéanfadh an sainmhíniú seo níos mó ciall duit anois. Mar a fheiceann tú, tá an
+Tá <code>Option&lt;T&gt;</code> enum cineálach thar an gcineál <code>T</code> agus tá dhá leagan ann: <code>Some</code>, a
+tá luach amháin de chineál <code>T</code> aige, agus malairt <code>None</code> nach bhfuil luach ar bith aige.
+Trí úsáid a bhaint as an <code>Option&lt;T&gt;</code> enum, is féidir linn coincheap teibí an
+luach roghnach, agus toisc go bhfuil <code>Option&lt;T&gt;</code> cineálach, is féidir linn an astarraingt seo a úsáid
+is cuma cén cineál an luach roghnach.</p>
+<p>Is féidir le Enums cineálacha ilchineálacha a úsáid freisin. An sainmhíniú ar an <code>Result</code>
+Is sampla amháin é an enum a d’úsáideamar i gCaibidil 9:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum Result&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Tá an enum <code>Result</code> cineálach thar dhá chineál, <code>T</code> agus <code>E</code>, agus tá dhá leagan ann:
+<code>Ok</code>, a bhfuil luach de chineál <code>T</code> aige, agus <code>Err</code>, a bhfuil luach cineáil aige
+<code>e</code>. Fágann an sainmhíniú seo go bhfuil sé áisiúil an enum <code>Result</code> a úsáid áit ar bith againn
+bíodh oibríocht agat a d'fhéadfadh a bheith rathúil (luach de chineál éigin <code>T</code> a thabhairt ar ais) nó a theipeann
+(tabhair ar ais earráid de shaghas éigin <code>E</code>). Go deimhin, is é seo an rud a d'úsáid muid a oscailt
+comhad i Liostú 9-3, áit ar líonadh <code>T</code> leis an gcineál <code>std::fs::File</code> nuair
+D'éirigh leis an gcomhad a oscailt agus líonadh <code>E</code> leis an gcineál
+<code>std::io::Error</code> nuair a bhí fadhbanna le hoscailt an chomhaid.</p>
+<p>Nuair a aithníonn tú cásanna i do chód le struchtúr iolrach nó enum
+sainmhínithe nach bhfuil difriúil ach amháin i gcineálacha na luachanna atá acu, is féidir leat
+seachain dúbailt trí úsáid a bhaint as cineálacha cineálacha ina ionad.</p>
+<h3 id="i-sainmhínithe-modh"><a class="header" href="#i-sainmhínithe-modh">I Sainmhínithe Modh</a></h3>
+<p>Is féidir linn modhanna a chur i bhfeidhm maidir le struchtúir agus enums (mar a rinneamar i gCaibidil 5) agus úsáid
+cineálacha cineálacha ina sainmhínithe freisin. Léiríonn liostú 10-9 an <code>Point&lt;T&gt;</code>
+struchtúr sainmhínithe againn i Liostú 10-6 le modh darb ainm <code>x</code> curtha i bhfeidhm air.</p>
+<Listing number="10-9" file-name="src/main.rs" caption="Implementing a method named `x` on the `Point<T>` struct that will return a reference to the `x` field of type `T`">
+<pre><pre class="playground"><code class="language-rust">struct Point&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+impl&lt;T&gt; Point&lt;T&gt; {
+    fn x(&amp;self) -&gt; &amp;T {
+        &amp;self.x
+    }
+}
+
+fn main() {
+    let p = Point { x: 5, y: 10 };
+
+    println!("p.x = {}", p.x());
+}</code></pre></pre>
+</Listing>
+<p>Anseo, shainmhíomar modh darb ainm <code>x</code> ar <code>Point &lt;T&gt;</code> a thugann tagairt ar ais
+leis na sonraí sa réimse <code>x</code>.</p>
+<p>Tabhair faoi deara go gcaithfimid <code>T</code> a dhearbhú díreach i ndiaidh <code>impl</code> ionas gur féidir linn <code>T</code> a úsáid lena shonrú
+go bhfuil modhanna ar an gcineál <code>Point &lt;T&gt;</code> á gcur i bhfeidhm againn. Trí <code>T</code> a dhearbhú mar a
+cineál cineálach tar éis <code>impl</code>, is féidir le meirge a aithint gurb é an cineál san uillinn
+Is cineál cineálach seachas cineál coincréite é lúibíní i <code>Point</code>. D'fhéadfadh muid
+roghnaigh ainm eile don pharaiméadar cineálach seo ná an t-ainm cineálach
+paraiméadar dearbhaithe sa sainmhíniú struct, ach ag baint úsáide as an ainm céanna é
+traidisiúnta. Má scríobhann tú modh laistigh de <code>impl</code> a dhearbhaíonn cineálach
+cineál, saineofar an modh sin ar aon ásc den chineál, is cuma cén
+cuirtear an cineál coincréit in ionad an chineáil cineálach.</p>
+<p>Is féidir linn srianta ar chineálacha cineálacha a shonrú freisin agus modhanna á sainiú ar an
+cineál. D'fhéadfaimis, mar shampla, modhanna a chur i bhfeidhm ar chásanna <code>Point&lt;f32&gt;</code> amháin
+seachas ar chásanna <code>Point&lt;T&gt;</code> le haon chineál cineálach. I Liosta 10-10 táimid
+bain úsáid as an gcineál coincréite <code>f32</code>, rud a chiallaíonn nach ndearbhaímid aon chineál i ndiaidh <code>impl</code>.</p>
+<Listing number="10-10" file-name="src/main.rs" caption="An `impl` block that only applies to a struct with a particular concrete type for the generic type parameter `T`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct Point&lt;T&gt; {
+</span><span class="boring">    x: T,
+</span><span class="boring">    y: T,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; Point&lt;T&gt; {
+</span><span class="boring">    fn x(&amp;self) -&gt; &amp;T {
+</span><span class="boring">        &amp;self.x
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Point&lt;f32&gt; {
+    fn distance_from_origin(&amp;self) -&gt; f32 {
+        (self.x.powi(2) + self.y.powi(2)).sqrt()
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let p = Point { x: 5, y: 10 };
+</span><span class="boring">
+</span><span class="boring">    println!("p.x = {}", p.x());
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Ciallaíonn an cód seo go mbeidh <code>distance_from_origin</code> ag an gcineál <code>Point&lt;f32&gt;</code>
+modh ; i gcásanna eile de <code>Point&lt;T&gt;</code> nuair nach de chineál <code>f32</code> é <code>T</code>'
+an modh seo a shainiú. Tomhaiseann an modh cé chomh fada ár bpointe ó na
+pointe ag comhordanáidí (0.0, 0.0) agus úsáideann oibríochtaí matamaitice atá
+ar fáil do chineálacha snámhphointe amháin.</p>
+<p>Ní bhíonn paraiméadair chineálacha i sainmhíniú struchtúir mar a chéile i gcónaí leo siúd
+úsáideann tú sínithe modha an struchtúir chéanna sin. Úsáideann liostú 10-11 an cineálach
+cineálacha <code>X1</code> agus <code>Y1</code> don struchtúr <code>Point</code> agus <code>X2</code> <code>Y2</code> don mhodh <code>mixup</code>
+síniú chun an sampla a dhéanamh níos soiléire. Cruthaíonn an modh <code>Point</code> nua
+mar shampla leis an luach <code>x</code> ón <code>self</code> <code>Point</code> (den chineál <code>X1</code>) agus an <code>y</code>
+luach ón <code>Point</code> a cuireadh isteach (den chineál <code>Y2</code>).</p>
+<Listing number="10-11" file-name="src/main.rs" caption="A method that uses generic types different from its struct’s definition">
+<pre><pre class="playground"><code class="language-rust">struct Point&lt;X1, Y1&gt; {
+    x: X1,
+    y: Y1,
+}
+
+impl&lt;X1, Y1&gt; Point&lt;X1, Y1&gt; {
+    fn mixup&lt;X2, Y2&gt;(self, other: Point&lt;X2, Y2&gt;) -&gt; Point&lt;X1, Y2&gt; {
+        Point {
+            x: self.x,
+            y: other.y,
+        }
+    }
+}
+
+fn main() {
+    let p1 = Point { x: 5, y: 10.4 };
+    let p2 = Point { x: "Hello", y: 'c' };
+
+    let p3 = p1.mixup(p2);
+
+    println!("p3.x = {}, p3.y = {}", p3.x, p3.y);
+}</code></pre></pre>
+</Listing>
+<p>I <code>main</code>, tá <code>Point</code> sainmhínithe againn a bhfuil <code>i32</code> ann do <code>x</code> (le luach <code>5</code>)
+agus <code>f64</code> le haghaidh <code>y</code> (le luach <code>10.4</code>). Is struchtúr <code>Point</code> é an athróg <code>p2</code>
+a bhfuil sreangshlis le haghaidh <code>x</code> (le luach <code>"Hello"</code>) agus <code>char</code> le haghaidh <code>y</code>
+(le luach <code>c</code>). Ag glaoch <code>mixup</code> ar <code>p1</code> leis an argóint <code>p2</code> tugann <code>p3</code> dúinn,
+a mbeidh <code>i32</code> le haghaidh <code>x</code> mar gur tháinig <code>x</code> ó <code>p1</code>. An athróg <code>p3</code>
+will have a <code>char</code> for <code>y</code> because <code>y</code> came from <code>p2</code>. An macra <code>println!</code>
+priontálfaidh glao <code>p3.x = 5, p3.y = c</code>.</p>
+<p>Is é cuspóir an sampla seo a léiriú staid ina bhfuil roinnt cineálach
+dearbhaítear paraiméadair le <code>impl</code> agus dearbhaítear cuid acu leis an modh
+sainmhíniú. Anseo, dearbhaítear na paraiméadair chineálacha <code>X1</code> agus <code>Y1</code> ina dhiaidh sin
+<code>impl</code> mar go dtéann siad leis an sainmhíniú struct. Na paraiméadair chineálacha <code>X2</code>
+agus déantar <code>Y2</code> a dhearbhú tar éis <code>fn mixup</code> toisc nach mbaineann siad ach leis an
+modh.</p>
+<h3 id="feidhmíocht-an-chóid-ag-Úsáid-generics"><a class="header" href="#feidhmíocht-an-chóid-ag-Úsáid-generics">Feidhmíocht an Chóid ag Úsáid Generics</a></h3>
+<p>B'fhéidir go bhfuil tú ag smaoineamh an bhfuil costas ama rite ag baint úsáide as cineál cineálach
+paraiméadair. Is é an dea-scéal ná nach ndéanfaidh úsáid cineálacha cineálacha do chlár
+reáchtáil ar bith níos moille ná mar a bheadh ​​sé le cineálacha coincréite.</p>
+<p>Cuireann meirge é seo i gcrích trí mhonamorphization an chóid a dhéanamh ag baint úsáide as
+generics ag am tiomsaithe. Is é <em>Monomorphization</em> an próiseas a bhaineann le casadh cineálach
+cód isteach i gcód sonrach trí na cineálacha nithiúla a úsáidtear nuair a
+tiomsaithe. Sa phróiseas seo, déanann an tiomsaitheoir a mhalairt de na céimeanna a d'úsáideamar
+chun an fheidhm chineálach a chruthú i Liostú 10-5: féachann an tiomsaitheoir ar gach ceann de na
+áiteanna ina dtugtar cód cineálach agus gineann cód do na cineálacha nithiúla
+tugtar an cód cineálach le.</p>
+<p>Breathnaímid ar conas a oibríonn sé seo trí úsáid a bhaint as cineálach na leabharlainne caighdeánach
+<code>Option&lt;T&gt;</code> enum:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let integer = Some(5);
+let float = Some(5.0);
+<span class="boring">}</span></code></pre></pre>
+<p>Nuair a thiomsaíonn Rust an cód seo, déanann sé monomorphization. Le linn sin
+phróiseas, léann an tiomsaitheoir na luachanna a úsáideadh i <code>Option&lt;T&gt;</code>
+cásanna agus aithníonn sé dhá chineál <code>Option&lt;T&gt;</code>: is é ceann amháin <code>i32</code> agus an ceann eile
+tá <code>f64</code>. Mar sin, leathnaíonn sé an sainmhíniú cineálach ar <code>Option&lt;T&gt;</code> ina dhá cheann
+sainmhínithe ar <code>i32</code> agus <code>f64</code>, rud a chuirtear in ionad an chineálach
+sainmhíniú leis na cinn ar leith.</p>
+<p>Breathnaíonn an leagan monomorphized den chód cosúil leis an méid seo a leanas (an
+Úsáideann tiomsaitheoir ainmneacha atá difriúil ó na cinn atá in úsáid againn anseo le haghaidh léiriú):</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust">enum Option_i32 {
+    Some(i32),
+    None,
+}
+
+enum Option_f64 {
+    Some(f64),
+    None,
+}
+
+fn main() {
+    let integer = Option_i32::Some(5);
+    let float = Option_f64::Some(5.0);
+}</code></pre></pre>
+</Listing>
+<p>Cuirtear na sainmhínithe ar leith cruthaithe ag
+an tiomsaitheoir. Toisc go dtiomsaíonn Rust cód cineálach i gcód a shonraíonn an
+cineál i ngach cás, ní íocaimid aon chostas ama rite as generics a úsáid. Nuair a bheidh an cód
+ritheann, feidhmíonn sé díreach mar a bheadh ​​sé dá mbeadh dúbailt againn ar gach sainmhíniú
+lámh. Déanann an próiseas monamorphization generics Rust thar a bheith éifeachtach
+ag am rite.</p>
 
                     </main>
 

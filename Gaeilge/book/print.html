@@ -7525,7 +7525,7 @@ nuair a bhíonn siad oscailte agat i d'eagarthóir ag an am céanna.</p>
 mar an gcéanna. Oibreoidh an fheidhm glaonna i <code>eat_at_restaurant</code> gan aon cheann
 modhnú, cé go bhfuil na sainmhínithe ina gcónaí i gcomhaid éagsúla. seo
 ligeann teicníocht duit modúil a aistriú go comhaid nua de réir mar a fhásann siad i méid.</p>
-<p>Tabhair faoi deara go bhfuil an <code>pub use crate::front_of_house :: hosting</code> ráiteas i
+<p>Tabhair faoi deara go bhfuil an <code>pub use crate::front_of_house::hosting</code> ráiteas i
 Níor athraigh <em>src/lib.rs</em> freisin, agus ní bhíonn tionchar ar bith ag <code>use</code> ar na comhaid
 a thiomsaítear mar chuid den chliabhán. Dearbhaíonn an eochairfhocal <code>mod</code> modúil, agus Rust
 Breathnaíonn i gcomhad leis an ainm céanna leis an modúl don chód a théann isteach
@@ -8640,7 +8640,7 @@ fn main() {
 <p>Is é an cineál fillte ar <code>File::open</code> <code>Result&lt;T, E&gt;</code>. An paraiméadar cineálach <code>T</code>
 comhlánaithe ag cur i bhfeidhm <code>File::open</code> le cineál an
 luach ratha, <code>std::fs::File</code>, atá ina láimhseáil comhaid. An cineál <code>E</code> a úsáidtear i
-Is é an luach earráide <code>std :: io :: Error</code>. Ciallaíonn an cineál fillte seo an glao chuig
+Is é an luach earráide <code>std::io::Error</code>. Ciallaíonn an cineál fillte seo an glao chuig
 Seans go n-éireodh le <code>File::open</code> agus go seolfar láimhseáil comhaid ar féidir linn a léamh uaidh nó
 scríobh chuig. Seans go dteipfeadh ar an nglao feidhme freisin: mar shampla, seans nach mbeadh an comhad
 ann, nó seans nach bhfuil cead againn an comhad a rochtain. An <code>File::open</code>
@@ -9119,7 +9119,7 @@ Cineálacha”</a><!-- neamhaird a dhéanamh ar --> alt i gCaibidil 18. Faoi lá
 léigh <code>Box&lt;dyn Error&gt;</code> a chiallaíonn "earráid de chineál ar bith." Ag baint úsáide as <code>?</code> ar <code>Result</code>
 luach i bhfeidhm <code>main</code> leis an gcineál earráide <code>Box&lt;dyn Error&gt;</code> ceadaithe
 toisc go gceadaíonn sé aon luach <code>Err</code> a thabhairt ar ais go luath. Cé go bhfuil an comhlacht ar
-ní thabharfaidh an <code>main</code> seo ar ais ach earráidí den chineál <code>std ::io :: Error</code>, le
+ní thabharfaidh an <code>main</code> seo ar ais ach earráidí den chineál <code>std::io::Error</code>, le
 ag sonrú <code>Box&lt;dyn Error&gt;</code>, leanfaidh an síniú seo de bheith ceart fiú má
 cuirtear tuilleadh cód a thugann earráidí eile ar ais le corp na <code>main</code>.</p>
 <p>Nuair a fhilleann feidhm <code>main</code> <code>Result&lt;(), E&gt;</code>, scoirfidh an inrite le
@@ -9382,10 +9382,1791 @@ Déanfaidh cásanna do chód níos iontaofa i bhfianaise fadhbanna dosheachanta.
 <p>Anois go bhfuil bealaí úsáideacha feicthe agat a n-úsáideann an leabharlann chaighdeánach generics leo
 sna huimhreacha <code>Option</code> agus <code>Result</code>, labhróimid faoin gcaoi a n-oibríonn generics agus conas a oibríonn tú
 Is féidir iad a úsáid i do chód.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="generic-types-traits-and-lifetimes"><a class="header" href="#generic-types-traits-and-lifetimes">Generic Types, Traits, and Lifetimes</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="generic-data-types"><a class="header" href="#generic-data-types">Generic Data Types</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="traits-defining-shared-behavior"><a class="header" href="#traits-defining-shared-behavior">Traits: Defining Shared Behavior</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="validating-references-with-lifetimes"><a class="header" href="#validating-references-with-lifetimes">Validating References with Lifetimes</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cineálacha-cineálta-tréithe-agus-saolta"><a class="header" href="#cineálacha-cineálta-tréithe-agus-saolta">Cineálacha Cineálta, Tréithe, agus Saolta</a></h1>
+<p>Tá uirlisí ag gach teanga ríomhchláraithe chun an dúbailt a láimhseáil go héifeachtach
+de choincheapa. I Rust, tá uirlis amháin dá leithéid <em>generics</em>: seastáin teibí do
+cineálacha coincréite nó airíonna eile. Is féidir linn iompar generics nó
+conas a bhaineann siad le cineálacha eile gan fios cad a bheidh ina n-áit
+nuair a bheidh an cód á thiomsú agus á rith.</p>
+<p>Is féidir le feidhmeanna paraiméadair de chineál éigin a ghlacadh, in ionad cineál coincréite
+cosúil le <code>i32</code> nó <code>String</code>, ar an mbealach céanna a ghlacann siad paraiméadair le anaithnid
+luachanna chun an cód céanna a rith ar illuachanna nithiúla. Go deimhin, tá muid cheana féin
+úsáidtear generics i gCaibidil 6 le <code>Option&lt;T&gt;</code>, i gCaibidil 8 le <code>Vec&lt;T&gt;</code> agus
+<code>HashMap&lt;K, V&gt;</code>, agus i gCaibidil 9 le <code>Result&lt;T, E&gt;</code>. Sa chaibidil seo, beidh tú
+iniúchadh a dhéanamh ar conas do chineálacha, feidhmeanna agus modhanna féin a shainiú le generics!</p>
+<p>Ar dtús déanfaimid athbhreithniú ar conas feidhm a bhaint as chun dúbailt cód a laghdú. Déanfaimid
+ansin bain úsáid as an teicníc chéanna chun feidhm chineálach a dhéanamh as dhá fheidhm a
+difriúil ach amháin i gcineálacha a bparaiméadar. Míneoimid freisin conas é a úsáid
+cineálacha cineálacha i struchtúir agus sainmhínithe enum.</p>
+<p>Ansin foghlaimeoidh tú conas <em>traits</em> a úsáid chun iompar a shainiú ar bhealach cineálach. tu
+is féidir tréithe a chomhcheangal le cineálacha cineálach chun srian a chur ar chineál cineálach glacadh leis
+ach na cineálacha sin a bhfuil iompar ar leith acu, i gcomparáid le cineál ar bith.</p>
+<p>Ar deireadh, pléifimid <em>lifetimes</em>: cineálacha cineálacha éagsúla a thugann an
+faisnéis a thiomsú faoin gcaoi a mbaineann tagairtí lena chéile. Ceadaíonn saolré
+go leor eolais a thabhairt don tiomsaitheoir faoi luachanna a fuarthas ar iasacht ionas gur féidir leis
+a chinntiú go mbeidh teistiméireachtaí bailí i níos mó cásanna ná mar a d'fhéadfadh sé gan ár
+cabhair.</p>
+<h2 id="dúbailt-a-bhaint-trí-feidhm-a-bhaint-as"><a class="header" href="#dúbailt-a-bhaint-trí-feidhm-a-bhaint-as">Dúbailt a Bhaint Trí Feidhm a Bhaint as</a></h2>
+<p>Ceadaíonn Generics dúinn cineálacha sonracha a athsholáthar le sealbhóir áit a léiríonn
+cineálacha iomadúla chun dúbailt cód a bhaint. Sula tumadh isteach i gcomhréir generics,
+Breathnaímid ar dtús ar conas dúbailt a bhaint ar bhealach nach mbaineann
+cineálacha cineálacha trí fheidhm a bhaint a chuireann a
+áitshealbhóir a léiríonn luachanna iolracha. Ansin cuirfimid an rud céanna i bhfeidhm
+teicníc chun feidhm chineálach a bhaint as! Trí féachaint ar conas a aithint
+cód dúblach is féidir leat a bhaint as feidhm, a thosóidh tú á aithint
+cód dúblach is féidir a úsáid generics.</p>
+<p>Cuirfimid tús leis an gclár gearr i Liostú 10-1 a aimsíonn an ceann is mó
+uimhir i liosta.</p>
+<Listing number="10-1" file-name="src/main.rs" caption="Finding the largest number in a list of numbers">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let mut largest = &amp;number_list[0];
+
+    for number in &amp;number_list {
+        if number &gt; largest {
+            largest = number;
+        }
+    }
+
+    println!("The largest number is {largest}");
+<span class="boring">    assert_eq!(*largest, 100);
+</span>}</code></pre></pre>
+</Listing>
+<p>Stórálaimid liosta slánuimhreacha san athróg <code>number_list</code> agus cuirimid tagairt
+go dtí an chéad uimhir ar an liosta in athróg darb ainm <code>largest</code>. Déanaimid athrá ansin
+trí na huimhreacha go léir sa liosta, agus má tá an uimhir reatha níos mó ná
+an uimhir atá stóráilte in <code>largest</code>, cuirimid in ionad na tagartha san athróg sin.
+Mar sin féin, má tá an líon reatha níos lú ná nó cothrom leis an líon is mó a fheictear
+go dtí seo, ní athraíonn an athróg, agus bogann an cód ar aghaidh go dtí an chéad uimhir eile
+sa liosta. Tar éis na huimhreacha go léir ar an liosta a mheas, ba cheart go mbeadh <code>largest</code>
+tagairt a dhéanamh don líon is mó, atá sa chás seo 100.</p>
+<p>Tá sé de chúram orainn anois an líon is mó a aimsiú in dhá liosta éagsúla de
+uimhreacha. Chun é sin a dhéanamh, is féidir linn a roghnú an cód i Liostú 10-1 a dhúbailt agus a úsáid
+an loighic chéanna ag dhá áit dhifriúla sa chlár, mar a léirítear i Liosta 10-2.</p>
+<Listing number="10-2" file-name="src/main.rs" caption="Code to find the largest number in *two* lists of numbers">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let mut largest = &amp;number_list[0];
+
+    for number in &amp;number_list {
+        if number &gt; largest {
+            largest = number;
+        }
+    }
+
+    println!("The largest number is {largest}");
+
+    let number_list = vec![102, 34, 6000, 89, 54, 2, 43, 8];
+
+    let mut largest = &amp;number_list[0];
+
+    for number in &amp;number_list {
+        if number &gt; largest {
+            largest = number;
+        }
+    }
+
+    println!("The largest number is {largest}");
+}</code></pre></pre>
+</Listing>
+<p>Cé go n-oibríonn an cód seo, bíonn dúbláil cód tedious agus seans maith go hearráidí. Táimid freisin
+ní mór cuimhneamh ar an gcód a nuashonrú in áiteanna éagsúla nuair is mian linn athrú a dhéanamh
+é.</p>
+<p>Chun deireadh a chur leis an dúbailt seo, cruthóimid astarraingt trí a
+feidhm a fheidhmíonn ar aon liosta slánuimhreacha a chuirtear isteach mar pharaiméadar. seo
+réiteach a dhéanann ár gcód níos soiléire agus ligeann dúinn a chur in iúl an coincheap a aimsiú ar an
+an líon is mó i liosta go hachomair.</p>
+<p>I Liostú 10-3, bainimid an cód a aimsíonn an uimhir is mó in a
+feidhm darb ainm <code>largest</code>. Ansin tugaimid an fheidhm chun an líon is mó a fháil
+sa dá liosta ó Liosta 10-2. D'fhéadfaimis an fheidhm a úsáid ar aon cheann eile freisin
+liosta de na luachanna <code>i32</code> a d'fhéadfadh a bheith againn sa todhchaí.</p>
+<Listing number="10-3" file-name="src/main.rs" caption="Abstracted code to find the largest number in two lists">
+<pre><pre class="playground"><code class="language-rust">fn largest(list: &amp;[i32]) -&gt; &amp;i32 {
+    let mut largest = &amp;list[0];
+
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let result = largest(&amp;number_list);
+    println!("The largest number is {result}");
+<span class="boring">    assert_eq!(*result, 100);
+</span>
+    let number_list = vec![102, 34, 6000, 89, 54, 2, 43, 8];
+
+    let result = largest(&amp;number_list);
+    println!("The largest number is {result}");
+<span class="boring">    assert_eq!(*result, 6000);
+</span>}</code></pre></pre>
+</Listing>
+<p>Tá paraiméadar ar a dtugtar <code>list</code> ag an bhfeidhm <code>largest</code>, a sheasann d'aon cheann
+slis choincréite de luachanna <code>i32</code> a d'fhéadfaimis dul isteach san fheidhm. Mar thoradh air sin,
+nuair a ghlaoimid an fheidhm, ritheann an cód ar na luachanna sonracha a rithimid
+isteach.</p>
+<p>Go hachomair, seo na céimeanna a ghlacamar chun an cód a athrú ó Liostú 10-2 go
+Liostáil 10-3:</p>
+<ol>
+<li>Cód dúblach a aithint.</li>
+<li>Sliocht an cód dúblach isteach i gcorp na feidhme, agus sonraigh an
+ionchuir agus luachanna aischuir an chóid sin i síniú na feidhme.</li>
+<li>Nuashonraigh an dá chás de chód dúblach chun an fheidhm a ghlaoch ina ionad.</li>
+</ol>
+<p>Ansin, úsáidfimid na céimeanna céanna seo le cineálacha cineálacha chun dúbailt cód a laghdú. I
+ar an mbealach céanna is féidir leis an gcomhlacht feidhme oibriú ar <code>list</code> teibí ina ionad sin
+de luachanna sonracha, ceadaíonn generics cód oibriú ar chineálacha teibí.</p>
+<p>Mar shampla, abair go raibh dhá fheidhm againn: ceann a aimsíonn an mhír is mó in a
+slice de luachanna <code>i32</code> agus ceann a aimsíonn an mhír is mó i slice de <code>char</code>
+luachanna. Conas a chuirfimid deireadh leis an dúbailt sin? Faighimis amach!</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="cineálacha-ginearálta-sonraí"><a class="header" href="#cineálacha-ginearálta-sonraí">Cineálacha Ginearálta Sonraí</a></h2>
+<p>Bainimid úsáid as generics chun sainmhínithe a chruthú le haghaidh míreanna cosúil le sínithe feidhm nó
+structs, ar féidir linn a úsáid ansin le go leor cineálacha sonraí nithiúla éagsúla. Déanaimis
+breathnú ar dtús ar conas feidhmeanna, struchtúir, enums, agus modhanna a shainiú ag baint úsáide as
+cineálach. Ansin pléifimid conas a théann cineálacha cineálacha i bhfeidhm ar fheidhmíocht cód.</p>
+<h3 id="i-sainmhínithe-feidhme"><a class="header" href="#i-sainmhínithe-feidhme">I Sainmhínithe Feidhme</a></h3>
+<p>Nuair a shainítear feidhm a úsáideann generics, cuirimid na cineálacha cineálacha sa
+síniú na feidhme ina mbeadh muid a shonrú de ghnáth ar na cineálacha sonraí an
+paraiméadair agus luach tuairisceáin. Déanann sé sin ár gcód níos solúbtha agus cuireann sé ar fáil
+níos mó feidhmiúlachta do ghlaoiteoirí ar ár bhfeidhm agus dúbailt cóid a chosc.</p>
+<p>Ag leanúint lenár bhfeidhm <code>largest</code>, léiríonn Liostú 10-4 dhá fheidhm a
+Faigheann an dá cheann an luach is mó i slice. Déanfaimid iad seo a chomhcheangal ina n-aonar ansin
+feidhm a úsáideann generics.</p>
+<Listing number="10-4" file-name="src/main.rs" caption="Two functions that differ only in their names and in the types in their signatures">
+<pre><pre class="playground"><code class="language-rust">fn largest_i32(list: &amp;[i32]) -&gt; &amp;i32 {
+    let mut largest = &amp;list[0];
+
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn largest_char(list: &amp;[char]) -&gt; &amp;char {
+    let mut largest = &amp;list[0];
+
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let result = largest_i32(&amp;number_list);
+    println!("The largest number is {result}");
+<span class="boring">    assert_eq!(*result, 100);
+</span>
+    let char_list = vec!['y', 'm', 'a', 'q'];
+
+    let result = largest_char(&amp;char_list);
+    println!("The largest char is {result}");
+<span class="boring">    assert_eq!(*result, 'y');
+</span>}</code></pre></pre>
+</Listing>
+<p>Is í an fheidhm <code>largest_i32</code> an ceann a bhaineamar amach i Liostú 10-3 a aimsíonn
+an <code>i32</code> is mó i slisne. Faigheann an fheidhm <code>largest_char</code> an ceann is mó
+<code>char</code> i slisne. Tá an cód céanna ag na comhlachtaí feidhme, mar sin cuirimis deireadh leis
+an dúbailt trí pharaiméadar cineálach a thabhairt isteach in aon fheidhm amháin.</p>
+<p>Chun na cineálacha a pharaiméadarú i bhfeidhm aonair nua, ní mór dúinn an cineál a ainmniú
+paraiméadar, díreach mar a dhéanaimid do na paraiméadair luacha go dtí feidhm. Is féidir leat úsáid a bhaint as
+aon aitheantóir mar ainm paraiméadar cineáil. Ach úsáidfimid <code>T</code> mar gheall ar, le
+coinbhinsiún, tá ainmneacha paraiméadar cineál i Rust gearr, go minic ach litir amháin, agus
+Is é Coinbhinsiún Cineál-ainmnithe Rust UpperCamelCase. Gearr do <em>type</em>, is é <code>T</code> an
+rogha réamhshocraithe an chuid is mó de ríomhchláraitheoirí Rust.</p>
+<p>Nuair a úsáidimid paraiméadar i gcorp na feidhme, ní mór dúinn a dhearbhú an
+ainm paraiméadar sa síniú ionas go mbeidh a fhios ag an tiomsaitheoir cad a chiallaíonn an t-ainm sin.
+Mar an gcéanna, nuair a úsáidimid ainm paraiméadar cineál i síniú feidhm, ní mór dúinn
+chun an t-ainm paraiméadar cineál a dhearbhú sula n-úsáidfimid é. Chun an cineálach a shainiú
+an fheidhm <code>largest</code>, cuirimid dearbhuithe cineál-ainm taobh istigh de lúibíní uillinne,
+<code>&lt;&gt;</code>, idir ainm na feidhme agus liosta na bparaiméadar, mar seo:</p>
+<pre><code class="language-rust ignore">fn largest&lt;T&gt;(list: &amp;[T]) -&gt; &amp;T {</code></pre>
+<p>Léimid an sainmhíniú seo mar seo a leanas: tá an fheidhm <code>largest</code> cineálach thar chineál éigin
+<code>T</code>. Tá paraiméadar amháin ag an bhfeidhm seo darb ainm <code>list</code>, ar sliseog luachanna é
+den chineál <code>T</code>. Tabharfaidh an fheidhm <code>largest</code> tagairt ar ais do luach an
+cineál céanna <code>T</code>.</p>
+<p>Léiríonn liostú 10-5 an sainmhíniú comhcheangailte ar fheidhm <code>largest</code> ag baint úsáide as an gcineál cineálach
+cineál sonraí ina shíniú. Léiríonn an liostú freisin conas is féidir linn glaoch ar an bhfeidhm
+le slice de luachanna <code>i32</code> nó luachanna <code>char</code>. Tabhair faoi deara nach ndéanfaidh an cód seo
+le chéile go fóill, ach déanfaimid é a shocrú níos déanaí sa chaibidil seo.</p>
+<Listing number="10-5" file-name="src/main.rs" caption="The `largest` function using generic type parameters; this doesn’t compile yet">
+<pre><code class="language-rust ignore does_not_compile">fn largest&lt;T&gt;(list: &amp;[T]) -&gt; &amp;T {
+    let mut largest = &amp;list[0];
+
+    for item in list {
+        if item &gt; largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let result = largest(&amp;number_list);
+    println!("The largest number is {result}");
+
+    let char_list = vec!['y', 'm', 'a', 'q'];
+
+    let result = largest(&amp;char_list);
+    println!("The largest char is {result}");
+}</code></pre>
+</Listing>
+<p>Má thiomsaimid an cód seo faoi láthair, gheobhaidh muid an earráid seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0369]: binary operation `&gt;` cannot be applied to type `&amp;T`
+ --&gt; src/main.rs:5:17
+  |
+5 |         if item &gt; largest {
+  |            ---- ^ ------- &amp;T
+  |            |
+  |            &amp;T
+  |
+help: consider restricting type parameter `T`
+  |
+1 | fn largest&lt;T: std::cmp::PartialOrd&gt;(list: &amp;[T]) -&gt; &amp;T {
+  |             ++++++++++++++++++++++
+
+For more information about this error, try `rustc --explain E0369`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+</code></pre>
+<p>Luann an téacs cabhrach <code>std::cmp::PartialOrd</code>, atá ina <em>trait</em>, agus táimid ag
+ag dul chun labhairt faoi thréithe sa chéad alt eile. Chun anois, tá a fhios go bhfuil an earráid seo
+Deirtear nach n-oibreoidh an corp <code>largest</code> do gach cineál <code>T</code>
+d'fhéadfadh a bheith. Toisc gur mian linn luachanna de chineál <code>T</code> sa chorp a chur i gcomparáid, is féidir linn
+ná húsáid ach cineálacha ar féidir a luachanna a ordú. Chun comparáidí a chumasú, an caighdeán
+Tá an tréithe <code>std::cmp::PartialOrd</code> ag an leabharlann is féidir leat a chur i bhfeidhm ar chineálacha
+(féach Aguisín C le haghaidh tuilleadh ar an tréith seo). Trí na téacsanna cabhrach a leanúint
+Mar mholadh, cuirimid srian leis na cineálacha atá bailí do <code>T</code> amháin dóibh siúd a chuireann i bhfeidhm
+Beidh <code>PartialOrd</code> agus an sampla seo le chéile, mar gheall ar an leabharlann caighdeánach
+cuireann <code>PartialOrd</code> i bhfeidhm ar <code>i32</code> agus <code>char</code> araon.</p>
+<h3 id="i-sainmhínithe-struchtúr"><a class="header" href="#i-sainmhínithe-struchtúr">I Sainmhínithe Struchtúr</a></h3>
+<p>Is féidir linn struchtúir a shainiú freisin chun paraiméadar cineál cineálach a úsáid i gceann amháin nó níos mó
+réimsí ag baint úsáide as an chomhréir <code>&lt;&gt;</code>. Sainmhíníonn liostú 10-6 struchtúr <code>Point&lt;T&gt;</code> le coinneáil
+Comhordaíonn <code>x</code> agus <code>y</code> luachanna de chineál ar bith.</p>
+<Listing number="10-6" file-name="src/main.rs" caption="A `Point<T>` struct that holds `x` and `y` values of type `T`">
+<pre><pre class="playground"><code class="language-rust">struct Point&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+fn main() {
+    let integer = Point { x: 5, y: 10 };
+    let float = Point { x: 1.0, y: 4.0 };
+}</code></pre></pre>
+</Listing>
+<p>Tá an chomhréir chun cineálacha a úsáid i sainmhínithe struchtúir cosúil leis an gceann a úsáidtear i
+sainmhínithe feidhm. Ar dtús dearbhaímid ainm an pharaiméadar cineál taobh istigh
+lúibíní uillinn díreach tar éis ainm an struct. Ansin úsáidimid an cineálach
+clóscríobh an sainmhíniú ar struct nuair a shonróimis sonraí nithiúla ar shlí eile
+cineálacha.</p>
+<p>Tabhair faoi deara toisc nár úsáideamar ach cineál cineálach amháin chun <code>Point &lt;T&gt;</code> a shainiú, seo
+deir an sainmhíniú go bhfuil an struchtúr <code>Point&lt;T&gt;</code> cineálach thar cineál éigin <code>T</code>, agus
+is iad na réimsí <code>x</code> agus <code>y</code> <em>an dá chineál</em> sin, is cuma cén cineál sin. Más rud é
+cruthaímid sampla de <code>Point&lt;T&gt;</code> a bhfuil luachanna de chineálacha éagsúla aige, mar atá i
+Ag liostú 10-7, ní thiomsóidh ár gcód.</p>
+<Listing number="10-7" file-name="src/main.rs" caption="The fields `x` and `y` must be the same type because both have the same generic data type `T`.">
+<pre><code class="language-rust ignore does_not_compile">struct Point&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+fn main() {
+    let wont_work = Point { x: 5, y: 4.0 };
+}</code></pre>
+</Listing>
+<p>Sa sampla seo, nuair a shannaimid an luach slánuimhir <code>5</code> go <code>x</code>, ligimid an
+tá a fhios ag tiomsaitheoir gur slánuimhir a bheidh sa chineál cineálach <code>T</code> don chás seo de
+<code>Point&lt;T&gt;</code>. Ansin nuair a shonraimid <code>4.0</code> le haghaidh <code>y</code>, rud a shainigh muid go mbeadh an
+cineál céanna le <code>x</code>, gheobhaidh muid earráid cineál neamhréire mar seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:7:38
+  |
+7 |     let wont_work = Point { x: 5, y: 4.0 };
+  |                                      ^^^ expected integer, found floating-point number
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+</code></pre>
+<p>Struchtúr <code>Point</code> a shainiú ina bhfuil <code>x</code> agus <code>y</code> araon cineálach ach a bhféadfadh go mbeadh
+cineálacha éagsúla, is féidir linn paraiméadair ilchineálacha cineálacha a úsáid. Mar shampla, i
+Ag liostú 10-8, athraíonn muid an sainmhíniú ar <code>Point</code> le bheith cineálach thar chineálacha <code>T</code>
+agus <code>U</code> áit a bhfuil <code>x</code> den chineál <code>T</code> agus <code>y</code> den chineál <code>U</code>.</p>
+<Listing number="10-8" file-name="src/main.rs" caption="A `Point<T, U>` generic over two types so that `x` and `y` can be values of different types">
+<pre><pre class="playground"><code class="language-rust">struct Point&lt;T, U&gt; {
+    x: T,
+    y: U,
+}
+
+fn main() {
+    let both_integer = Point { x: 5, y: 10 };
+    let both_float = Point { x: 1.0, y: 4.0 };
+    let integer_and_float = Point { x: 5, y: 4.0 };
+}</code></pre></pre>
+</Listing>
+<p>Anois ceadaítear na cásanna go léir de <code>Point</code> a thaispeántar! Is féidir leat an oiread cineálach a úsáid
+paraiméadair cineál i sainmhíniú mar is mian leat, ach ag baint úsáide as níos mó ná cúpla a dhéanann
+do chód deacair a léamh. Má aimsíonn tú go bhfuil go leor cineálacha cineálacha de dhíth ort
+do chód, d'fhéadfadh sé a léiriú go bhfuil gá le do chód a athstruchtúrú go dtí níos lú
+píosaí.</p>
+<h3 id="i-sainmhínithe-enum"><a class="header" href="#i-sainmhínithe-enum">I Sainmhínithe Enum</a></h3>
+<p>Mar a rinneamar le struchtúir, is féidir linn enums a shainiú chun cineálacha sonraí cineálacha a choinneáil ina gcuid
+athraithigh. Breathnaímis ar an <code>Option&lt;T&gt;</code> atá sa chaighdeán
+soláthairtí leabharlainne, a d’úsáideamar i gCaibidil 6:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum Option&lt;T&gt; {
+    Some(T),
+    None,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Ba cheart go ndéanfadh an sainmhíniú seo níos mó ciall duit anois. Mar a fheiceann tú, tá an
+Tá <code>Option&lt;T&gt;</code> enum cineálach thar an gcineál <code>T</code> agus tá dhá leagan ann: <code>Some</code>, a
+tá luach amháin de chineál <code>T</code> aige, agus malairt <code>None</code> nach bhfuil luach ar bith aige.
+Trí úsáid a bhaint as an <code>Option&lt;T&gt;</code> enum, is féidir linn coincheap teibí an
+luach roghnach, agus toisc go bhfuil <code>Option&lt;T&gt;</code> cineálach, is féidir linn an astarraingt seo a úsáid
+is cuma cén cineál an luach roghnach.</p>
+<p>Is féidir le Enums cineálacha ilchineálacha a úsáid freisin. An sainmhíniú ar an <code>Result</code>
+Is sampla amháin é an enum a d’úsáideamar i gCaibidil 9:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum Result&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Tá an enum <code>Result</code> cineálach thar dhá chineál, <code>T</code> agus <code>E</code>, agus tá dhá leagan ann:
+<code>Ok</code>, a bhfuil luach de chineál <code>T</code> aige, agus <code>Err</code>, a bhfuil luach cineáil aige
+<code>e</code>. Fágann an sainmhíniú seo go bhfuil sé áisiúil an enum <code>Result</code> a úsáid áit ar bith againn
+bíodh oibríocht agat a d'fhéadfadh a bheith rathúil (luach de chineál éigin <code>T</code> a thabhairt ar ais) nó a theipeann
+(tabhair ar ais earráid de shaghas éigin <code>E</code>). Go deimhin, is é seo an rud a d'úsáid muid a oscailt
+comhad i Liostú 9-3, áit ar líonadh <code>T</code> leis an gcineál <code>std::fs::File</code> nuair
+D'éirigh leis an gcomhad a oscailt agus líonadh <code>E</code> leis an gcineál
+<code>std::io::Error</code> nuair a bhí fadhbanna le hoscailt an chomhaid.</p>
+<p>Nuair a aithníonn tú cásanna i do chód le struchtúr iolrach nó enum
+sainmhínithe nach bhfuil difriúil ach amháin i gcineálacha na luachanna atá acu, is féidir leat
+seachain dúbailt trí úsáid a bhaint as cineálacha cineálacha ina ionad.</p>
+<h3 id="i-sainmhínithe-modh"><a class="header" href="#i-sainmhínithe-modh">I Sainmhínithe Modh</a></h3>
+<p>Is féidir linn modhanna a chur i bhfeidhm maidir le struchtúir agus enums (mar a rinneamar i gCaibidil 5) agus úsáid
+cineálacha cineálacha ina sainmhínithe freisin. Léiríonn liostú 10-9 an <code>Point&lt;T&gt;</code>
+struchtúr sainmhínithe againn i Liostú 10-6 le modh darb ainm <code>x</code> curtha i bhfeidhm air.</p>
+<Listing number="10-9" file-name="src/main.rs" caption="Implementing a method named `x` on the `Point<T>` struct that will return a reference to the `x` field of type `T`">
+<pre><pre class="playground"><code class="language-rust">struct Point&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+impl&lt;T&gt; Point&lt;T&gt; {
+    fn x(&amp;self) -&gt; &amp;T {
+        &amp;self.x
+    }
+}
+
+fn main() {
+    let p = Point { x: 5, y: 10 };
+
+    println!("p.x = {}", p.x());
+}</code></pre></pre>
+</Listing>
+<p>Anseo, shainmhíomar modh darb ainm <code>x</code> ar <code>Point &lt;T&gt;</code> a thugann tagairt ar ais
+leis na sonraí sa réimse <code>x</code>.</p>
+<p>Tabhair faoi deara go gcaithfimid <code>T</code> a dhearbhú díreach i ndiaidh <code>impl</code> ionas gur féidir linn <code>T</code> a úsáid lena shonrú
+go bhfuil modhanna ar an gcineál <code>Point &lt;T&gt;</code> á gcur i bhfeidhm againn. Trí <code>T</code> a dhearbhú mar a
+cineál cineálach tar éis <code>impl</code>, is féidir le meirge a aithint gurb é an cineál san uillinn
+Is cineál cineálach seachas cineál coincréite é lúibíní i <code>Point</code>. D'fhéadfadh muid
+roghnaigh ainm eile don pharaiméadar cineálach seo ná an t-ainm cineálach
+paraiméadar dearbhaithe sa sainmhíniú struct, ach ag baint úsáide as an ainm céanna é
+traidisiúnta. Má scríobhann tú modh laistigh de <code>impl</code> a dhearbhaíonn cineálach
+cineál, saineofar an modh sin ar aon ásc den chineál, is cuma cén
+cuirtear an cineál coincréit in ionad an chineáil cineálach.</p>
+<p>Is féidir linn srianta ar chineálacha cineálacha a shonrú freisin agus modhanna á sainiú ar an
+cineál. D'fhéadfaimis, mar shampla, modhanna a chur i bhfeidhm ar chásanna <code>Point&lt;f32&gt;</code> amháin
+seachas ar chásanna <code>Point&lt;T&gt;</code> le haon chineál cineálach. I Liosta 10-10 táimid
+bain úsáid as an gcineál coincréite <code>f32</code>, rud a chiallaíonn nach ndearbhaímid aon chineál i ndiaidh <code>impl</code>.</p>
+<Listing number="10-10" file-name="src/main.rs" caption="An `impl` block that only applies to a struct with a particular concrete type for the generic type parameter `T`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct Point&lt;T&gt; {
+</span><span class="boring">    x: T,
+</span><span class="boring">    y: T,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; Point&lt;T&gt; {
+</span><span class="boring">    fn x(&amp;self) -&gt; &amp;T {
+</span><span class="boring">        &amp;self.x
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Point&lt;f32&gt; {
+    fn distance_from_origin(&amp;self) -&gt; f32 {
+        (self.x.powi(2) + self.y.powi(2)).sqrt()
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let p = Point { x: 5, y: 10 };
+</span><span class="boring">
+</span><span class="boring">    println!("p.x = {}", p.x());
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Ciallaíonn an cód seo go mbeidh <code>distance_from_origin</code> ag an gcineál <code>Point&lt;f32&gt;</code>
+modh ; i gcásanna eile de <code>Point&lt;T&gt;</code> nuair nach de chineál <code>f32</code> é <code>T</code>'
+an modh seo a shainiú. Tomhaiseann an modh cé chomh fada ár bpointe ó na
+pointe ag comhordanáidí (0.0, 0.0) agus úsáideann oibríochtaí matamaitice atá
+ar fáil do chineálacha snámhphointe amháin.</p>
+<p>Ní bhíonn paraiméadair chineálacha i sainmhíniú struchtúir mar a chéile i gcónaí leo siúd
+úsáideann tú sínithe modha an struchtúir chéanna sin. Úsáideann liostú 10-11 an cineálach
+cineálacha <code>X1</code> agus <code>Y1</code> don struchtúr <code>Point</code> agus <code>X2</code> <code>Y2</code> don mhodh <code>mixup</code>
+síniú chun an sampla a dhéanamh níos soiléire. Cruthaíonn an modh <code>Point</code> nua
+mar shampla leis an luach <code>x</code> ón <code>self</code> <code>Point</code> (den chineál <code>X1</code>) agus an <code>y</code>
+luach ón <code>Point</code> a cuireadh isteach (den chineál <code>Y2</code>).</p>
+<Listing number="10-11" file-name="src/main.rs" caption="A method that uses generic types different from its struct’s definition">
+<pre><pre class="playground"><code class="language-rust">struct Point&lt;X1, Y1&gt; {
+    x: X1,
+    y: Y1,
+}
+
+impl&lt;X1, Y1&gt; Point&lt;X1, Y1&gt; {
+    fn mixup&lt;X2, Y2&gt;(self, other: Point&lt;X2, Y2&gt;) -&gt; Point&lt;X1, Y2&gt; {
+        Point {
+            x: self.x,
+            y: other.y,
+        }
+    }
+}
+
+fn main() {
+    let p1 = Point { x: 5, y: 10.4 };
+    let p2 = Point { x: "Hello", y: 'c' };
+
+    let p3 = p1.mixup(p2);
+
+    println!("p3.x = {}, p3.y = {}", p3.x, p3.y);
+}</code></pre></pre>
+</Listing>
+<p>I <code>main</code>, tá <code>Point</code> sainmhínithe againn a bhfuil <code>i32</code> ann do <code>x</code> (le luach <code>5</code>)
+agus <code>f64</code> le haghaidh <code>y</code> (le luach <code>10.4</code>). Is struchtúr <code>Point</code> é an athróg <code>p2</code>
+a bhfuil sreangshlis le haghaidh <code>x</code> (le luach <code>"Hello"</code>) agus <code>char</code> le haghaidh <code>y</code>
+(le luach <code>c</code>). Ag glaoch <code>mixup</code> ar <code>p1</code> leis an argóint <code>p2</code> tugann <code>p3</code> dúinn,
+a mbeidh <code>i32</code> le haghaidh <code>x</code> mar gur tháinig <code>x</code> ó <code>p1</code>. An athróg <code>p3</code>
+will have a <code>char</code> for <code>y</code> because <code>y</code> came from <code>p2</code>. An macra <code>println!</code>
+priontálfaidh glao <code>p3.x = 5, p3.y = c</code>.</p>
+<p>Is é cuspóir an sampla seo a léiriú staid ina bhfuil roinnt cineálach
+dearbhaítear paraiméadair le <code>impl</code> agus dearbhaítear cuid acu leis an modh
+sainmhíniú. Anseo, dearbhaítear na paraiméadair chineálacha <code>X1</code> agus <code>Y1</code> ina dhiaidh sin
+<code>impl</code> mar go dtéann siad leis an sainmhíniú struct. Na paraiméadair chineálacha <code>X2</code>
+agus déantar <code>Y2</code> a dhearbhú tar éis <code>fn mixup</code> toisc nach mbaineann siad ach leis an
+modh.</p>
+<h3 id="feidhmíocht-an-chóid-ag-Úsáid-generics"><a class="header" href="#feidhmíocht-an-chóid-ag-Úsáid-generics">Feidhmíocht an Chóid ag Úsáid Generics</a></h3>
+<p>B'fhéidir go bhfuil tú ag smaoineamh an bhfuil costas ama rite ag baint úsáide as cineál cineálach
+paraiméadair. Is é an dea-scéal ná nach ndéanfaidh úsáid cineálacha cineálacha do chlár
+reáchtáil ar bith níos moille ná mar a bheadh ​​sé le cineálacha coincréite.</p>
+<p>Cuireann meirge é seo i gcrích trí mhonamorphization an chóid a dhéanamh ag baint úsáide as
+generics ag am tiomsaithe. Is é <em>Monomorphization</em> an próiseas a bhaineann le casadh cineálach
+cód isteach i gcód sonrach trí na cineálacha nithiúla a úsáidtear nuair a
+tiomsaithe. Sa phróiseas seo, déanann an tiomsaitheoir a mhalairt de na céimeanna a d'úsáideamar
+chun an fheidhm chineálach a chruthú i Liostú 10-5: féachann an tiomsaitheoir ar gach ceann de na
+áiteanna ina dtugtar cód cineálach agus gineann cód do na cineálacha nithiúla
+tugtar an cód cineálach le.</p>
+<p>Breathnaímid ar conas a oibríonn sé seo trí úsáid a bhaint as cineálach na leabharlainne caighdeánach
+<code>Option&lt;T&gt;</code> enum:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let integer = Some(5);
+let float = Some(5.0);
+<span class="boring">}</span></code></pre></pre>
+<p>Nuair a thiomsaíonn Rust an cód seo, déanann sé monomorphization. Le linn sin
+phróiseas, léann an tiomsaitheoir na luachanna a úsáideadh i <code>Option&lt;T&gt;</code>
+cásanna agus aithníonn sé dhá chineál <code>Option&lt;T&gt;</code>: is é ceann amháin <code>i32</code> agus an ceann eile
+tá <code>f64</code>. Mar sin, leathnaíonn sé an sainmhíniú cineálach ar <code>Option&lt;T&gt;</code> ina dhá cheann
+sainmhínithe ar <code>i32</code> agus <code>f64</code>, rud a chuirtear in ionad an chineálach
+sainmhíniú leis na cinn ar leith.</p>
+<p>Breathnaíonn an leagan monomorphized den chód cosúil leis an méid seo a leanas (an
+Úsáideann tiomsaitheoir ainmneacha atá difriúil ó na cinn atá in úsáid againn anseo le haghaidh léiriú):</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust">enum Option_i32 {
+    Some(i32),
+    None,
+}
+
+enum Option_f64 {
+    Some(f64),
+    None,
+}
+
+fn main() {
+    let integer = Option_i32::Some(5);
+    let float = Option_f64::Some(5.0);
+}</code></pre></pre>
+</Listing>
+<p>Cuirtear na sainmhínithe ar leith cruthaithe ag
+an tiomsaitheoir. Toisc go dtiomsaíonn Rust cód cineálach i gcód a shonraíonn an
+cineál i ngach cás, ní íocaimid aon chostas ama rite as generics a úsáid. Nuair a bheidh an cód
+ritheann, feidhmíonn sé díreach mar a bheadh ​​sé dá mbeadh dúbailt againn ar gach sainmhíniú
+lámh. Déanann an próiseas monamorphization generics Rust thar a bheith éifeachtach
+ag am rite.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="tréithe-ag-sainmhíniú-iompar-comhroinnte"><a class="header" href="#tréithe-ag-sainmhíniú-iompar-comhroinnte">Tréithe: Ag Sainmhíniú Iompar Comhroinnte</a></h2>
+<p>Sainmhíníonn <em>trait</em> an fheidhmiúlacht atá ag cineál ar leith agus ar féidir leis a roinnt
+cineálacha eile. Is féidir linn tréithe a úsáid chun iompar roinnte a shainiú ar bhealach teibí. muid
+is féidir <em>trait bounds</em> a úsáid chun a shonrú gur féidir le cineál cineálach a bheith ina chineál ar bith a bhfuil
+iompar áirithe.</p>
+<blockquote>
+<p>Nóta: Tá tréithe cosúil le gné ar a dtugtar go minic <em>interfaces</em> i gceann eile
+teangacha, cé go bhfuil roinnt difríochtaí ann.</p>
+</blockquote>
+<h3 id="tréith-á-sainmhíniú"><a class="header" href="#tréith-á-sainmhíniú">Tréith á Sainmhíniú</a></h3>
+<p>Is éard atá in iompar cineáil na modhanna ar féidir linn glaoch orthu ar an gcineál sin. Difriúil
+roinneann cineálacha an t-iompar céanna más féidir linn na modhanna céanna a ghlaoch orthu sin go léir
+cineálacha. Is bealach iad sainmhínithe tréithe chun sínithe modhanna a ghrúpáil le chéile chun
+sraith iompraíochtaí a shainiú atá riachtanach chun cuspóir éigin a bhaint amach.</p>
+<p>Mar shampla, lig dúinn a rá go bhfuil struchtúir iolracha againn a bhfuil cineálacha éagsúla agus
+méideanna téacs: struchtúr <code>NewsArticle</code> a choinníonn scéal nuachta comhdaithe in a
+suíomh ar leith agus <code>Tweet</code> ar féidir, ar a mhéad, 280 carachtar a bheith ann
+le meiteashonraí a thugann le fios cé acu tweet nua, retweet nó freagra a bhí ann
+chuig tweet eile.</p>
+<p>Ba mhaith linn cliathbhosca leabharlainne comhbhailitheoir meán a dhéanamh darb ainm <code>aggregator</code> is féidir
+taispeáin achoimrí ar shonraí a d'fhéadfaí a stóráil in <code>NewsArticle</code> nó <code>Tweet</code>
+shampla. Chun seo a dhéanamh, tá achoimre de dhíth orainn ó gach cineál, agus iarrfaimid é sin
+achoimre trí mhodh <code>summarize</code> a ghlaoch ar shampla. Léiríonn liostú 10-12 an
+sainmhíniú ar thréith <code>Summary</code> phoiblí a chuireann an t-iompar seo in iúl.</p>
+<Listing number="10-12" file-name="src/lib.rs" caption="A `Summary` trait that consists of the behavior provided by a `summarize` method">
+<pre><code class="language-rust noplayground">pub trait Summary {
+    fn summarize(&amp;self) -&gt; String;
+}</code></pre>
+</Listing>
+<p>Anseo, dearbhaímid tréith ag baint úsáide as an eochairfhocal <code>trait</code> agus ansin ainm an trait,
+atá <code>Summary</code> sa chás seo. Dearbhaímid freisin gur <code>Summary</code> an trait ionas go
+is féidir le cliathbhoscaí ag brath ar an gcliathbhosca seo úsáid a bhaint as an tréith seo freisin, mar a fheicfimid ann
+cúpla sampla. Taobh istigh de na lúibíní curly, dearbhaímid na sínithe modh
+a chuireann síos ar iompraíocht na gcineálacha a chuireann an trait seo i bhfeidhm, atá i
+is é an cás seo ná <code>fn summarize(&amp;self) -&gt; String</code>.</p>
+<p>Tar éis an síniú modh, in ionad cur i bhfeidhm a sholáthar laistigh de chatach
+lúibíní, úsáidimid leathstad. Ní mór do gach cineál a chuireann an tréith seo chun feidhme a sholáthar
+a iompar saincheaptha féin le haghaidh an comhlacht ar an modh. Cuirfidh an tiomsaitheoir i bhfeidhm
+go mbeidh an modh <code>summarize</code> ag aon chineál a bhfuil an trait <code>Summary</code> aige
+sainmhínithe go díreach leis an síniú seo.</p>
+<p>Is féidir le tréith modhanna iolracha a bheith ina chorp: tá na sínithe modh liostaithe
+ceann in aghaidh an líne, agus críochnaíonn gach líne i leathstad.</p>
+<h3 id="tréith-ar-chineál-a-chur-i-bhfeidhm"><a class="header" href="#tréith-ar-chineál-a-chur-i-bhfeidhm">Tréith ar Chineál a Chur i bhFeidhm</a></h3>
+<p>Anois go bhfuil sínithe inmhianaithe na modhanna <code>Summary</code> sainithe againn,
+is féidir linn é a chur i bhfeidhm ar na cineálacha inár gcomhbhailitheoir meáin. Liostáil 10-13 seónna
+cur i bhfeidhm na tréithe <code>Summary</code> ar an struchtúr <code>NewsArticle</code> a úsáideann
+an ceannlíne, an t-údar, agus an suíomh chun luach aischuir a chruthú
+<code>summarize</code>. Maidir leis an struchtúr <code>Tweet</code>, sainmhínímid <code>summarize</code> mar an t-ainm úsáideora
+ina dhiaidh sin téacs iomlán an tweet, ag glacadh leis go bhfuil an t-ábhar tweet
+teoranta do 280 carachtar cheana féin.</p>
+<Listing number="10-13" file-name="src/lib.rs" caption="Implementing the `Summary` trait on the `NewsArticle` and `Tweet` types">
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct NewsArticle {
+    pub headline: String,
+    pub location: String,
+    pub author: String,
+    pub content: String,
+}
+
+impl Summary for NewsArticle {
+    fn summarize(&amp;self) -&gt; String {
+        format!("{}, by {} ({})", self.headline, self.author, self.location)
+    }
+}
+
+pub struct Tweet {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub retweet: bool,
+}
+
+impl Summary for Tweet {
+    fn summarize(&amp;self) -&gt; String {
+        format!("{}: {}", self.username, self.content)
+    }
+}</code></pre>
+</Listing>
+<p>Tá cur i bhfeidhm tréith ar chineál cosúil le modhanna rialta a chur i bhfeidhm. Tá an
+difríocht is ea gur tar éis <code>impl</code>, cuirimid an t-ainm trait ba mhaith linn a chur i bhfeidhm,
+ansin bain úsáid as an eochairfhocal <code>for</code>, agus ansin sonraigh ainm an chineáil a theastaíonn uainn
+an trait a chur i bhfeidhm le haghaidh. Laistigh den bhloc <code>impl</code>, chuireamar na sínithe modha
+atá sainmhínithe ag an sainiú trait. In ionad leathstad a chur leis i ndiaidh gach ceann acu
+síniú, úsáidimid lúibíní curly agus líon isteach an comhlacht modh leis an sainiúil
+iompar a theastaíonn uainn go mbeadh modhanna an trait don chineál áirithe.</p>
+<p>Anois go bhfuil an trait <code>Summary</code> ar <code>NewsArticle</code> agus
+<code>Tweet</code>, is féidir le húsáideoirí an chliabháin na modhanna trait a ghlaoch ar chásanna de
+<code>NewsArticle</code> agus <code>Tweet</code> ar an mbealach céanna a dtugaimid modhanna rialta orthu. An t-aon
+difríocht ná go gcaithfidh an t-úsáideoir an tréith a thabhairt isteach sa raon feidhme chomh maith leis an
+cineálacha. Seo sampla den chaoi a bhféadfadh cliathbhosca dénártha ár <code>aggregator</code> a úsáid
+cliathbhosca leabharlainne:</p>
+<pre><code class="language-rust ignore">use aggregator::{Summary, Tweet};
+
+fn main() {
+    let tweet = Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        retweet: false,
+    };
+
+    println!("1 new tweet: {}", tweet.summarize());
+}</code></pre>
+<p>Priontálann an cód seo <code>1 new tweet: horse_ebooks: of course, as you probably already know, people</code>.</p>
+<p>Is féidir le cliathbhoscaí eile a bhraitheann ar an gcliathbhosca <code>aggregator</code> an <code>Summary</code> a thabhairt freisin
+tréith isteach sa scóip chun <code>Summary</code> a chur i bhfeidhm ar a gcineálacha féin. Srian amháin le
+Tabhair faoi deara nach féidir linn tréith a chur i bhfeidhm ar chineál ach amháin má tá an trait nó an
+cineál, nó iad araon, áitiúil dár gcliathbhosca. Mar shampla, is féidir linn caighdeán a chur i bhfeidhm
+tréithe leabharlainne cosúil le <code>Display</code> ar chineál saincheaptha mar <code>Tweet</code> mar chuid dár
+feidhmiúlacht cliathbhosca <code>aggregator</code> toisc go bhfuil an cineál <code>Tweet</code> áitiúil dár gcuid
+cliathbhosca <code>aggregator</code>. Is féidir linn freisin <code>Summary</code> ar <code>Vec&lt;T&gt;</code> a chur i bhfeidhm inár
+cliathbhosca <code>aggregator</code> toisc go bhfuil an trait <code>Summary</code> áitiúil dár <code>aggregator</code>
+cliathbhosca.</p>
+<p>Ach ní féidir linn tréithe seachtracha a chur i bhfeidhm ar chineálacha seachtracha. Mar shampla, ní féidir linn
+cuir an trait <code>Display</code> ar <code>Vec&lt;T&gt;</code> i bhfeidhm laistigh dár gcliathbhosca <code>aggregator</code> toisc
+Sainmhínítear <code>Display</code> agus <code>Vec&lt;T&gt;</code> araon sa ghnáthleabharlann agus níl siad
+áitiúil dár gcliathbhosca <code>aggregator</code>. Is cuid de mhaoin ar a dtugtar an srian seo
+<em>coherence</em>, agus go sonrach an riail <em>orphan</em>, ainmnithe amhlaidh mar gheall ar an
+níl cineál tuismitheora i láthair. Cinntíonn an riail seo nach féidir cód daoine eile
+briseadh do chód agus vice versa. Gan an riail, d'fhéadfadh dhá chliabhán a chur i bhfeidhm
+an tréith chéanna don chineál céanna, agus ní bheadh ​​a fhios ag Rust cén cur i bhfeidhm
+a úsáid.</p>
+<h3 id="feidhmithe-réamhshocraithe"><a class="header" href="#feidhmithe-réamhshocraithe">Feidhmithe Réamhshocraithe</a></h3>
+<p>Uaireanta bíonn sé úsáideach iompar réamhshocraithe a bheith agat le haghaidh cuid de na modhanna nó gach ceann díobh
+i tréith in ionad feidhmiúcháin a éileamh do gach modh ar gach cineál.
+Ansin, de réir mar a chuirimid an trait i bhfeidhm ar chineál áirithe, is féidir linn a choinneáil nó a shárú
+iompraíocht réamhshocraithe gach modha.</p>
+<p>I Liostú 10-14, sonraímid teaghrán réamhshocraithe don mhodh <code>summarize</code> den
+Tréith <code>Summary</code> in ionad an síniú modha amháin a shainiú, mar a rinneamar i
+Liostáil 10-12.</p>
+<Listing number="10-14" file-name="src/lib.rs" caption="Defining a `Summary` trait with a default implementation of the `summarize` method">
+<pre><code class="language-rust noplayground">pub trait Summary {
+    fn summarize(&amp;self) -&gt; String {
+        String::from("(Read more...)")
+    }
+}
+<span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Chun feidhmchlár réamhshocraithe a úsáid chun achoimre a dhéanamh ar chásanna de <code>NewsArticle</code>, déanaimid
+sonraigh bloc <code>impl</code> folamh le <code>impl Summary for NewsArticle {}</code>.</p>
+<p>Cé nach bhfuilimid ag sainiú an mhodha <code>summarize</code> ar <code>NewsArticle</code> a thuilleadh
+go díreach, chuireamar cur i bhfeidhm réamhshocraithe ar fáil agus shonraigh muid é sin
+Cuireann <code>NewsArticle</code> an trait <code>Summary</code> i bhfeidhm. Mar thoradh air sin, is féidir linn glaoch fós
+an modh <code>summarize</code> ar shampla de <code>NewsArticle</code>, mar seo:</p>
+<pre><code class="language-rust ignore"><span class="boring">use aggregator::{self, NewsArticle, Summary};
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    let article = NewsArticle {
+        headline: String::from("Penguins win the Stanley Cup Championship!"),
+        location: String::from("Pittsburgh, PA, USA"),
+        author: String::from("Iceburgh"),
+        content: String::from(
+            "The Pittsburgh Penguins once again are the best \
+             hockey team in the NHL.",
+        ),
+    };
+
+    println!("New article available! {}", article.summarize());
+<span class="boring">}</span></code></pre>
+<p>Priontálann an cód seo <code>New article available! (Read more...)</code>.</p>
+<p>Ní gá dúinn aon rud a athrú chun forfheidhmiú réamhshocraithe a chruthú
+cur i bhfeidhm <code>Summary</code> ar <code>Tweet</code> i Liosta 10-13. Is é an chúis atá leis sin
+is ionann an chomhréir chun cur i bhfeidhm réamhshocraithe a shárú agus an chomhréir
+chun modh trait a chur i bhfeidhm nach bhfuil cur i bhfeidhm réamhshocraithe aige.</p>
+<p>Is féidir le cur i bhfeidhm réamhshocraithe modhanna eile sa tréith chéanna a ghlaoch, fiú amháin más iad sin
+níl cur i bhfeidhm réamhshocraithe ag modhanna eile. Ar an mbealach seo, is féidir le trait
+go leor feidhmiúlacht úsáideach a sholáthar agus ní gá ach na hoibreoirí a shonrú
+cuid bheag de. Mar shampla, d'fhéadfaimis an tréithe <code>Summary</code> a shainiú chun a
+modh <code>summarize_author</code> a bhfuil a chur i bhfeidhm ag teastáil, agus ansin sainigh a
+modh <code>summarize</code> a bhfuil cur i bhfeidhm réamhshocraithe aige a ghlaonn an
+modh <code>summarize_author</code>:</p>
+<pre><code class="language-rust noplayground">pub trait Summary {
+    fn summarize_author(&amp;self) -&gt; String;
+
+    fn summarize(&amp;self) -&gt; String {
+        format!("(Read more from {}...)", self.summarize_author())
+    }
+}
+<span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize_author(&amp;self) -&gt; String {
+</span><span class="boring">        format!("@{}", self.username)
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<p>Chun an leagan seo de <code>Summary</code> a úsáid, ní gá dúinn ach <code>summarize_author</code> a shainiú
+nuair a chuirimid an trait i bhfeidhm ar chineál:</p>
+<pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize_author(&amp;self) -&gt; String;
+</span><span class="boring">
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("(Read more from {}...)", self.summarize_author())
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Summary for Tweet {
+    fn summarize_author(&amp;self) -&gt; String {
+        format!("@{}", self.username)
+    }
+}</code></pre>
+<p>Tar éis dúinn <code>summarize_author</code> a shainiú, is féidir linn <code>summarize</code> a ghlaoch ar chásanna an
+Beidh <code>Tweet</code> struct, agus cur i bhfeidhm réamhshocraithe <code>summarize</code> glaoch ar an
+sainmhíniú ar <code>summarize_author</code> atá curtha ar fáil againn. Toisc go bhfuil muid curtha i bhfeidhm
+<code>summarize_author</code>, thug an trait <code>Summary</code> iompar an
+modh <code>summarize</code> gan a cheangal orainn a thuilleadh cód a scríobh. Seo a bhfuil
+is cosúil:</p>
+<pre><code class="language-rust ignore"><span class="boring">use aggregator::{self, Summary, Tweet};
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    let tweet = Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        retweet: false,
+    };
+
+    println!("1 new tweet: {}", tweet.summarize());
+<span class="boring">}</span></code></pre>
+<p>Priontálann an cód seo <code>1 new tweet: (Read more from @horse_ebooks...)</code>.</p>
+<p>Tabhair faoi deara nach féidir an forfheidhmiú réamhshocraithe a ghlaoch ó
+cur i bhfeidhm an mhodha chéanna sin a shárú.</p>
+<h3 id="tréithe-mar-pharaiméadair"><a class="header" href="#tréithe-mar-pharaiméadair">Tréithe mar Pharaiméadair</a></h3>
+<p>Anois go bhfuil a fhios agat conas tréithe a shainiú agus a chur i bhfeidhm, is féidir linn iniúchadh a dhéanamh ar conas iad a úsáid
+tréithe a shainiú feidhmeanna a ghlacann go leor cineálacha éagsúla. Bainfimid úsáid as an
+Tréith <code>Summary</code> chuireamar i bhfeidhm ar na cineálacha <code>NewsArticle</code> agus <code>Tweet</code> in
+Ag liostú 10-13 chun feidhm <code>notify</code> a shainiú a dtugtar an modh <code>summarize</code> air
+ar a pharaiméadar <code>item</code>, atá de shaghas éigin a chuireann an <code>Summary</code> i bhfeidhm
+trait. Chun seo a dhéanamh, úsáidimid an chomhréir <code>impl Trait</code>, mar seo:</p>
+<pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}, by {} ({})", self.headline, self.author, self.location)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn notify(item: &amp;impl Summary) {
+    println!("Breaking news! {}", item.summarize());
+}</code></pre>
+<p>In ionad cineál nithiúil don pharaiméadar <code>item</code>, sonraímid an <code>impl</code>
+eochairfhocal agus an t-ainm trait. Glacann an paraiméadar seo le haon chineál a chuireann an
+tréith shonraithe. I gcorp an <code>notify</code>, is féidir linn glaoch ar aon mhodhanna ar <code>item</code>
+a thagann as an trait <code>Summary</code>, mar shampla <code>summarize</code>. Is féidir linn <code>notify</code> a ghlaoch
+agus pas a fháil in aon chás de <code>NewsArticle</code> nó <code>Tweet</code>. Cód a ghlaonn an
+feidhmiú le haon chineál eile, mar shampla <code>String</code> nó <code>i32</code>, ní thiomsóidh
+toisc nach gcuireann na cineálacha sin <code>Summary</code> i bhfeidhm.</p>
+<!-- Sean-cheannteidil. Ná bain amach nó seans go mbrisfidh naisc. -->
+<p><a id="fixing-the-more-function-with-trait-bounds"></a></p>
+<h4 id="comhréir-trait-bound"><a class="header" href="#comhréir-trait-bound">Comhréir Trait Bound</a></h4>
+<p>Feidhmíonn an chomhréir <code>impl Trait</code> do chásanna simplí ach is comhréir é i ndáiríre
+siúcra le haghaidh foirm níos faide ar a dtugtar <em>trait bound</em>; Breathnaíonn sé mar seo:</p>
+<pre><code class="language-rust ignore">pub fn notify&lt;T: Summary&gt;(item: &amp;T) {
+    println!("Breaking news! {}", item.summarize());
+}</code></pre>
+<p>Tá an fhoirm níos faide seo comhionann leis an sampla sa roinn roimhe seo ach tá
+níos briathar. Cuirimid teorainneacha tréithe leis an dearbhú den chineál cineálach
+paraiméadar tar éis idirstad agus laistigh de lúibíní uillinn.</p>
+<p>Tá an chomhréir <code>impl Trait</code> áisiúil agus cruthaíonn sé cód níos gonta go simplí
+cásanna, agus is féidir leis an gcomhréir tréithe níos iomláine castacht a chur in iúl i gcásanna eile
+cásanna. Mar shampla, is féidir dhá pharaiméadar a bheith againn a chuireann <code>Summary</code> i bhfeidhm. Ag déanamh
+mar sin tá cuma mar seo ar chomhréir <code>impl Trait</code>:</p>
+<pre><code class="language-rust ignore">pub fn notify(item1: &amp;impl Summary, item2: &amp;impl Summary) {</code></pre>
+<p>Is cuí <code>impl Trait</code> a úsáid má theastaíonn uainn go gceadódh an fheidhm seo <code>item1</code> agus
+cineálacha éagsúla a bheith ag <code>item2</code> (chomh fada agus a chuireann an dá chineál <code>Summary</code> i bhfeidhm). Más rud é
+ba mhaith linn iallach a chur ar an dá paraiméadair a bheith ar an gcineál céanna, áfach, ní mór dúinn a úsáid a
+trait faoi cheangal, mar seo:</p>
+<pre><code class="language-rust ignore">pub fn notify&lt;T: Summary&gt;(item1: &amp;T, item2: &amp;T) {</code></pre>
+<p>Sonraítear an cineál cineálach <code>T</code> mar an cineál <code>item1</code> agus <code>item2</code>
+paraiméadair srianta ar an bhfeidhm den sórt sin go bhfuil an cineál nithiúla an luach
+a rith mar argóint ar son <code>item1</code> agus caithfidh <code>item2</code> a bheith mar an gcéanna.</p>
+<h4 id="ag-sonrú-na-dtréithe-iolracha-leis-an-gcomhréir-"><a class="header" href="#ag-sonrú-na-dtréithe-iolracha-leis-an-gcomhréir-">Ag sonrú na dTréithe Iolracha leis an gComhréir <code>+</code></a></h4>
+<p>Is féidir linn níos mó ná tréith amháin a shonrú freisin. Abair go raibh muid ag iarraidh <code>notify</code> a úsáid
+formáidiú taispeána chomh maith le <code>summarize</code> ar <code>item</code>: sonraímid sa <code>notify</code>
+sainmhíniú go gcaithfidh <code>item</code> <code>Display</code> agus <code>Summary</code> araon a chur i bhfeidhm. Is féidir linn a dhéanamh
+mar sin ag baint úsáide as an chomhréir <code>+</code>:</p>
+<pre><code class="language-rust ignore">pub fn notify(item: &amp;(impl Summary + Display)) {</code></pre>
+<p>Tá an chomhréir <code>+</code> bailí freisin le teorainneacha tréithe ar chineálacha cineálacha:</p>
+<pre><code class="language-rust ignore">pub fn notify&lt;T: Summary + Display&gt;(item: &amp;T) {</code></pre>
+<p>Leis an dá theorainn tréith sonraithe, is féidir le corp an <code>notify</code> <code>summarize</code> a ghlaoch
+agus úsáid <code>{}</code> chun <code>item</code> a fhormáidiú.</p>
+<h4 id="tréith-níos-soiléire-teorainneacha-le-clásail-áit"><a class="header" href="#tréith-níos-soiléire-teorainneacha-le-clásail-áit">Tréith níos Soiléire Teorainneacha le Clásail <code>áit</code></a></h4>
+<p>Tá míbhuntáistí ag baint le húsáid an iomarca teorainneacha trait. Tá a thréith féin ag gach cineálach
+teorainneacha, mar sin is féidir go leor feidhmeanna a bhfuil paraiméadair chineálacha iolracha acu
+faisnéis faoi cheangal idir ainm na feidhme agus a liosta paraiméadar,
+rud a fhágann gur deacair síniú na feidhme a léamh. Ar an gcúis seo, tá malartach ag Rust
+Comhréir chun teorainneacha tréithe a shonrú taobh istigh de chlásal <code>where</code> i ndiaidh na feidhme
+síniú. Mar sin, in ionad é seo a scríobh:</p>
+<pre><code class="language-rust ignore">fn some_function&lt;T: Display + Clone, U: Clone + Debug&gt;(t: &amp;T, u: &amp;U) -&gt; i32 {</code></pre>
+<p>we can use a <code>where</code> clause, like this:</p>
+<pre><code class="language-rust ignore">fn some_function&lt;T, U&gt;(t: &amp;T, u: &amp;U) -&gt; i32
+where
+    T: Display + Clone,
+    U: Clone + Debug,
+{
+<span class="boring">    unimplemented!()
+</span><span class="boring">}</span></code></pre>
+<p>Níl an oiread sin bearrtha ar shíniú na feidhme seo: ainm na feidhme, liosta paraiméadar,
+agus cineál fillte gar dá chéile, cosúil le feidhm gan go leor tréithe
+teorainneacha.</p>
+<h3 id="cineálacha-filleadh-a-chuireann-tréithe-i-bhfeidhm"><a class="header" href="#cineálacha-filleadh-a-chuireann-tréithe-i-bhfeidhm">Cineálacha Filleadh a chuireann Tréithe i bhFeidhm</a></h3>
+<p>Is féidir linn an chomhréir <code>impl Trait</code> a úsáid freisin sa suíomh fillte chun aischur a
+luach de shaghas éigin a chuireann trait i bhfeidhm, mar a thaispeántar anseo:</p>
+<pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}, by {} ({})", self.headline, self.author, self.location)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn returns_summarizable() -&gt; impl Summary {
+    Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        retweet: false,
+    }
+}</code></pre>
+<p>Trí úsáid a bhaint as <code>impl Summary</code> don chineál tuairisceáin, sonraímid go bhfuil an
+Filleann an fheidhm <code>returns_summarizable</code> cineál éigin a chuireann an <code>Summary</code> i bhfeidhm
+trait gan an cineál coincréit a ainmniú. Sa chás seo, <code>returns_summarizable</code>
+seolann sé <code>Tweet</code> ar ais, ach ní gá go mbeadh a fhios sin ag an gcód a ghlaonn an fheidhm seo.</p>
+<p>Tá an cumas chun cineál tuairisceáin a shonrú de réir na tréithe a chuireann sé i bhfeidhm amháin
+úsáideach go háirithe i gcomhthéacs dúnadh agus atrialltóirí, a chlúdaímid iontu
+Caibidil 13. Cruthaíonn dúnta agus iterators cineálacha nach bhfuil a fhios ach ag an tiomsaitheoir nó
+cineálacha atá an-fhada a shonrú. Ligeann an chomhréir <code>impl Trait</code> tú go gonta
+sonraigh go bhfilleann feidhm cineál éigin a chuireann an trait <code>Iterator</code> i bhfeidhm
+gan gá le cineál an-fhada a scríobh amach.</p>
+<p>Mar sin féin, ní féidir leat <code>impl Trait</code> a úsáid ach amháin má tá cineál amháin á sheoladh ar ais agat. Le haghaidh
+mar shampla, an cód seo a sheolann ceachtar <code>NewsArticle</code> nó <code>Tweet</code> leis an
+ní n-oibreodh an cineál tuairisceáin atá sonraithe mar <code>impl Summary</code>:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}, by {} ({})", self.headline, self.author, self.location)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Tweet {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub retweet: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for Tweet {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn returns_summarizable(switch: bool) -&gt; impl Summary {
+    if switch {
+        NewsArticle {
+            headline: String::from(
+                "Penguins win the Stanley Cup Championship!",
+            ),
+            location: String::from("Pittsburgh, PA, USA"),
+            author: String::from("Iceburgh"),
+            content: String::from(
+                "The Pittsburgh Penguins once again are the best \
+                 hockey team in the NHL.",
+            ),
+        }
+    } else {
+        Tweet {
+            username: String::from("horse_ebooks"),
+            content: String::from(
+                "of course, as you probably already know, people",
+            ),
+            reply: false,
+            retweet: false,
+        }
+    }
+}</code></pre>
+<p>Ní cheadaítear 'Nuacht-Airteagal' nó 'Tweet' a thabhairt ar ais de bharr srianta
+thart ar an gcaoi a gcuirtear an chomhréir <code>impl Trait</code> i bhfeidhm sa tiomsaitheoir. Clúdóidh muid
+conas feidhm a scríobh leis an iompar seo sa <a href="ch18-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">“Ag Úsáid Réada Tréith a Ligeann Luachanna de Chineálacha Éagsúla”</a><!--
+neamhaird a dhéanamh ar --> alt de Chaibidil 18.</p>
+<h3 id="ag-Úsáid-teorainneacha-trait-chun-modhanna-a-chur-i-bhfeidhm-go-coinníollach"><a class="header" href="#ag-Úsáid-teorainneacha-trait-chun-modhanna-a-chur-i-bhfeidhm-go-coinníollach">Ag Úsáid Teorainneacha Trait chun Modhanna a Chur i bhFeidhm go Coinníollach</a></h3>
+<p>Trí úsáid a bhaint as tréith atá faoi cheangal le bloc <code>impl</code> a úsáideann paraiméadair chineálacha,
+is féidir linn modhanna a chur i bhfeidhm go coinníollach le haghaidh cineálacha a chuireann an sonraithe i bhfeidhm
+tréithe. Mar shampla, cuireann an cineál <code>Pair&lt;T&gt;</code> i Liosta 10-15 i bhfeidhm i gcónaí an
+feidhm <code>new</code> chun sampla nua de <code>Pair&lt;T&gt;</code> a thabhairt ar ais (aisghlaoch ón
+<a href="ch05-03-method-syntax.html#defining-methods">“Modhanna a Shainmhíniú”</a><!-- neamhaird a dhéanamh ar --> roinn de Chaibidil 5 a dhéanann <code>Self</code>
+is ailias cineál é don chineál bloc <code>impl</code>, atá sa chás seo
+<code>Pair&lt;T&gt;</code>). Ach sa chéad bhloc <code>impl</code> eile, ní chuireann <code>Pair&lt;T&gt;</code> i bhfeidhm ach an
+modh <code>cmp_display</code> má chuireann a chineál inmheánach <code>T</code> an trait <code>PartialOrd</code> i bhfeidhm
+a chumasaíonn comparáid <em>agus</em> an tréithe <code>Display</code> a chumasaíonn priontáil.</p>
+<Listing number="10-15" file-name="src/lib.rs" caption="Conditionally implementing methods on a generic type depending on trait bounds">
+<pre><code class="language-rust noplayground">use std::fmt::Display;
+
+struct Pair&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+impl&lt;T&gt; Pair&lt;T&gt; {
+    fn new(x: T, y: T) -&gt; Self {
+        Self { x, y }
+    }
+}
+
+impl&lt;T: Display + PartialOrd&gt; Pair&lt;T&gt; {
+    fn cmp_display(&amp;self) {
+        if self.x &gt;= self.y {
+            println!("The largest member is x = {}", self.x);
+        } else {
+            println!("The largest member is y = {}", self.y);
+        }
+    }
+}</code></pre>
+</Listing>
+<p>Is féidir linn freisin tréith a chur i bhfeidhm go coinníollach d'aon chineál a chuireann i bhfeidhm
+tréith eile. Cur i bhfeidhm tréith ar aon chineál a shásaíonn an tréith
+tugtar <em>blanket implementations</em> ar theorainneacha agus úsáidtear go forleathan iad sna
+Leabharlann chaighdeánach meirge. Mar shampla, cuireann an leabharlann chaighdeánach an
+Tréith <code>ToString</code> ar aon chineál a chuireann an trait <code>Display</code> i bhfeidhm. An <code>impl</code>
+Breathnaíonn an bloc sa ghnáthleabharlann cosúil leis an gcód seo:</p>
+<pre><code class="language-rust ignore">impl&lt;T: Display&gt; ToString for T {
+    // --snip--
+}</code></pre>
+<p>Toisc go bhfuil an cur i bhfeidhm cuimsitheach seo ag an leabharlann chaighdeánach, is féidir linn an
+modh <code>to_string</code> arna shainiú ag an tréith <code>ToString</code> ar aon chineál a fheidhmíonn
+an trait <code>Display</code>. Mar shampla, is féidir linn slánuimhreacha a thiontú ina gcuid comhfhreagrach
+Luachanna <code>String</code> mar seo toisc go gcuireann slánuimhreacha <code>Display</code> i bhfeidhm:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = 3.to_string();
+<span class="boring">}</span></code></pre></pre>
+<p>Tá cur i bhfeidhm blaincéid le feiceáil sa doiciméadú don trait sa
+Alt “Feidhmitheoirí”.</p>
+<p>Ligeann tréithe agus teorainneacha tréithe dúinn cód a scríobh a úsáideann paraiméadair chineálacha chun
+dúbailt a laghdú ach sonraigh freisin don tiomsaitheoir gur mian linn an cineálach
+cineál a bhfuil iompar ar leith. Is féidir leis an tiomsaitheoir an tréith faoi cheangal a úsáid ansin
+faisnéis le seiceáil go soláthraíonn na cineálacha coincréite go léir a úsáidtear lenár gcód an
+iompar ceart. I dteangacha atá clóscríofa go dinimiciúil, gheobhaimid earráid ag
+am rite má ghlaomar modh ar chineál nár shainigh an modh. Ach
+Bogann Rust na hearráidí seo chun am a thiomsú agus mar sin tá iallach orainn na fadhbanna a réiteach
+sula mbeidh ár gcód fiú in ann a rith. Ina theannta sin, ní gá dúinn cód a scríobh
+a sheiceálann iompar ag am rite toisc go bhfuil seiceáil déanta againn cheana féin tráth an tiomsaithe
+am. Má dhéantar amhlaidh, feabhsaíonn sé an fheidhmíocht gan an tsolúbthacht a thabhairt suas
+de chineálacha.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="tagairtí-a-bhailíochtú-le-saoil"><a class="header" href="#tagairtí-a-bhailíochtú-le-saoil">Tagairtí a Bhailíochtú le Saoil</a></h2>
+<p>Is cineál cineálach eile iad saolré atá in úsáid againn cheana féin. Ina ionad sin
+ná a chinntiú go bhfuil an t-iompar a theastaíonn uainn ag cineál, cinntíonn an saolré sin
+tá tagairtí bailí chomh fada agus a theastaíonn uainn iad a bheith.</p>
+<p>Sonraí amháin nár phléigh muid sna <a href="ch04-02-references-and-borrowing.html#references-and-borrowing">“Tagairtí agus
+Iasachtaí a fháil”</a><!-- neamhaird a dhéanamh ar --> tá an roinn i gCaibidil 4
+go bhfuil <em>lifetime</em> ag gach tagairt i Rust, agus sin an raon feidhme dó
+tá an tagairt sin bailí. An chuid is mó den am, bíonn saolta intuigthe agus tátal,
+díreach mar an chuid is mó den am, tá tátal a bhaint as cineálacha. Ní mór dúinn cineálacha a anótáil amháin
+nuair is féidir cineálacha iolracha. Ar an mbealach céanna, ní mór dúinn saolréanna a anótáil
+nuair a d’fhéadfaí saolré na dtagairtí a cheangal ar roinnt bealaí éagsúla. Rust
+éilíonn orainn na caidrimh a anótáil ag baint úsáide as paraiméadair chineálacha saoil chun
+a chinntiú go mbeidh na tagairtí iarbhír a úsáidtear ag am rite bailí cinnte.</p>
+<p>Ní coincheap é saolréanna anótála atá ag formhór na dteangacha ríomhchlárúcháin eile, mar sin de
+beidh sé seo ag dul a bhraitheann neamhchoitianta. Cé nach gclúdóidh muid saolréanna ina gcuid
+go hiomlán sa chaibidil seo, pléifimid bealaí coitianta a dtiocfadh leat teacht orthu
+comhréir feadh an tsaoil ionas gur féidir leat a bheith compordach leis an gcoincheap.</p>
+<h3 id="tagairtí-dangling-le-saoil-a-chosc"><a class="header" href="#tagairtí-dangling-le-saoil-a-chosc">Tagairtí Dangling le Saoil a Chosc</a></h3>
+<p>Is í an phríomhaidhm le saolréanna ná <em>dangling references</em> a chosc, a chuireann faoi deara a
+clár chun sonraí a thagairt seachas na sonraí a bhfuil sé beartaithe tagairt a dhéanamh dóibh.
+Smaoinigh ar an gclár i Liostú 10-16, a bhfuil raon feidhme seachtrach agus taobh istigh aige
+scóip.</p>
+<Listing number="10-16" caption="An attempt to use a reference whose value has gone out of scope">
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let r;
+
+    {
+        let x = 5;
+        r = &amp;x;
+    }
+
+    println!("r: {r}");
+}</code></pre>
+</Listing>
+<blockquote>
+<p>Nóta: Dearbhaíonn na samplaí i Liostú 10-16, 10-17, agus 10-23 athróga
+gan luach tosaigh a thabhairt dóibh, mar sin tá an t-ainm athróg ann ar an taobh amuigh
+scóip. Ar an gcéad amharc, d’fhéadfadh sé a bheith cosúil go bhfuil sé seo ag teacht salach ar a bhfuil ag Rust
+gan luachanna null. Mar sin féin, má dhéanaimid iarracht athróg a úsáid sula dtabharfar luach dó,
+gheobhaidh muid earráid ama tiomsaithe, rud a thaispeánann nach gceadaíonn Rust go deimhin
+luachanna null.</p>
+</blockquote>
+<p>Dearbhaíonn an raon feidhme seachtrach athróg darb ainm <code>r</code> gan aon luach tosaigh, agus an
+dearbhaíonn raon feidhme inmheánach athróg darb ainm <code>x</code> le luach tosaigh <code>5</code>. Laistigh
+an scóip istigh, déanaimid iarracht luach <code>r</code> a shocrú mar thagairt do <code>x</code>. Ansin
+críochnaíonn an scóip inmheánach, agus déanaimid iarracht an luach a phriontáil in <code>r</code>. Ní dhéanfaidh an cód seo
+tiomsaigh toisc go bhfuil an luach a bhfuil <code>r</code> ag tagairt dó imithe as an scóip roimhe seo
+déanaimid iarracht é a úsáid. Seo an teachtaireacht earráide:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0597]: `x` does not live long enough
+ --&gt; src/main.rs:6:13
+  |
+5 |         let x = 5;
+  |             - binding `x` declared here
+6 |         r = &amp;x;
+  |             ^^ borrowed value does not live long enough
+7 |     }
+  |     - `x` dropped here while still borrowed
+8 |
+9 |     println!("r: {r}");
+  |                  --- borrow later used here
+
+For more information about this error, try `rustc --explain E0597`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+</code></pre>
+<p>Deir an teachtaireacht earráide nach bhfuil an athróg <code>x</code> "beo fada go leor." Tá an
+Is é an chúis go mbeidh <code>x</code> as an raon feidhme nuair a chríochnaíonn an raon feidhme istigh ar líne 7.
+Ach tá <code>r</code> fós bailí don scóip sheachtrach; toisc go bhfuil a raon feidhme níos mó, deirimid
+go mairfeadh sé "níos faide." Dá gceadódh Rust don chód seo oibriú, bheadh ​​<code>r</code>
+cuimhne thagartha a bhí dealraitheach nuair a chuaigh <code>x</code> as raon feidhme, agus
+ní bheadh ​​aon rud a rinneamar iarracht a dhéanamh le <code>r</code> ag obair i gceart. Mar sin, conas a dhéanann Rust
+a chinneadh go bhfuil an cód seo neamhbhailí? Úsáideann sé seiceálaí iasachtaí.</p>
+<h3 id="an-seiceálaí-iasachta"><a class="header" href="#an-seiceálaí-iasachta">An Seiceálaí Iasachta</a></h3>
+<p>Tá <em>borrow checker</em>  ag an tiomsaitheoir Rust a dhéanann comparáid idir scóip chun a chinneadh
+cibé an bhfuil gach iasacht bailí. Léiríonn Liostú 10-17 an cód céanna le Liostú
+10-16 ach le nótaí a thaispeánann saolréanna na n-athróg.</p>
+<Listing number="10-17" caption="Annotations of the lifetimes of `r` and `x`, named `'a` and `'b`, respectively">
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let r;                // ---------+-- 'a
+                          //          |
+    {                     //          |
+        let x = 5;        // -+-- 'b  |
+        r = &amp;x;           //  |       |
+    }                     // -+       |
+                          //          |
+    println!("r: {r}");   //          |
+}                         // ---------+</code></pre>
+</Listing>
+<p>Anseo, rinneamar saolré <code>r</code> a anótáil le <code>'a</code> agus saolré <code>x</code>
+le <code>'b</code>. Mar a fheiceann tú, tá an bloc <code>' b</code> istigh i bhfad níos lú ná an bloc seachtrach
+<code>'a</code> bloc saoil. Ag am tiomsaithe, déanann Rust comparáid idir méid an dá cheann
+saoil agus feictear go bhfuil saolré <code>'a</code> ag <code>r</code> ach go dtagraíonn sé don chuimhne
+le saolré <code>'b</code>. Diúltaítear don chlár toisc go bhfuil <code>'b</code> níos giorra ná
+<code>'a</code>: ní mhaireann ábhar na tagartha chomh fada leis an tagairt.</p>
+<p>Le liostú 10-18 socraítear an cód ionas nach mbeidh tagairt dhochrach aige agus é
+thiomsaíonn gan aon earráidí.</p>
+<Listing number="10-18" caption="A valid reference because the data has a longer lifetime than the reference">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = 5;            // ----------+-- 'b
+                          //           |
+    let r = &amp;x;           // --+-- 'a  |
+                          //   |       |
+    println!("r: {r}");   //   |       |
+                          // --+       |
+}                         // ----------+</code></pre></pre>
+</Listing>
+<p>Anseo, tá an saolré <code>' b</code> ag <code>x</code>, atá sa chás seo níos mó ná <code>'a</code>. seo
+ciallaíonn <code>r</code> is féidir tagairt a dhéanamh do <code>x</code> mar tá a fhios ag Rust go bhfuil an tagairt in <code>r</code> will
+bheith bailí i gcónaí agus <code>x</code> bailí.</p>
+<p>Anois go bhfuil a fhios agat cad iad saolré na dtagairtí agus conas a dhéanann Rust anailís
+saolréanna chun a chinntiú go mbeidh teistiméireachtaí bailí i gcónaí, déanaimis iniúchadh cineálach
+saolré paraiméadair agus luachanna toraidh i gcomhthéacs feidhmeanna.</p>
+<h3 id="saoil-cineálach-i-bhfeidhmeanna"><a class="header" href="#saoil-cineálach-i-bhfeidhmeanna">Saoil Cineálach i bhFeidhmeanna</a></h3>
+<p>Scríobhfaimid feidhm a thabharfaidh ar ais an ceann is faide de dhá shlisne téad. seo
+Beidh feidhm a ghlacadh dhá shlisne teaghrán agus ar ais slice amháin teaghrán. Tar éis
+tá an fheidhm <code>longest</code> curtha i bhfeidhm againn, ba cheart don chód i Liostú 10-19
+cló <code>The longest string is abcd</code>.</p>
+<Listing number="10-19" file-name="src/main.rs" caption="A `main` function that calls the `longest` function to find the longer of two string slices">
+<pre><code class="language-rust ignore">fn main() {
+    let string1 = String::from("abcd");
+    let string2 = "xyz";
+
+    let result = longest(string1.as_str(), string2);
+    println!("The longest string is {result}");
+}</code></pre>
+</Listing>
+<p>Tabhair faoi deara gur mian linn an fheidhm a ghlacadh slisní teaghrán, a bhfuil tagairtí,
+seachas teaghráin, mar nílimid ag iarraidh an fheidhm <code>longest</code> a ghlacadh
+úinéireacht a paraiméadair. Déan tagairt don <a href="ch04-03-slices.html#string-slices-as-parameters">“Slices Teaghrán mar
+Paraiméadair”</a><!-- neamhaird --> an roinn i gCaibidil 4
+le tuilleadh plé a fháil faoin bhfáth gurb iad na paraiméadair a úsáidimid i Liosta 10-19 ná na
+cinn atá uainn.</p>
+<p>Má dhéanaimid iarracht an fheidhm <code>longest</code> a chur i bhfeidhm mar a thaispeántar i Liostú 10-20, é
+ní thiomsóidh.</p>
+<Listing number="10-20" file-name="src/main.rs" caption="An implementation of the `longest` function that returns the longer of two string slices but does not yet compile">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span><span class="boring">    let string1 = String::from("abcd");
+</span><span class="boring">    let string2 = "xyz";
+</span><span class="boring">
+</span><span class="boring">    let result = longest(string1.as_str(), string2);
+</span><span class="boring">    println!("The longest string is {result}");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn longest(x: &amp;str, y: &amp;str) -&gt; &amp;str {
+    if x.len() &gt; y.len() {
+        x
+    } else {
+        y
+    }
+}</code></pre>
+</Listing>
+<p>Ina áit sin, faighimid an earráid seo a leanas a labhraíonn faoi shaolréanna:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0106]: missing lifetime specifier
+ --&gt; src/main.rs:9:33
+  |
+9 | fn longest(x: &amp;str, y: &amp;str) -&gt; &amp;str {
+  |               ----     ----     ^ expected named lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `x` or `y`
+help: consider introducing a named lifetime parameter
+  |
+9 | fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+  |           ++++     ++          ++          ++
+
+For more information about this error, try `rustc --explain E0106`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+</code></pre>
+<p>Léiríonn an téacs cabhrach go dteastaíonn paraiméadar cineálach saoil don chineál fillte
+air mar ní féidir le Rust a rá an mbaineann an tagairt atá á thabhairt ar ais
+<code>x</code> nó <code>y</code>. I ndáiríre, níl a fhios againn ach an oiread, mar gheall ar an <code>if</code> bloc sa chorp
+den fheidhm seo filleann tagairt do <code>x</code> agus filleann an bloc <code>else</code> a
+tagairt do <code>y</code>!</p>
+<p>Agus an fheidhm seo á sainiú againn, níl a fhios againn na luachanna nithiúla a bheidh
+a chur ar aghaidh isteach sa fheidhm seo, mar sin níl a fhios againn cé acu an cás <code>if</code> nó an
+cuirfear cás <code>else</code> i gcrích. Níl a fhios againn freisin ar shaolréanna nithiúla an
+tagairtí a sheolfar isteach, mar sin ní féidir linn breathnú ar na scóip mar a rinneamar
+Liostaí 10-17 agus 10-18 chun a chinneadh an ndéanfaidh an tagairt a chuirimid ar ais
+bheith bailí i gcónaí. Ní féidir leis an seiceálaí iasachtaí é seo a chinneadh ach an oiread, mar gheall air
+Ní fios conas a bhaineann saolré <code>x</code> agus <code>y</code> le saolré an
+luach aischuir. Chun an earráid seo a réiteach, cuirfimid paraiméadair chineálacha saoil leis sin
+an gaol idir na tagairtí a shainiú ionas gur féidir leis an seiceálaí iasachtaí
+a anailís a dhéanamh.</p>
+<h3 id="comhréir-nótaí-saoil"><a class="header" href="#comhréir-nótaí-saoil">Comhréir Nótaí Saoil</a></h3>
+<p>Ní athraíonn nótaí saoil cé chomh fada agus a mhaireann aon cheann de na tagairtí. Ina ionad sin,
+déanann siad cur síos ar na gaolmhaireachtaí a bhaineann le saolré na tagairtí iolracha do gach ceann acu
+eile gan cur isteach ar an saolré. Díreach mar is féidir le feidhmeanna glacadh le haon chineál
+nuair a shonraíonn an síniú paraiméadar cineál cineálach, is féidir le feidhmeanna glacadh leis
+tagairtí le haon saolré trí pharaiméadar cineálach saoil a shonrú.</p>
+<p>Tá comhréir beagán neamhghnách ag nótaí saoil: ainmneacha an tsaoil
+ní mór do pharaiméadair tosú le haspail (<code>'</code>) agus de ghnáth is cás íochtair iad ar fad
+agus an-ghearr, cosúil le cineálacha cineálacha. Úsáideann formhór na ndaoine an t-ainm <code>'a</code> ar an gcéad dul síos
+nóta feadh an tsaoil. Cuirimid nótaí paraiméadar an tsaoil i ndiaidh <code>&amp;</code> a
+tagairt, ag baint úsáide as spás chun an nóta a scaradh ó chineál na tagartha.</p>
+<p>Seo roinnt samplaí: tagairt do <code>i32</code> gan paraiméadar saoil, a
+tagairt do <code>i32</code> a bhfuil paraiméadar saoil darb ainm <code>'a</code> aige, agus mutable
+tagairt do <code>i32</code> a bhfuil an saolré <code>'a</code> aige freisin.</p>
+<pre><code class="language-rust ignore">&amp;i32        // tagairt
+&amp;'a i32     // tagairt le saolré follasach
+&amp;'a mut i32 // tagairt mutable le saolré follasach</code></pre>
+<p>Níl mórán brí ag baint le nóta saoil amháin ann féin toisc go bhfuil an
+Tá anótálacha i gceist a insint do Rust conas paraiméadair chineálacha feadh an tsaoil il
+baineann tagairtí lena chéile. Déanaimis scrúdú ar conas na nótaí saoil
+a bhaineann le chéile i gcomhthéacs na feidhme <code>longest</code>.</p>
+<h3 id="anótálacha-saoil-i-sínithe-feidhme"><a class="header" href="#anótálacha-saoil-i-sínithe-feidhme">Anótálacha Saoil i Sínithe Feidhme</a></h3>
+<p>Chun nótaí saoil a úsáid i sínithe feidhm, ní mór dúinn an
+paraiméadair cineálach <em>lifetime</em> laistigh de lúibíní uillinne idir ainm na feidhme
+agus an liosta paraiméadar, díreach mar a rinneamar le paraiméadair cineálach <em>type</em>.</p>
+<p>Ba mhaith linn go gcuirfeadh an síniú an srian seo a leanas in iúl: an t-aischur
+beidh an tagairt bailí fad is atá an dá pharaiméadar bailí. Is é seo an
+an gaol idir saolré na bparaiméadar agus an luach toraidh. Déanfaimid
+ainmnigh an saolré <code>'a</code> agus ansin cuir le gach tagairt é, mar a thaispeántar sa Liostú
+10-21.</p>
+<Listing number="10-21" file-name="src/main.rs" caption="The `longest` function definition specifying that all the references in the signature must have the same lifetime `'a`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let string1 = String::from("abcd");
+</span><span class="boring">    let string2 = "xyz";
+</span><span class="boring">
+</span><span class="boring">    let result = longest(string1.as_str(), string2);
+</span><span class="boring">    println!("The longest string is {result}");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+    if x.len() &gt; y.len() {
+        x
+    } else {
+        y
+    }
+}</code></pre></pre>
+</Listing>
+<p>Ba cheart don chód seo an toradh a theastaíonn uainn a thiomsú agus a tháirgeadh nuair a úsáidimid é leis an
+`príomhfheidhm' i Liostú 10-19.</p>
+<p>Insíonn síniú na feidhme do Rust anois go bhfuil <code>'a</code>, an fheidhm ar feadh an tsaoil
+Bíonn dhá pharaiméadar, agus is slisní teaghrán iad araon a mhaireann ar a laghad mar
+ar feadh an tsaoil <code>'a</code>. Insíonn an síniú feidhm freisin Rust go bhfuil an teaghrán
+Beidh slice ar ais ón bhfeidhm beo ar a laghad chomh fada agus a saolré <code>'a</code>.
+Go praiticiúil, ciallaíonn sé go bhfuil an saolré an tagairt ar ais ag an
+tá an fheidhm <code>longest</code> mar an gcéanna leis an gceann is lú de shaolréanna na luachanna
+dá dtagraítear ag na hargóintí feidhm. Is iad na caidrimh seo a theastaíonn uainn
+Rust a úsáid agus an cód seo á anailísiú.</p>
+<p>Cuimhnigh, nuair a shonraímid na paraiméadair saoil sa síniú feidhme seo,
+níl muid ag athrú saolré aon luachanna a chuirtear isteach nó a thugtar ar ais. Ina ionad sin,
+táimid ag sonrú gur cheart don seiceálaí iasachtaí diúltú d’aon luachanna nach ndéanann
+cloí leis na srianta seo. Tabhair faoi deara nach gá an fheidhm <code>longest</code>
+fios go cruinn cá fhad a mhairfidh <code>x</code> agus <code>y</code>, ach gur féidir le scóip éigin a bheith
+in ionad <code>'a</code> a shásóidh an síniú seo.</p>
+<p>Nuair a bhíonn saolréanna i bhfeidhmeanna á anótáil, téann na nótaí isteach san fheidhm
+síniú, nach bhfuil sa chomhlacht feidhme. Is cuid de na nótaí saoil
+conradh na feidhme, mórán cosúil leis na cineálacha sa síniú. Ag
+go bhfuil sínithe feidhm ciallaíonn an conradh saolré an anailís ar an meirge
+Is féidir le tiomsaitheoir a bheith níos simplí. Má tá fadhb ann leis an gcaoi a bhfuil feidhm
+anótáilte nó an bealach ar a dtugtar é, is féidir leis an earráidí tiomsaitheoir pointe go dtí an chuid de
+ár gcód agus na srianta níos cruinne. Más rud é, ina ionad sin, an tiomsaitheoir Rust
+rinneamar níos mó tátail faoi na caidrimh a bhí i gceist againn ar feadh an tsaoil
+le bheith, b'fhéidir nach mbeadh an tiomsaitheoir in ann ach go leor céimeanna a úsáid chun ár gcód a úsáid
+ar shiúl ó chúis na faidhbe.</p>
+<p>Nuair a thugaimid tagairtí nithiúla don <code>longest</code>, is é sin an saolré nithiúil
+in ionad <code>'a</code> is ea an chuid de scóip <code>x</code> a fhorluíonn leis an
+scóip <code>y</code>. I bhfocail eile, beidh an saolré cineálach <code>'a</code> a fháil ar an nithiúla
+saolré atá comhionann leis an gceann is lú de shaolré <code>x</code> agus <code>y</code>. Toisc
+rinneamar an tagairt ar ais a anótáil leis an bparaiméadar saoil céanna <code>'a</code>,
+beidh an tagairt ar ais bailí freisin ar feadh an fhad is lú de na
+saolré <code>x</code> agus <code>y</code>.</p>
+<p>Breathnaímid ar an gcaoi a gcuireann nótaí saoil srian ar an bhfeidhm <code>longest</code> trí
+tagairtí a bhfuil saolréanna coincréiteacha éagsúla acu a rith. Tá liosta 10-22
+sampla simplí.</p>
+<Listing number="10-22" file-name="src/main.rs" caption="Using the `longest` function with references to `String` values that have different concrete lifetimes">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let string1 = String::from("long string is long");
+
+    {
+        let string2 = String::from("xyz");
+        let result = longest(string1.as_str(), string2.as_str());
+        println!("The longest string is {result}");
+    }
+}
+<span class="boring">
+</span><span class="boring">fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+</span><span class="boring">    if x.len() &gt; y.len() {
+</span><span class="boring">        x
+</span><span class="boring">    } else {
+</span><span class="boring">        y
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Sa sampla seo, tá <code>string1</code> bailí go dtí deireadh an scóip sheachtraigh, <code>string2</code>
+bailí go dtí deireadh an scóip istigh, agus déanann <code>result</code> tagairt do rud éigin
+atá bailí go dtí deireadh an raon feidhme laistigh. Rith an cód seo agus feicfidh tú
+go gceadaíonn an seiceálaí iasachtaí; tiomsóidh agus priontálfaidh sé <code>The longest string is long string is long</code>.</p>
+<p>Ansin, déanaimis iarracht sampla a thaispeánann go bhfuil saolré na tagartha i
+caithfidh gurb é <code>result</code> saolré níos lú an dá argóint. Bogfaimid an
+dearbhú na hathróige <code>result</code> lasmuigh den scóip inmheánach ach fág an
+sannadh an luacha don athróg <code>result</code> taobh istigh den scóip le
+<code>string2</code>. Ansin bogfaimid an <code>println!</code> a úsáideann <code>result</code> chuig taobh amuigh de
+raon feidhme istigh, tar éis an raon feidhme istigh dar críoch. Beidh an cód i Liostú 10-23
+gan tiomsú.</p>
+<Listing number="10-23" file-name="src/main.rs" caption="Attempting to use `result` after `string2` has gone out of scope">
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let string1 = String::from("long string is long");
+    let result;
+    {
+        let string2 = String::from("xyz");
+        result = longest(string1.as_str(), string2.as_str());
+    }
+    println!("The longest string is {result}");
+}
+<span class="boring">
+</span><span class="boring">fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+</span><span class="boring">    if x.len() &gt; y.len() {
+</span><span class="boring">        x
+</span><span class="boring">    } else {
+</span><span class="boring">        y
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Nuair a dhéanaimid iarracht an cód seo a thiomsú, faighimid an earráid seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0597]: `string2` does not live long enough
+ --&gt; src/main.rs:6:44
+  |
+5 |         let string2 = String::from("xyz");
+  |             ------- binding `string2` declared here
+6 |         result = longest(string1.as_str(), string2.as_str());
+  |                                            ^^^^^^^ borrowed value does not live long enough
+7 |     }
+  |     - `string2` dropped here while still borrowed
+8 |     println!("The longest string is {result}");
+  |                                     -------- borrow later used here
+
+For more information about this error, try `rustc --explain E0597`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+</code></pre>
+<p>Léiríonn an earráid le haghaidh <code>result</code> a bheith bailí don ráiteas <code>println!</code>,
+Ba ghá go mbeadh <code>string2</code> bailí go dtí deireadh an scóip sheachtraigh. Tá a fhios ag meirge
+seo toisc gur thugamar anótáil ar shaolré na bparaiméadar feidhme agus ar ais
+luachanna ag baint úsáide as an bparaiméadar saoil céanna <code>'a</code>.</p>
+<p>Mar dhaoine, is féidir linn breathnú ar an gcód seo agus a fheiceáil go bhfuil <code>string1</code> níos faide ná
+<code>string2</code>, agus mar sin, beidh tagairt do <code>string1</code> i <code>result</code>.
+Toisc nach bhfuil <code>string1</code> imithe as an scóip go fóill, déanfar tagairt do <code>string1</code>
+fós bailí don ráiteas <code>println!</code>. Mar sin féin, ní féidir leis an tiomsaitheoir a fheiceáil
+go bhfuil an tagairt bailí sa chás seo. Táimid tar éis a dúirt Rust go bhfuil an saolré
+tá an tagairt a thugann an fheidhm <code>longest</code> ar ais mar an gcéanna leis an gceann is lú de
+saolré na dtagairtí a cuireadh isteach. Dá bhrí sin, an seiceálaí iasachtaí
+dícheadaítear an cód i Liostú 10-23 mar go bhféadfadh tagairt neamhbhailí a bheith aige.</p>
+<p>Déan iarracht níos mó turgnaimh a dhearadh a athraíonn luachanna agus saolré an
+tagairtí a cuireadh ar aghaidh chuig an bhfeidhm <code>longest</code> agus conas a cuireadh an tagairt ar ais
+úsáidtear. Déan hipitéisí faoi cé acu an rachaidh nó nach rachaidh do thurgnaimh thar an
+seiceálaí iasachtaí sula ndéanann tú tiomsú; seiceáil ansin féachaint an bhfuil an ceart agat!</p>
+<h3 id="smaointeoireacht-i-dtéarmaí-saoil"><a class="header" href="#smaointeoireacht-i-dtéarmaí-saoil">Smaointeoireacht i dTéarmaí Saoil</a></h3>
+<p>Braitheann an bealach inar gá duit paraiméadair an tsaoil a shonrú ar an méid atá agat
+feidhm ag déanamh. Mar shampla, má d’athraigh muid cur i bhfeidhm an
+feidhm <code>longest</code> chun an chéad pharaiméadar a thabhairt ar ais i gcónaí seachas an ceann is faide
+slisne teaghrán, ní bheadh ​​​​gá dúinn saolré a shonrú ar an bparaiméadar <code>y</code>. Tá an
+tiomsóidh an cód seo a leanas:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let string1 = String::from("abcd");
+</span><span class="boring">    let string2 = "efghijklmnopqrstuvwxyz";
+</span><span class="boring">
+</span><span class="boring">    let result = longest(string1.as_str(), string2);
+</span><span class="boring">    println!("The longest string is {result}");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;str) -&gt; &amp;'a str {
+    x
+}</code></pre></pre>
+</Listing>
+<p>Tá paraiméadar saoil <code>'a</code> sonraithe againn don pharaiméadar <code>x</code> agus don tuairisceán
+cineál, ach ní le haghaidh an pharaiméadar <code>y</code>, toisc nach bhfuil an saolré <code>y</code> acu
+gaol ar bith le saolré <code>x</code> nó luach an aischuir.</p>
+<p>Nuair a bheidh tagairt ó fheidhm á filleadh ar ais, is é an paraiméadar saoil don
+ní mór an cineál fillte a mheaitseáil leis an bparaiméadar saoil do cheann de na paraiméadair. Más rud é
+tagraíonn an tagairt ar ais <em>not</em> do cheann de na paraiméadair, caithfidh sé tagairt a dhéanamh
+go luach a chruthaítear laistigh den fheidhm seo. Mar sin féin, bheadh ​​​​sé seo ina dangling
+tagairt mar go rachaidh an luach as raon feidhme ag deireadh na feidhme.
+Smaoinigh ar an iarracht seo an fheidhm <code>longest</code> nach ndéanfaidh
+tiomsaigh:</p>
+<Listing file-name="src/main.rs">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span><span class="boring">    let string1 = String::from("abcd");
+</span><span class="boring">    let string2 = "xyz";
+</span><span class="boring">
+</span><span class="boring">    let result = longest(string1.as_str(), string2);
+</span><span class="boring">    println!("The longest string is {result}");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn longest&lt;'a&gt;(x: &amp;str, y: &amp;str) -&gt; &amp;'a str {
+    let result = String::from("really long string");
+    result.as_str()
+}</code></pre>
+</Listing>
+<p>Anseo, cé go bhfuil paraiméadar saoil <code>'a</code> sonraithe againn don tuairisceán
+cineál, beidh an cur i bhfeidhm theipeann a thiomsú mar gheall ar an luach ar ais
+níl baint ag an saolré le saolré na bparaiméadar ar chor ar bith. Seo é an
+teachtaireacht earráide a fhaighimid:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling chapter10 v0.1.0 (file:///projects/chapter10)
+error[E0515]: cannot return value referencing local variable `result`
+  --&gt; src/main.rs:11:5
+   |
+11 |     result.as_str()
+   |     ------^^^^^^^^^
+   |     |
+   |     returns a value referencing data owned by the current function
+   |     `result` is borrowed here
+
+For more information about this error, try `rustc --explain E0515`.
+error: could not compile `chapter10` (bin "chapter10") due to 1 previous error
+</code></pre>
+<p>Is í an fhadhb atá ann go dtéann <code>result</code> as an scóip agus go ndéantar é a ghlanadh ag an deireadh
+den fheidhm <code>longest</code>. Táimid ag iarraidh tagairt a thabhairt ar ais do <code>result</code> freisin
+ón bhfeidhm. Níl aon bhealach is féidir linn paraiméadair shaolré a shonrú go
+d’athródh sé an tagairt dhochrach, agus ní ligfidh Rust dúinn cliseadh a chruthú
+tagairt. Sa chás seo, is é an socrú is fearr ná cineál sonraí faoi úinéireacht a thabhairt ar ais
+seachas tagairt agus mar sin tá an fheidhm ghlao freagrach as
+ag glanadh suas an luach.</p>
+<p>Ar deireadh thiar, baineann comhréir saoil le saolréanna éagsúla a nascadh
+paraiméadair agus luachanna aischuir feidhmeanna. Nuair a bheidh siad ceangailte, tá Rust
+dóthain faisnéise chun oibríochtaí cuimhne-sábháilte a cheadú agus oibríochtaí a dhícheadú
+a chruthódh leideanna buailte nó a sháródh sábháilteacht na cuimhne ar shlí eile.</p>
+<h3 id="nótaí-saoil-i-sainmhínithe-struchtúr"><a class="header" href="#nótaí-saoil-i-sainmhínithe-struchtúr">Nótaí Saoil i Sainmhínithe Struchtúr</a></h3>
+<p>Go dtí seo, na struchtúir atá sainmhínithe againn go léir faoi úinéireacht sealúchais. Is féidir linn struchtúir a shainiú
+chun tagairtí a choinneáil, ach sa chás sin bheadh ​​orainn nóta saoil a chur leis
+ar gach tagairt i sainmhíniú an struchtúir. I liostú 10-24 tá struchtúr ainmnithe
+<code>ImportantExcerpt</code> a choinníonn slisne teaghrán.</p>
+<Listing number="10-24" file-name="src/main.rs" caption="A struct that holds a reference, requiring a lifetime annotation">
+<pre><pre class="playground"><code class="language-rust">struct ImportantExcerpt&lt;'a&gt; {
+    part: &amp;'a str,
+}
+
+fn main() {
+    let novel = String::from("Call me Ishmael. Some years ago...");
+    let first_sentence = novel.split('.').next().unwrap();
+    let i = ImportantExcerpt {
+        part: first_sentence,
+    };
+}</code></pre></pre>
+</Listing>
+<p>Tá an <code>part</code> réimse singil ag an struchtúr seo a choinníonn slisne teaghrán, is é sin a
+tagairt. Mar is amhlaidh le cineálacha sonraí cineálach, dearbhaímid ainm an chineál cineálach
+paraiméadar feadh an tsaoil taobh istigh lúibíní uillinn tar éis ainm an struct ionas gur féidir linn
+úsáid a bhaint as an paraiméadar saoil i gcorp an tsainmhínithe struct. seo
+Ciallaíonn anótáil nach féidir le <code>ImportantExcerpt</code> a bheith níos faide ná an tagairt
+coinníonn sé ina réimse <code>part</code>.</p>
+<p>Cruthaíonn an fheidhm <code>main</code> anseo sampla den struchtúr <code>ImportantExcerpt</code>
+a choinníonn tagairt don chéad abairt den <code>String</code> atá ar úinéireacht ag an
+athróg <code>novel</code>. Tá na sonraí san <code>novel</code> ann roimh an <code>ImportantExcerpt</code>
+cruthaítear shampla. Ina theannta sin, ní théann <code>novel</code> as raon feidhme go dtí ina dhiaidh sin
+téann an <code>ImportantExcerpt</code> amach as an scóip, mar sin tá an tagairt sa
+Tá sampla <code>ImportantExcerpt</code> bailí.</p>
+<h3 id="elision-ar-feadh-an-tsaoil"><a class="header" href="#elision-ar-feadh-an-tsaoil">Elision ar feadh an tSaoil</a></h3>
+<p>D'fhoghlaim tú go bhfuil saolré ag gach tagairt agus gur gá duit a shonrú
+paraiméadair shaolré le haghaidh feidhmeanna nó struchtúir a úsáideann tagairtí. Mar sin féin, táimid
+Bhí feidhm aige i Liostú 4-9, a thaispeántar arís i Liostú 10-25, a cuireadh le chéile
+gan nótaí saoil.</p>
+<Listing number="10-25" file-name="src/lib.rs" caption="A function we defined in Listing 4-9 that compiled without lifetime annotations, even though the parameter and return type are references">
+<pre><pre class="playground"><code class="language-rust">fn first_word(s: &amp;str) -&gt; &amp;str {
+    let bytes = s.as_bytes();
+
+    for (i, &amp;item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &amp;s[0..i];
+        }
+    }
+
+    &amp;s[..]
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let my_string = String::from("hello world");
+</span><span class="boring">
+</span><span class="boring">    // first_word works on slices of `String`s
+</span><span class="boring">    let word = first_word(&amp;my_string[..]);
+</span><span class="boring">
+</span><span class="boring">    let my_string_literal = "hello world";
+</span><span class="boring">
+</span><span class="boring">    // first_word works on slices of string literals
+</span><span class="boring">    let word = first_word(&amp;my_string_literal[..]);
+</span><span class="boring">
+</span><span class="boring">    // Because string literals *are* string slices already,
+</span><span class="boring">    // this works too, without the slice syntax!
+</span><span class="boring">    let word = first_word(my_string_literal);
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Is cúis stairiúil an chúis a thiomsaíonn an fheidhm seo gan nótaí saoil:
+i leaganacha luatha (réamh-1.0) de Rust, ní bheadh ​​an cód seo tiomsaithe toisc
+bhí saolré follasach ag teastáil ó gach tagairt. Ag an am sin, an fheidhm
+bheadh ​​síniú scríofa mar seo:</p>
+<pre><code class="language-rust ignore">fn first_word&lt;'a&gt;(s: &amp;'a str) -&gt; &amp;'a str {</code></pre>
+<p>Tar éis a lán de chód Rust a scríobh, fuair an fhoireann Rust go ríomhchláraitheoirí Rust
+go raibh na nótaí saoil céanna á gcur isteach arís agus arís eile go háirithe
+cásanna. Bhí na cásanna seo intuartha agus lean siad roinnt cinntitheach
+patrúin. Rinne na forbróirí na patrúin seo a ríomhchlárú isteach i gcód an tiomsaitheora amhlaidh
+d’fhéadfadh an seiceálaí iasachtaí tátal a bhaint as na saolréanna sna cásanna seo agus ní bheadh
+nótaí soiléire de dhíth.</p>
+<p>Tá an píosa seo de stair Rust ábhartha mar is féidir go bhfuil níos mó
+tiocfaidh patrúin cinntitheacha chun cinn agus cuirfear leis an tiomsaitheoir iad. Sa todhchaí,
+d'fhéadfadh go mbeadh níos lú nótaí saoil de dhíth.</p>
+<p>Tugtar an
+<em>rialacha éalaithe saoil</em>. Ní rialacha iad seo atá le leanúint ag ríomhchláraitheoirí; siad
+sraith cásanna ar leith a bhreithneoidh an tiomsaitheoir, agus más rud é do chód
+oiriúnach do na cásanna seo, ní gá duit na saolréanna a scríobh go sainráite.</p>
+<p>Ní thugann na rialacha díothaithe tátal iomlán. Má tá débhríocht fós mar
+cad iad na saolréanna atá ag na tagairtí tar éis do Rust na rialacha a chur i bhfeidhm, an
+ní dhéanfaidh an tiomsaitheoir buille faoi thuairim cén saolré ba cheart a bheith sna tagairtí atá fágtha.
+In ionad buille faoi thuairim a thabhairt, tabharfaidh an tiomsaitheoir earráid duit is féidir leat a réiteach
+trí na nótaí saoil a chur leis.</p>
+<p>Tugtar <em>ionchur saoil</em> ar fhad saoil ar pharaiméadair feidhme nó modha, agus
+tugtar <em>saolréanna aschuir</em> ar shaolréanna ar luachanna aischuir.</p>
+<p>Úsáideann an tiomsaitheoir trí riail chun saolré na dtagairtí a dhéanamh amach
+nuair nach bhfuil nótaí soiléire ann. Baineann an chéad riail le hionchur
+saolréanna, agus tá feidhm ag an dara agus an tríú riail maidir le saolréanna aschuir. Má tá an
+Faigheann tiomsaitheoir go dtí deireadh na dtrí rialacha agus tá tagairtí do
+rud nach féidir leis saolréanna a dhéanamh amach, stopfaidh an tiomsaitheoir le hearráid.
+Baineann na rialacha seo le sainmhínithe <code>fn</code> chomh maith le bloic <code>impl</code>.</p>
+<p>Is é an chéad riail go sannann an tiomsaitheoir paraiméadar saoil do gach ceann acu
+paraiméadar atá ina thagairt. I bhfocail eile, feidhm le paraiméadar amháin
+faigheann sé paraiméadar saoil amháin: <code>fn foo&lt;'a&gt;(x: &amp;'a i32)</code>; feidhm le dhá
+faigheann paraiméadair dhá pharaiméadair saoil ar leith: <code>fn foo&lt;'a, 'b&gt;(x: &amp;'a i32, y: &amp;'b i32)</code>; agus mar sin de.</p>
+<p>Is é an dara riail, má tá go díreach paraiméadar saoil ionchuir amháin, go
+sanntar an saolré do gach paraiméadair shaolré aschuir: <code>fn foo&lt;'a&gt;(x: &amp;'a i32) -&gt; &amp;'a i32</code>.</p>
+<p>Is é an tríú riail, má tá paraiméadair shaolré ionchuir iolracha, ach
+duine acu is <code>&amp;self</code> nó <code>&amp;mut self</code> toisc gur modh é seo, saolré
+sanntar <code>self</code> ar gach paraiméadair shaolré aschuir. Déanann an tríú riail seo
+modhanna i bhfad níos deise a léamh agus a scríobh mar go bhfuil níos lú siombailí riachtanach.</p>
+<p>Ligean orainn gur muid an tiomsaitheoir. Cuirfimid na rialacha seo i bhfeidhm chun na
+saolré na dtagairtí i síniú na feidhme <code>first_word</code> i
+Liostáil 10-25. Tosaíonn an síniú gan aon saolréanna a bhaineann leis an
+tagairtí:</p>
+<pre><code class="language-rust ignore">fn first_word(s: &amp;str) -&gt; &amp;str {</code></pre>
+<p>Ansin tá feidhm ag an tiomsaitheoir an chéad riail, a shonraíonn go bhfuil gach paraiméadar
+faigheann a shaolré féin. Tabharfaimid <code>'a</code> air mar is gnách, mar sin anois tá an síniú
+seo:</p>
+<pre><code class="language-rust ignore">fn first_word&lt;'a&gt;(s: &amp;'a str) -&gt; &amp;str {</code></pre>
+<p>Tá feidhm ag an dara riail toisc go bhfuil go díreach saolré ionchuir amháin. An dara ceann
+sonraíonn an riail go sanntar saolré an pharaiméadar ionchuir amháin
+saolré an aschuir, mar sin is é an síniú anois:</p>
+<pre><code class="language-rust ignore">fn first_word&lt;'a&gt;(s: &amp;'a str) -&gt; &amp;'a str {</code></pre>
+<p>Anois tá saolréanna ag na tagairtí go léir sa síniú feidhme seo, agus tá an
+is féidir leis an tiomsaitheoir leanúint lena anailís gan gá don ríomhchláraitheoir anótáil a dhéanamh
+na saolréanna sa síniú feidhme seo.</p>
+<p>Breathnaímid ar shampla eile, an uair seo ag baint úsáide as an bhfeidhm <code>longest</code> a raibh
+gan aon pharaiméadair saoil nuair a thosaigh muid ag obair leis i Liostú 10-20:</p>
+<pre><code class="language-rust ignore">fn longest(x: &amp;str, y: &amp;str) -&gt; &amp;str {</code></pre>
+<p>Cuirfimid an chéad riail i bhfeidhm: faigheann gach paraiméadar a shaolré féin. An uair seo táimid
+bíodh dhá pharaiméadair againn seachas ceann amháin, agus mar sin tá dhá shaolré againn:</p>
+<pre><code class="language-rust ignore">fn longest&lt;'a, 'b&gt;(x: &amp;'a str, y: &amp;'b str) -&gt; &amp;str {</code></pre>
+<p>Is féidir leat a fheiceáil nach bhfuil feidhm ag an dara riail toisc go bhfuil níos mó ná ceann amháin ann
+shaolré ionchuir. Níl feidhm ag an tríú riail ach an oiread, mar is é an <code>longest</code> ná a
+feidhm seachas modh, mar sin níl aon cheann de na paraiméadair <code>self</code>. Tar éis
+ag obair trí na trí rialacha, níl a fhios againn go fóill cad é an toradh
+Is é saolré an chineáil. Sin é an fáth go bhfuaireamar earráid agus muid ag iarraidh an cód a thiomsú isteach
+Liostú 10-20: d’oibrigh an tiomsaitheoir trí na rialacha éalaithe ar feadh an tsaoil ach fós féin
+níorbh fhéidir fad saoil na dtagairtí sa síniú a dhéanamh amach.</p>
+<p>Toisc nach mbaineann an tríú riail ach le sínithe modhanna, féachfaimid
+saolréanna sa chomhthéacs sin taobh le taobh féachaint cén fáth a gciallaíonn an tríú riail nach gá dúinn
+anótáil saolréanna i sínithe modha go minic.</p>
+<h3 id="anótálacha-saoil-i-sainmhínithe-modh"><a class="header" href="#anótálacha-saoil-i-sainmhínithe-modh">Anótálacha Saoil i Sainmhínithe Modh</a></h3>
+<p>Nuair a chuirimid modhanna i bhfeidhm ar struchtúr le saolréanna, bainimid úsáid as an chomhréir chéanna agus atá
+paraiméadair chineálacha a thaispeántar i Liosta 10-11. I gcás ina ndearbhaímid agus
+Braitheann úsáid paraiméadair an tsaoil ar cibé an bhfuil baint acu leis an struchtúr
+réimsí nó paraiméadair an mhodha agus na luachanna tuairisceáin.</p>
+<p>Ní mór ainmneacha saoil do réimsí struchtúir a dhearbhú i gcónaí tar éis an <code>impl</code>
+eochairfhocal agus ansin úsáidtear é tar éis ainm an struchtúir toisc go bhfuil na saolréanna sin páirteach
+den chineál struchtúir.</p>
+<p>I sínithe modha taobh istigh den bhloc <code>impl</code>, d'fhéadfadh tagairtí a bheith ceangailte leis an
+saolré na dtagairtí i réimsí an struchtúir, nó d'fhéadfadh siad a bheith neamhspleách. I
+Ina theannta sin, is minic a fhágann rialacha éalaithe an tsaoil é ionas go mbeidh nótaí saoil ann
+nach bhfuil riachtanach i sínithe modh. Breathnaímid ar roinnt samplaí ag baint úsáide as an
+struchtúr darb ainm <code>ImportantExcerpt</code> a shainmhíomar i Liostú 10-24.</p>
+<p>Ar dtús úsáidfimid modh darb ainm <code>level</code> a bhfuil an t-aon pharaiméadar ina thagairt dó
+<code>self</code> agus arb é i32` a luach aischuir, nach tagairt d'aon rud é:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct ImportantExcerpt&lt;'a&gt; {
+</span><span class="boring">    part: &amp;'a str,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl&lt;'a&gt; ImportantExcerpt&lt;'a&gt; {
+    fn level(&amp;self) -&gt; i32 {
+        3
+    }
+}
+<span class="boring">
+</span><span class="boring">impl&lt;'a&gt; ImportantExcerpt&lt;'a&gt; {
+</span><span class="boring">    fn announce_and_return_part(&amp;self, announcement: &amp;str) -&gt; &amp;str {
+</span><span class="boring">        println!("Attention please: {announcement}");
+</span><span class="boring">        self.part
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let novel = String::from("Call me Ishmael. Some years ago...");
+</span><span class="boring">    let first_sentence = novel.split('.').next().unwrap();
+</span><span class="boring">    let i = ImportantExcerpt {
+</span><span class="boring">        part: first_sentence,
+</span><span class="boring">    };
+</span><span class="boring">}</span></code></pre></pre>
+<p>An dearbhú paraiméadar saoil tar éis <code>impl</code> agus a úsáid tar éis ainm an chineáil
+ag teastáil, ach ní gá dúinn saolré na tagartha a anótáil
+go <code>self</code> mar gheall ar riail an chéad elision.</p>
+<p>Seo sampla ina bhfuil feidhm ag an tríú riail éalaithe saoil:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct ImportantExcerpt&lt;'a&gt; {
+</span><span class="boring">    part: &amp;'a str,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a&gt; ImportantExcerpt&lt;'a&gt; {
+</span><span class="boring">    fn level(&amp;self) -&gt; i32 {
+</span><span class="boring">        3
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl&lt;'a&gt; ImportantExcerpt&lt;'a&gt; {
+    fn announce_and_return_part(&amp;self, announcement: &amp;str) -&gt; &amp;str {
+        println!("Attention please: {announcement}");
+        self.part
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let novel = String::from("Call me Ishmael. Some years ago...");
+</span><span class="boring">    let first_sentence = novel.split('.').next().unwrap();
+</span><span class="boring">    let i = ImportantExcerpt {
+</span><span class="boring">        part: first_sentence,
+</span><span class="boring">    };
+</span><span class="boring">}</span></code></pre></pre>
+<p>Tá dhá shaolré ionchuir ann, mar sin cuireann Rust an chéad riail éalaithe saoil i bhfeidhm
+agus tugann sé a saolta féin idir <code>&amp;self</code> agus <code>announcement</code>. Ansin, mar gheall ar
+ceann de na paraiméadair is ea <code>&amp;self</code>, faigheann an cineál tuairisceáin saolré <code>&amp;self</code>,
+agus tá cuntas déanta ar gach saolré.</p>
+<h3 id="an-saol-statach"><a class="header" href="#an-saol-statach">An Saol Statach</a></h3>
+<p>Saolré speisialta amháin a chaithfimid a phlé ná <code>'static</code>, rud a léiríonn go bhfuil an
+tagairt difear <em>can</em> beo ar feadh ré iomlán an chláir. Gach
+tá an saolré <code>'static</code> ag sreanglitreacha, agus is féidir linn anótáil a dhéanamh mar seo a leanas:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s: &amp;'static str = "I have a static lifetime.";
+<span class="boring">}</span></code></pre></pre>
+<p>Stóráiltear téacs na teaghrán seo go díreach i ndénártha an chláir, mar atá
+ar fáil i gcónaí. Dá bhrí sin, tá saolré gach teaghráin-liteartha <code>'static</code>.</p>
+<p>Seans go bhfeicfeá moltaí i dteachtaireachtaí earráide chun an saolré <code>'static</code> a úsáid. Ach
+sula sonrófar <code>'static</code> mar an saolré le haghaidh tagartha, smaoinigh ar
+cibé an bhfuil an tagairt atá agat i do chónaí i ndáiríre ar feadh shaolré iomlán do
+clár nó nach ea, agus cibé acu is mian leat é. An chuid is mó den am, teachtaireacht earráide
+ag moladh na dtorthaí saoil <code>'static</code> as iarracht a dhéanamh ar dhrong a chruthú
+tagairt nó neamhréir idir na saolréanna atá ar fáil. I gcásanna den sórt sin, an réiteach
+is é sin na fadhbanna sin a réiteach, gan an saolré <code>'static</code> a shonrú.</p>
+<h2 id="paraiméadair-chineálacha-cineálacha-teorainneacha-trait-agus-saoil-le-chéile"><a class="header" href="#paraiméadair-chineálacha-cineálacha-teorainneacha-trait-agus-saoil-le-chéile">Paraiméadair Chineálacha Cineálacha, Teorainneacha Trait, agus Saoil le Chéile</a></h2>
+<p>Breathnaímid go hachomair ar an chomhréir a bhaineann le paraiméadair cineálacha cineálacha, tréithe a shonrú
+teorainneacha, agus saolréanna ar fad in aon fheidhm amháin!</p>
+<pre><code class="language-meirge"># fn main() {
+#     let string1 = String::from("abcd");
+#     let string2 = "xyz";
+# 
+#     let result = longest_with_an_announcement(
+#         string1.as_str(),
+#         string2,
+#         "Today is someone's birthday!",
+#     );
+#     println!("The longest string is {result}");
+# }
+# 
+use std::fmt::Display;
+
+fn longest_with_an_announcement&lt;'a, T&gt;(
+    x: &amp;'a str,
+    y: &amp;'a str,
+    ann: T,
+) -&gt; &amp;'a str
+where
+    T: Display,
+{
+    println!("Announcement! {ann}");
+    if x.len() &gt; y.len() {
+        x
+    } else {
+        y
+    }
+}
+</code></pre>
+<p>Seo í an fheidhm <code>longest</code> ó Liostú 10-21 a fhilleann an ceann is faide de
+dhá shlisne teaghrán. Ach anois tá paraiméadar breise aige darb ainm <code>ann</code> den chineálach
+clóscríobh <code>T</code>, ar féidir é a líonadh isteach de réir cineáil ar bith a chuireann an <code>Display</code> i bhfeidhm
+tréith mar atá sonraithe ag an gclásal <code>áit</code>. Déanfar an paraiméadar breise seo a phriontáil
+ag baint úsáide as <code>{}</code>, agus sin an fáth a bhfuil an tréithe <code>Display</code> faoi cheangal riachtanach. Toisc
+is cineál cineálach iad saolréanna, dearbhuithe an pharaiméadar saoil
+Téann <code>'a</code> agus an cineál paraiméadar cineálach <code>T</code> sa liosta céanna taobh istigh den uillinn
+lúibíní i ndiaidh ainm na feidhme.</p>
+<h2 id="achoimre-9"><a class="header" href="#achoimre-9">Achoimre</a></h2>
+<p>Chlúdaigh muid go leor sa chaibidil seo! Anois go bhfuil a fhios agat faoi chineál cineálach
+paraiméadair, tréithe agus teorainneacha tréithe, agus paraiméadair chineálacha saoil, tá tú
+réidh le cód a scríobh gan athrá a oibríonn i go leor cásanna éagsúla.
+Ligeann paraiméadair chineálacha duit an cód a chur i bhfeidhm ar chineálacha éagsúla. Tréithe agus
+cinntíonn teorainneacha tréithe, cé go bhfuil na cineálacha cineálacha, go mbeidh an
+iompar a theastaíonn ón gcód. D'fhoghlaim tú conas nótaí saoil a úsáid lena chinntiú
+nach mbeidh aon tagairtí dochloíte ag an gcód solúbtha seo. Agus seo go léir
+tarlaíonn anailís ag am tiomsaithe, rud nach gcuireann isteach ar fheidhmíocht am rite!</p>
+<p>Creid é nó ná creid, tá i bhfad níos mó le foghlaim ar na hábhair a phléamar
+sa chaibidil seo: Pléann Caibidil 18 réada trait, ar bealach eile iad a úsáid
+tréithe. Tá cásanna níos casta ann freisin a bhaineann le nótaí saoil
+nach mbeidh de dhíth ort ach i gcásanna sárfhorbartha; dóibh siúd, ba cheart duit léamh
+an <a href="../reference/index.html">Tagairt Rust</a>. Ach ina dhiaidh sin, beidh tú ag foghlaim conas trialacha a scríobh isteach
+Rust ionas gur féidir leat a chinntiú go bhfuil do chód ag obair mar ba chóir dó.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="writing-automated-tests"><a class="header" href="#writing-automated-tests">Writing Automated Tests</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="how-to-write-tests"><a class="header" href="#how-to-write-tests">How to Write Tests</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="controlling-how-tests-are-run"><a class="header" href="#controlling-how-tests-are-run">Controlling How Tests Are Run</a></h1>
