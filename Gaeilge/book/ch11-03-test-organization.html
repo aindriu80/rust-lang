@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="src/css/ferris.css">
@@ -159,7 +159,298 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="test-organization"><a class="header" href="#test-organization">Test Organization</a></h1>
+                        <h2 id="eagraíocht-tástála"><a class="header" href="#eagraíocht-tástála">Eagraíocht Tástála</a></h2>
+<p>Mar a luadh ag tús na caibidle, is disciplín casta í an tástáil, agus
+úsáideann daoine éagsúla téarmaíocht agus eagrú difriúil. An pobal Rust
+smaoiníonn sé ar thástálacha i dtéarmaí dhá phríomhchatagóir: tástálacha aonaid agus comhtháthú
+tástálacha. Tá <em>Unit tests</em> beag agus níos dírithe, ag tástáil modúl amháin ina aonar
+ag an am, agus is féidir comhéadain phríobháideacha a thástáil. Tá <em>Trialacha Comhtháthaithe</em> ar fad
+taobh amuigh de do leabharlann agus bain úsáid as do chód ar an mbealach céanna le haon sheachtrach eile
+cód, ag baint úsáide as an comhéadan poiblí amháin agus d'fhéadfadh a fheidhmiú iolrach
+modúil in aghaidh na tástála.</p>
+<p>Scríobh an dá chineál tástálacha tábhachtach chun a chinntiú go bhfuil na píosaí de do
+leabharlann ag déanamh a bhfuil tú ag súil leo a dhéanamh, ar leithligh agus le chéile.</p>
+<h3 id="trialacha-aonaid"><a class="header" href="#trialacha-aonaid">Trialacha Aonaid</a></h3>
+<p>Is é cuspóir na dtástálacha aonaid gach aonad cód a thástáil ar leithligh ón
+an chuid eile den chód chun a chur in iúl go tapa cá bhfuil agus nach bhfuil an cód ag obair
+ag súil. Cuirfidh tú tástálacha aonaid san eolaire <em>src</em> i ngach comhad leis an
+cód atá á thástáil acu. Is é an gnás ná modúl darb ainm <code>tests</code> a chruthú
+i ngach comhad chun na feidhmeanna tástála a chuimsiú agus an modúl a anótáil le
+<code>cfg(test)</code>.</p>
+<h4 id="modúl-na-dtrialacha-agus-cfgtest"><a class="header" href="#modúl-na-dtrialacha-agus-cfgtest">Modúl na dTrialacha agus <code>#[cfg(test)]</code></a></h4>
+<p>Insíonn an nóta <code>#[cfg(test)]</code> ar an modúl <code>tests</code> do Rust a thiomsú agus
+ní ritheann an cód tástála ach amháin nuair a ritheann tú <code>cargo test</code>, ní nuair a ritheann tú <code>cargo build</code>. Sábhálann sé seo am tiomsaithe nuair nach bhfuil uait ach an leabharlann a thógáil agus
+sábhálann sé spás sa déantúsán tiomsaithe dá bharr toisc nach bhfuil na tástálacha
+san áireamh. Feicfidh tú é sin toisc go dtéann trialacha comhtháthaithe ar bhealach eile
+eolaire, níl an nóta <code>#[cfg(test)]</code> ag teastáil uathu. Mar sin féin, mar gheall ar aonad
+téann na tástálacha sna comhaid chéanna leis an gcód, úsáidfidh tú <code>#[cfg(test)]</code> le sonrú
+nár cheart iad a áireamh sa toradh tiomsaithe.</p>
+<p>Thabhairt chun cuimhne nuair a ghineamar an tionscadal nua <code>adder</code> sa chéad chuid de
+sa chaibidil seo, ghin lasta an cód seo dúinn:</p>
+<p><span class="filename">Filename: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">pub fn add(left: u64, right: u64) -&gt; u64 {
+    left + right
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let result = add(2, 2);
+        assert_eq!(result, 4);
+    }
+}</code></pre>
+<p>Ar an modúl <code>tests</code> a ghintear go huathoibríoch, seasann an aitreabúid <code>cfg</code>
+<em>configuration</em> agus insíonn sé do Rust nár cheart ach an mhír seo a leanas a chur san áireamh
+tugadh rogha cumraíochta áirithe. Sa chás seo, is é an rogha cumraíochta
+<code>test</code>, a sholáthraíonn Rust chun tástálacha a thiomsú agus a rith. Trí úsáid a bhaint as an
+tréith <code>cfg</code>, ní thiomsaíonn lasta ár gcód tástála ach amháin má rithimid na tástálacha go gníomhach
+le <code>cargo test</code>. Áirítear leis seo aon fheidhmeanna cúntóra a d’fhéadfadh a bheith laistigh de seo
+modúl, chomh maith leis na feidhmeanna atá anótáilte le <code>#[test]</code>.</p>
+<h4 id="feidhmeanna-príobháideacha-a-thástáil"><a class="header" href="#feidhmeanna-príobháideacha-a-thástáil">Feidhmeanna Príobháideacha a Thástáil</a></h4>
+<p>Tá díospóireacht ar siúl laistigh den phobal tástála faoi cé acu príobháideach nó nach ea
+ba cheart feidhmeanna a thástáil go díreach, agus déanann teangacha eile deacrachtaí nó
+dodhéanta feidhmeanna príobháideacha a thástáil. Beag beann ar a thástáil idé-eolaíocht tú
+cloí leis, ceadaíonn rialacha príobháideachais Rust duit feidhmeanna príobháideacha a thástáil.
+Smaoinigh ar an gcód i Liostú 11-12 leis an bhfeidhm phríobháideach <code>internal_adder</code>.</p>
+<Listing number="11-12" file-name="src/lib.rs" caption="Testing a private function">
+<pre><code class="language-rust noplayground">pub fn add_two(a: usize) -&gt; usize {
+    internal_adder(a, 2)
+}
+
+fn internal_adder(left: usize, right: usize) -&gt; usize {
+    left + right
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn internal() {
+        let result = internal_adder(2, 2);
+        assert_eq!(result, 4);
+    }
+}</code></pre>
+</Listing>
+<p>Tabhair faoi deara nach bhfuil an fheidhm <code>internal_adder</code> marcáilte mar <code>pub</code>. Tá tástálacha díreach
+Cód meirge, agus níl sa mhodúl <code>tests</code> ach modúl eile. Mar a phléamar i
+na <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">“Cosáin chun Tagairt a Dhéanamh do Mhír i gCrann an Mhodúil”</a><!-- déan neamhaird de -->
+alt, is féidir le míreanna i modúil leanaí na míreanna i modúil a sinsear a úsáid. I
+leis an triail seo, tugaimid gach ceann de na míreanna tuismitheora modúl <code>tests</code> isteach sa scóip le
+<code>use super::*</code>, agus ansin is féidir <code>internal_adder</code> a ghlaoch ar an tástáil. Mura gceapann tú
+ba cheart feidhmeanna príobháideacha a thástáil, níl aon rud i Rust a chuirfidh iallach
+leat é sin a dhéanamh.</p>
+<h3 id="trialacha-comhtháthaithe"><a class="header" href="#trialacha-comhtháthaithe">Trialacha Comhtháthaithe</a></h3>
+<p>I Rust, tá tástálacha lánpháirtithe go hiomlán lasmuigh de do leabharlann. Úsáideann siad do
+leabharlann ar an mbealach céanna a bheadh ​​aon chód eile, rud a chiallaíonn nach féidir leo ach glaoch
+feidhmeanna atá mar chuid de API poiblí do leabharlainne. Is é an cuspóir a thástáil
+cibé an n-oibríonn go leor codanna de do leabharlann le chéile i gceart. Aonaid de chód a
+d'fhéadfadh fadhbanna a bheith ag obair i gceart ina n-aonar agus iad comhtháite, mar sin déan tástáil
+tá clúdach an chóid chomhtháite tábhachtach freisin. Chun comhtháthú a chruthú
+tástálacha, beidh eolaire <em>tests</em> uait ar dtús.</p>
+<h4 id="eolaire-na-tests"><a class="header" href="#eolaire-na-tests">Eolaire na <em>tests</em></a></h4>
+<p>Cruthaímid eolaire <em>tests</em> ag an leibhéal is airde dár eolaire tionscadail, an chéad cheann eile
+go <em>src</em>. Tá a fhios ag lasta comhaid tástála comhtháthaithe a chuardach san eolaire seo. muid
+ansin is féidir leis an oiread comhaid tástála agus is mian linn a dhéanamh, agus tiomsóidh lasta gach ceann de na
+comhaid mar chliabhán aonair.</p>
+<p>Déanaimis tástáil chomhtháthaithe. Leis an gcód i Liostú 11-12 fós sa
+<em>src/lib.rs</em>, déan eolaire <em>tests</em>, agus cruthaigh comhad nua darb ainm
+<em>tests/integration_test.rs</em>. Ba cheart go mbeadh cuma mar seo ar do struchtúr eolaire:</p>
+<pre><code class="language-text">adder
+├── Cargo.lock
+├── Cargo.toml
+├── src
+│   └── lib.rs
+└── tests
+    └── integration_test.rs
+</code></pre>
+<p>Cuir isteach an cód i Liostú 11-13 sa chomhad <em>tests/integration_test.rs</em>.</p>
+<Listing number="11-13" file-name="tests/integration_test.rs" caption="An integration test of a function in the `adder` crate">
+<pre><code class="language-rust ignore">use adder::add_two;
+
+#[test]
+fn it_adds_two() {
+    let result = add_two(2);
+    assert_eq!(result, 4);
+}</code></pre>
+</Listing>
+<p>Is cliathbhosca ar leith é gach comhad san eolaire <em>tests</em>, mar sin ní mór dúinn ár gcuid
+leabharlann isteach i raon feidhme gach cliathbhosca tástála. Ar an ábhar sin cuirimid <code>use adder::add_two;</code> ag barr an chóid, rud nach raibh ag teastáil uainn sna trialacha aonaid.</p>
+<p>Ní gá dúinn aon chód a anótáil in <em>tests/integration_test.rs</em> le
+<code>#[cfg(test)]</code>. Déileálann lasta go speisialta leis an eolaire <em>tests</em> agus tiomsaíonn sé comhaid
+san eolaire seo amháin nuair a rithimid <code>cargo test</code>. Rith 'tástáil lasta' anois:</p>
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.31s
+     Running unittests src/lib.rs (target/debug/deps/adder-1082c4b063a8fbe6)
+
+running 1 test
+test tests::internal ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration_test.rs (target/debug/deps/integration_test-1082c4b063a8fbe6)
+
+running 1 test
+test it_adds_two ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+</code></pre>
+<p>Áirítear ar na trí chuid den aschur na tástálacha aonaid, an tástáil chomhtháthaithe, agus
+na tástálacha doc. Tabhair faoi deara má theipeann ar aon tástáil i roinn, na hailt seo a leanas
+ní bheidh a rith. Mar shampla, má theipeann ar thástáil aonaid, ní bheidh aon aschur ann
+le haghaidh tástálacha comhtháthaithe agus doc toisc nach reáchtálfar na tástálacha sin ach amháin más aonad iad uile
+tástálacha ag dul thar.</p>
+<p>Tá an chéad chuid do na tástálacha aonaid mar a chéile agus a chonaiceamar: líne amháin
+do gach triail aonaid (ceann amháin darb ainm <code>internal</code> a chuireamar leis i Liostú 11-12) agus
+ansin líne achomair do na tástálacha aonaid.</p>
+<p>Tosaíonn an chuid tástálacha comhtháthú leis an líne <code>Running tests/integration_test.rs</code>. Ansin, tá líne le haghaidh gach feidhm tástála i
+an tástáil chomhtháthaithe sin agus líne achoimre ar thorthaí an chomhtháthaithe
+tástáil díreach sula dtosaíonn an rannán <code>Doc-tests adder</code>.</p>
+<p>Tá a chuid féin ag gach comhad tástála comhtháthaithe, mar sin má chuirimid níos mó comhad leis an
+<em>tests</em> eolaire, beidh níos mó rannóg tástála comhtháthaithe.</p>
+<p>Is féidir linn feidhm tástála comhtháthaithe ar leith a rith fós tríd an tástáil a shonrú
+ainm na feidhme mar argóint le <code>cargo test</code>. Na tástálacha go léir a reáchtáil i a
+comhad tástála comhtháthaithe ar leith, bain úsáid as an argóint <code>--test</code> ar <code>cargo test</code>
+agus ainm an chomhaid ina dhiaidh:</p>
+<pre><code class="language-console">$ cargo test --test integration_test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
+     Running tests/integration_test.rs (target/debug/deps/integration_test-82e7799c1bc62298)
+
+running 1 test
+test it_adds_two ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+</code></pre>
+<p>Ní ritheann an t-ordú seo ach na tástálacha sa chomhad <em>tests/integration_test.rs</em>.</p>
+<h4 id="fomodúil-i-dtrialacha-comhtháthaithe"><a class="header" href="#fomodúil-i-dtrialacha-comhtháthaithe">Fomodúil i dTrialacha Comhtháthaithe</a></h4>
+<p>De réir mar a chuireann tú níos mó tástálacha comhtháthaithe leis, b'fhéidir gur mhaith leat níos mó comhad a dhéanamh sa
+<em>tests</em> eolaire chun cabhrú leo iad a eagrú; mar shampla, is féidir leat an tástáil a ghrúpáil
+feidhmeanna ag an bhfeidhmiúlacht atá á thástáil acu. Mar a luadh cheana, gach comhad
+san eolaire <em>tests</em> atá tiomsaithe mar chliabhán ar leith dá cuid féin, rud atá úsáideach
+chun scóip ar leith a chruthú chun aithris níos mine a dhéanamh ar an mbealach a bheidh úsáideoirí deiridh
+ag baint úsáide as do chliabhán. Mar sin féin, ciallaíonn sé seo nach ndéanann comhaid san eolaire <em>tests</em>
+déan an t-iompar céanna le comhaid in <em>src</em> a dhéanamh, mar a d'fhoghlaim tú i gCaibidil 7
+maidir le conas cód a dheighilt i modúil agus comhaid.</p>
+<p>Tá iompar éagsúil comhad eolaire <em>tests</em> níos suntasaí nuair a bhíonn tú
+sraith feidhmeanna cúntóra a bheith acu le húsáid i gcomhaid tástála comhtháthaithe iolracha agus
+déanann tú iarracht na céimeanna a leanúint sa <a href="ch07-05-separating-modules-into-different-files.html">“Modúil a Scaradh ina Modúil Éagsúla
+Comhaid”</a><!-- neamhaird --> alt de Chaibidil 7 go
+sliocht iad i modúl coiteann. Mar shampla, má chruthaímid <em>tests/common.rs</em>
+agus feidhm darb ainm <code>setup</code> a chur ann, is féidir linn roinnt cód a chur le <code>setup</code> sin
+ba mhaith linn glaoch ó fheidhmeanna tástála iolracha i gcomhaid tástála iolracha:</p>
+<p><span class="filename">Filename: tests/common.rs</span></p>
+<pre><code class="language-rust noplayground">pub fn setup() {
+    // setup code specific to your library's tests would go here
+}</code></pre>
+<p>Nuair a bheidh na tástálacha á reáchtáil againn arís, feicfidh muid alt nua san aschur tástála don
+<em>common.rs</em>, cé nach bhfuil feidhmeanna tástála ar bith sa chomhad seo ná
+ar thugamar an fheidhm <code>setup</code> ó áit ar bith:</p>
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.89s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 1 test
+test tests::internal ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/common.rs (target/debug/deps/common-92948b65e88960b4)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration_test.rs (target/debug/deps/integration_test-92948b65e88960b4)
+
+running 1 test
+test it_adds_two ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+</code></pre>
+<p>Nuair a bhíonn <code>common</code> le feiceáil i dtorthaí na dtrialacha agus <code>running 0 tests</code> ar taispeáint do
+ní hé an rud a bhí uainn. Theastaigh uainn ach roinnt cód a roinnt leis an gceann eile
+comhaid tástála comhtháthú. Chun ‘coitianta’ a sheachaint san aschur tástála,
+in ionad <em>tests/common.rs</em> a chruthú, cruthóimid <em>tests/common/mod.rs</em>. Tá an
+Breathnaíonn an eolaire tionscadail mar seo anois:</p>
+<pre><code class="language-text">├── Cargo.lock
+├── Cargo.toml
+├── src
+│   └── lib.rs
+└── tests
+    ├── common
+    │   └── mod.rs
+    └── integration_test.rs
+</code></pre>
+<p>Is é seo an coinbhinsiún ainmniúcháin níos sine a thuigeann Rust freisin go bhfuil muid
+luaite sa <a href="ch07-05-separating-modules-into-different-files.html#alternate-file-paths">"Cosáin Chomhaid Malartacha"</a><!-- neamhaird --> de
+Caibidil 7. Agus an comhad á ainmniú ar an mbealach seo, insíonn sé do Rust gan caitheamh leis an modúl <code>common</code>
+mar chomhad tástála comhtháthaithe. Nuair a bhogaimid an cód feidhme <code>setup</code> isteach
+<em>tests/common/mod.rs</em> agus scrios an comhad <em>tests/common.rs</em>, an chuid sa
+ní bheidh aschur tástála le feiceáil a thuilleadh. Comhaid i bhfochomhadlanna na <em>tástálacha</em>
+ní dhéantar an t-eolaire a thiomsú mar chliabháin ar leith nó tá codanna sa tástáil
+aschur.</p>
+<p>Tar éis dúinn <em>tests/common/mod.rs</em> a chruthú, is féidir linn é a úsáid ó aon cheann de na
+comhaid tástála comhtháthú mar mhodúl. Seo sampla de ‘socrú’ a ghlaoch
+feidhm ón tástáil <code>it_adds_two</code> in <em>tests/integration_test.rs</em>:</p>
+<p><span class="filename">Filename: tests/integration_test.rs</span></p>
+<pre><code class="language-rust ignore">use adder::add_two;
+
+mod common;
+
+#[test]
+fn it_adds_two() {
+    common::setup();
+
+    let result = add_two(2);
+    assert_eq!(result, 4);
+}</code></pre>
+<p>Tabhair faoi deara go bhfuil an dearbhú <code>mod common;</code> mar an gcéanna le dearbhú an mhodúil
+léirigh muid i Liosta 7-21. Ansin, sa fheidhm tástála, is féidir linn glaoch ar an
+<code>common::setup()</code>  feidhm.</p>
+<h4 id="trialacha-comhtháthaithe-le-haghaidh-cliathbhoscaí-dénártha"><a class="header" href="#trialacha-comhtháthaithe-le-haghaidh-cliathbhoscaí-dénártha">Trialacha Comhtháthaithe le haghaidh cliathbhoscaí Dénártha</a></h4>
+<p>Más cliathbhosca dénártha ár dtionscadal nach bhfuil ann ach comhad <em>src/main.rs</em> agus
+nach bhfuil comhad <em>src/lib.rs</em>, ní féidir linn tástálacha comhtháthú a chruthú sa
+<em>tests</em> eolaire agus tabhair na feidhmeanna atá sainithe sa chomhad <em>src/main.rs</em> isteach
+scóip le ráiteas <code>use</code>. Ní nochtann ach cliathbhoscaí leabharlainne feidhmeanna nach bhfuil eile acu
+is féidir cliathbhoscaí a úsáid; cliathbhoscaí dénártha tá sé i gceist a reáchtáil ina n-aonar.</p>
+<p>Tá sé seo ar cheann de na cúiseanna go bhfuil tionscadail meirge a sholáthraíonn dénártha a
+straightforward <em>src/main.rs</em> comhad a ghlaonn an loighic a chónaíonn sa
+<em>src/lib.rs</em> comhad. Ag baint úsáide as an struchtúr sin, tástálacha comhtháthú <em>can</em> tástáil an
+cliathbhosca leabharlainne le <code>use</code> chun an fheidhmiúlacht thábhachtach a chur ar fáil. Má tá an
+oibríonn feidhmiúlacht thábhachtach, an méid beag cód sa <em>src/main.rs</em>
+oibreoidh an comhad freisin, agus ní gá an méid beag cód sin a thástáil.</p>
+<h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
+<p>Soláthraíonn gnéithe tástála Rust bealach chun a shonrú conas ba cheart don chód feidhmiú
+a chinntiú go leanann sé ag obair mar a bhfuil súil agat, fiú agus tú ag déanamh athruithe. Tástálacha aonaid
+codanna éagsúla de leabharlann a fheidhmiú ar leithligh agus is féidir tástáil phríobháideach
+sonraí cur chun feidhme. Seiceálann tástálacha comhtháthaithe go bhfuil go leor codanna den leabharlann
+oibriú le chéile i gceart, agus úsáideann siad API poiblí na leabharlainne chun an cód a thástáil
+ar an mbealach céanna a úsáidfidh cód seachtrach é. Cé go bhfuil córas cineál Rust agus
+Cuidíonn rialacha úinéireachta le roinnt cineálacha fabht a chosc, tá tástálacha fós tábhachtach
+laghdaigh fabhtanna loighce a bhaineann leis an gcaoi a bhfuiltear ag súil go n-iompróidh do chód.</p>
+<p>Déanaimis an t-eolas a d'fhoghlaim tú sa chaibidil seo agus roimhe seo a chomhcheangal
+caibidlí a bheith ag obair ar thionscadal!</p>
 
                     </main>
 

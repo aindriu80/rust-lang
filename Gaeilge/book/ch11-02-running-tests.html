@@ -24,9 +24,9 @@
         <link rel="stylesheet" href="fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="src/css/ferris.css">
@@ -159,7 +159,315 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="controlling-how-tests-are-run"><a class="header" href="#controlling-how-tests-are-run">Controlling How Tests Are Run</a></h1>
+                        <h2 id="conas-a-reáchtáiltear-tástálacha-a-rialú"><a class="header" href="#conas-a-reáchtáiltear-tástálacha-a-rialú">Conas a Reáchtáiltear Tástálacha a Rialú</a></h2>
+<p>Díreach mar a thiomsaíonn <code>cargo run</code> do chód agus ansin ritheann sé an dénártha iarmhartach,
+Tiomsaíonn <code>cargo test</code> do chód sa mhód tástála agus ritheann sé an tástáil iarmhartach
+dhénártha. Is é iompar réamhshocraithe an dhénártha a tháirgtear le <code>cargo test</code> a rith
+na tástálacha go léir go comhthreomhar agus an t-aschur gabhála a ghintear le linn rití tástála,
+an t-aschur a chosc ó bheith ar taispeáint agus é a dhéanamh níos éasca an t-aschur a léamh
+aschur a bhaineann leis na torthaí tástála. Is féidir leat, áfach, ordú a shonrú
+roghanna chun an t-iompar réamhshocraithe seo a athrú.</p>
+<p>Téann roinnt roghanna na n-orduithe chuig <code>cargo test</code>, agus téann cuid acu chuig an tástáil iarmhartach
+dhénártha. Chun an dá chineál argóintí seo a scaradh, liostaíonn tú na hargóintí sin
+téigh go dtí <code>cargo test</code> agus ansin an deighilteoir <code>--</code> agus ansin na cinn a théann go dtí
+an dénártha tástála. Agus <code>cargo test --help</code> á rith, taispeántar na roghanna is féidir leat a úsáid
+le <code>cargo test</code>, agus ag rith <code>cargo test -- --help</code> taispeántar na roghanna atá agat
+Is féidir úsáid a bhaint as tar éis an deighilteoir. Déantar na roghanna sin a dhoiciméadú freisin i atlt <a href="https://doc.rust-lang.org/rustc/tests/index.html">na “Tástálacha”</a> den <a href="https://doc.rust-lang.org/rustc/index.html">leabhar rustc</a>.</p>
+<h3 id="trialacha-a-reáchtáil-go-comhuaineach-nó-i-ndiaidh-a-chéile"><a class="header" href="#trialacha-a-reáchtáil-go-comhuaineach-nó-i-ndiaidh-a-chéile">Trialacha a Reáchtáil go Comhuaineach nó i ndiaidh a chéile</a></h3>
+<p>Nuair a ritheann tú tástálacha iolracha, de réir réamhshocraithe ritheann siad go comhthreomhar ag baint úsáide as snáitheanna,
+rud a chiallaíonn go gcríochnaíonn siad ag rith níos tapúla agus go bhfaigheann tú aiseolas níos tapúla. Toisc go bhfuil an
+tá tástálacha ar siúl ag an am céanna, ní mór duit a chinntiú nach mbraitheann do thástálacha
+ar a chéile nó ar aon stát comhroinnte, lena n-áirítear timpeallacht chomhroinnte, mar shampla
+an t-eolaire oibre reatha nó na hathróga timpeallachta.</p>
+<p>Mar shampla, abair go ritheann gach ceann de do thástálacha cód éigin a chruthaíonn comhad ar diosca
+ainmnithe <em>test-output.txt</em> agus scríobhann sé roinnt sonraí chuig an gcomhad sin. Ansin léann gach tástáil
+na sonraí sa chomhad sin agus dearbhaíonn sé go bhfuil luach áirithe sa chomhad,
+atá difriúil i ngach tástáil. Toisc go ritheann na tástálacha ag an am céanna, ceann amháin
+d'fhéadfadh an tástáil an comhad a fhorscríobh san am idir triail eile a scríobh agus
+ag léamh an chomhaid. Beidh an dara tástáil theipeann ansin, ní toisc go bhfuil an cód
+mícheart ach toisc gur chuir na tástálacha isteach ar a chéile agus iad ar siúl
+i gcomhthreo. Réiteach amháin is ea a chinntiú go scríobhann gach tástáil chuig comhad eile;
+réiteach eile is ea na tástálacha a rith ceann i ndiaidh a chéile.</p>
+<p>Más rud é nach bhfuil tú ag iarraidh na tástálacha a reáchtáil ag an am céanna nó más mian leat níos míne
+smacht a fháil ar líon na snáitheanna a úsáidtear, is féidir leat an bhratach <code>--test-threads</code> a sheoladh
+agus líon na snáitheanna is mian leat a úsáid don dénártha tástála. Féach ar
+an sampla seo a leanas:</p>
+<pre><code class="language-console">$ cargo test -- --test-threads=1
+</code></pre>
+<p>Shocraigh muid líon na snáitheanna tástála go <code>1</code>, ag rá leis an gclár gan úsáid a bhaint as
+comhthreomhaireacht. Tógfaidh sé níos mó ama ná rith na tástálacha ag baint úsáide as snáithe amháin
+iad ag an am céanna, ach ní chuirfidh na tástálacha isteach ar a chéile má roinneann siad
+stáit.</p>
+<h3 id="aschur-feidhme-á-thaispeáint"><a class="header" href="#aschur-feidhme-á-thaispeáint">Aschur Feidhme á Thaispeáint</a></h3>
+<p>De réir réamhshocraithe, má éiríonn le tástáil, gabhann leabharlann tástála Rust aon rud a phriontáiltear chuige
+aschur caighdeánach. Mar shampla, má thugaimid <code>println!</code> i dtástáil agus sa triail
+Gabhann, ní fheicfimid an t-aschur <code>println!</code> sa teirminéal; ní fheicfimid ach an
+líne a léiríonn an tástáil a ritheadh. Má theipeann ar thástáil, feicfimid cibé rud a bhí ann
+clóite go dtí aschur caighdeánach leis an gcuid eile den teachtaireacht teip.</p>
+<p>Mar shampla, tá feidhm amaideach ag Liostú 11-10 a phrionnaíonn luach a chuid
+paraiméadar agus tuairisceáin 10, chomh maith le tástáil a éiríonn agus tástáil a theipeann.</p>
+<Listing number="11-10" file-name="src/lib.rs" caption="Tests for a function that calls `println!`">
+<pre><code class="language-rust panics noplayground">fn prints_and_returns_10(a: i32) -&gt; i32 {
+    println!("I got the value {a}");
+    10
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn this_test_will_pass() {
+        let value = prints_and_returns_10(4);
+        assert_eq!(value, 10);
+    }
+
+    #[test]
+    fn this_test_will_fail() {
+        let value = prints_and_returns_10(8);
+        assert_eq!(value, 5);
+    }
+}</code></pre>
+</Listing>
+<p>Nuair a dhéanaimid na tástálacha seo le <code>cargo test</code>, feicfidh muid an t-aschur seo a leanas:</p>
+<pre><code class="language-console">$ cargo test
+   Compiling silly-function v0.1.0 (file:///projects/silly-function)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.58s
+     Running unittests src/lib.rs (target/debug/deps/silly_function-160869f38cff9166)
+
+running 2 tests
+test tests::this_test_will_fail ... FAILED
+test tests::this_test_will_pass ... ok
+
+failures:
+
+---- tests::this_test_will_fail stdout ----
+I got the value 8
+thread 'tests::this_test_will_fail' panicked at src/lib.rs:19:9:
+assertion `left == right` failed
+  left: 10
+ right: 5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::this_test_will_fail
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
+</code></pre>
+<p>Tabhair faoi deara nach bhfeicimid <code>I got the value 4</code>, mar atá
+priontáilte nuair a ritheann an tástáil a ritheann. Tá an t-aschur sin gafa. Tá an
+aschur ón tástáil ar theip air, <code>I got the value 8</code>, le feiceáil sa chuid
+den aschur achoimre tástála, a léiríonn freisin cúis an teip tástála.</p>
+<p>Más mian linn luachanna clóite a fheiceáil chun tástálacha a rith freisin, is féidir linn a rá le Rust
+taispeáin freisin aschur na dtástálacha rathúla le <code>--show-output</code>:</p>
+<pre><code class="language-console">$ cargo test -- --show-output
+</code></pre>
+<p>Nuair a rithimid na tástálacha i Liostú 11-10 arís leis an mbratach <code>--show-output</code>, déanaimid
+féach an t-aschur seo a leanas:</p>
+<pre><code class="language-console">$ cargo test -- --show-output
+   Compiling silly-function v0.1.0 (file:///projects/silly-function)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running unittests src/lib.rs (target/debug/deps/silly_function-160869f38cff9166)
+
+running 2 tests
+test tests::this_test_will_fail ... FAILED
+test tests::this_test_will_pass ... ok
+
+successes:
+
+---- tests::this_test_will_pass stdout ----
+I got the value 4
+
+
+successes:
+    tests::this_test_will_pass
+
+failures:
+
+---- tests::this_test_will_fail stdout ----
+I got the value 8
+thread 'tests::this_test_will_fail' panicked at src/lib.rs:19:9:
+assertion `left == right` failed
+  left: 10
+ right: 5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::this_test_will_fail
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
+</code></pre>
+<h3 id="fothacar-trialacha-a-reáchtáil-de-réir-ainm"><a class="header" href="#fothacar-trialacha-a-reáchtáil-de-réir-ainm">Fothacar Trialacha a Reáchtáil de réir Ainm</a></h3>
+<p>Uaireanta, féadann sé go leor ama sraith tástála iomlán a rith. Má tá tú ag obair ar
+cód i réimse ar leith, b'fhéidir gur mhaith leat a reáchtáil ach na tástálacha a bhaineann leis
+an cód sin. Is féidir leat na tástálacha atá le déanamh a roghnú ach an t-ainm <code>cargo test</code> a chur
+nó ainmneacha na dtrialacha nó na dtrialacha ar mhaith leat a rith mar argóint.</p>
+<p>Chun a léiriú conas fo-thacar tástálacha a rith, cruthóimid trí thástáil ar dtús
+ár bhfeidhm <code>add_two</code>, mar a thaispeántar i Liostú 11-11, agus roghnaigh na cinn le rith.</p>
+<Listing number="11-11" file-name="src/lib.rs" caption="Three tests with three different names">
+<pre><code class="language-rust noplayground">pub fn add_two(a: usize) -&gt; usize {
+    a + 2
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn add_two_and_two() {
+        let result = add_two(2);
+        assert_eq!(result, 4);
+    }
+
+    #[test]
+    fn add_three_and_two() {
+        let result = add_two(3);
+        assert_eq!(result, 5);
+    }
+
+    #[test]
+    fn one_hundred() {
+        let result = add_two(100);
+        assert_eq!(result, 102);
+    }
+}</code></pre>
+</Listing>
+<p>Má ritheann muid na tástálacha gan dul thar aon argóintí, mar a chonaic muid níos luaithe, go léir an
+beidh tástálacha ar siúl ag an am céanna:</p>
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.62s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 3 tests
+test tests::add_three_and_two ... ok
+test tests::add_two_and_two ... ok
+test tests::one_hundred ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+</code></pre>
+<h4 id="trialacha-aonair-a-rith"><a class="header" href="#trialacha-aonair-a-rith">Trialacha Aonair a Rith</a></h4>
+<p>Is féidir linn ainm aon fheidhme tástála a chur ar aghaidh chuig <code>cargo test</code> chun an tástáil sin amháin a rith:</p>
+<pre><code class="language-console">$ cargo test one_hundred
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.69s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 1 test
+test tests::one_hundred ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+</code></pre>
+<p>Níor rith ach an triail leis an ainm <code>one_hundred</code>; níor mheaitseáil an dá thástáil eile
+an t-ainm sin. Cuireann an t-aschur tástála in iúl dúinn go raibh níos mó tástálacha againn nár rith leo
+ag taispeáint <code>2 filtered out</code>  ag an deireadh.</p>
+<p>Ní féidir linn ainmneacha tástálacha iolracha a shonrú ar an mbealach seo; ach an chéad luach
+a thugtar do <code>cargo test</code> úsáidfear é. Ach tá bealach ann chun tástálacha iolracha a rith.</p>
+<h4 id="scagadh-chun-ilthástálacha-a-rith"><a class="header" href="#scagadh-chun-ilthástálacha-a-rith">Scagadh chun Ilthástálacha a Rith</a></h4>
+<p>Is féidir linn cuid d'ainm tástála a shonrú, agus aon tástáil a bhfuil a ainm ag teacht leis an luach sin
+reáchtálfar. Mar shampla, toisc go bhfuil <code>add</code> in dhá cheann dár dtástálacha, is féidir linn
+rith an dá cheann sin trí <code>cargo test add</code> a rith:</p>
+<pre><code class="language-console">$ cargo test add
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 2 tests
+test tests::add_three_and_two ... ok
+test tests::add_two_and_two ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+</code></pre>
+<p>Rith an t-ordú seo gach tástáil le <code>add</code> san ainm agus scagadh amach an triail
+darb ainm <code>one_hundred</code>. Tabhair faoi deara freisin go n-éiríonn an modúl ina dtaispeántar tástáil
+chuid d’ainm na tástála, ionas gur féidir linn na tástálacha go léir a rith i modúl trí scagadh
+ar ainm an mhodúil.</p>
+<h3 id="neamhaird-a-thabhairt-ar-roinnt-trialacha-mura-niarratar-go-sonrach"><a class="header" href="#neamhaird-a-thabhairt-ar-roinnt-trialacha-mura-niarratar-go-sonrach">Neamhaird a thabhairt ar Roinnt Trialacha Mura nIarratar Go Sonrach</a></h3>
+<p>Uaireanta is féidir le roinnt tástálacha sonracha a bheith an-am-íditheach a fhorghníomhú, mar sin leat
+b'fhéidir gur mhaith leo iad a eisiamh le linn an chuid is mó de na <code>cargo test</code>. Seachas
+liostú mar argóintí na tástálacha go léir ar mhaith leat a rith, is féidir leat an nóta a chur ina ionad sin
+tástálacha am-ídeacha ag baint úsáide as an aitreabúid <code>ignore</code> chun iad a eisiamh, mar a thaispeántar
+anseo:</p>
+<p><span class="filename">Filename: src/lib.rs</span></p>
+<pre><code class="language-rust noplayground"><span class="boring">pub fn add(left: u64, right: u64) -&gt; u64 {
+</span><span class="boring">    left + right
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let result = add(2, 2);
+        assert_eq!(result, 4);
+    }
+
+    #[test]
+    #[ignore]
+    fn expensive_test() {
+        // code that takes an hour to run
+    }
+}</code></pre>
+<p>Tar éis <code>#[test]</code>, cuirimid an líne <code>#[ignore]</code> leis an tástáil ba mhaith linn a eisiamh.
+Anois agus ár dtástálacha á reáchtáil againn, ritheann <code>it_works</code>, ach ní dhéanann <code>expensive_test</code>:</p>
+<pre><code class="language-console">$ cargo test
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 2 tests
+test tests::expensive_test ... ignored
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+</code></pre>
+<p>Tá an fheidhm <code>expensive_test</code> liostaithe mar <code>ignored</code>. Más mian linn a rith amháin
+na tástálacha a ndearnadh neamhaird orthu, is féidir linn <code>cargo test -- --ignored</code> a úsáid:</p>
+<pre><code class="language-console">$ cargo test -- --ignored
+   Compiling adder v0.1.0 (file:///projects/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running unittests src/lib.rs (target/debug/deps/adder-92948b65e88960b4)
+
+running 1 test
+test expensive_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+   Doc-tests adder
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+</code></pre>
+<p>Trí na tástálacha a ritheann a rialú, is féidir leat a chinntiú go mbíonn do thorthaí <code>cargo test</code>
+cuirfear ar ais go tapa é. Nuair a bhíonn tú ag pointe a bhfuil ciall agat seiceáil
+torthaí na dtrialacha <code>ignored</code> agus tá am agat fanacht ar na torthaí,
+is féidir leat <code>cargo test -- --ignored</code> a rith ina ionad sin. Más mian leat na tástálacha go léir a rith
+cibé an ndéantar neamhaird orthu nó nach ndéantar, is féidir leat <code>cargo test -- --include-ignored</code> a rith.</p>
 
                     </main>
 
