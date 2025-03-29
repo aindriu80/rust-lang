@@ -159,7 +159,526 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="developing-the-librarys-functionality-with-test-driven-development"><a class="header" href="#developing-the-librarys-functionality-with-test-driven-development">Developing the Library’s Functionality with Test Driven Development</a></h1>
+                        <h2 id="feidhmiúlacht-na-leabharlainne-a-fhorbairt-le-forbairt-thrialaithe"><a class="header" href="#feidhmiúlacht-na-leabharlainne-a-fhorbairt-le-forbairt-thrialaithe">Feidhmiúlacht na Leabharlainne a Fhorbairt le Forbairt Thrialaithe</a></h2>
+<p>Anois go bhfuil an loighic bainte amach againn i <em>src/lib.rs</em> agus d'fhág muid an argóint
+bailiú agus láimhseáil earráidí in <em>src/main.rs</em>, tá sé i bhfad níos éasca tástálacha a scríobh
+le haghaidh feidhmiúlacht lárnach ár gcód. Is féidir linn feidhmeanna a ghlaoch go díreach le
+argóintí éagsúla agus seiceáil luachanna tuairisceáin gan gá a ghlaoch ar ár dénártha
+ón líne ordaithe.</p>
+<p>Sa chuid seo, cuirfimid an loighic chuardaigh leis an gclár <code>minigrep</code> ag baint úsáide as
+an próiseas forbartha tástála-tiomáinte (TDD) leis na céimeanna seo a leanas:</p>
+<ol>
+<li>Scríobh tástáil a theipeann ort agus é a rith chun a chinntiú go dteipeann uirthi ar an gcúis leat
+ag súil.</li>
+<li>Scríobh nó modhnaigh go leor cód chun pas a fháil sa tástáil nua.</li>
+<li>Déan an cód a chuir tú leis nó a d'athraigh tú a athchur agus cinntigh go leanann na tástálacha ar aghaidh
+chun pas a fháil.</li>
+<li>Déan arís ó chéim 1!</li>
+</ol>
+<p>Cé nach bhfuil ann ach ceann amháin de go leor bealaí chun bogearraí a scríobh, is féidir le TDD cabhrú le cód a thiomáint
+dearadh. An triail a scríobh sula scríobhann tú an cód a fhágann go n-éireoidh leis an triail
+cuidíonn sé le clúdach tástála ard a choinneáil ar feadh an phróisis.</p>
+<p>Déanfaimid tástáil ar chur i bhfeidhm na feidhmiúlachta a dhéanfaidh i ndáiríre
+an teaghrán ceiste a chuardach in inneachar an chomhaid agus déan liosta de
+línte a mheaitseálann an cheist. Cuirfimid an fheidhmiúlacht seo leis an bhfeidhm ar a dtugtar
+<code>search</code>.</p>
+<h3 id="scriobh-teist-theip"><a class="header" href="#scriobh-teist-theip">Scriobh teist theip</a></h3>
+<p>Toisc nach bhfuil siad de dhíth orainn a thuilleadh, bainimis na ráitis <code>println!</code> ó
+<em>src/lib.rs</em> agus <em>src/main.rs</em> a d’úsáideamar chun iompar an chláir a sheiceáil.
+Ansin, in <em>src/lib.rs</em>, cuirfimid modúl <code>tests</code> le feidhm tástála, agus muid ag
+rinne i <a href="ch11-01-writing-tests.html#the-anatomy-of-a-test-function">Caibidil 11</a> <!-- neamhaird -->. Sonraíonn an fheidhm tástála
+an iompar ba mhaith linn a bheith ag an fheidhm <code>search</code>: tógfaidh sé ceist agus
+an téacs a chuardach, agus beidh sé ar ais ach na línte as an téacs a
+an cheist a chuimsiú. Léiríonn liostú 12-15 an tástáil seo, nach dtiomsóidh fós.</p>
+<Listing number="12-15" file-name="src/lib.rs" caption="Creating a failing test for the `search` function we wish we had">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn one_result() {
+        let query = "duct";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.";
+
+        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+    }
+}</code></pre>
+</Listing>
+<p>Déanann an tástáil seo cuardach don teaghrán <code>"duct"</code>. Is é an téacs atá á chuardach againn ná trí
+línte, ach ceann amháin acu ina bhfuil <code>"duct"</code> (tabhair faoi deara go bhfuil an cúlslais i ndiaidh an
+Insíonn oscailt luachan dúbailte do Rust gan carachtar nua-líne a chur ag an tús
+den ábhar atá sa teaghrán seo litriúil). Dearbhaímid gur tháinig an luach ar ais ó
+Níl san fheidhm <code>search</code> ach an líne a mbeimid ag súil leis.</p>
+<p>Nílimid in ann an tástáil seo a rith go fóill agus féachaint uirthi go dteipeann uirthi mar ní amhlaidh a dhéanann an tástáil
+fiú tiomsú: níl an fheidhm <code>search</code> ann fós! De réir TDD
+prionsabail, cuirfimid díreach go leor cód leis chun an tástáil a chur le chéile agus a reáchtáil
+ag cur sainmhíniú ar an bhfeidhm <code>search</code> a thugann folamh ar ais i gcónaí
+veicteoir, mar a thaispeántar i Liostú 12-16. Ansin ba chóir an tástáil a thiomsú agus a theipeann
+toisc nach meaitseálann veicteoir folamh veicteoir a bhfuil an líne <code>"safe, fast, productive."</code></p>
+<Listing number="12-16" file-name="src/lib.rs" caption="Defining just enough of the `search` function so our test will compile">
+<pre><code class="language-rust noplayground"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    vec![]
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Tabhair faoi deara go gcaithfimid saolré sainráite <code>'a</code> a shainiú i síniú
+<code>search</code> agus úsáid an tsaoil sin leis an argóint <code>contents</code> agus an tuairisceán
+luach. Athghairm i <a href="ch10-03-lifetime-syntax.html">Caibidil 10</a><!-- neamhaird --> go bhfuil an saolré
+sonróidh paraiméadair cén saolré argóint atá ceangailte le saolré an
+luach aischuir. Sa chás seo, tugaimid le fios gur chóir go mbeadh an veicteoir ar ais
+slisní teaghrán a dhéanann tagairt do shlisní den argóint <code>contents</code> (seachas an
+argóint <code>query</code>).</p>
+<p>I bhfocail eile, inseoimid do Rust go bhfuil na sonraí ar ais ag an fheidhm <code>search</code>
+beidh sé beo chomh fada agus a chuirtear na sonraí isteach san fheidhm <code>search</code> sa
+argóint <code>contents</code>. Tá sé seo tábhachtach! Teastaíonn na sonraí dá dtagraítear <em>by</em> a slice
+a bheith bailí chun an tagairt a bheith bailí; má ghlacann an tiomsaitheoir leis go bhfuil muid ag déanamh
+slices teaghrán de <code>query</code> seachas <code>contents</code>, déanfaidh sé a sheiceáil sábháilteachta
+mícheart.</p>
+<p>Má dhéanaimid dearmad ar na nótaí saoil agus iarracht a dhéanamh an fheidhm seo a thiomsú, déanfaimid
+faigh an earráid seo:</p>
+<pre><code class="language-console">$ cargo build
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+error[E0106]: missing lifetime specifier
+  --&gt; src/lib.rs:28:51
+   |
+28 | pub fn search(query: &amp;str, contents: &amp;str) -&gt; Vec&lt;&amp;str&gt; {
+   |                      ----            ----         ^ expected named lifetime parameter
+   |
+   = help: this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `query` or `contents`
+help: consider introducing a named lifetime parameter
+   |
+28 | pub fn search&lt;'a&gt;(query: &amp;'a str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+   |              ++++         ++                 ++              ++
+
+For more information about this error, try `rustc --explain E0106`.
+error: could not compile `minigrep` (lib) due to 1 previous error
+</code></pre>
+<p>Ní fhéadfaidh Rust a fhios a bheith againn cé acu den dá argóint a theastaíonn uainn, mar sin ní mór dúinn a insint
+é go follasach. Toisc gurb é <code>contents</code> an argóint a chuimsíonn ár dtéacs ar fad
+agus ba mhaith linn na codanna den téacs sin a mheaitseáil, tá a fhios againn go bhfuil <code>contents</code> ar ais
+an argóint ba chóir a bheith ceangailte leis an luach tuairisceáin ag baint úsáide as an saolré
+comhréir.</p>
+<p>Ní éilíonn teangacha ríomhchlárúcháin eile ort argóintí a nascadh le filleadh
+luachanna sa síniú, ach beidh an cleachtas seo níos éasca le himeacht ama. D'fhéadfá
+Ba mhaith liom an sampla seo a chur i gcomparáid leis na samplaí sa <a href="ch10-03-lifetime-syntax.html#validating-references-with-lifetimes">“Tagairtí Bailíochtú
+le Lifetimes”</a><!-- neamhaird --> alt
+i gCaibidil 10 .</p>
+<p>Anois déanaimis an tástáil:</p>
+<pre><code class="language-console">$ cargo test
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.97s
+     Running unittests src/lib.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+
+running 1 test
+test tests::one_result ... FAILED
+
+failures:
+
+---- tests::one_result stdout ----
+thread 'tests::one_result' panicked at src/lib.rs:44:9:
+assertion `left == right` failed
+  left: ["safe, fast, productive."]
+ right: []
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::one_result
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
+</code></pre>
+<p>Go hiontach, teipeann ar an tástáil, díreach mar a bhí súil againn. Go n-éirí an t-ádh linn!</p>
+<h3 id="cód-a-scríobh-chun-an-tástáil-a-phas"><a class="header" href="#cód-a-scríobh-chun-an-tástáil-a-phas">Cód a Scríobh chun an Tástáil a Phas</a></h3>
+<p>Faoi láthair, tá ag teip ar ár dtástáil toisc go gcuirimid veicteoir folamh ar ais i gcónaí. A shocrú
+go gcaithfidh ár gclár na céimeanna seo a leanas a leanúint agus <code>search</code> a chur i bhfeidhm:</p>
+<ol>
+<li>Atriall trí gach líne den ábhar.</li>
+<li>Seiceáil an bhfuil ár teaghrán fiosrúcháin sa líne.</li>
+<li>Má dhéanann, cuir leis an liosta luachanna atá á thabhairt ar ais againn.</li>
+<li>Mura ndéanann, déan faic.</li>
+<li>Tabhair ar ais liosta na dtorthaí a mheaitseálann.</li>
+</ol>
+<p>Oibrímid trí gach céim, ag tosú le atriall trí línte.</p>
+<h4 id="atriall-trí-línte-leis-an-modh-lines"><a class="header" href="#atriall-trí-línte-leis-an-modh-lines">Atriall Trí Línte leis an Modh <code>lines</code></a></h4>
+<p>Tá modh cabhrach ag meirge chun atriallta líne-ar-líne teaghráin a láimhseáil,
+<code>lines</code> ainmnithe go caothúil, a oibríonna mar a thaispeántar i Liosta 12-17. Tabhair faoi deara go
+ní bheidh sé seo le chéile fós.</p>
+<Listing number="12-17" file-name="src/lib.rs" caption="Iterating through each line in `contents`">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    for line in contents.lines() {
+        // do something with line
+    }
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Tugann an modh <code>lines</code> atrialltóir ar ais. Labhróimid go domhain faoi iterators
+<a href="ch13-02-iterators.html">Caibidil 13</a><!-- déan neamhaird de -->, ach chun cuimhne go bhfaca tú mar seo
+as iterator a úsáid i <a href="ch03-05-control-flow.html#looping-through-a-collection-with-for">Liostú 3-5</a><!-- neamhaird -->, áit ar úsáideamar a
+lúb <code>for</code> le iterator chun cód éigin a rith ar gach mír i mbailiúchán.</p>
+<h4 id="ag-cuardach-gach-líne-don-cheist"><a class="header" href="#ag-cuardach-gach-líne-don-cheist">Ag Cuardach Gach Líne don Cheist</a></h4>
+<p>Ansin, seiceálfaimid an bhfuil ár teaghrán ceisteanna sa líne reatha.
+Ar ámharaí an tsaoil, tá modh cabhrach ag teaghráin darb ainm <code>contains</code> a dhéanann é seo le haghaidh
+linn! Cuir glao leis an modh <code>contains</code> san fheidhm <code>search</code>, mar a thaispeántar i
+Liostáil 12-18. Tabhair faoi deara nach mbeidh sé seo le chéile fós.</p>
+<Listing number="12-18" file-name="src/lib.rs" caption="Adding functionality to see whether the line contains the string in `query`">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    for line in contents.lines() {
+        if line.contains(query) {
+            // do something with line
+        }
+    }
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Faoi láthair, táimid ag cur le feidhmiúlacht. Chun an cód a fháil le tiomsú, táimid
+gá luach a thabhairt ar ais ón gcomhlacht mar a léirigh muid ba mhaith linn san fheidhm
+síniú.</p>
+<h4 id="línte-meaitseála-á-stóráil"><a class="header" href="#línte-meaitseála-á-stóráil">Línte Meaitseála á Stóráil</a></h4>
+<p>Chun an fheidhm seo a chríochnú, ní mór dúinn bealach chun na línte meaitseála a theastaíonn uainn a stóráil
+a thabhairt ar ais. Ar an ábhar sin, is féidir linn veicteoir mutable a dhéanamh roimh an lúb <code>for</code> agus
+glaoigh ar an modh <code>push</code> chun <code>line</code> a stóráil sa veicteoir. Tar éis an lúb <code>for</code>,
+cuirimid ar ais an veicteoir, mar a thaispeántar i Liostú 12-19.</p>
+<Listing number="12-19" file-name="src/lib.rs" caption="Storing the lines that match so we can return them">
+<pre><code class="language-rust ignore"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    let mut results = Vec::new();
+
+    for line in contents.lines() {
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+
+    results
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Anois níor cheart don fheidhm <code>search</code> ach na línte ina bhfuil <code>query</code> a thabhairt ar ais,
+agus ba chóir go n-éireodh lenár dtástáil. Déanaimis an tástáil a rith:</p>
+<pre><code class="language-console">$ cargo test
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.22s
+     Running unittests src/lib.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+
+running 1 test
+test tests::one_result ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests minigrep
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+</code></pre>
+<p>Ár tástáil a rith, mar sin tá a fhios againn go n-oibríonn sé!</p>
+<p>Ag an bpointe seo, d'fhéadfaimis deiseanna a bhreithniú chun an
+feidhmiú na feidhme cuardaigh agus na tástálacha a choinneáil ag dul go dtí
+an fheidhmiúlacht chéanna a choinneáil. Níl an cód san fheidhm chuardaigh ró-olc,
+ach ní bhaineann sé leas as roinnt gnéithe úsáideacha de iterators. Déanfaimid
+fill ar an sampla seo i <a href="ch13-02-iterators.html">Caibidil 13</a><!-- neamhaird a dhéanamh ar -->, áit a bhfuil
+déanfaimid mionscrúdú ar atrialltóirí, agus féachfaimid ar conas é a fheabhsú.</p>
+<h4 id="ag-baint-úsáide-as-an-fheidhm-search-san-fheidhm-run"><a class="header" href="#ag-baint-úsáide-as-an-fheidhm-search-san-fheidhm-run">Ag baint úsáide as an fheidhm <code>search</code> san Fheidhm <code>run</code></a></h4>
+<p>Anois go bhfuil an fheidhm <code>search</code> ag obair agus á thástáil, ní mór dúinn <code>search</code> a thabhairt air
+ónár bhfeidhm <code>run</code>. Ní mór dúinn pas a fháil sa luach <code>config.query</code> agus an
+<code>contents</code> a léann <code>run</code> ón gcomhad go dtí an fheidhm <code>search</code>. Ansin <code>run</code>
+priontálfaidh sé gach líne a sheoltar ar ais ó <code>search</code>:</p>
+<p><span class="filename">Filename: src/lib.rs</span></p>
+<pre><code class="language-rust ignore"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let contents = fs::read_to_string(config.file_path)?;
+
+    for line in search(&amp;config.query, &amp;contents) {
+        println!("{line}");
+    }
+
+    Ok(())
+}
+<span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<p>Táimid fós ag baint úsáide as lúb <code>for</code> chun gach líne ó <code>search</code> a thabhairt ar ais agus é a phriontáil.</p>
+<p>Anois ba chóir an clár ar fad ag obair! Bainimis triail as, ar dtús le focal a
+líne amháin go beacht a thabhairt ar ais ó dhán Emily Dickinson: <em>frog</em>.</p>
+<pre><code class="language-console">$ cargo run -- frog poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
+     Running `target/debug/minigrep frog poem.txt`
+How public, like a frog
+</code></pre>
+<p>Cool! Anois bainimis triail as focal a mheaitseálann línte iolracha, mar <em>body</em>:</p>
+<pre><code class="language-console">$ cargo run -- body poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep body poem.txt`
+I'm nobody! Who are you?
+Are you nobody, too?
+How dreary to be somebody!
+</code></pre>
+<p>Agus ar deireadh, déanaimis deimhin de nach bhfaighimid aon línte nuair a chuardaíonn muid a
+focal nach bhfuil áit ar bith sa dán, mar <em>monomorphization</em>:</p>
+<pre><code class="language-console">$ cargo run -- monomorphization poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep monomorphization poem.txt`
+</code></pre>
+<p>Ar fheabhas! Tá ár mionleagan féin tógtha againn d’uirlis chlasaiceach agus tá go leor foghlamtha againn
+faoi ​​conas feidhmchláir a struchtúrú. Tá beagán foghlamtha againn freisin faoi ionchur comhaid
+agus aschur, saolréanna, tástáil, agus parsáil na n-orduithe.</p>
+<p>Chun an tionscadal seo a chríochnú, taispeánfaimid go hachomair conas oibriú leis
+athróga timpeallachta agus conas a phriontáil go hearráid chaighdeánach, atá sa dá cheann
+úsáideach agus tú ag scríobh cláir orduithe.</p>
 
                     </main>
 

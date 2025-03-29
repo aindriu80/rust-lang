@@ -159,7 +159,135 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="accepting-command-line-arguments"><a class="header" href="#accepting-command-line-arguments">Accepting Command Line Arguments</a></h1>
+                        <h2 id="ag-glacadh-le-argóintí-líne-ordú"><a class="header" href="#ag-glacadh-le-argóintí-líne-ordú">Ag glacadh le Argóintí Líne Ordú</a></h2>
+<p>Cruthaímid tionscadal nua le, mar i gcónaí, <code>cargo new</code>. Cuirfimid glaoch ar ár dtionscadal
+<code>minigrep</code> chun é a idirdhealú ón uirlis <code>grep</code> a d'fhéadfadh a bheith agat cheana féin
+ar do chóras.</p>
+<pre><code class="language-console">$ cargo new minigrep
+     Created binary (application) `minigrep` project
+$ cd minigrep
+</code></pre>
+<p>Is é an chéad tasc a thabhairt ar <code>minigrep</code> glacadh lena dhá argóint na n-orduithe: an
+cosán comhaid agus teaghrán le cuardach a dhéanamh air. Is é sin, ba mhaith linn a bheith in ann ár gcuid
+clár le <code>cargo run</code>, dhá thángthas ar na hargóintí seo a leanas a chur in iúl
+dár gclár seachas don <code>cargo</code>, teaghrán le cuardach a dhéanamh air, agus cosán chuige
+comhad le cuardach a dhéanamh ann, mar seo:</p>
+<pre><code class="language-console">$ cargo run -- searchstring example-filename.txt
+</code></pre>
+<p>Faoi láthair, ní féidir leis an gclár a ghineann <code>cargo new</code> argóintí a phróiseáil
+tabhair. Is féidir le roinnt leabharlanna atá ann cheana féin ar <a href="https://crates.io/">crates.io</a> cabhrú
+le clár a scríobh a ghlacann le hargóintí na n-orduithe, ach toisc go bhfuil tú
+ach an coincheap seo a fhoghlaim, cuirimis an cumas seo i bhfeidhm sinn féin.</p>
+<h3 id="léamh-na-luachanna-argóna"><a class="header" href="#léamh-na-luachanna-argóna">Léamh na Luachanna Argóna</a></h3>
+<p>Le cur ar chumas <code>minigrep</code> luachanna na n-argóintí ordú a chuirimid ar aghaidh chucu a léamh
+é, beidh an fheidhm <code>std::env::args</code> a sholáthraítear i gcaighdeán Rust de dhíth orainn
+leabharlann. Tugann an fheidhm seo atriarthóir ar na hargóintí ordú a ritheadh ​​ar ais
+go <code>minigrep</code>. Clúdóimid atrialltóirí go hiomlán i <a href="ch13-00-functional-features.html">Caibidil 13</a><!-- déan neamhaird
+-->. Faoi láthair, ní gá duit ach fios a bheith agat ar dhá shonra faoi iterators: iterators
+sraith luachanna a tháirgeadh, agus is féidir linn an modh <code>collect</code> a ghlaoch ar iterator
+chun é a iompú ina bhailiúchán, mar veicteoir, ina bhfuil na heilimintí go léir
+táirgeann an t-iterator.</p>
+<p>Ligeann an cód i Liostú 12-1 do do chlár <code>minigrep</code> ordú ar bith a léamh
+argóintí líne a cuireadh ar aghaidh chuige, agus ansin na luachanna a bhailiú i veicteoir.</p>
+<Listing number="12-1" file-name="src/main.rs" caption="Collecting the command line arguments into a vector and printing them">
+<pre><pre class="playground"><code class="language-rust">use std::env;
+
+fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+    dbg!(args);
+}</code></pre></pre>
+</Listing>
+<p>Ar dtús cuirimid an modúl <code>std::env</code> isteach sa scóip le ráiteas <code>use</code> mar sin déanaimid
+is féidir a fheidhm <code>args</code> a úsáid. Tabhair faoi deara gurb é an fheidhm <code>std::env::args</code>
+neadaithe in dhá leibhéal de mhodúil. Mar a phléamar i <a href="ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#creating-idiomatic-use-paths">Caibidil
+7</a> <!-- neamhaird a dhéanamh ar -->, i gcásanna ina bhfuil an fheidhm inmhianaithe
+neadaithe i níos mó ná modúl amháin, roghnaigh muid an modúl tuismitheora a thabhairt isteach
+scóip seachas an fheidhm. Trí é sin a dhéanamh, is féidir linn feidhmeanna eile a úsáid go héasca
+ó <code>std::env</code>. Níl sé chomh débhríoch freisin ná <code>use std::env::args</code> agus
+ansin an fheidhm a ghlaoch le <code>args</code>, mar is furasta <code>args</code> a bheith i gceist
+cearr le feidhm atá sainmhínithe sa mhodúl reatha.</p>
+<blockquote>
+<h3 id="feidhm-args-agus-unicode-neamhbhailí"><a class="header" href="#feidhm-args-agus-unicode-neamhbhailí">Feidhm <code>args</code> agus Unicode Neamhbhailí</a></h3>
+<p>Tabhair faoi deara go rachaidh <code>std::env::args</code> i scaoll má tá argóint neamhbhailí ann
+Unicode. Más gá do do chlár glacadh le hargóintí ina bhfuil neamhbhailí
+Unicode, bain úsáid as <code>std::env::args_os</code> ina ionad sin. Tugann an fheidhm sin aterator ar ais
+a tháirgeann luachanna <code>OsString</code> in ionad luachanna <code>String</code>. Roghnaíomar
+úsáid <code>std::env::args</code> anseo le haghaidh simplíochta mar go bhfuil luachanna <code>OsString</code> difriúil in aghaidh na
+ardán agus tá siad níos casta oibriú leo ná luachanna <code>String</code>.</p>
+</blockquote>
+<p>Ar an gcéad líne de <code>main</code>, tugaimid <code>env::args</code>, agus úsáidimid láithreach
+<code>collect</code> chun an t-iterator a iompú ina veicteoir ina bhfuil na luachanna go léir a tháirgtear
+ag an iterator. Is féidir linn an fheidhm <code>collect</code> a úsáid chun go leor cineálacha de a chruthú
+bailiúcháin, mar sin déanaimid anótáil go sainráite ar an gcineál <code>args</code> lena shonrú go bhfuilimid
+ag iarraidh veicteoir teaghráin. Cé gur annamh a chaithfidh tú cineálacha a anótáil i
+Meirge, is feidhm amháin é <code>collect</code> is minic a chaithfidh tú anótáil a dhéanamh uirthi toisc go bhfuil Rust
+níl sé in ann an cineál bailiúcháin atá uait a thuiscint.</p>
+<p>Ar deireadh, priontálaimid an veicteoir ag baint úsáide as an macra dífhabhtaithe. Déanaimis iarracht an cód a rith
+ar dtús gan argóintí ar bith agus ansin le dhá argóint:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running `target/debug/minigrep`
+[src/main.rs:5:5] args = [
+    "target/debug/minigrep",
+]
+</code></pre>
+<pre><code class="language-console">$ cargo run -- needle haystack
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.57s
+     Running `target/debug/minigrep needle haystack`
+[src/main.rs:5:5] args = [
+    "target/debug/minigrep",
+    "needle",
+    "haystack",
+]
+</code></pre>
+<p>Tabhair faoi deara gurb é <code>"target/debug/minigrep"</code> an chéad luach sa veicteoir, a
+is ainm dár dénártha. Meaitseálann sé seo iompar an liosta argóintí i
+C, cláir ligean ar cíos úsáid a bhaint as an t-ainm a bhí á agairt agus iad i gcrích.
+Is minic a bhíonn sé áisiúil rochtain a fháil ar ainm an chláir ar eagla go dteastaíonn uait
+é a phriontáil i dteachtaireachtaí nó iompar an chláir a athrú bunaithe ar an méid
+Baineadh úsáid as ailias na líne ordaithe chun an clár a agairt. Ach chun críocha seo
+chaibidil, déanfaimid neamhaird de agus ní shábhálfaimid ach an dá argóint a theastaíonn uainn.</p>
+<h3 id="luachanna-argóint-a-shábháil-in-athróga"><a class="header" href="#luachanna-argóint-a-shábháil-in-athróga">Luachanna Argóint a Shábháil in Athróga</a></h3>
+<p>Tá an clár in ann rochtain a fháil ar na luachanna atá sonraithe mar líne ordaithe faoi láthair
+argóintí. Anois caithfimid luachanna an dá argóint a shábháil in athróga mar sin de
+is féidir linn na luachanna a úsáid ar fud an chuid eile den chlár. Déanaimid é sin i Liostú
+12-2.</p>
+<Listing number="12-2" file-name="src/main.rs" caption="Creating variables to hold the query argument and file path argument">
+<pre><code class="language-rust should_panic noplayground">use std::env;
+
+fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+
+    let query = &amp;args[1];
+    let file_path = &amp;args[2];
+
+    println!("Searching for {query}");
+    println!("In file {file_path}");
+}</code></pre>
+</Listing>
+<p>Mar a chonaic muid nuair a phriontáileamar an veicteoir, is é ainm an chláir an chéad cheann
+luach sa veicteoir ag <code>args[0]</code>, mar sin táimid ag tosú argóintí ag innéacs 1. Tá an
+Is é an chéad argóint a thógann <code>minigrep</code> an teaghrán atá á lorg againn, mar sin cuirimid a
+tagairt don chéad argóint san athróg <code>query</code>. An dara argóint
+Beidh an cosán comhad, mar sin chuir muid tagairt don dara argóint sa
+athróg <code>file_path</code>.</p>
+<p>Déanaimid luachanna na n-athróg seo a phriontáil go sealadach chun a chruthú go bhfuil an cód
+ag obair mar atá beartaithe againn. Déanaimis an clár seo a rith arís leis na hargóintí <code>test</code>
+agus <code>sample.txt</code>:</p>
+<pre><code class="language-console">$ cargo run -- test sample.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep test sample.txt`
+Searching for test
+In file sample.txt
+</code></pre>
+<p>Go hiontach, tá an clár ag obair! Is iad luachanna na n-argóintí a theastaíonn uainn
+shábháil isteach na hathróga cearta. Níos déanaí cuirfimid roinnt láimhseáil earráide leis chun déileáil leis
+le cásanna earráideacha féideartha áirithe, mar shampla nuair a sholáthraíonn an t-úsáideoir uimh
+argóintí; faoi ​​láthair, déanfaimid neamhaird den scéal sin agus oibreoimid ar léamh comhaid a chur leis
+cumais ina ionad.</p>
 
                     </main>
 

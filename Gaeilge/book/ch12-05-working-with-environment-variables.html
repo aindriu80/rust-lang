@@ -159,7 +159,632 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="working-with-environment-variables"><a class="header" href="#working-with-environment-variables">Working with Environment Variables</a></h1>
+                        <h2 id="ag-obair-le-hathróga-comhshaoil"><a class="header" href="#ag-obair-le-hathróga-comhshaoil">Ag Obair le hAthróga Comhshaoil</a></h2>
+<p>Feabhsóimid <code>minigrep</code> trí ghné bhreise a chur leis: rogha le haghaidh
+cuardach cás-íogair ar féidir leis an úsáideoir a chur ar siúl trí thimpeallacht
+athróg. D'fhéadfaimis an ghné seo a dhéanamh mar rogha na n-orduithe agus é sin a éileamh
+cuireann úsáideoirí isteach é gach uair is mian leo é a chur i bhfeidhm, ach ina ionad sin é a dhéanamh
+athróg timpeallachta, tugaimid deis dár n-úsáideoirí an athróg timpeallachta a shocrú uair amháin
+agus bíodh a gcuardach uile neamhíogair sa seisiún teirminéil sin.</p>
+<h3 id="triail-theip-a-scríobh-don-fheidhm-search-cás-íogair"><a class="header" href="#triail-theip-a-scríobh-don-fheidhm-search-cás-íogair">Triail Theip a Scríobh don Fheidhm <code>search</code> Cás-íogair</a></h3>
+<p>Ar dtús cuirimid feidhm nua <code>search_case_insensitive</code> isteach ar a dtabharfar nuair
+tá luach ag an athróg timpeallachta. Leanfaimid orainn ag leanúint leis an bpróiseas TDD,
+mar sin is é an chéad chéim arís triail theipthe a scríobh. Cuirfimid triail nua leis
+an fheidhm nua <code>search_case_insensitive</code> agus athainmnigh ár sean-triail ó
+<code>one_result</code> go <code>case_sensitive</code> chun na difríochtaí idir an dá rud a shoiléiriú
+tástálacha, mar a thaispeántar i Liostú 12-20.</p>
+<Listing number="12-20" file-name="src/lib.rs" caption="Adding a new failing test for the case-insensitive function we’re about to add">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    for line in search(&amp;config.query, &amp;contents) {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn case_sensitive() {
+        let query = "duct";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.
+Duct tape.";
+
+        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+    }
+
+    #[test]
+    fn case_insensitive() {
+        let query = "rUsT";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.
+Trust me.";
+
+        assert_eq!(
+            vec!["Rust:", "Trust me."],
+            search_case_insensitive(query, contents)
+        );
+    }
+}</code></pre>
+</Listing>
+<p>Tabhair faoi deara go bhfuil <code>contents</code> na sean-thástála curtha in eagar againn freisin. Tá líne nua curtha leis againn
+leis an téacs <code>"Duct tape."</code> ag baint úsáide as ceannlitir <em>D</em> nár cheart a bheith ag teacht leis an gceist
+<code>"duct"</code> nuair a bhíonn muid ag cuardach ar bhealach cás-íogair. Athrú ar an tástáil d'aois
+ar an mbealach seo cabhraíonn sé lena chinntiú nach mbrisimid an cás-íogair trí thimpiste
+feidhmiúlacht chuardaigh atá curtha i bhfeidhm againn cheana féin. Ba cheart go n-éireodh leis an tástáil seo anois
+agus ba chóir go leanfadh sé ar aghaidh agus muid ag obair ar an gcuardach cás-íogair.</p>
+<p>Úsáideann an tástáil nua don chuardach cás-<em>insensitive</em> <code>"rUsT"</code> mar cheist. I
+an fheidhm <code>search_case_insensitive</code> atáimid ar tí cur leis, an cheist <code>"rUsT"</code>
+Ba chóir go mbeadh an líne ina bhfuil <code>"Rust:"</code> le príomhchathair <em>R</em> agus an líne a mheaitseáil
+line <code>"Trust me."</code> cé go bhfuil cásáil éagsúil ag an mbeirt ón gceist. seo
+Is é ár dtástáil theip, agus ní theipfidh orainn é a thiomsú toisc nach bhfuil sainithe againn fós
+an fheidhm <code>search_case_insensitive</code>. Thig leat creatlach a chur leis
+cur i bhfeidhm a thugann veicteoir folamh ar ais i gcónaí, cosúil leis an mbealach a rinne muid
+don fheidhm <code>search</code> i Liostú 12-16 chun an tástáil a thiomsú agus a theipeann a fheiceáil.</p>
+<h3 id="feidhm-search_case_insensitive-á-cur-i-bhfeidhm"><a class="header" href="#feidhm-search_case_insensitive-á-cur-i-bhfeidhm">Feidhm <code>search_case_insensitive</code> á cur i bhfeidhm</a></h3>
+<p>Beidh an fheidhm <code>search_case_insensitive</code>, a thaispeántar i Liostú 12-21, beagnach
+mar an gcéanna leis an bhfeidhm <code>search</code>. Is é an t-aon difríocht ná go ndéanfaimid cás íochtair
+an <code>query</code> agus gach <code>line</code> ionas gur cuma cad é cás na n-argóintí ionchuir,
+beidh siad mar an gcéanna nuair a dhéanaimid seiceáil an bhfuil an cheist sa líne.</p>
+<Listing number="12-21" file-name="src/lib.rs" caption="Defining the `search_case_insensitive` function to lowercase the query and the line before comparing them">
+<pre><code class="language-rust noplayground"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    for line in search(&amp;config.query, &amp;contents) {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search_case_insensitive&lt;'a&gt;(
+    query: &amp;str,
+    contents: &amp;'a str,
+) -&gt; Vec&lt;&amp;'a str&gt; {
+    let query = query.to_lowercase();
+    let mut results = Vec::new();
+
+    for line in contents.lines() {
+        if line.to_lowercase().contains(&amp;query) {
+            results.push(line);
+        }
+    }
+
+    results
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Ar dtús déanaimid an sreang <code>query</code> a íoslaghdú agus é a stóráil in athróg nua leis an
+ainm céanna, ag scáthú an bhunaidh. Glaoitear <code>go_lowercase</code> ar an gceist
+riachtanach ionas gur cuma cé acu an bhfuil ceist an úsáideora <code>"rust"</code>, <code>"RUST"</code>,
+<code>"Rust"</code>, nó <code>"rUsT"</code>, déileálfaimid leis an gceist amhail is dá mba <code>"rust"</code> é agus beidh
+neamhíogair don chás. Cé go láimhseálfaidh <code>to_lowercase</code> Unicode bhunúsach, beidh sé
+ní bheidh sé 100% cruinn. Dá mbeimis ag scríobh fíor-iarratas, ba mhaith linn a
+beagán níos mó oibre anseo, ach baineann an chuid seo le hathróga timpeallachta, nach bhfuil
+Unicode, mar sin fágfaimid anseo é.</p>
+<p>Tabhair faoi deara gur <code>String</code> é <code>query</code> anois seachas sreangán mar gheall ar ghlaoch
+cruthaíonn <code>to_lowercase</code> sonraí nua seachas tagairt a dhéanamh do shonraí atá ann cheana féin. Abair an
+Is é <code>"rUsT"</code> an cheist, mar shampla: níl cás íochtair sa téad sliseog sin
+<code>u</code> nó <code>t</code> le húsáid againn, mar sin ní mór dúinn <code>String</code> nua a leithdháileadh ina bhfuil
+<code>"rust"</code>. Nuair a thugaimid <code>query</code> mar argóint don mhodh <code>contains</code> anois, déanaimid
+gá ampersand a chur leis toisc go bhfuil síniú <code>tá</code> sainithe le glacadh
+slisne teaghrán.</p>
+<p>Ansin, cuirimid glao chuig <code>to_lowercase</code> ar gach <code>line</code> chun gach cás a laghdú
+carachtair. Anois go bhfuil <code>line</code> agus <code>query</code> tiontaithe againn go cás íochtair, déanfaimid
+aimsigh meaitseanna is cuma cad é cás an fhiosrúcháin.</p>
+<p>Feicfimid an éiríonn leis an gcur i bhfeidhm seo na tástálacha:</p>
+<pre><code class="language-console">$ cargo test
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.33s
+     Running unittests src/lib.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+
+running 2 tests
+test tests::case_insensitive ... ok
+test tests::case_sensitive ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests minigrep
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+</code></pre>
+<p>Go hiontach! Rith siad. Anois, cuirimis glaoch ar an bhfeidhm nua <code>search_case_insensitive</code>
+ón bhfeidhm <code>run</code>. Ar dtús cuirfimid rogha cumraíochta leis an <code>Config</code>
+déan iarracht aistriú idir cuardach cás-íogair agus cás-íogair. Ag cur
+cruthóidh an réimse seo earráidí tiomsaithe toisc nach bhfuilimid ag tosú an réimse seo
+áit ar bith go fóill:</p>
+<p><span class="filename">Filename: src/lib.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span>pub struct Config {
+    pub query: String,
+    pub file_path: String,
+    pub ignore_case: bool,
+}
+<span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    let results = if config.ignore_case {
+</span><span class="boring">        search_case_insensitive(&amp;config.query, &amp;contents)
+</span><span class="boring">    } else {
+</span><span class="boring">        search(&amp;config.query, &amp;contents)
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    for line in results {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search_case_insensitive&lt;'a&gt;(
+</span><span class="boring">    query: &amp;str,
+</span><span class="boring">    contents: &amp;'a str,
+</span><span class="boring">) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let query = query.to_lowercase();
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.to_lowercase().contains(&amp;query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<p>Chuireamar an réimse <code>ignore_case</code> isteach a bhfuil Boole aige. Ansin, ní mór dúinn an <code>run</code>
+feidhm chun luach an réimse <code>ignore_case</code> a sheiceáil agus é sin a úsáid chun cinneadh a dhéanamh
+cibé ar cheart an fheidhm <code>search</code> nó an <code>search_case_insensitive</code> a ghlaoch
+fheidhm, mar a thaispeántar i Liostú 12-22. Ní bheidh sé seo le chéile go fóill.</p>
+<Listing number="12-22" file-name="src/lib.rs" caption="Calling either `search` or `search_case_insensitive` based on the value in `config.ignore_case`">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">    pub ignore_case: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let contents = fs::read_to_string(config.file_path)?;
+
+    let results = if config.ignore_case {
+        search_case_insensitive(&amp;config.query, &amp;contents)
+    } else {
+        search(&amp;config.query, &amp;contents)
+    };
+
+    for line in results {
+        println!("{line}");
+    }
+
+    Ok(())
+}
+<span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search_case_insensitive&lt;'a&gt;(
+</span><span class="boring">    query: &amp;str,
+</span><span class="boring">    contents: &amp;'a str,
+</span><span class="boring">) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let query = query.to_lowercase();
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.to_lowercase().contains(&amp;query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Ar deireadh, ní mór dúinn a sheiceáil le haghaidh an athróg timpeallachta. Na feidhmeanna le haghaidh
+tá oibriú le hathróga timpeallachta sa mhodúl <code>env</code> sa chaighdeán
+leabharlann, mar sin tugaimid an modúl sin isteach sa scóip ag barr <em>src/lib.rs</em>. Ansin
+úsáidfimid an fheidhm <code>var</code> ón modúl <code>env</code> le seiceáil an bhfuil aon luach ann
+socraithe d'athróg timpeallachta darb ainm <code>IGNORE_CASE</code>, mar a thaispeántar i
+Liostáil 12-23.</p>
+<Listing number="12-23" file-name="src/lib.rs" caption="Checking for any value in an environment variable named `IGNORE_CASE`">
+<pre><code class="language-rust noplayground">use std::env;
+// --snip--
+
+<span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">    pub ignore_case: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Config {
+    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+        if args.len() &lt; 3 {
+            return Err("not enough arguments");
+        }
+
+        let query = args[1].clone();
+        let file_path = args[2].clone();
+
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+
+        Ok(Config {
+            query,
+            file_path,
+            ignore_case,
+        })
+    }
+}
+<span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    let results = if config.ignore_case {
+</span><span class="boring">        search_case_insensitive(&amp;config.query, &amp;contents)
+</span><span class="boring">    } else {
+</span><span class="boring">        search(&amp;config.query, &amp;contents)
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    for line in results {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search_case_insensitive&lt;'a&gt;(
+</span><span class="boring">    query: &amp;str,
+</span><span class="boring">    contents: &amp;'a str,
+</span><span class="boring">) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let query = query.to_lowercase();
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.to_lowercase().contains(&amp;query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Anseo, cruthaímid athróg nua, <code>ignore_case</code>. Chun a luach a shocrú, tugaimid an
+feidhm <code>env::var</code> agus cuir ainm na timpeallachta <code>IGNORE_CASE</code> air
+athróg. Tugann an fheidhm <code>env::var</code> ar ais a bheidh mar an
+malairt <code>Ok</code> rathúil ina bhfuil luach na hathróige timpeallachta más rud é
+socraítear athróg an chomhshaoil ​​ar aon luach. Tabharfaidh sé ar ais an leagan <code>Err</code>
+mura bhfuil an athróg timpeallachta socraithe.</p>
+<p>Táimid ag baint úsáide as an modh <code>is_ok</code> ar an <code>Result</code> le seiceáil an bhfuil an timpeallacht
+Tá athróg socraithe, rud a chiallaíonn gur cheart don chlár cuardach cás-íogair a dhéanamh.
+Mura bhfuil an athróg timpeallachta <code>IGNORE_CASE</code> socraithe mar rud ar bith, beidh <code>is_ok</code>
+fill <code>false</code> agus déanfaidh an clár cuardach cás-íogair. Ní dhéanaimid
+aire a thabhairt do <em>luach</em> na hathróige timpeallachta, díreach cibé an bhfuil sé socraithe nó
+gan a bheith socraithe, mar sin táimid ag seiceáil <code>is_ok</code> seachas <code>unwrap</code>, <code>expect</code>, nó aon cheann a úsáid
+de na modhanna eile atá feicthe againn ar <code>Result</code>.</p>
+<p>Tugaimid an luach san athróg <code>ignore_case</code> go dtí an t- shampla <code>Config</code> mar sin de
+Is féidir le feidhm <code>run</code> an luach sin a léamh agus cinneadh a dhéanamh ar cheart glaoch
+<code>search_case_insensitive</code> nó <code>search</code>, mar a chuireamar i bhfeidhm i Liostú 12-22.</p>
+<p>Déanaimis iarracht é! Ar dtús rithfidh muid ár gclár gan an timpeallacht
+tacar athróg agus leis an gceist <code>to</code>, ba cheart go mbeadh sé ag teacht le haon líne atá ann
+an focal <em>to</em> i ngach cás íochtair:</p>
+<pre><code class="language-console">$ cargo run -- to poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep to poem.txt`
+Are you nobody, too?
+How dreary to be somebody!
+</code></pre>
+<p>Is cosúil go n-oibríonn go fóill! Anois, déanaimis an clár a reáchtáil le sraith <code>IGNORE_CASE</code>
+go <code>1</code> ach leis an gceist chéanna <em>to</em>:</p>
+<pre><code class="language-console">$ IGNORE_CASE=1 cargo run -- to poem.txt
+</code></pre>
+<p>Má tá PowerShell á úsáid agat, beidh ort an athróg timpeallachta a shocrú agus
+rith an clár mar orduithe ar leith:</p>
+<pre><code class="language-console">PS&gt; $Env:IGNORE_CASE=1; cargo run -- to poem.txt
+</code></pre>
+<p>Fágfaidh sé seo go seasfaidh <code>IGNORE_CASE</code> ar feadh an chuid eile de do sheisiún sliogán.
+Is féidir é a dhíshuiteáil leis an cmdlet <code>Remove-Item</code>:</p>
+<pre><code class="language-console">PS&gt; Remove-Item Env:IGNORE_CASE
+</code></pre>
+<p>Ba cheart dúinn línte a fháil ina bhfuil <em>to</em> a bhféadfadh litreacha móra a bheith orthu:</p>
+<!-- manual-regeneration
+cd listings/ch12-an-io-project/listing-12-23
+IGNORE_CASE=1 cargo run -- to poem.txt
+can't extract because of the environment variable
+-->
+<pre><code class="language-console">Are you nobody, too?
+How dreary to be somebody!
+To tell your name the livelong day
+To an admiring bog!
+</code></pre>
+<p>Ar fheabhas, fuaireamar línte freisin ina raibh <em>To</em>! Is féidir lenár gclár <code>minigrep</code> a dhéanamh anois
+cuardach cás-íogair arna rialú ag athróg timpeallachta. Anois tá a fhios agat
+conas na roghanna atá leagtha síos a bhainistiú trí úsáid a bhaint as argóintí na n-orduithe nó as timpeallacht
+athróga.</p>
+<p>Ceadaíonn roinnt clár argóintí <em>agus</em> athróga timpeallachta mar an gcéanna
+cumraíocht. Sna cásanna sin, cinneann na cláir a thógann ceann amháin nó an ceann eile
+tosaíocht. Le haghaidh cleachtaidh eile leat féin, déan iarracht íogaireacht cáis a rialú
+trí argóint ceannlíne nó trí athróg timpeallachta. Déan cinneadh
+cé acu ar cheart argóint na n-orduithe nó an athróg timpeallachta a ghlacadh
+tosaíocht má reáchtálfar an clár le sraith amháin go cásíogair agus sraith amháin go
+neamhaird a dhéanamh ar chás.</p>
+<p>Tá i bhfad níos mó gnéithe úsáideacha le plé sa mhodúl <code>std::env</code>
+athróga timpeallachta: seiceáil a dhoiciméadú chun a fháil amach cad atá ar fáil.</p>
 
                     </main>
 

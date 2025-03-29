@@ -159,7 +159,96 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="writing-error-messages-to-standard-error-instead-of-standard-output"><a class="header" href="#writing-error-messages-to-standard-error-instead-of-standard-output">Writing Error Messages to Standard Error Instead of Standard Output</a></h1>
+                        <h2 id="teachtaireachtaí-earráide-á-scríobh-go-earráid-chaighdeánach-in-ionad-aschur-caighdeánach"><a class="header" href="#teachtaireachtaí-earráide-á-scríobh-go-earráid-chaighdeánach-in-ionad-aschur-caighdeánach">Teachtaireachtaí Earráide á Scríobh go Earráid Chaighdeánach In ionad Aschur Caighdeánach</a></h2>
+<p>Faoi láthair, táimid ag scríobh ár n-aschur go léir chuig an teirminéal ag baint úsáide as an
+<code>println!</code> macra. I bhformhór na gcríochfort, tá dhá chineál aschuir: <em>standard
+aschur</em> (<code>stdout</code>) le haghaidh faisnéise ginearálta agus <em>earráid chaighdeánach</em> (<code>stderr</code>) le haghaidh
+teachtaireachtaí earráide. Cuireann an t-idirdhealú seo ar chumas úsáideoirí rogha a dhéanamh chun an
+aschur rathúil clár go comhad ach fós teachtaireachtaí earráide a phriontáil chuig an
+scáileán.</p>
+<p>Níl an macra <code>println!</code> in ann priontáil ach go dtí aschur caighdeánach, mar sin ní mór dúinn
+rud éigin eile a úsáid le priontáil go hearráid chaighdeánach.</p>
+<h3 id="ag-seiceáil-cá-bhfuil-earráidí-scríofa"><a class="header" href="#ag-seiceáil-cá-bhfuil-earráidí-scríofa">Ag Seiceáil Cá bhfuil Earráidí Scríofa</a></h3>
+<p>Ar dtús déanaimis breathnú ar an gcaoi a bhfuil an t-ábhar atá clóite ag <code>minigrep</code> á phriontáil faoi láthair
+scríofa chuig aschur caighdeánach, lena n-áirítear aon teachtaireachtaí earráide ar mhaith linn scríobh chucu
+earráid chaighdeánach ina ionad sin. Déanfaimid é sin tríd an sruth caighdeánach aschuir a atreorú
+chuig comhad agus é ina chúis le hearráid d'aon ghnó. Ní dhéanfaimid an caighdeán a atreorú
+sruth earráide, mar sin beidh aon ábhar a seoladh chuig earráid chaighdeánach ar aghaidh ag taispeáint ar
+an scáileán.</p>
+<p>Táthar ag súil go seolfaidh cláir líne ordaithe teachtaireachtaí earráide chuig an earráid chaighdeánach
+sruth ionas gur féidir linn fós teachtaireachtaí earráide a fheiceáil ar an scáileán fiú má atreoraíonn muid an
+sruth caighdeánach aschuir chuig comhad. Níl ár gclár múinte faoi láthair:
+táimid ar tí a fheiceáil go sábhálann sé aschur na teachtaireachta earráide chuig comhad ina ionad sin!</p>
+<p>Leis an iompar seo a léiriú, rithfidh muid an clár le <code>&gt;</code> agus cosán an chomhaid,
+<em>output.txt</em>, ar mhaith linn an sruth caighdeánach aschuir a atreorú chuige. Ní dhéanfaimid
+pas a fháil ar argóintí ar bith, ar cheart dóibh earráid a chruthú:</p>
+<pre><code class="language-console">$ cargo run &gt; output.txt
+</code></pre>
+<p>Insíonn an chomhréir <code>&gt;</code> don bhlaosc ábhar an aschuir chaighdeánaigh a scríobh chuige
+<em>output.txt</em> in ionad an scáileáin. Ní fhacamar an teachtaireacht earráide a bhí againn
+ag súil clóite ar an scáileán, mar sin a chiallaíonn go gcaithfidh sé a bheith dar críoch suas sa
+comhad. Seo a bhfuil i <em>output.txt</em>:</p>
+<pre><code class="language-text">Problem parsing arguments: not enough arguments
+</code></pre>
+<p>Sea, tá ár dteachtaireacht earráide á phriontáil go dtí an t-aschur caighdeánach. Tá sé i bhfad níos mó
+úsáideach chun teachtaireachtaí earráide mar seo a phriontáil go hearráid chaighdeánach amháin
+críochnaíonn sonraí ó rith rathúil suas sa chomhad. Athróimid é sin.</p>
+<h3 id="earráidí-priontála-go-earráid-chaighdeánach"><a class="header" href="#earráidí-priontála-go-earráid-chaighdeánach">Earráidí Priontála go Earráid Chaighdeánach</a></h3>
+<p>Úsáidfimid an cód i Liostú 12-24 chun an chaoi a phriontáiltear teachtaireachtaí earráide a athrú.
+Mar gheall ar an refactoring rinne muid níos luaithe sa chaibidil seo, go léir an cód go
+tá teachtaireachtaí earráide priontaí in aon fheidhm amháin, <code>main</code>. Soláthraíonn an leabharlann caighdeánach
+an macra <code>eprintln!</code> a phriontálann go dtí an sruth caighdeánach earráide, mar sin déanaimis athrú
+an dá áit a raibh muid ag glaoch <code>println!</code> chun earráidí a phriontáil chun <code>eprintln!</code> a úsáid
+ina ionad.</p>
+<Listing number="12-24" file-name="src/main.rs" caption="Writing error messages to standard error instead of standard output using `eprintln!`">
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::process;
+</span><span class="boring">
+</span><span class="boring">use minigrep::Config;
+</span><span class="boring">
+</span>fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+
+    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {err}");
+        process::exit(1);
+    });
+
+    if let Err(e) = minigrep::run(config) {
+        eprintln!("Application error: {e}");
+        process::exit(1);
+    }
+}</code></pre>
+</Listing>
+<p>Déanaimis an clár a rith arís ar an mbealach céanna, gan argóintí agus
+aschur caighdeánach á atreorú le <code>&gt;</code>:</p>
+<pre><code class="language-console">$ cargo run &gt; output.txt
+Problem parsing arguments: not enough arguments
+</code></pre>
+<p>Anois feicimid an earráid ar an scáileán agus níl aon rud ag <em>output.txt</em>, is é sin an
+iompar a mbeimid ag súil leis ó chláir na n-orduithe.</p>
+<p>Rithfimid an clár arís le hargóintí nach n-eascraíonn earráid ach atá fós
+atreorú aschur caighdeánach chuig comhad, mar sin:</p>
+<pre><code class="language-console">$ cargo run -- to poem.txt &gt; output.txt
+</code></pre>
+<p>Ní fheicfimid aon aschur chuig an teirminéal, agus beidh ár gcuid <em>output.txt</em>
+torthaí:</p>
+<p><span class="filename">Ainm comhaid: output.txt</span></p>
+<pre><code class="language-text">Are you nobody, too?
+How dreary to be somebody!
+</code></pre>
+<p>Léiríonn sé seo go bhfuil aschur caighdeánach á úsáid againn anois le haghaidh aschur rathúil
+agus earráid chaighdeánach maidir le haschur earráide de réir mar is cuí.</p>
+<h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
+<p>Rinne an chaibidil seo achoimre ar chuid de na mórchoincheapa atá foghlamtha agat go dtí seo agus
+clúdaithe conas oibríochtaí coitianta I/O a dhéanamh i Rust. Trí úsáid a bhaint as líne ordaithe
+argóintí, comhaid, athróga timpeallachta, agus an macra <code>eprintln!</code> le haghaidh priontála
+earráidí, tá tú réidh anois feidhmchláir orduithe a scríobh. In éineacht le
+na coincheapa i gcaibidlí roimhe seo, beidh do chód a bheith eagraithe go maith, sonraí a stóráil
+go héifeachtach sna struchtúir sonraí cuí, earráidí a láimhseáil go deas, agus a bheith
+dea-thástáil.</p>
+<p>Ansin, déanfaimid iniúchadh ar roinnt gnéithe Rust a raibh tionchar ag feidhmiúil orthu
+teangacha: dúnta agus iterators.</p>
 
                     </main>
 

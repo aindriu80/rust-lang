@@ -159,7 +159,85 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="reading-a-file"><a class="header" href="#reading-a-file">Reading a File</a></h1>
+                        <h2 id="comhad-á-léamh"><a class="header" href="#comhad-á-léamh">Comhad á Léamh</a></h2>
+<p>Anois cuirfimid feidhmiúlacht leis chun an comhad a shonraítear sa <code>file_path</code> a léamh
+argóint. Ar dtús teastaíonn uainn comhad samplach chun é a thástáil: úsáidfimid comhad a bhfuil a
+méid beag téacs thar línte iolracha le roinnt focal arís agus arís eile. Liostáil 12-3
+Tá dán Emily Dickinson aige a oibreoidh go maith! Cruthaigh comhad darb ainm
+<em>poem.txt</em> ag bunleibhéal do thionscadal, agus cuir isteach an dán “Is Aon Duine mé!
+Cé tusa?"</p>
+<Listing number="12-3" file-name="poem.txt" caption="A poem by Emily Dickinson makes a good test case.">
+<pre><code class="language-text">I'm nobody! Who are you?
+Are you nobody, too?
+Then there's a pair of us - don't tell!
+They'd banish us, you know.
+
+How dreary to be somebody!
+How public, like a frog
+To tell your name the livelong day
+To an admiring bog!
+</code></pre>
+</Listing>
+<p>Agus an téacs i bhfeidhm, cuir <em>src/main.rs</em> in eagar agus cuir cód leis chun an comhad a léamh, mar
+léirithe i Liostú 12-4.</p>
+<Listing number="12-4" file-name="src/main.rs" caption="Reading the contents of the file specified by the second argument">
+<pre><code class="language-rust should_panic noplayground">use std::env;
+use std::fs;
+
+fn main() {
+    // --snip--
+<span class="boring">    let args: Vec&lt;String&gt; = env::args().collect();
+</span><span class="boring">
+</span><span class="boring">    let query = &amp;args[1];
+</span><span class="boring">    let file_path = &amp;args[2];
+</span><span class="boring">
+</span><span class="boring">    println!("Searching for {query}");
+</span>    println!("In file {file_path}");
+
+    let contents = fs::read_to_string(file_path)
+        .expect("Should have been able to read the file");
+
+    println!("With text:\n{contents}");
+}</code></pre>
+</Listing>
+<p>Ar dtús tugaimid isteach cuid ábhartha den leabharlann chaighdeánach le <code>use</code>
+ráiteas: ní mór dúinn <code>std::fs</code> chun comhaid a láimhseáil.</p>
+<p>Sa <code>main</code>, glacann an ráiteas nua <code>fs::read_to_string</code> an <code>file_path</code>, osclaíonn sé
+an comhad sin, agus seolann sé ar ais luach den chineál <code>std::io::Result&lt;String&gt;</code> ina bhfuil
+inneachar an chomhaid.</p>
+<p>Ina dhiaidh sin, cuirimid arís ráiteas sealadach <code>println!</code> a phriontálann an luach
+de <code>contents</code> tar éis an comhad a léamh, ionas gur féidir linn a sheiceáil go bhfuil an clár
+ag obair go dtí seo.</p>
+<p>Rithfimid an cód seo le haon teaghrán mar an argóint chéad líne ordaithe (mar gheall ar
+níl an chuid cuardaigh curtha i bhfeidhm againn fós) agus an comhad <em>poem.txt</em> mar an
+dara argóint:</p>
+<pre><code class="language-console">$ cargo run -- the poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep the poem.txt`
+Searching for the
+In file poem.txt
+With text:
+I'm nobody! Who are you?
+Are you nobody, too?
+Then there's a pair of us - don't tell!
+They'd banish us, you know.
+
+How dreary to be somebody!
+How public, like a frog
+To tell your name the livelong day
+To an admiring bog!
+
+</code></pre>
+<p>Go hiontach! Léadh an cód agus ansin phriontáiltear ábhar an chomhaid. Ach an cód
+tá cúpla lochtanna. I láthair na huaire, tá an fheidhm <code>main</code> iolraithe
+freagrachtaí: go ginearálta, bíonn feidhmeanna níos soiléire agus níos éasca le cothabháil má
+tá gach feidhm freagrach as smaoineamh amháin. Is í an fhadhb eile go bhfuil muid
+gan earráidí a láimhseáil chomh maith agus a d'fhéadfaimis. Tá an clár fós beag, mar sin iad seo
+ní fadhb mhór iad lochtanna, ach de réir mar a fhásann an clár, beidh sé níos deacra iad a shocrú
+iad go glan. Is dea-chleachtas é tosú ar athmhachnamh go luath nuair
+clár a fhorbairt mar go bhfuil sé i bhfad níos éasca méideanna níos lú a athfhachtóiriú
+cód. Déanfaimid é sin chugainn.</p>
 
                     </main>
 
