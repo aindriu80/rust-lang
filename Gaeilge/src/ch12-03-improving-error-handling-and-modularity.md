@@ -270,18 +270,18 @@ Bhuel, rud a dhéanfaimid sa chéad liostú eile.
 
 </Listing>
 
-Our `build` function returns a `Result` with a `Config` instance in the success
-case and a string literal in the error case. Our error values will always be
-string literals that have the `'static` lifetime.
+Tugann ár bhfeidhm `build` `Result` ar ais agus sampla `Config` sa rath
+cás agus teaghrán litriúil sa chás earráide. Beidh ár luachanna earráide i gcónaí
+téadlitreacha a bhfuil an saolré `'static` acu.
 
-We’ve made two changes in the body of the function: instead of calling `panic!`
-when the user doesn’t pass enough arguments, we now return an `Err` value, and
-we’ve wrapped the `Config` return value in an `Ok`. These changes make the
-function conform to its new type signature.
+Tá dhá athrú déanta againn i gcorp na feidhme: in ionad ‘scaoll!’ a ghlaoch
+nuair nach n-éiríonn leis an úsáideoir go leor argóintí a dhéanamh, tugaimid luach `Err` ar ais anois, agus
+tá an luach aischuir `Config` fillte againn i `OK`. Déanann na hathruithe seo an
+feidhm cloí lena síniú cineáil nua.
 
-Returning an `Err` value from `Config::build` allows the `main` function to
-handle the `Result` value returned from the `build` function and exit the
-process more cleanly in the error case.
+Má chuirtear luach `Err` ar ais ó `Config::build`' ceadaíonn sé don phríomhfheidhm
+láimhseáil an luach `Result` a cuireadh ar ais ón bhfeidhm `build` agus scoir an
+próiseáil níos glaine i gcás earráide.
 
 <!-- Old headings. Do not remove or links may break. -->
 
