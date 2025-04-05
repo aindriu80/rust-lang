@@ -13367,17 +13367,17 @@ Bhuel, rud a dhéanfaimid sa chéad liostú eile.</p>
     }
 }</code></pre>
 </Listing>
-<p>Our <code>build</code> function returns a <code>Result</code> with a <code>Config</code> instance in the success
-case and a string literal in the error case. Our error values will always be
-string literals that have the <code>'static</code> lifetime.</p>
-<p>We’ve made two changes in the body of the function: instead of calling <code>panic!</code>
-when the user doesn’t pass enough arguments, we now return an <code>Err</code> value, and
-we’ve wrapped the <code>Config</code> return value in an <code>Ok</code>. These changes make the
-function conform to its new type signature.</p>
-<p>Returning an <code>Err</code> value from <code>Config::build</code> allows the <code>main</code> function to
-handle the <code>Result</code> value returned from the <code>build</code> function and exit the
-process more cleanly in the error case.</p>
-<!-- Old headings. Do not remove or links may break. -->
+<p>Tugann ár bhfeidhm <code>build</code> <code>Result</code> ar ais agus sampla <code>Config</code> sa rath
+cás agus teaghrán litriúil sa chás earráide. Beidh ár luachanna earráide i gcónaí
+téadlitreacha a bhfuil an saolré <code>'static</code> acu.</p>
+<p>Tá dhá athrú déanta againn i gcorp na feidhme: in ionad <code>panic!</code> a ghlaoch
+nuair nach n-éiríonn leis an úsáideoir go leor argóintí a dhéanamh, tugaimid luach <code>Err</code> ar ais anois, agus
+tá an luach aischuir <code>Config</code> fillte againn i <code>OK</code>. Déanann na hathruithe seo an
+feidhm cloí lena síniú cineáil nua.</p>
+<p>Má chuirtear luach <code>Err</code> ar ais ó <code>Config::build</code> ceadaíonn sé don phríomhfheidhm
+láimhseáil an luach <code>Result</code> a cuireadh ar ais ón bhfeidhm <code>build</code> agus scoir an
+próiseáil níos glaine i gcás earráide.</p>
+<!-- Old headings. Do not remove or links may break. --> 
 <p><a id="calling-confignew-and-handling-errors"></a></p>
 <h4 id="ag-glaoch-configbuild-agus-ag-láimhseáil-earráidí"><a class="header" href="#ag-glaoch-configbuild-agus-ag-láimhseáil-earráidí">Ag glaoch <code>Config::build</code> agus ag Láimhseáil Earráidí</a></h4>
 <p>Chun an cás earráide a láimhseáil agus teachtaireacht atá éasca le húsáid a phriontáil, ní mór dúinn nuashonrú a dhéanamh
@@ -15017,11 +15017,1548 @@ go héifeachtach sna struchtúir sonraí cuí, earráidí a láimhseáil go deas
 dea-thástáil.</p>
 <p>Ansin, déanfaimid iniúchadh ar roinnt gnéithe Rust a raibh tionchar ag feidhmiúil orthu
 teangacha: dúnta agus iterators.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="functional-language-features-iterators-and-closures"><a class="header" href="#functional-language-features-iterators-and-closures">Functional Language Features: Iterators and Closures</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="closures-anonymous-functions-that-capture-their-environment"><a class="header" href="#closures-anonymous-functions-that-capture-their-environment">Closures: Anonymous Functions that Capture Their Environment</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="processing-a-series-of-items-with-iterators"><a class="header" href="#processing-a-series-of-items-with-iterators">Processing a Series of Items with Iterators</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="improving-our-io-project"><a class="header" href="#improving-our-io-project">Improving Our I/O Project</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="comparing-performance-loops-vs-iterators"><a class="header" href="#comparing-performance-loops-vs-iterators">Comparing Performance: Loops vs. Iterators</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gnéithe-feidhmiúla-teanga-iterators-agus-dúnadh"><a class="header" href="#gnéithe-feidhmiúla-teanga-iterators-agus-dúnadh">Gnéithe Feidhmiúla Teanga: Iterators agus Dúnadh</a></h1>
+<p>Fuair ​​dearadh Rust inspioráid ó go leor teangacha atá ann cheana féin agus
+teicnící, agus tionchar suntasach amháin is ea <em>ríomhchlárú feidhme</em>.
+Cuimsíonn ríomhchlárú i stíl fheidhmiúil feidhmeanna a úsáid mar luachanna trí
+iad a rith in argóintí, iad a thabhairt ar ais ó fheidhmeanna eile, iad a shannadh
+chuig athróga le cur i gcrích níos déanaí, agus mar sin de.</p>
+<p>Sa chaibidil seo, ní bheidh muid ag déanamh díospóireachta ar an gceist cad is ríomhchlárú feidhmiúil ann
+nach bhfuil ach ina ionad sin pléifidh sé roinnt gnéithe de Rust atá cosúil leo
+gnéithe i go leor teangacha ar a dtugtar go minic feidhmiúil.</p>
+<p>Go sonrach, clúdóimid:</p>
+<ul>
+<li><em>Closures</em>, tógáil atá cosúil le feidhm is féidir leat a stóráil in athróg</li>
+<li><em>Iterators</em>, bealach chun sraith eilimintí a phróiseáil</li>
+<li>Conas dúnadh agus atrialtóirí a úsáid chun an tionscadal I/O i gCaibidil 12 a fheabhsú</li>
+<li>Feidhmíocht dúnta agus iterators (Foláireamh Spoiler: tá siad níos tapúla ná
+seans go gceapfá!)</li>
+</ul>
+<p>Tá roinnt gnéithe Rust eile clúdaithe againn cheana féin, cosúil le meaitseáil patrún agus
+enums, a bhfuil tionchar freisin ag an stíl fheidhmiúil. Toisc máistreacht
+Is cuid thábhachtach de scríbhneoireacht idiomatic, tapa Rust é dúnta agus iterators
+cód, tabharfaimid an chaibidil iomlán seo dóibh.# Functional Language Features: Iterators and Closures</p>
+<div style="break-before: page; page-break-before: always;"></div><!-- Sean-cheannteideal. Ná bain amach nó seans go mbrisfidh naisc. -->
+<p><a id="closures-anonymous-feidhmeanna-a-féidir-a ghabháil-a-timpeallacht"></a></p>
+<h2 id="dúnadh-feidhmeanna-gan-ainm-a-gabhann-a-dtimpeallacht"><a class="header" href="#dúnadh-feidhmeanna-gan-ainm-a-gabhann-a-dtimpeallacht">Dúnadh: Feidhmeanna Gan Ainm a Gabhann A dTimpeallacht</a></h2>
+<p>Is feidhmeanna gan ainm iad dúnadh Rust is féidir leat a shábháil in athróg nó pas a fháil mar
+argóintí le feidhmeanna eile. Is féidir leat an dúnadh a chruthú in aon áit amháin agus ansin
+glaoch ar an dúnadh áit eile chun é a mheas i gcomhthéacs difriúil. Murab ionann
+feidhmeanna, is féidir le dúnadh luachanna a ghabháil ón raon feidhme ina bhfuil siad sainithe.
+Léireoimid conas a cheadaíonn na gnéithe dúnta seo athúsáid cód agus iompar
+saincheaptha.</p>
+<!-- Sean-cheannteidil. Ná bain amach nó seans go mbrisfidh naisc. -->
+<p><a id="creating-an-abstraction-of-behavior-with-closures"></a>
+<a id="refactoring-using-functions"></a>
+<a id="refactoring-with-closures-to-store-code"></a></p>
+<h3 id="ag-gabháil-na-timpeallachta-le-dúnadh"><a class="header" href="#ag-gabháil-na-timpeallachta-le-dúnadh">Ag Gabháil na Timpeallachta le Dúnadh</a></h3>
+<p>Scrúdóimid ar dtús conas is féidir linn dúnadh a úsáid chun luachanna a fháil ó na
+timpeallacht ina bhfuil siad sainithe le húsáid níos déanaí. Seo é an scéal: Gach cás
+go minic, tugann ár gcomhlacht t-léine léine eisiach, eagrán teoranta do
+duine ar ár liosta postála mar chur chun cinn. Is féidir le daoine ar an liosta postála
+go roghnach a dath is fearr leat a chur ar a bpróifíl. Má tá an duine a roghnaíodh le haghaidh
+tá a sraith dathanna is fearr leat ag léine saor in aisce, faigheann siad an léine dath sin. Má tá an
+níl dath is fearr leat sonraithe ag an duine, faigheann siad cibé dath atá ar an gcuideachta
+faoi ​​láthair tá an chuid is mó de.</p>
+<p>Tá go leor bealaí ann chun é seo a chur i bhfeidhm. Mar shampla, bainfimid úsáid as
+enum ar a dtugtar <code>ShirtColor</code> a bhfuil na leaganacha <code>Red</code> agus <code>Blue</code> (le teorainn
+líon na dathanna atá ar fáil ar mhaithe le simplíocht). Déanaimid ionadaíocht ar son na cuideachta
+fardal le struchtúr <code>Inventory</code> ar a bhfuil réimse darb ainm <code>shirts</code> sin
+ina bhfuil <code>Vec&lt;ShirtColor&gt;</code> a sheasann do dhathanna na léine atá sa stoc faoi láthair.
+Faigheann an modh <code>giveaway</code> a shainmhínítear ar <code>Inventory</code> an léine roghnach
+rogha dath an bhuaiteoir léine in aisce, agus filleann dath an léine an
+gheobhaidh duine. Taispeántar an socrú seo i Liostú 13-1:</p>
+<Listing number="13-1" file-name="src/main.rs" caption="Shirt company giveaway situation">
+<pre><code class="language-rust noplayground">#[derive(Debug, PartialEq, Copy, Clone)]
+enum ShirtColor {
+    Red,
+    Blue,
+}
+
+struct Inventory {
+    shirts: Vec&lt;ShirtColor&gt;,
+}
+
+impl Inventory {
+    fn giveaway(&amp;self, user_preference: Option&lt;ShirtColor&gt;) -&gt; ShirtColor {
+        user_preference.unwrap_or_else(|| self.most_stocked())
+    }
+
+    fn most_stocked(&amp;self) -&gt; ShirtColor {
+        let mut num_red = 0;
+        let mut num_blue = 0;
+
+        for color in &amp;self.shirts {
+            match color {
+                ShirtColor::Red =&gt; num_red += 1,
+                ShirtColor::Blue =&gt; num_blue += 1,
+            }
+        }
+        if num_red &gt; num_blue {
+            ShirtColor::Red
+        } else {
+            ShirtColor::Blue
+        }
+    }
+}
+
+fn main() {
+    let store = Inventory {
+        shirts: vec![ShirtColor::Blue, ShirtColor::Red, ShirtColor::Blue],
+    };
+
+    let user_pref1 = Some(ShirtColor::Red);
+    let giveaway1 = store.giveaway(user_pref1);
+    println!(
+        "The user with preference {:?} gets {:?}",
+        user_pref1, giveaway1
+    );
+
+    let user_pref2 = None;
+    let giveaway2 = store.giveaway(user_pref2);
+    println!(
+        "The user with preference {:?} gets {:?}",
+        user_pref2, giveaway2
+    );
+}</code></pre>
+</Listing>
+<p>Tá dhá léine ghorma agus léine dhearg amháin fágtha sa <code>store</code> a shainmhínítear sa <code>main</code>
+a dháileadh don chur chun cinn eagrán teoranta seo. Tugaimid an modh <code>giveaway</code>
+d'úsáideoir a bhfuil rogha le haghaidh léine dearg agus úsáideoir gan aon rogha.</p>
+<p>Arís, d’fhéadfaí an cód seo a chur i bhfeidhm ar go leor bealaí, agus anseo, chun díriú air
+dúnadh, táimid tar éis cloí le coincheapa atá foghlamtha agat cheana féin seachas an corpán
+an modh <code>giveaway</code> a úsáideann clabhsúr. Sa mhodh <code>giveaway</code>, faigheann muid an
+rogha an úsáideora mar pharaiméadar den chineál <code>Option&lt;ShirtColor&gt;</code> agus glaoigh ar an
+modh <code>unwrap_or_else</code> ar <code>user_preference</code>. Tá an modh <a href="../std/option/enum.Option.html#method.unwrap_or_else"><code>unwrap_or_else</code> ar siúl
+<code>Option&lt;T&gt;</code></a><!-- neamhaird --> ag an ngnáthleabharlann.
+Bíonn argóint amháin ann: dúnadh gan argóintí ar bith a thugann luach <code>T</code> ar ais
+(an cineál céanna atá stóráilte sa leagan <code>Some</code> den <code>Option&lt;T&gt;</code>, sa chás seo
+<code>ShirtColor</code>). Más é an <code>Option&lt;T&gt;</code> an ​​leagan <code>Some</code>, <code>unwrap_or_else</code>
+aischuireann an luach ó laistigh den <code>Some</code>. Más é an <code>Option&lt;T&gt;</code> an ​​<code>None</code>
+leagan eile, glaonn <code>unwrap_or_else</code> an dúnadh agus seolann sé an luach ar ais le
+an dúnadh.</p>
+<p>Sonraimid an slonn dúnta <code>|| self.most_stocked()</code> mar an argóint chun
+<code>unwrap_or_else</code>. Seo dúnadh nach nglacann aon pharaiméadair féin (má tá an
+Bhí paraiméadair ag dúnadh, bheadh ​​siad le feiceáil idir an dá bharra ingearach). Tá an
+glaonn comhlacht an dúnta <code>self.most_stocked()</code>. Táimid ag sainmhíniú an dúnadh
+anseo, agus déanfaidh feidhmiú <code>unwrap_or_else</code> an dúnadh a mheas
+níos déanaí má tá an toradh ag teastáil.</p>
+<p>Ag rith an chóid seo priontaí:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling shirt-company v0.1.0 (file:///projects/shirt-company)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
+     Running `target/debug/shirt-company`
+The user with preference Some(Red) gets Red
+The user with preference None gets Blue
+</code></pre>
+<p>Gné shuimiúil amháin anseo ná gur éirigh linn dúnadh a ghlaonn
+<code>self.most_stocked()</code> ar an gcás reatha <code>Inventory</code>. An leabharlann caighdeánach
+níor ghá go mbeadh eolas ar bith againn ar na cineálacha <code>Inventory</code> nó <code>ShirtColor</code> atá againn
+sainithe, nó an loighic ba mhaith linn a úsáid sa chás seo. Gabhann an dúnadh an
+tagairt domhalartaithe don ásc <code>self</code> <code>Inventory</code> agus é a chur ar aghaidh leis an
+cód a shonraimid leis an modh <code>unwrap_or_else</code>. Feidhmeanna, ar an láimh eile,
+nach bhfuil in ann a dtimpeallacht a ghabháil ar an mbealach seo.</p>
+<h3 id="tátail-agus-anótáil-cineál-dúnadh"><a class="header" href="#tátail-agus-anótáil-cineál-dúnadh">Tátail agus Anótáil Cineál Dúnadh</a></h3>
+<p>Tá níos mó difríochtaí idir feidhmeanna agus dúnta. Ní dhéanann dúnta
+de ghnáth éilíonn tú cineálacha na bparaiméadar nó an luach tuairisceáin a anótáil
+mar a dhéanann feidhmeanna <code>fn</code>. Teastaíonn nótaí cineáil ar fheidhmeanna toisc go bhfuil an
+tá cineálacha mar chuid de chomhéadan follasach a nochtar do d'úsáideoirí. Ag sainmhíniú seo
+comhéadan docht tábhachtach chun a chinntiú go n-aontaíonn gach duine ar cad iad na cineálacha
+de luachanna úsáideann feidhm agus tuairisceáin. Ar an láimh eile, ní úsáidtear dúnta
+i gcomhéadan nochta mar seo: déantar iad a stóráil in athróga agus úsáidtear iad gan
+iad a ainmniú agus iad a nochtadh d'úsáideoirí ár leabharlann.</p>
+<p>Is iondúil go mbíonn dúnta gearr agus ní bhaineann siad ach le comhthéacs cúng
+ná in aon chás treallach. Laistigh de na comhthéacsanna teoranta seo, is féidir leis an tiomsaitheoir
+tátail na bparaiméadar agus an cineál tuairisceáin, cosúil leis an gcaoi a bhfuil sé in ann
+chun tátal a bhaint as na cineálacha athróg is mó (tá cásanna annamh nuair a bhíonn an tiomsaitheoir
+tá nótaí dúnta de dhíth freisin).</p>
+<p>Mar is amhlaidh le hathróga, is féidir linn nótaí cineáil a chur leis más mian linn méadú a dhéanamh
+soiléireacht agus soiléireacht ar chostas a bheith níos briathartha ná mar atá go docht
+riachtanach. Is cosúil leis an sainmhíniú an sainmhíniú a thabhairt ar na cineálacha le haghaidh dúnadh
+léirithe i Liostú 13-2. Sa sampla seo, táimid ag sainmhíniú dúnadh agus á stóráil
+in athróg seachas an dúnadh a shainiú sa spota tugaimid thairis é mar
+argóint mar a rinneamar i Liosta 13-1.</p>
+<Listing number="13-2" file-name="src/main.rs" caption="Adding optional type annotations of the parameter and return value types in the closure">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::thread;
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn generate_workout(intensity: u32, random_number: u32) {
+</span>    let expensive_closure = |num: u32| -&gt; u32 {
+        println!("calculating slowly...");
+        thread::sleep(Duration::from_secs(2));
+        num
+    };
+<span class="boring">
+</span><span class="boring">    if intensity &lt; 25 {
+</span><span class="boring">        println!("Today, do {} pushups!", expensive_closure(intensity));
+</span><span class="boring">        println!("Next, do {} situps!", expensive_closure(intensity));
+</span><span class="boring">    } else {
+</span><span class="boring">        if random_number == 3 {
+</span><span class="boring">            println!("Take a break today! Remember to stay hydrated!");
+</span><span class="boring">        } else {
+</span><span class="boring">            println!(
+</span><span class="boring">                "Today, run for {} minutes!",
+</span><span class="boring">                expensive_closure(intensity)
+</span><span class="boring">            );
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let simulated_user_specified_value = 10;
+</span><span class="boring">    let simulated_random_number = 7;
+</span><span class="boring">
+</span><span class="boring">    generate_workout(simulated_user_specified_value, simulated_random_number);
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Agus nótaí cineáil curtha leis, tá cuma níos cosúla ar chomhréir na ndúntaí leis an
+comhréir feidhmeanna. Anseo sainímid feidhm a chuireann 1 lena pharaiméadar agus
+clabhsúr a bhfuil an t-iompar céanna air, chun comparáid a dhéanamh. Chuireamar roinnt spásanna leis
+chun na codanna ábhartha a líneáil. Léiríonn sé seo an chomhréir dúnta comhchosúil
+chun comhréir a fheidhmiú ach amháin maidir le húsáid píopaí agus an méid comhréire atá
+roghnach:</p>
+<pre><code class="language-rust ignore">fn  add_one_v1   (x: u32) -&gt; u32 { x + 1 }
+let add_one_v2 = |x: u32| -&gt; u32 { x + 1 };
+let add_one_v3 = |x|             { x + 1 };
+let add_one_v4 = |x|               x + 1  ;</code></pre>
+<p>Taispeánann an chéad líne sainmhíniú ar fheidhm, agus taispeánann an dara líne sainmhíniú iomlán
+sainmhíniú dúnta anótáilte. Sa tríú líne, bainimid na nótaí cineáil
+ón sainmhíniú dúnta. Sa cheathrú líne, bainimid na lúibíní, a bhfuil
+atá roghnach toisc nach bhfuil ach léiriú amháin ag an gcomhlacht dúnta. Is iad seo go léir
+sainmhínithe bailí a thabharfaidh an t-iompar céanna nuair a ghlaotar orthu. Tá an
+Éilíonn línte <code>add_one_v3</code> agus <code>cuir_one_v4</code> go ndéanfaí na dúnta a mheas
+in ann a thiomsú mar go mbeidh na cineálacha a thuiscint óna n-úsáid. Tá sé seo
+cosúil le <code>let v = Vec::new();</code> a dteastaíonn ceachtar den chineál nótaí nó luachanna de
+cineál éigin le cur isteach sa <code>Vec</code> le go mbeidh Rust in ann an cineál a thuiscint.</p>
+<p>Maidir le sainmhínithe dúnta, bainfidh an tiomsaitheoir le tátal a bhaint as cineál coincréite amháin do gach ceann díobh
+a bparaiméadar agus a luach aischuir. Mar shampla, taispeánann Liostú 13-3
+an sainmhíniú ar dhúnadh gairid nach dtugann ach an luach a fhaigheann sé ar ais mar a
+paraiméadar. Níl an dúnadh seo an-úsáideach ach amháin chun críocha seo
+shampla. Tabhair faoi deara nach bhfuil aon chineál nótaí curtha againn leis an sainmhíniú.
+Toisc nach bhfuil aon nótaí cineáil ann, is féidir linn an dúnadh a ghlaoch le haon chineál,
+rud atá déanta againn anseo le <code>String</code> an chéad uair. Má dhéanaimid iarracht ansin glaoch
+<code>example_closure</code> le slánuimhir, gheobhaidh muid earráid.</p>
+<Listing number="13-3" file-name="src/main.rs" caption="Attempting to call a closure whose types are inferred with two different types">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let example_closure = |x| x;
+
+    let s = example_closure(String::from("hello"));
+    let n = example_closure(5);
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Tugann an tiomsaitheoir an earráid seo dúinn:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling closure-example v0.1.0 (file:///projects/closure-example)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:5:29
+  |
+5 |     let n = example_closure(5);
+  |             --------------- ^- help: try using a conversion method: `.to_string()`
+  |             |               |
+  |             |               expected `String`, found integer
+  |             arguments to this function are incorrect
+  |
+note: expected because the closure was earlier called with an argument of type `String`
+ --&gt; src/main.rs:4:29
+  |
+4 |     let s = example_closure(String::from("hello"));
+  |             --------------- ^^^^^^^^^^^^^^^^^^^^^ expected because this argument is of type `String`
+  |             |
+  |             in this closure call
+note: closure parameter defined here
+ --&gt; src/main.rs:2:28
+  |
+2 |     let example_closure = |x| x;
+  |                            ^
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `closure-example` (bin "closure-example") due to 1 previous error
+</code></pre>
+<p>An chéad uair a thugaimid <code>example_closure</code> air leis an luach <code>String</code>, an tiomsaitheoir
+tugtar le tuiscint gur <code>String</code> an cineál <code>x</code> agus an cineál fillte den dúnadh. Iad siúd
+cuirtear cineálacha faoi ghlas ansin sa dúnadh i <code>example_closure</code>, agus faigheann muid cineál
+earráid nuair a dhéanaimid iarracht cineál eile a úsáid leis an dúnadh céanna.</p>
+<h3 id="tagairtí-a-ghabháil-nó-Úinéireacht-a-bhogadh"><a class="header" href="#tagairtí-a-ghabháil-nó-Úinéireacht-a-bhogadh">Tagairtí a Ghabháil nó Úinéireacht a Bhogadh</a></h3>
+<p>Is féidir le dúnta luachanna a ghabháil óna dtimpeallacht ar thrí bhealach, rud a
+léarscáil go díreach chuig na trí bhealach is féidir le feidhm a ghlacadh paraiméadar: iasacht a fháil
+go do-athraithe, iasachtaí a fháil go comhuaineach, agus úinéireacht a ghlacadh. Cinnfidh an dúnadh
+cé acu seo atá le húsáid bunaithe ar cad a dhéanann corp na feidhme leis an
+luachanna gafa.</p>
+<p>I Liostú 13-4, sainmhínímid dúnadh a ghabhann tagairt do-athlasach do
+an veicteoir darb ainm <code>list</code> toisc nach bhfuil de dhíth air ach tagairt do-athlasta le priontáil
+an luach:</p>
+<Listing number="13-4" file-name="src/main.rs" caption="Defining and calling a closure that captures an immutable reference">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
+
+    let only_borrows = || println!("From closure: {list:?}");
+
+    println!("Before calling closure: {list:?}");
+    only_borrows();
+    println!("After calling closure: {list:?}");
+}</code></pre></pre>
+</Listing>
+<p>Léiríonn an sampla seo freisin gur féidir le hathróg ceangal le sainmhíniú dúnta,.
+agus is féidir linn an dúnadh a ghlaoch níos déanaí tríd an ainm athróg agus lúibíní a úsáid mar
+dá mba ainm feidhme é an t-ainm athróg.</p>
+<p>Toisc gur féidir linn go leor tagairtí do-athlasta a bheith againn do <code>list</code> ag an am céanna,
+tá <code>list</code> fós inrochtana ón gcód roimh an sainmhíniú dúnta, tar éis
+an sainmhíniú ar dhúnadh ach sula dtugtar an dúnadh, agus tar éis an dúnadh
+ar a dtugtar. Tiomsaíonn, ritheann agus priontaí an cód seo:</p>
+<pre><code class="language-console">$ cargo run
+     Locking 1 package to latest compatible version
+      Adding closure-example v0.1.0 (/Users/chris/dev/rust-lang/book/tmp/listings/ch13-functional-features/listing-13-04)
+   Compiling closure-example v0.1.0 (file:///projects/closure-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/debug/closure-example`
+Before defining closure: [1, 2, 3]
+Before calling closure: [1, 2, 3]
+From closure: [1, 2, 3]
+After calling closure: [1, 2, 3]
+</code></pre>
+<p>Ansin, i Liostú 13-5, athraíonn muid an corp dúnta ionas go gcuireann sé eilimint leis
+an veicteoir <code>list</code>. Gabhann an dúnadh tagairt mutable anois:</p>
+<Listing number="13-5" file-name="src/main.rs" caption="Defining and calling a closure that captures a mutable reference">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let mut list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
+
+    let mut borrows_mutably = || list.push(7);
+
+    borrows_mutably();
+    println!("After calling closure: {list:?}");
+}</code></pre></pre>
+</Listing>
+<p>Tiomsaíonn, ritheann agus priontaí an cód seo:</p>
+<pre><code class="language-console">$ cargo run
+     Locking 1 package to latest compatible version
+      Adding closure-example v0.1.0 (/Users/chris/dev/rust-lang/book/tmp/listings/ch13-functional-features/listing-13-05)
+   Compiling closure-example v0.1.0 (file:///projects/closure-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/debug/closure-example`
+Before defining closure: [1, 2, 3]
+After calling closure: [1, 2, 3, 7]
+</code></pre>
+<p>Tabhair faoi deara nach bhfuil <code>println!</code> a thuilleadh idir an sainmhíniú agus an glao ar
+an dúnadh <code>borrows_mutably</code>: nuair a shainmhínítear <code>borrows_mutably</code>, gabhann sé
+tagairt mutable do <code>list</code>. Ní úsáidimid an dúnadh arís tar éis an dúnta
+ar a dtugtar, mar sin a thagann deireadh leis an iasacht mutable. Idir an sainmhíniú dúnta agus an
+glao dúnta, ní cheadaítear iasacht neamh-inaistrithe le priontáil toisc nach bhfuil ceann eile
+ceadaítear iasachtaí nuair a bhíonn iasacht shochorraithe ann. Bain triail as <code>println!</code> a chur leis
+ann a fheiceáil cén teachtaireacht earráide a fhaigheann tú!</p>
+<p>Más mian leat iallach a chur ar an dúnadh úinéireacht a ghlacadh ar na luachanna a úsáideann sé sa
+timpeallacht cé nach gá go docht le corp an dúnta
+úinéireacht, is féidir leat an eochairfhocal <code>move</code> a úsáid roimh liosta na bparaiméadar.</p>
+<p>Tá an teicníocht seo úsáideach den chuid is mó agus dúnadh á rith ag snáithe nua le bogadh
+na sonraí ionas go mbeidh sé faoi úinéireacht an snáithe nua. Pléifimid snáitheanna agus cén fáth
+ba mhaith leat iad a úsáid go mion i gCaibidil 16 agus muid ag caint faoi
+concurrency, ach faoi láthair, déanaimis iniúchadh gairid ar sceite snáithe nua ag baint úsáide as a
+dúnadh a dteastaíonn an eochairfhocal <code>move</code>. Léiríonn Liostú 13-6 Liosta 13-4 modhnaithe
+chun an veicteoir a phriontáil i snáithe nua seachas sa phríomhshnáithe:</p>
+<Listing number="13-6" file-name="src/main.rs" caption="Using `move` to force the closure for the thread to take ownership of `list`">
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+
+fn main() {
+    let list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
+
+    thread::spawn(move || println!("From thread: {list:?}"))
+        .join()
+        .unwrap();
+}</code></pre></pre>
+</Listing>
+<p>Scaipimid snáithe nua, rud a fhágann gur dúnadh an snáithe a rith mar argóint. Tá an
+comhlacht dúnadh priontaí amach an liosta. I Liosta 13-4, níor gabhadh ach an dúnadh
+<code>list</code> ag baint úsáide as tagairt neamh-inmhalartaithe toisc gurb é sin an méid rochtana is lú
+chun <code>list</code> a theastaíonn chun é a phriontáil. Sa sampla seo, cé go bhfuil an comhlacht dúnta
+fós ag teastáil ach tagairt do- immutable, ní mór dúinn a shonrú gur chóir <code>list</code>
+a bhogadh isteach sa dúnadh tríd an eochairfhocal <code>move</code> a chur ag tús an
+sainmhíniú dúnta. Seans go gcríochnódh an snáithe nua roimh an gcuid eile den phríomhshnáithe
+bailchríocha an tsnáithe, nó b'fhéidir go gcríochnódh an príomhshnáithe ar dtús. Má tá an snáithe is mó
+choinnigh úinéireacht ar <code>list</code> ach tháinig deireadh leis sular tháinig agus thit an snáithe nua
+<code>list</code>, bheadh ​​an tagairt do-athlasta sa snáithe neamhbhailí. Dá bhrí sin, an
+Éilíonn tiomsaitheoir go n-aistreofar <code>list</code> isteach sa dúnadh a thugtar don snáithe nua
+mar sin beidh an tagairt bailí. Bain triail as an eochairfhocal <code>move</code> a bhaint nó úsáid a bhaint as <code>list</code>
+sa snáithe is mó tar éis an dúnadh a shainmhíniú a fheiceáil cad earráidí tiomsaitheoir tú
+faigh!</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="storing-closures-using-generic-parameters-and-the-fn-traits"></a>
+<a id="limitations-of-the-cacher-implementation"></a>
+<a id="moving-captured-values-out-of-the-closure-and-the-fn-traits"></a></p>
+<h3 id="luachanna-gafa-á-bogadh-as-dúnadh-agus-na-tréithe-fn"><a class="header" href="#luachanna-gafa-á-bogadh-as-dúnadh-agus-na-tréithe-fn">Luachanna Gafa á Bogadh As Dúnadh agus na Tréithe <code>Fn</code></a></h3>
+<p>Nuair a bheidh tagairt faighte ag dúnadh nó úinéireacht luach a ghabháil ó
+an timpeallacht ina sainmhínítear an dúnadh (ar an gcaoi sin bíonn tionchar aige ar cad, más rud ar bith,
+ar athraíodh a ionad <em>into</em> an dúnadh), sainmhíníonn an cód i gcorp an dúnta cad
+a tharlaíonn do na tagairtí nó na luachanna nuair a dhéantar an dúnadh a mheas níos déanaí (mar sin
+ag cur isteach ar an rud, más rud ar bith, a bhogtar <em>amach as</em> an dúnadh). Is féidir le comhlacht dúnadh
+déan aon cheann díobh seo a leanas: bog luach gafa amach as an dúnadh, mutate an
+luach a gabhadh, ná bogadh ná mutate an luach, nó a ghabháil aon rud ó na
+timpeallacht ar dtús.</p>
+<p>Bíonn tionchar ag an mbealach a shealbhaíonn agus a láimhseálann dúnadh luachanna ón gcomhshaol
+a bhfuil tréithe na n-uirlisí dúnta, agus na tréithe a bhaineann le feidhmeanna agus struchtúir
+is féidir a shonrú cad iad na cineálacha dúnta is féidir leo a úsáid. Dúnfar go huathoibríoch
+cuir ceann amháin, dhá cheann, nó trí cinn de na tréithe <code>Fn</code> seo i bhfeidhm ar bhealach suimitheach,
+ag brath ar an gcaoi a láimhseálann corp an dúnaidh na luachanna:</p>
+<ol>
+<li>Baineann <code>FnOnce</code> le dúnadh ar féidir glaoch orthu uair amháin. Cuireann gach dúnadh i bhfeidhm
+an trait seo ar a laghad, mar is féidir glaoch ar gach dúnadh. Dúnadh sin
+ní chuirfidh bogann luachanna a gabhadh amach as a chorp ach <code>FnOnce</code> agus ní chuirfidh sé aon cheann i bhfeidhm
+de na tréithe <code>Fn</code> eile, mar ní féidir é a ghlaoch ach uair amháin.</li>
+<li>Baineann <code>FnMut</code> le dúnadh nach n-aistríonn luachanna a gabhadh amach as a gcuid
+comhlacht, ach d'fhéadfadh sé sin na luachanna a gabhadh a athrú. Is féidir leis na dúnta seo a bheith
+ar a dtugtar níos mó ná uair amháin.</li>
+<li>Baineann <code>Fn</code> le dúnadh nach n-aistríonn luachanna gafa amach as a gcorp
+agus nach mutálann luachanna a gabhadh, chomh maith le dúnadh a ghabháil
+rud ar bith óna dtimpeallacht. Is féidir glaoch ar na dúnta seo níos mó ná uair amháin
+gan mutating a dtimpeallacht, rud atá tábhachtach i gcásanna mar
+dúnadh a ghlaoch go minic i gcomhthráth.</li>
+</ol>
+<p>Breathnaímid ar an sainmhíniú ar an modh <code>unwrap_or_else</code> ar <code>Option&lt;T&gt;</code> go
+d’úsáideamar i Liostú 13-1:</p>
+<pre><code class="language-rust ignore">impl&lt;T&gt; Option&lt;T&gt; {
+    pub fn unwrap_or_else&lt;F&gt;(self, f: F) -&gt; T
+    where
+        F: FnOnce() -&gt; T
+    {
+        match self {
+            Some(x) =&gt; x,
+            None =&gt; f(),
+        }
+    }
+}</code></pre>
+<p>Thabhairt chun cuimhne gurb é <code>T</code> an cineál cineálach a léiríonn an cineál luacha sa
+Leagan <code>Some</code> de <code>Option</code>. Is é an cineál sin <code>T</code> freisin an cineál tuairisceáin den
+feidhm <code>unwrap_or_else</code>: cód a ghlaonn <code>unwrap_or_else</code> ar an
+Gheobhaidh <code>Option&lt;String&gt;</code>, mar shampla, <code>String</code>.</p>
+<p>Ansin, tabhair faoi deara go bhfuil an cineál cineálach breise ag an bhfeidhm <code>unwrap_or_else</code>
+paraiméadar <code>F</code>. Is é an cineál <code>F</code> ná cineál an pharaiméadar darb ainm <code>f</code>, mar atá
+an dúnadh a chuirimid ar fáil nuair a ghlaonn tú ar <code>unwrap_or_else</code>.</p>
+<p>Is í an tréith a shonraítear ar an gcineál cineálach <code>F</code> ná <code>FnOnce() -&gt; T</code>, a
+ciallaíonn sé go gcaithfidh <code>F</code> a bheith in ann glaoch a chur air uair amháin, gan argóintí a ghlacadh, agus <code>T</code> a thabhairt ar ais.
+Trí úsáid a bhaint as <code>FnOnce</code> sa tréith faoi cheangal cuirtear an srian sin in iúl
+Ní dhéanfaidh <code>unwrap_or_else</code> ach <code>f</code> a ghlaoch ar uair amháin ar a mhéad. I gcorp na
+<code>unwrap_or_else</code>, feicimid más <code>Some</code> an <code>Option</code>, ní bheidh <code>f</code>
+ar a dtugtar. Murab é an <code>Option</code> ná <code>None</code>, tabharfar <code>f</code> uair amháin. Mar gheall ar go léir
+feidhmíonn dúnta <code>FnOnce</code>, glacann <code>unwrap_or_else</code> leis na trí chineál
+dúnta agus tá sé chomh solúbtha agus is féidir.</p>
+<blockquote>
+<p>Nóta: Más rud é nach gá luach a ghabháil ón méid is mian linn a dhéanamh
+timpeallacht, is féidir linn ainm feidhm a úsáid seachas dúnadh. Le haghaidh
+mar shampla, d'fhéadfaimis <code>unwrap_or_else(Vec::nua)</code> a ghlaoch ar luach <code>Option&lt;Vec&lt;T&gt;&gt;</code>
+chun veicteoir nua, folamh a fháil más é an luach <code>None</code>. An tiomsaitheoir go huathoibríoch
+cuireann sé i bhfeidhm cibé ceann de na tréithe <code>Fn</code> a bhaineann le feidhm
+sainmhíniú.</p>
+</blockquote>
+<p>Anois breathnaímid ar an modh caighdeánach leabharlainne <code>sort_by_key</code> atá sainmhínithe ar slisní,
+a fheiceáil conas atá sé difriúil ó <code>unwrap_or_else</code> agus cén fáth a n-úsáideann <code>sort_by_key</code>
+<code>FnMut</code> in ionad <code>FnOnce</code> don trait faoi cheangal. Faigheann an dúnadh argóint amháin
+i bhfoirm tagartha don mhír reatha sa tslis atá á bhreithniú,.
+agus cuireann sé ar ais luach cineál <code>K</code> is féidir a ordú. Tá an fheidhm seo úsáideach
+nuair is mian leat slice a shórtáil de réir tréith ar leith de gach mír. I
+Ag liostú 13-7, tá liosta cásanna <code>Rectangle</code> againn agus úsáidimid <code>sort_by_key</code>
+chun iad a ordú de réir a tréith <code>width</code> ó íseal go hard:</p>
+<Listing number="13-7" file-name="src/main.rs" caption="Using `sort_by_key` to order rectangles by width">
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let mut list = [
+        Rectangle { width: 10, height: 1 },
+        Rectangle { width: 3, height: 5 },
+        Rectangle { width: 7, height: 12 },
+    ];
+
+    list.sort_by_key(|r| r.width);
+    println!("{list:#?}");
+}</code></pre></pre>
+</Listing>
+<p>Priontálann an cód seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.41s
+     Running `target/debug/rectangles`
+[
+    Rectangle {
+        width: 3,
+        height: 5,
+    },
+    Rectangle {
+        width: 7,
+        height: 12,
+    },
+    Rectangle {
+        width: 10,
+        height: 1,
+    },
+]
+</code></pre>
+<p>Is é an chúis a shainmhínítear <code>sort_by_key</code> chun dúnadh <code>FnMut</code> a ghlacadh ná go nglaonn sé
+an dúnadh iolraí: uair amháin do gach mír sa slice. Ní dhéanann an dúnadh <code>|r| r.width</code> aon rud a ghabháil, a mutadh ná a bhogadh amach óna thimpeallacht, mar sin
+comhlíonann sé na ceanglais a bhaineann le tréithe.</p>
+<p>I gcodarsnacht leis sin, léiríonn Liosta 13-8 sampla de dhúnadh a fheidhmíonn díreach
+an trait <code>FnOnce</code>, toisc go mbogann sé luach amach as an timpeallacht. Tá an
+ní ligfidh an tiomsaitheoir dúinn an dúnadh seo a úsáid le <code>sort_by_key</code>:</p>
+<Listing number="13-8" file-name="src/main.rs" caption="Attempting to use an `FnOnce` closure with `sort_by_key`">
+<pre><code class="language-rust ignore does_not_compile">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let mut list = [
+        Rectangle { width: 10, height: 1 },
+        Rectangle { width: 3, height: 5 },
+        Rectangle { width: 7, height: 12 },
+    ];
+
+    let mut sort_operations = vec![];
+    let value = String::from("closure called");
+
+    list.sort_by_key(|r| {
+        sort_operations.push(value);
+        r.width
+    });
+    println!("{list:#?}");
+}</code></pre>
+</Listing>
+<p>Is bealach suarach, convoluted é seo (nach n-oibríonn) chun iarracht a dhéanamh na
+líon uaireanta a ghlaonn <code>sort_by_key</code> ar an dúnadh agus <code>list</code> á shórtáil. An cód seo
+déanann sé iarracht an comhaireamh seo a dhéanamh trí <code>value</code>—a <code>String</code> a bhrú ó na dúnta
+timpeallacht - isteach sa veicteoir <code>sort_operations</code>. Gabhann an dúnadh <code>value</code>
+ansin bogtar <code>value</code> amach as an dúnadh trí úinéireacht <code>value</code> a aistriú go dtí
+an veicteoir <code>sort_operations</code>. Is féidir an dúnadh seo a ghairm uair amháin; ag iarraidh glaoch
+ní n-oibreodh sé an dara huair mar ní bheadh ​​<code>value</code> sa
+timpeallacht a bhrú isteach i <code>sort_operations</code> arís! Dá bhrí sin, an dúnadh seo
+ní chuireann ach <code>FnOnce</code> i bhfeidhm. Nuair a dhéanaimid iarracht an cód seo a thiomsú, faigheann muid an earráid seo
+nach féidir an <code>value</code> sin a bhogadh amach as an dúnadh mar ní mór an dúnadh
+cuir <code>FnMut</code> i bhfeidhm:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+error[E0507]: cannot move out of `value`, a captured variable in an `FnMut` closure
+  --&gt; src/main.rs:18:30
+   |
+15 |     let value = String::from("closure called");
+   |         ----- captured outer variable
+16 |
+17 |     list.sort_by_key(|r| {
+   |                      --- captured by this `FnMut` closure
+18 |         sort_operations.push(value);
+   |                              ^^^^^ move occurs because `value` has type `String`, which does not implement the `Copy` trait
+   |
+help: consider cloning the value if the performance cost is acceptable
+   |
+18 |         sort_operations.push(value.clone());
+   |                                   ++++++++
+
+For more information about this error, try `rustc --explain E0507`.
+error: could not compile `rectangles` (bin "rectangles") due to 1 previous error
+</code></pre>
+<p>Díríonn an earráid ar an líne sa chorp dúnta a bhogann <code>value</code> amach as an
+timpeallacht. Chun é seo a shocrú, ní mór dúinn an comhlacht dúnta a athrú ionas nach ndéanann sé
+luachanna a bhogadh amach as an timpeallacht. Chun an líon uaireanta an dúnadh a chomhaireamh
+ar a dtugtar, cuntar a choinneáil sa timpeallacht agus a luach a mhéadú i
+Is bealach níos simplí é an comhlacht dúnta chun é sin a ríomh. An dúnadh
+i Liostú 13-9 oibríonn sé le <code>sort_by_key</code> toisc nach bhfuil ann ach mutable a ghabháil
+tagairt don chuntar <code>num_sort_operations</code> agus mar sin is féidir níos mó a ghlaoch air
+ná uair amháin:</p>
+<Listing number="13-9" file-name="src/main.rs" caption="Using an `FnMut` closure with `sort_by_key` is allowed">
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let mut list = [
+        Rectangle { width: 10, height: 1 },
+        Rectangle { width: 3, height: 5 },
+        Rectangle { width: 7, height: 12 },
+    ];
+
+    let mut num_sort_operations = 0;
+    list.sort_by_key(|r| {
+        num_sort_operations += 1;
+        r.width
+    });
+    println!("{list:#?}, sorted in {num_sort_operations} operations");
+}</code></pre></pre>
+</Listing>
+<p>Tá na tréithe <code>Fn</code> tábhachtach nuair a bhíonn feidhmeanna nó cineálacha sin á sainiú nó á n-úsáid
+úsáid a bhaint as dúnta. Sa chéad chuid eile, déanfaimid plé ar atriallta. go leor
+Glacann modhanna iterator argóintí dúnta, mar sin coinnigh na sonraí dúnta seo san áireamh
+agus muid ag leanúint ar aghaidh!</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="sraith-míreanna-a-phróiseáil-le-hiterators"><a class="header" href="#sraith-míreanna-a-phróiseáil-le-hiterators">Sraith Míreanna a Phróiseáil le hIterators</a></h2>
+<p>Ceadaíonn an patrún atriator duit tasc éigin a dhéanamh ar sheicheamh míreanna i
+cas. Bíonn iterator freagrach as loighic atriallta thar gach mír agus
+ag cinneadh cathain a bheidh an seicheamh críochnaithe. Nuair a úsáideann tú atrialltóirí, ní dhéanann tú
+caithfidh tú an loighic sin a chur i bhfeidhm duit féin.</p>
+<p>I Rust, tá iterators <em>lazy</em>, rud a chiallaíonn nach bhfuil aon éifeacht acu go dtí go ghlaonn tú
+modhanna a ídíonn an t-iterator chun é a úsáid suas. Mar shampla, an cód i
+Cruthaíonn liostú 13-10 atrialltóir thar na míreanna sa veicteoir <code>v1</code> trí ghlaoch a chur air
+an modh <code>iter</code> arna shainmhíniú ar <code>Vec&lt;T&gt;</code>. Ní dhéanann an cód seo ann féin rud ar bith
+úsáideach.</p>
+<Listing number="13-10" file-name="src/main.rs" caption="Creating an iterator">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v1 = vec![1, 2, 3];
+
+    let v1_iter = v1.iter();
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Stóráiltear an t-iterator san athróg <code>v1_iter</code>. Chomh luath agus atá cruthaithe againn
+iterator, is féidir linn é a úsáid ar bhealaí éagsúla. I Liosta 3-5 i gCaibidil 3, táimid
+atriallta thar eagar ag baint úsáide as lúb <code>for</code> chun roinnt cód a fhorghníomhú ar gach ceann dá chuid
+míreanna. Faoin gcochall chruthaigh sé seo go hintuigthe agus ansin d'ól sé iterator,
+ach rinneamar glóir ar conas go díreach a oibríonn sé sin go dtí seo.</p>
+<p>Sa sampla i Liostú 13-11, scaraimid cruthú an atriartóra ó
+úsáid an iterator sa lúb <code>for</code>. Nuair a thugtar an lúb <code>for</code> ag baint úsáide as
+an t-iterator in <code>v1_iter</code>, úsáidtear gach eilimint san aitreoir i gceann amháin
+atriallta na lúb, a phriontaí amach gach luach.</p>
+<Listing number="13-11" file-name="src/main.rs" caption="Using an iterator in a `for` loop">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v1 = vec![1, 2, 3];
+
+    let v1_iter = v1.iter();
+
+    for val in v1_iter {
+        println!("Got: {val}");
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>I dteangacha nach bhfuil aitritheoirí curtha ar fáil ag a leabharlanna caighdeánacha,
+is dócha go scríobhfá an fheidhmiúlacht chéanna seo trí athróg a thosú ag innéacs
+0, ag baint úsáide as an athróg sin chun innéacsú isteach sa veicteoir chun luach a fháil, agus
+ag incrimintiú an luach athraitheach i lúb go dtí go shroich sé líon iomlán na
+míreanna sa veicteoir.</p>
+<p>Láimhseálann iterators an loighic sin ar fad duit, ag gearradh síos ar chód athchleachtach duit
+d'fhéadfadh praiseach a dhéanamh. Tugann iterators níos mó solúbthachta duit úsáid a bhaint as an gcéanna
+loighic le go leor cineálacha éagsúla de sheichimh, ní hamháin struchtúir sonraí is féidir leat
+innéacs isteach, cosúil le veicteoirí. Déanaimis scrúdú ar an gcaoi a ndéanann atrialltóirí é sin.</p>
+<h3 id="an-iterator-trait-agus-an-next-modh"><a class="header" href="#an-iterator-trait-agus-an-next-modh">An <code>Iterator</code> Trait agus an <code>next</code> Modh</a></h3>
+<p>Cuireann gach iterator trait darb ainm <code>Iterator</code> i bhfeidhm a shainmhínítear sa
+leabharlann caighdeánach. Breathnaíonn an sainmhíniú ar an trait mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait Iterator {
+    type Item;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+
+    // methods with default implementations elided
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Tabhair faoi deara go n-úsáideann an sainmhíniú seo roinnt comhréire nua: <code>type Item</code> agus <code>Self::Item</code>,
+atá ag sainmhíniú cineál <em>a bhaineann</em> leis an tréith seo. Labhróimid faoi
+cineálacha gaolmhara go domhain i gCaibidil 20. Faoi láthair, níl a fhios agat ach go bhfuil
+deir an cód seo go gcaithfidh tú sainmhíniú a thabhairt freisin chun an trait <code>Iterator</code> a chur i bhfeidhm cineál <code>Item</code>, agus úsáidtear an cineál <code>Item</code> seo sa chineál tuairisceáin den <code>next</code>
+modh. I bhfocail eile, is é an cineál <code>Item</code> an cineál a sheoltar ar ais ón
+iterator.</p>
+<p>Ní éilíonn an tréith <code>Iterator</code> ach ar ghníomhaithe modh amháin a shainiú: an
+modh <code>next</code>, a sheolann mír amháin den aterator ar ais ag am fillte isteach
+<code>Some</code> agus, nuair a bhíonn an atriall thart, filleann sé <code>None</code>.</p>
+<p>Is féidir linn an modh <code>next</code> a ghlaoch ar iterators go díreach; Léiríonn liostú 13-12
+cad iad na luachanna a sheoltar ar ais ó ghlaonna arís agus arís eile go <code>next</code> ar an iterator a cruthaíodh
+ón veicteoir.</p>
+<Listing number="13-12" file-name="src/lib.rs" caption="Calling the `next` method on an iterator">
+<pre><code class="language-rust noplayground"><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span>    #[test]
+    fn iterator_demonstration() {
+        let v1 = vec![1, 2, 3];
+
+        let mut v1_iter = v1.iter();
+
+        assert_eq!(v1_iter.next(), Some(&amp;1));
+        assert_eq!(v1_iter.next(), Some(&amp;2));
+        assert_eq!(v1_iter.next(), Some(&amp;3));
+        assert_eq!(v1_iter.next(), None);
+    }
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Tabhair faoi deara go gcaithfimid <code>v1_iter</code> mutable a dhéanamh: ag glaoch ar an modh <code>next</code> ar an
+athraíonn iterator staid inmheánach a úsáideann an t-iterator chun súil a choinneáil ar cá háit
+tá sé san ord. I bhfocail eile, <em>ídíonn an cód seo</em>, nó úsáideann suas, an
+iterator. Itheann gach glao go dtí an chéad uair eile mír ón aterator. Ní raibh gá againn
+chun <code>v1_iter</code> a dhéanamh mutable nuair a d'úsáideamar lúb <code>for</code> toisc gur ghlac an lúb
+úinéireacht <code>v1_iter</code> agus rinne sé a athrú taobh thiar de na pictiúir.</p>
+<p>Tabhair faoi deara freisin go bhfuil na luachanna a fhaighimid ó na glaonna go <code>next</code> neamh-inaistrithe
+tagairtí do na luachanna sa veicteoir. Táirgeann an modh <code>iter</code> iterator
+thar thagairtí domhalartaithe. Más mian linn a chruthú iterator a thógann
+úinéireacht <code>v1</code> agus luachanna úinéireachta á dtabhairt ar ais, is féidir linn <code>into_iter</code> a thabhairt air ina ionad
+<code>iter</code>. Ar an gcaoi chéanna, más mian linn tagairtí mutable a athrá, is féidir linn glaoch
+<code>iter_mut</code> in ionad <code>iter</code>.</p>
+<h3 id="modhanna-a-ídíonn-an-t-iterator"><a class="header" href="#modhanna-a-ídíonn-an-t-iterator">Modhanna a ídíonn an t-Iterator</a></h3>
+<p>Tá roinnt modhanna éagsúla ag an tréith <code>Iterator</code> le réamhshocrú
+feidhmiúcháin a sholáthraíonn an leabharlann chaighdeánach; is féidir leat eolas a fháil orthu seo
+Tríd an doiciméadú caighdeánach API leabharlainne a chuardach don <code>Iterator</code>
+trait. Tugann cuid de na modhanna seo an modh <code>next</code> ina sainmhíniú, a
+is é sin an fáth go bhfuil ort an modh <code>next</code> a chur i bhfeidhm agus tú ag cur an tréith <code>Iterator</code>.</p>
+<p>Tugtar <em>oiriúnóirí ídithe</em> ar mhodhanna a dtugann <code>next</code> orthu, toisc iad a bheith ag glaoch orthu
+úsáideann suas an t-iterator. Sampla amháin is ea an modh <code>sum</code>, a ghlacann úinéireacht air
+an iterator agus atriates trí na míreanna trí ghlaoch arís agus arís eile <code>next</code>, mar sin
+ag caitheamh an iterator. De réir mar a atrialltar tríd, cuireann sé gach mír le rith
+iomlán agus cuireann sé an t-iomlán ar ais nuair a bhíonn atriall críochnaithe. I liostú 13-13 tá a
+tástáil a léiríonn úsáid an mhodha <code>sum</code>:</p>
+<Listing number="13-13" file-name="src/lib.rs" caption="Calling the `sum` method to get the total of all items in the iterator">
+<pre><code class="language-rust noplayground"><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span>    #[test]
+    fn iterator_sum() {
+        let v1 = vec![1, 2, 3];
+
+        let v1_iter = v1.iter();
+
+        let total: i32 = v1_iter.sum();
+
+        assert_eq!(total, 6);
+    }
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Níl cead againn <code>v1_iter</code> a úsáid tar éis an ghlao chun <code>sum</code> a dhéanamh toisc go dtógann <code>sum</code>
+úinéireacht an iterator ar a dtugaimid é.</p>
+<h3 id="modhanna-a-tháirgeann-iterators-eile"><a class="header" href="#modhanna-a-tháirgeann-iterators-eile">Modhanna a Tháirgeann Iterators Eile</a></h3>
+<p>Is modhanna iad <em>Iterator adapters</em> arna sainmhíniú ar an trait <code>Iterator</code> nach bhfuil
+ithe an iterator. Ina áit sin, táirgeann siad iterators éagsúla trí athrú
+gné éigin den iterator bunaidh.</p>
+<p>Léiríonn liostú 13-14 sampla de ghlaoch ar an modh cuibheora iterator <code>map</code>,
+a thógann dúnadh chun glaoch ar gach mír de réir mar a atrialltar na míreanna tríd.
+Tugann an modh <code>map</code> atriar nua ar ais a tháirgeann na hearraí mionathraithe. Tá an
+Cruthaíonn dúnadh anseo iterator nua ina mbeidh gach mír as an veicteoir
+méadaithe ag 1:</p>
+<Listing number="13-14" file-name="src/main.rs" caption="Calling the iterator adapter `map` to create a new iterator">
+<pre><pre class="playground"><code class="language-rust not_desired_behavior"><span class="boring">fn main() {
+</span>    let v1: Vec&lt;i32&gt; = vec![1, 2, 3];
+
+    v1.iter().map(|x| x + 1);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Mar sin féin, tugann an cód seo rabhadh:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling iterators v0.1.0 (file:///projects/iterators)
+warning: unused `Map` that must be used
+ --&gt; src/main.rs:4:5
+  |
+4 |     v1.iter().map(|x| x + 1);
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: iterators are lazy and do nothing unless consumed
+  = note: `#[warn(unused_must_use)]` on by default
+help: use `let _ = ...` to ignore the resulting value
+  |
+4 |     let _ = v1.iter().map(|x| x + 1);
+  |     +++++++
+
+warning: `iterators` (bin "iterators") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.47s
+     Running `target/debug/iterators`
+</code></pre>
+<p>Ní dhéanann an cód i Liostú 13-14 faic; an dúnadh atá sonraithe againn
+ní chuirtear glaoch riamh air. Cuireann an rabhadh i gcuimhne dúinn cén fáth: tá cuibheoirí iterator leisciúil, agus
+caithfimid an iterator a ithe anseo.</p>
+<p>Chun an rabhadh seo a shocrú agus an t-iteadóir a ithe, úsáidfimid an modh <code>collect</code>,
+a d’úsáideamar i gCaibidil 12 le <code>env::args</code> i Liostú 12-1. An modh seo
+ídíonn sé an t-iterator agus bailíonn sé na luachanna mar thoradh air i mbailiúchán sonraí
+cineál.</p>
+<p>I Liostáil 13-15, bailímid torthaí atriallta thar an atriallta sin
+ar ais ón nglao go dtí <code>map</code> isteach i veicteoir. Beidh deireadh leis an veicteoir seo
+ina bhfuil gach ítim as an veicteoir bunaidh méadaithe faoi 1.</p>
+<Listing number="13-15" file-name="src/main.rs" caption="Calling the `map` method to create a new iterator and then calling the `collect` method to consume the new iterator and create a vector">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v1: Vec&lt;i32&gt; = vec![1, 2, 3];
+
+    let v2: Vec&lt;_&gt; = v1.iter().map(|x| x + 1).collect();
+
+    assert_eq!(v2, vec![2, 3, 4]);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Toisc go dtógann <code>map</code> dúnadh, is féidir linn aon oibríocht ba mhaith linn a dhéanamh a shonrú
+ar gach mír. Is sampla iontach é seo ar an gcaoi a ligeann dúnadh duit roinnt a shaincheapadh
+iompar agus an t-iompar atriallta á athúsáid ag an trait <code>Iterator</code>
+soláthraíonn.</p>
+<p>Is féidir leat glaonna iolracha a shlabhra ar oiriúntóirí atrialach chun gníomhartha casta a dhéanamh iontu
+ar bhealach inléite. Ach toisc go bhfuil gach iterators leisciúil, caithfidh tú glaoch ar cheann de na
+modhanna oiriúnaitheora a ídiú chun torthaí a fháil ó ghlaonna ar oiriúntóirí iterator.</p>
+<h3 id="ag-Úsáid-dúnta-a-ghabhann-a-dtimpeallacht"><a class="header" href="#ag-Úsáid-dúnta-a-ghabhann-a-dtimpeallacht">Ag Úsáid Dúnta a Ghabhann A dTimpeallacht</a></h3>
+<p>Glacann go leor oiriúntóirí iterator dúnadh mar argóintí, agus go coitianta na dúnta
+sonróidh muid mar argóintí d’oiriúnóirí atriallta a bheidh ina ndúntaí a ghabhfaidh
+a dtimpeallacht.</p>
+<p>Mar shampla seo, úsáidfimid an modh <code>filter</code> a thógann dúnadh. Tá an
+faigheann dúnadh mír ón atrialltóir agus tugann sé <code>bool</code> ar ais. Má tá an dúnadh
+tuairisceáin <code>true</code>, cuirfear an luach san áireamh san atriall a tháirgtear trí
+<code>filter</code>. Má thugann an dúnadh 'bréagach' ar ais, ní chuirfear an luach san áireamh.</p>
+<p>I Liostú 13-16, úsáidimid <code>filter</code> le dúnadh a ghlacann an <code>shoe_size</code>
+athróg óna thimpeallacht chun athrá a dhéanamh thar bhailiúchán de struchtúr <code>Shoe</code>
+cásanna. Tabharfaidh sé ar ais ach bróga go bhfuil an méid sonraithe.</p>
+<Listing number="13-16" file-name="src/lib.rs" caption="Using the `filter` method with a closure that captures `shoe_size`">
+<pre><code class="language-rust noplayground">#[derive(PartialEq, Debug)]
+struct Shoe {
+    size: u32,
+    style: String,
+}
+
+fn shoes_in_size(shoes: Vec&lt;Shoe&gt;, shoe_size: u32) -&gt; Vec&lt;Shoe&gt; {
+    shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn filters_by_size() {
+        let shoes = vec![
+            Shoe {
+                size: 10,
+                style: String::from("sneaker"),
+            },
+            Shoe {
+                size: 13,
+                style: String::from("sandal"),
+            },
+            Shoe {
+                size: 10,
+                style: String::from("boot"),
+            },
+        ];
+
+        let in_my_size = shoes_in_size(shoes, 10);
+
+        assert_eq!(
+            in_my_size,
+            vec![
+                Shoe {
+                    size: 10,
+                    style: String::from("sneaker")
+                },
+                Shoe {
+                    size: 10,
+                    style: String::from("boot")
+                },
+            ]
+        );
+    }
+}</code></pre>
+</Listing>
+<p>Glacann an fheidhm <code>shoes_in_size</code> úinéireacht ar veicteoir bróga agus bróg
+méid mar pharaiméadair. Filleann sé veicteoir nach bhfuil ann ach bróga den mhéid sonraithe
+méid.</p>
+<p>I gcorp <code>shoes_in_size</code>, tugaimid <code>into_iter</code> chun atriaradóir a chruthú
+a ghlacann úinéireacht ar an veicteoir. Ansin tugaimid <code>filter</code> chun é sin a oiriúnú
+iterator isteach i iterator nua go bhfuil ach gnéithe a dhúnadh
+Filleann <code>true</code>.</p>
+<p>Gabhann an dúnadh an paraiméadar <code>shoe_size</code> ón timpeallacht agus
+comparáid a dhéanamh idir an luach agus méid gach bróg, gan ach bróga den mhéid a choinneáil
+sonraithe. Ar deireadh, trí <code>collect</code> a ghlaoch bailítear na luachanna a thugann an
+iterator oiriúnaithe isteach i veicteoir atá tugtha ar ais ag an bhfeidhm.</p>
+<p>Léiríonn an tástáil nuair a thugaimid <code>shoes_in_size</code>, nach bhfaighimid ach bróga ar ais
+go bhfuil an méid céanna leis an luach e shonraigh muid.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="Ár-dtionscadal-io-a-fheabhsú"><a class="header" href="#Ár-dtionscadal-io-a-fheabhsú">Ár dTionscadal I/O a Fheabhsú</a></h2>
+<p>Leis an eolas nua seo faoi iterators, is féidir linn feabhas a chur ar an tionscadal I/O i
+Caibidil 12 trí úsáid a bhaint as iterators chun áiteanna sa chód a dhéanamh níos soiléire agus níos mó
+gonta. Breathnaímid ar conas is féidir le hathraitheoirí ár gcur i bhfeidhm ar an
+Feidhm <code>Config::build</code> agus an fheidhm <code>search</code>.</p>
+<h3 id="ag-baint-clone-ag-Úsáid-iterator"><a class="header" href="#ag-baint-clone-ag-Úsáid-iterator">Ag baint <code>clone</code> ag Úsáid Iterator</a></h3>
+<p>I Liostú 12-6, chuireamar cód leis a ghlac slice de luachanna <code>String</code> agus a chruthaigh
+sampla den struchtúr <code>Config</code> trí innéacsú isteach sa slice agus clónáil an
+luachanna, ag ligean don struchtúr <code>Config</code> úinéireacht a bheith aige ar na luachanna sin. I Liostú 13-17,
+táimid tar éis feidhmiú na feidhme <code>Config::build</code> a chur i bhfeidhm mar a bhí
+i Liosta 12-23:</p>
+<Listing number="13-17" file-name="src/lib.rs" caption="Reproduction of the `Config::build` function from Listing 12-23">
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">    pub ignore_case: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Config {
+    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+        if args.len() &lt; 3 {
+            return Err("not enough arguments");
+        }
+
+        let query = args[1].clone();
+        let file_path = args[2].clone();
+
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+
+        Ok(Config {
+            query,
+            file_path,
+            ignore_case,
+        })
+    }
+}
+<span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    let results = if config.ignore_case {
+</span><span class="boring">        search_case_insensitive(&amp;config.query, &amp;contents)
+</span><span class="boring">    } else {
+</span><span class="boring">        search(&amp;config.query, &amp;contents)
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    for line in results {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search_case_insensitive&lt;'a&gt;(
+</span><span class="boring">    query: &amp;str,
+</span><span class="boring">    contents: &amp;'a str,
+</span><span class="boring">) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let query = query.to_lowercase();
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.to_lowercase().contains(&amp;query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Ag an am, dúirt muid gan a bheith buartha faoi na glaonna <code>clone</code> mí-éifeachtach mar gheall ar
+chuirfimis deireadh leo amach anseo. Bhuel, tá an t-am sin anois!</p>
+<p>Bhí <code>clone</code> ag teastáil uainn anseo mar tá slisne againn le heilimintí <code>String</code> sa
+paraiméadar <code>args</code>, ach ní le <code>args</code> an fheidhm <code>args</code>. Chun filleadh
+úinéireacht ar shampla <code>Config</code>, bhí orainn na luachanna a chlónáil ón <code>query</code>
+agus réimsí <code>file_path</code> de <code>Config</code> ionas gur féidir leis an ásc <code>Config</code> a luachanna a bheith agat.</p>
+<p>Leis an eolas nua atá againn faoi iterators, is féidir linn an fheidhm <code>args</code> a athrú go
+úinéireacht a ghlacadh ar iterator mar a argóint in ionad a fháil ar iasacht slice.
+Úsáidfimid feidhmiúlacht atrialach in ionad an chóid a sheiceálann an fad
+an tslis agus na hinnéacsanna go láithreacha ar leith. Beidh sé seo soiléiriú cad é an
+Tá feidhm <code>Config::build</code> ag déanamh mar go mbeidh rochtain ag an atrialach ar na luachanna.</p>
+<p>Nuair a ghlacann <code>Config::build</code>' úinéireacht ar an atriallta agus stopann sé ag úsáid innéacsú
+oibríochtaí a fhaigheann iasachtaí, is féidir linn na luachanna <code>String</code> a bhogadh ón atrialltóir isteach
+<code>Config</code> seachas <code>clone</code> a ghlaoch agus leithdháileadh nua a dhéanamh.</p>
+<h4 id="ag-baint-úsáide-as-an-iterator-filleadh-go-díreach"><a class="header" href="#ag-baint-úsáide-as-an-iterator-filleadh-go-díreach">Ag baint úsáide as an Iterator Filleadh go Díreach</a></h4>
+<p>Oscail comhad <em>src/main.rs</em> do thionscadal I/O, ba cheart go mbeadh cuma mar seo air:</p>
+<p><span class="filename">Filename: src/main.rs</span></p>
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::process;
+</span><span class="boring">
+</span><span class="boring">use minigrep::Config;
+</span><span class="boring">
+</span>fn main() {
+    let args: Vec&lt;String&gt; = env::args().collect();
+
+    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {err}");
+        process::exit(1);
+    });
+
+    // --snip--
+<span class="boring">
+</span><span class="boring">    if let Err(e) = minigrep::run(config) {
+</span><span class="boring">        eprintln!("Application error: {e}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    }
+</span>}</code></pre>
+<p>Athróimid ar dtús tús na <code>main</code> a bhí againn i Liostú
+12-24 leis an gcód i Liostú 13-18, a úsáideann atrialltóir an uair seo. seo
+ní thiomsófar go dtí go ndéanaimid <code>Config::build</code> a nuashonrú freisin.</p>
+<Listing number="13-18" file-name="src/main.rs" caption="Passing the return value of `env::args` to `Config::build`">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
+</span><span class="boring">use std::process;
+</span><span class="boring">
+</span><span class="boring">use minigrep::Config;
+</span><span class="boring">
+</span>fn main() {
+    let config = Config::build(env::args()).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {err}");
+        process::exit(1);
+    });
+
+    // --snip--
+<span class="boring">
+</span><span class="boring">    if let Err(e) = minigrep::run(config) {
+</span><span class="boring">        eprintln!("Application error: {e}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    }
+</span>}</code></pre>
+</Listing>
+<p>Tugann an fheidhm <code>env::args</code> iterator ar ais! Seachas a bheith ag bailiú na
+luachanna iterator isteach i veicteoir agus ansin sliocht a chur chuig <code>Config::build</code>, anois
+táimid ag dul faoi úinéireacht an iterator a tugadh ar ais ó <code>env::args</code> go
+<code>Config::build</code> go díreach.</p>
+<p>Ansin, ní mór dúinn an sainmhíniú ar <code>Config::build</code> a nuashonrú. I do I/O
+comhad <em>src/lib.rs</em> an tionscadail, déanaimis síniú <code>Config::build</code> a athrú go
+cuma Liostáil 13-19. Ní thiomsóidh sé seo go fóill toisc go gcaithfimid nuashonrú a dhéanamh ar an
+comhlacht feidhm.</p>
+<Listing number="13-19" file-name="src/lib.rs" caption="Updating the signature of `Config::build` to expect an iterator">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
+</span><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">    pub ignore_case: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Config {
+    pub fn build(
+        mut args: impl Iterator&lt;Item = String&gt;,
+    ) -&gt; Result&lt;Config, &amp;'static str&gt; {
+        // --snip--
+<span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        let ignore_case = env::var("IGNORE_CASE").is_ok();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config {
+</span><span class="boring">            query,
+</span><span class="boring">            file_path,
+</span><span class="boring">            ignore_case,
+</span><span class="boring">        })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    let results = if config.ignore_case {
+</span><span class="boring">        search_case_insensitive(&amp;config.query, &amp;contents)
+</span><span class="boring">    } else {
+</span><span class="boring">        search(&amp;config.query, &amp;contents)
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    for line in results {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search_case_insensitive&lt;'a&gt;(
+</span><span class="boring">    query: &amp;str,
+</span><span class="boring">    contents: &amp;'a str,
+</span><span class="boring">) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let query = query.to_lowercase();
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.to_lowercase().contains(&amp;query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Léiríonn doiciméadú caighdeánach na leabharlainne don fheidhm <code>env::args</code> go bhfuil an
+cineál an iterator a fhilleann sé ná <code>std::env::Args</code>, agus cuireann an cineál sin i bhfeidhm
+an trait <code>Iterator</code> agus cuireann sé luachanna <code>String</code> ar ais.</p>
+<p>Tá síniú na feidhme <code>Config::build</code> nuashonraithe againn mar sin an paraiméadar
+tá cineál cineálach ag <code>args</code> agus na teorainneacha trait <code>impl Iterator&lt;Item = String&gt;</code>
+in ionad <code>&amp;[String]</code>. Úsáideadh an chomhréir <code>impl Trait</code> seo a phléamar
+an <a href="ch10-02-traits.html#traits-as-parameters">“Tréithe mar Pharaiméadar”</a><!-- neamhaird --> de Chaibidil 10
+ciallaíonn sé gur féidir le <code>args</code> a bheith ina chineál ar bith a chuireann an trait <code>Iterator</code> i bhfeidhm agus
+seolann míreanna <code>String</code> ar ais.</p>
+<p>Toisc go bhfuil muid ag glacadh úinéireachta ar <code>args</code> agus beidh muid ag mutating <code>args</code> faoi
+ag athrá thairis air, is féidir linn an eochairfhocal <code>mut</code> a chur isteach i sonraíocht an
+paraiméadar <code>args</code> chun é a dhéanamh mutable.</p>
+<h4 id="ag-Úsáid-modhanna-trait-iterator-in-ionad-innéacsú"><a class="header" href="#ag-Úsáid-modhanna-trait-iterator-in-ionad-innéacsú">Ag Úsáid Modhanna Trait <code>Iterator</code> In ionad Innéacsú</a></h4>
+<p>Ansin, socróimid corp <code>Config::build</code>. Toisc go gcuireann <code>args</code> an
+Tréith <code>Iterator</code>, tá a fhios againn gur féidir linn an modh <code>next</code> a ghlaoch air! Liostáil 13-20
+nuashonraíonn sé an cód ó Liostú 12-23 chun an modh <code>next</code> a úsáid:</p>
+<Listing number="13-20" file-name="src/lib.rs" caption="Changing the body of `Config::build` to use iterator methods">
+<pre><code class="language-rust noplayground"><span class="boring">use std::env;
+</span><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">    pub ignore_case: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Config {
+    pub fn build(
+        mut args: impl Iterator&lt;Item = String&gt;,
+    ) -&gt; Result&lt;Config, &amp;'static str&gt; {
+        args.next();
+
+        let query = match args.next() {
+            Some(arg) =&gt; arg,
+            None =&gt; return Err("Didn't get a query string"),
+        };
+
+        let file_path = match args.next() {
+            Some(arg) =&gt; arg,
+            None =&gt; return Err("Didn't get a file path"),
+        };
+
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+
+        Ok(Config {
+            query,
+            file_path,
+            ignore_case,
+        })
+    }
+}
+<span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    let results = if config.ignore_case {
+</span><span class="boring">        search_case_insensitive(&amp;config.query, &amp;contents)
+</span><span class="boring">    } else {
+</span><span class="boring">        search(&amp;config.query, &amp;contents)
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    for line in results {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn search_case_insensitive&lt;'a&gt;(
+</span><span class="boring">    query: &amp;str,
+</span><span class="boring">    contents: &amp;'a str,
+</span><span class="boring">) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let query = query.to_lowercase();
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.to_lowercase().contains(&amp;query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Cuimhnigh gurb é an chéad luach i luach aischuir <code>env::args</code> ainm
+an clár. Ba mhaith linn neamhaird a dhéanamh air sin agus an chéad luach eile a bhaint amach, mar sin glaoimid ar dtús
+<code>next</code> agus ná déan faic leis an luach tuairisceáin. Sa dara háit, tugaimid <code>next</code> chun an
+luach ba mhaith linn a chur sa réimse <code>query</code> de <code>Config</code>. Má fhilleann <code>next</code> a
+<code>Some</code>, úsáidimid <code>match</code> chun an luach a bhaint amach. Má fhilleann sé <code>None</code>, ciallaíonn sé
+níor tugadh go leor argóintí agus filleann muid go luath le luach <code>Err</code>. Déanaimid
+an rud céanna don luach <code>file_path</code>.</p>
+<h3 id="cód-a-dhéanamh-níos-soiléire-le-cuibheoirí-iterator"><a class="header" href="#cód-a-dhéanamh-níos-soiléire-le-cuibheoirí-iterator">Cód a Dhéanamh níos soiléire le Cuibheoirí Iterator</a></h3>
+<p>Is féidir linn leas a bhaint as iterators san fheidhm <code>search</code> inár I/O
+tionscadal, a atáirgeadh anseo i Liostú 13-21 mar a bhí i Liostú 12-19:</p>
+<Listing number="13-21" file-name="src/lib.rs" caption="The implementation of the `search` function from Listing 12-19">
+<pre><code class="language-rust ignore"><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    let mut results = Vec::new();
+
+    for line in contents.lines() {
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+
+    results
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Is féidir linn an cód seo a scríobh ar bhealach níos gonta ag baint úsáide as modhanna oiriúntóra iterator.
+Má dhéantar é sin, is féidir linn veicteoir <code>results</code> idirmheánacha mutable a sheachaint. Tá an
+is fearr le stíl ríomhchláraithe feidhmiúil an méid stát mutable a íoslaghdú
+cód a dhéanamh níos soiléire. D'fhéadfaí feabhsú sa todhchaí a chumasú dá mbainfí an stát mutable
+chun cuardach a dhéanamh ag an am céanna, mar ní bheadh ​​orainn a bhainistiú
+rochtain chomhthráthach ar an veicteoir <code>results</code>. Léiríonn liostú 13-22 an t-athrú seo:</p>
+<Listing number="13-22" file-name="src/lib.rs" caption="Using iterator adapter methods in the implementation of the `search` function">
+<pre><code class="language-rust ignore"><span class="boring">use std::env;
+</span><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">    pub ignore_case: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    pub fn build(
+</span><span class="boring">        mut args: impl Iterator&lt;Item = String&gt;,
+</span><span class="boring">    ) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        args.next();
+</span><span class="boring">
+</span><span class="boring">        let query = match args.next() {
+</span><span class="boring">            Some(arg) =&gt; arg,
+</span><span class="boring">            None =&gt; return Err("Didn't get a query string"),
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">        let file_path = match args.next() {
+</span><span class="boring">            Some(arg) =&gt; arg,
+</span><span class="boring">            None =&gt; return Err("Didn't get a file path"),
+</span><span class="boring">        };
+</span><span class="boring">
+</span><span class="boring">        let ignore_case = env::var("IGNORE_CASE").is_ok();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config {
+</span><span class="boring">            query,
+</span><span class="boring">            file_path,
+</span><span class="boring">            ignore_case,
+</span><span class="boring">        })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    let results = if config.ignore_case {
+</span><span class="boring">        search_case_insensitive(&amp;config.query, &amp;contents)
+</span><span class="boring">    } else {
+</span><span class="boring">        search(&amp;config.query, &amp;contents)
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    for line in results {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    contents
+        .lines()
+        .filter(|line| line.contains(query))
+        .collect()
+}
+<span class="boring">
+</span><span class="boring">pub fn search_case_insensitive&lt;'a&gt;(
+</span><span class="boring">    query: &amp;str,
+</span><span class="boring">    contents: &amp;'a str,
+</span><span class="boring">) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let query = query.to_lowercase();
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.to_lowercase().contains(&amp;query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Thabhairt chun cuimhne gurb é cuspóir na feidhme <code>search</code> gach líne a chur ar ais isteach
+<code>contents</code> ina bhfuil an <code>query</code>. Cosúil leis an sampla <code>filter</code> i Liostú
+13-16, úsáideann an cód seo an <code>filter</code> cuibheoir a choinneáil ach amháin na línte go
+<code>line.contains(query)</code> filleann <code>true</code> le haghaidh. Bailímid na línte meaitseála ansin
+isteach i veicteoir eile le <code>collect</code>. I bhfad níos simplí! Thig leat a dhéanamh mar an gcéanna
+athrú chun modhanna atrialach a úsáid san fheidhm <code>search_case_insensitive</code> mar
+go maith.</p>
+<h3 id="ag-roghnú-idir-lúb-nó-iterators"><a class="header" href="#ag-roghnú-idir-lúb-nó-iterators">Ag Roghnú Idir Lúb nó Iterators</a></h3>
+<p>Is í an chéad cheist loighciúil eile ná cén stíl ar cheart duit a roghnú i do chód féin agus
+cén fáth: an cur i bhfeidhm bunaidh i Liostú 13-21 nó an leagan a úsáideann
+iterators i Liosta 13-22. Is fearr leis an gcuid is mó de ríomhchláraitheoirí Rust an t-iterator a úsáid
+stíl. Tá sé beagán níos deacra a fháil ar an hang of ar dtús, ach nuair a bhraitheann tú
+maidir leis na hoiriúnóirí iterator éagsúla agus cad a dhéanann siad, is féidir iterators a bheith níos éasca a
+thuiscint. In ionad fiddling leis na píosaí éagsúla lúbadh agus tógáil
+veicteoirí nua, díríonn an cód ar chuspóir ardleibhéil an lúb. seo
+achoimríonn cuid den chód coitianta ionas gur fusa na coincheapa a fheiceáil
+atá uathúil don chód seo, mar an riocht scagtha i ngach eilimint
+ní mór don iterator pas a fháil.</p>
+<p>Ach an ionann an dá fheidhmiú i ndáiríre? An toimhde iomasach
+b'fhéidir go mbeidh an lúb níos ísle níos tapúla. Labhraimís faoi
+feidhmíochta.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="feidhmíocht-a-chomparáid-lúb-vs-iterators"><a class="header" href="#feidhmíocht-a-chomparáid-lúb-vs-iterators">Feidhmíocht a Chomparáid: Lúb vs. Iterators</a></h2>
+<p>Chun a chinneadh cé acu lúb nó iterators a úsáid, ní mór duit fios a bheith agat cé acu
+tá cur i bhfeidhm níos tapúla: an leagan den fheidhm <code>search</code> le sainráite
+<code>for</code> lúb nó an leagan le iterators.</p>
+<p>Reáchtáileamar tagarmharc trí ábhar iomlán <em>The Adventures of
+Sherlock Holmes</em> le Sir Arthur Conan Doyle isteach i <code>String</code> agus ag lorg an
+focal <em>the</em> san ábhar. Seo iad torthaí an tagarmhairc ar an
+leagan de <code>search</code> ag baint úsáide as an lúb <code>for</code> agus an leagan ag baint úsáide as iterators:</p>
+<pre><code class="language-text">test bench_search_for  ... bench:  19,620,300 ns/iter (+/- 915,700)
+test bench_search_iter ... bench:  19,234,900 ns/iter (+/- 657,200)
+</code></pre>
+<p>Tá feidhmíocht den chineál céanna ag an dá fheidhmiú! Ní mhíneoimid an
+cód tagarmharcála anseo, toisc nach bhfuil an pointe a chruthú go bhfuil an dá leagan
+comhionann ach chun tuiscint ghinearálta a fháil ar an gcaoi a bhfuil an dá fheidhmiú seo
+i gcomparáid le feidhmíocht-ciallmhar.</p>
+<p>Chun tagarmharc níos cuimsithí a fháil, ba cheart duit seiceáil ag baint úsáide as téacsanna éagsúla de
+méideanna éagsúla mar an <code>contents</code>, focail éagsúla agus focail d'fhaid éagsúla
+mar an <code>query</code>, agus gach cineál éagsúlachta eile. Is é an pointe seo:
+iterators, cé gur astarraingt ardleibhéil, a thiomsú síos go dtí thart ar an
+an cód céanna agus a bheadh ​​dá scríobhfá an cód leibhéal níos ísle tú féin. Tá iterators amháin
+as astarraingtí <em>nialais-chostais</em> Rust, rud a chiallaíonn úsáid as an astarraingt
+ní fhorchuirtear aon am rite breise. Tá sé seo cosúil le conas Bjarne
+Sainmhíníonn Stroustrup, dearthóir bunaidh agus feidhmitheoir C++
+<em>zero-overhead</em> in “Fondúireachtaí C++” (2012):</p>
+<blockquote>
+<p>Go ginearálta, cloíonn feidhmeanna C++ leis an bprionsabal náid forchostais: Cad atá tú
+ná húsáid, ní íocann tú as. Agus anuas air sin: An rud a úsáideann tú, ní fhéadfá lámh a chur air
+cód ar bith níos fearr.</p>
+</blockquote>
+<p>Mar shampla eile, tógtar an cód seo a leanas ó dhíchódóir fuaime. Tá an
+úsáideann algartam díchódaithe an oibríocht matamaitice tuar líneach chun
+meastachán a dhéanamh ar luachanna na todhchaí bunaithe ar fheidhm líneach de na samplaí roimhe seo. seo
+Úsáideann cód slabhra iterator chun roinnt matamaitice a dhéanamh ar thrí athróg i raon feidhme: a
+slice de shonraí <code>buffer</code>, sraith de 12 <code>coefficients</code>, agus méid faoina
+chun sonraí a aistriú in <code>qlp_shift</code>. Dhearbhaigh muid na hathróga laistigh den sampla seo
+ach níor tugadh aon luachanna dóibh; cé nach bhfuil mórán brí leis an gcód seo
+taobh amuigh dá chomhthéacs, is sampla gonta, fíor-dhomhain é fós den chaoi a bhfuil Rust
+aistríonn smaointe ardleibhéil go cód ísealleibhéil.</p>
+<pre><code class="language-rust ignore">let buffer: &amp;mut [i32];
+let coefficients: [i64; 12];
+let qlp_shift: i16;
+
+for i in 12..buffer.len() {
+    let prediction = coefficients.iter()
+                                 .zip(&amp;buffer[i - 12..i])
+                                 .map(|(&amp;c, &amp;s)| c * s as i64)
+                                 .sum::&lt;i64&gt;() &gt;&gt; qlp_shift;
+    let delta = buffer[i];
+    buffer[i] = prediction as i32 + delta;
+}</code></pre>
+<p>Chun luach <code>prediction</code> a ríomh, atriálann an cód seo trí gach ceann de na
+12 luach i <code>coefficients</code> agus úsáidtear an modh <code>zip</code> chun an chomhéifeacht a phéireáil
+luachanna leis na 12 luach roimhe seo sa <code>buffer</code>. Ansin, do gach péire, muid
+iolrú na luachanna le chéile, suim na torthaí go léir, agus aistrigh na giotán sa
+suimigh <code>qlp_shift</code> ar dheis.</p>
+<p>Is minic a thugann ríomhanna in fheidhmchláir mar dhíchódóirí fuaime tosaíocht don fheidhmíocht
+is airde. Anseo, tá iterator á chruthú againn, ag baint úsáide as dhá oiriúntóir, agus ansin
+ag caitheamh an luacha. Cén cód tionóil a dhéanfadh an cód Rust seo a thiomsú dó? Bhuel,
+ó thaobh na scríbhneoireachta seo de, tiomsaíonn sé síos go dtí an tionól céanna a scríobhfá de láimh.
+Níl aon lúb ar chor ar bith a fhreagraíonn don atriall thar na luachanna i
+<code>coefficients</code>: Tá a fhios ag Rust go bhfuil 12 atriall ann, mar sin "dírollaíonn sé" an
+lúb. Is optamú é <em>Unrolling</em> a bhainfidh an lastuas den lúb
+cód rialaithe agus ina ionad sin gineann sé cód athchleachtach do gach atriall de
+an lúb.</p>
+<p>Faigheann gach comhéifeachtaí a stóráil i gcláir, rud a chiallaíonn rochtain a fháil ar an
+luachanna an-tapa. Níl aon seiceálacha teorann ar an rochtain eagair ag am rite.
+Déanann na huasmhéaduithe seo go léir a bhfuil Rust in ann a chur i bhfeidhm an cód a eascraíonn as
+thar a bheith éifeachtach. Anois go bhfuil sé seo ar eolas agat, is féidir leat iterators agus dúnta a úsáid
+gan eagla! Déanann siad cosúil go bhfuil cód ag leibhéal níos airde ach ní fhorchuireann siad a
+pionós feidhmíochta ritime as é sin a dhéanamh.</p>
+<h2 id="achoimre-12"><a class="header" href="#achoimre-12">Achoimre</a></h2>
+<p>Is gnéithe Rust iad dúnta agus iterators spreagtha ag ríomhchlárú feidhmiúil
+smaointe teanga. Cuireann siad le cumas Rust a chur in iúl go soiléir
+smaointe ardleibhéil ar fheidhmíocht ísealleibhéil. Feidhmeanna dúnta agus
+is amhlaidh nach gcuirtear isteach ar fheidhmíocht am rite. Tá sé seo mar chuid de
+Tá sé mar sprioc ag Rust a dhícheall a dhéanamh astarraingtí gan costas a sholáthar.</p>
+<p>Anois go bhfuil sainléiriú ár dtionscadal I/O feabhsaithe againn, féachaimis
+roinnt gnéithe níos mó de <code>cargo</code> a chabhróidh linn an tionscadal a roinnt leis an
+domhan.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="more-about-cargo-and-cratesio"><a class="header" href="#more-about-cargo-and-cratesio">More about Cargo and Crates.io</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="customizing-builds-with-release-profiles"><a class="header" href="#customizing-builds-with-release-profiles">Customizing Builds with Release Profiles</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="publishing-a-crate-to-cratesio"><a class="header" href="#publishing-a-crate-to-cratesio">Publishing a Crate to Crates.io</a></h1>

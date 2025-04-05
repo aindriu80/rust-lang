@@ -159,7 +159,270 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="processing-a-series-of-items-with-iterators"><a class="header" href="#processing-a-series-of-items-with-iterators">Processing a Series of Items with Iterators</a></h1>
+                        <h2 id="sraith-míreanna-a-phróiseáil-le-hiterators"><a class="header" href="#sraith-míreanna-a-phróiseáil-le-hiterators">Sraith Míreanna a Phróiseáil le hIterators</a></h2>
+<p>Ceadaíonn an patrún atriator duit tasc éigin a dhéanamh ar sheicheamh míreanna i
+cas. Bíonn iterator freagrach as loighic atriallta thar gach mír agus
+ag cinneadh cathain a bheidh an seicheamh críochnaithe. Nuair a úsáideann tú atrialltóirí, ní dhéanann tú
+caithfidh tú an loighic sin a chur i bhfeidhm duit féin.</p>
+<p>I Rust, tá iterators <em>lazy</em>, rud a chiallaíonn nach bhfuil aon éifeacht acu go dtí go ghlaonn tú
+modhanna a ídíonn an t-iterator chun é a úsáid suas. Mar shampla, an cód i
+Cruthaíonn liostú 13-10 atrialltóir thar na míreanna sa veicteoir <code>v1</code> trí ghlaoch a chur air
+an modh <code>iter</code> arna shainmhíniú ar <code>Vec&lt;T&gt;</code>. Ní dhéanann an cód seo ann féin rud ar bith
+úsáideach.</p>
+<Listing number="13-10" file-name="src/main.rs" caption="Creating an iterator">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v1 = vec![1, 2, 3];
+
+    let v1_iter = v1.iter();
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Stóráiltear an t-iterator san athróg <code>v1_iter</code>. Chomh luath agus atá cruthaithe againn
+iterator, is féidir linn é a úsáid ar bhealaí éagsúla. I Liosta 3-5 i gCaibidil 3, táimid
+atriallta thar eagar ag baint úsáide as lúb <code>for</code> chun roinnt cód a fhorghníomhú ar gach ceann dá chuid
+míreanna. Faoin gcochall chruthaigh sé seo go hintuigthe agus ansin d'ól sé iterator,
+ach rinneamar glóir ar conas go díreach a oibríonn sé sin go dtí seo.</p>
+<p>Sa sampla i Liostú 13-11, scaraimid cruthú an atriartóra ó
+úsáid an iterator sa lúb <code>for</code>. Nuair a thugtar an lúb <code>for</code> ag baint úsáide as
+an t-iterator in <code>v1_iter</code>, úsáidtear gach eilimint san aitreoir i gceann amháin
+atriallta na lúb, a phriontaí amach gach luach.</p>
+<Listing number="13-11" file-name="src/main.rs" caption="Using an iterator in a `for` loop">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v1 = vec![1, 2, 3];
+
+    let v1_iter = v1.iter();
+
+    for val in v1_iter {
+        println!("Got: {val}");
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>I dteangacha nach bhfuil aitritheoirí curtha ar fáil ag a leabharlanna caighdeánacha,
+is dócha go scríobhfá an fheidhmiúlacht chéanna seo trí athróg a thosú ag innéacs
+0, ag baint úsáide as an athróg sin chun innéacsú isteach sa veicteoir chun luach a fháil, agus
+ag incrimintiú an luach athraitheach i lúb go dtí go shroich sé líon iomlán na
+míreanna sa veicteoir.</p>
+<p>Láimhseálann iterators an loighic sin ar fad duit, ag gearradh síos ar chód athchleachtach duit
+d'fhéadfadh praiseach a dhéanamh. Tugann iterators níos mó solúbthachta duit úsáid a bhaint as an gcéanna
+loighic le go leor cineálacha éagsúla de sheichimh, ní hamháin struchtúir sonraí is féidir leat
+innéacs isteach, cosúil le veicteoirí. Déanaimis scrúdú ar an gcaoi a ndéanann atrialltóirí é sin.</p>
+<h3 id="an-iterator-trait-agus-an-next-modh"><a class="header" href="#an-iterator-trait-agus-an-next-modh">An <code>Iterator</code> Trait agus an <code>next</code> Modh</a></h3>
+<p>Cuireann gach iterator trait darb ainm <code>Iterator</code> i bhfeidhm a shainmhínítear sa
+leabharlann caighdeánach. Breathnaíonn an sainmhíniú ar an trait mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait Iterator {
+    type Item;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+
+    // methods with default implementations elided
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Tabhair faoi deara go n-úsáideann an sainmhíniú seo roinnt comhréire nua: <code>type Item</code> agus <code>Self::Item</code>,
+atá ag sainmhíniú cineál <em>a bhaineann</em> leis an tréith seo. Labhróimid faoi
+cineálacha gaolmhara go domhain i gCaibidil 20. Faoi láthair, níl a fhios agat ach go bhfuil
+deir an cód seo go gcaithfidh tú sainmhíniú a thabhairt freisin chun an trait <code>Iterator</code> a chur i bhfeidhm cineál <code>Item</code>, agus úsáidtear an cineál <code>Item</code> seo sa chineál tuairisceáin den <code>next</code>
+modh. I bhfocail eile, is é an cineál <code>Item</code> an cineál a sheoltar ar ais ón
+iterator.</p>
+<p>Ní éilíonn an tréith <code>Iterator</code> ach ar ghníomhaithe modh amháin a shainiú: an
+modh <code>next</code>, a sheolann mír amháin den aterator ar ais ag am fillte isteach
+<code>Some</code> agus, nuair a bhíonn an atriall thart, filleann sé <code>None</code>.</p>
+<p>Is féidir linn an modh <code>next</code> a ghlaoch ar iterators go díreach; Léiríonn liostú 13-12
+cad iad na luachanna a sheoltar ar ais ó ghlaonna arís agus arís eile go <code>next</code> ar an iterator a cruthaíodh
+ón veicteoir.</p>
+<Listing number="13-12" file-name="src/lib.rs" caption="Calling the `next` method on an iterator">
+<pre><code class="language-rust noplayground"><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span>    #[test]
+    fn iterator_demonstration() {
+        let v1 = vec![1, 2, 3];
+
+        let mut v1_iter = v1.iter();
+
+        assert_eq!(v1_iter.next(), Some(&amp;1));
+        assert_eq!(v1_iter.next(), Some(&amp;2));
+        assert_eq!(v1_iter.next(), Some(&amp;3));
+        assert_eq!(v1_iter.next(), None);
+    }
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Tabhair faoi deara go gcaithfimid <code>v1_iter</code> mutable a dhéanamh: ag glaoch ar an modh <code>next</code> ar an
+athraíonn iterator staid inmheánach a úsáideann an t-iterator chun súil a choinneáil ar cá háit
+tá sé san ord. I bhfocail eile, <em>ídíonn an cód seo</em>, nó úsáideann suas, an
+iterator. Itheann gach glao go dtí an chéad uair eile mír ón aterator. Ní raibh gá againn
+chun <code>v1_iter</code> a dhéanamh mutable nuair a d'úsáideamar lúb <code>for</code> toisc gur ghlac an lúb
+úinéireacht <code>v1_iter</code> agus rinne sé a athrú taobh thiar de na pictiúir.</p>
+<p>Tabhair faoi deara freisin go bhfuil na luachanna a fhaighimid ó na glaonna go <code>next</code> neamh-inaistrithe
+tagairtí do na luachanna sa veicteoir. Táirgeann an modh <code>iter</code> iterator
+thar thagairtí domhalartaithe. Más mian linn a chruthú iterator a thógann
+úinéireacht <code>v1</code> agus luachanna úinéireachta á dtabhairt ar ais, is féidir linn <code>into_iter</code> a thabhairt air ina ionad
+<code>iter</code>. Ar an gcaoi chéanna, más mian linn tagairtí mutable a athrá, is féidir linn glaoch
+<code>iter_mut</code> in ionad <code>iter</code>.</p>
+<h3 id="modhanna-a-ídíonn-an-t-iterator"><a class="header" href="#modhanna-a-ídíonn-an-t-iterator">Modhanna a ídíonn an t-Iterator</a></h3>
+<p>Tá roinnt modhanna éagsúla ag an tréith <code>Iterator</code> le réamhshocrú
+feidhmiúcháin a sholáthraíonn an leabharlann chaighdeánach; is féidir leat eolas a fháil orthu seo
+Tríd an doiciméadú caighdeánach API leabharlainne a chuardach don <code>Iterator</code>
+trait. Tugann cuid de na modhanna seo an modh <code>next</code> ina sainmhíniú, a
+is é sin an fáth go bhfuil ort an modh <code>next</code> a chur i bhfeidhm agus tú ag cur an tréith <code>Iterator</code>.</p>
+<p>Tugtar <em>oiriúnóirí ídithe</em> ar mhodhanna a dtugann <code>next</code> orthu, toisc iad a bheith ag glaoch orthu
+úsáideann suas an t-iterator. Sampla amháin is ea an modh <code>sum</code>, a ghlacann úinéireacht air
+an iterator agus atriates trí na míreanna trí ghlaoch arís agus arís eile <code>next</code>, mar sin
+ag caitheamh an iterator. De réir mar a atrialltar tríd, cuireann sé gach mír le rith
+iomlán agus cuireann sé an t-iomlán ar ais nuair a bhíonn atriall críochnaithe. I liostú 13-13 tá a
+tástáil a léiríonn úsáid an mhodha <code>sum</code>:</p>
+<Listing number="13-13" file-name="src/lib.rs" caption="Calling the `sum` method to get the total of all items in the iterator">
+<pre><code class="language-rust noplayground"><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span>    #[test]
+    fn iterator_sum() {
+        let v1 = vec![1, 2, 3];
+
+        let v1_iter = v1.iter();
+
+        let total: i32 = v1_iter.sum();
+
+        assert_eq!(total, 6);
+    }
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Níl cead againn <code>v1_iter</code> a úsáid tar éis an ghlao chun <code>sum</code> a dhéanamh toisc go dtógann <code>sum</code>
+úinéireacht an iterator ar a dtugaimid é.</p>
+<h3 id="modhanna-a-tháirgeann-iterators-eile"><a class="header" href="#modhanna-a-tháirgeann-iterators-eile">Modhanna a Tháirgeann Iterators Eile</a></h3>
+<p>Is modhanna iad <em>Iterator adapters</em> arna sainmhíniú ar an trait <code>Iterator</code> nach bhfuil
+ithe an iterator. Ina áit sin, táirgeann siad iterators éagsúla trí athrú
+gné éigin den iterator bunaidh.</p>
+<p>Léiríonn liostú 13-14 sampla de ghlaoch ar an modh cuibheora iterator <code>map</code>,
+a thógann dúnadh chun glaoch ar gach mír de réir mar a atrialltar na míreanna tríd.
+Tugann an modh <code>map</code> atriar nua ar ais a tháirgeann na hearraí mionathraithe. Tá an
+Cruthaíonn dúnadh anseo iterator nua ina mbeidh gach mír as an veicteoir
+méadaithe ag 1:</p>
+<Listing number="13-14" file-name="src/main.rs" caption="Calling the iterator adapter `map` to create a new iterator">
+<pre><pre class="playground"><code class="language-rust not_desired_behavior"><span class="boring">fn main() {
+</span>    let v1: Vec&lt;i32&gt; = vec![1, 2, 3];
+
+    v1.iter().map(|x| x + 1);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Mar sin féin, tugann an cód seo rabhadh:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling iterators v0.1.0 (file:///projects/iterators)
+warning: unused `Map` that must be used
+ --&gt; src/main.rs:4:5
+  |
+4 |     v1.iter().map(|x| x + 1);
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: iterators are lazy and do nothing unless consumed
+  = note: `#[warn(unused_must_use)]` on by default
+help: use `let _ = ...` to ignore the resulting value
+  |
+4 |     let _ = v1.iter().map(|x| x + 1);
+  |     +++++++
+
+warning: `iterators` (bin "iterators") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.47s
+     Running `target/debug/iterators`
+</code></pre>
+<p>Ní dhéanann an cód i Liostú 13-14 faic; an dúnadh atá sonraithe againn
+ní chuirtear glaoch riamh air. Cuireann an rabhadh i gcuimhne dúinn cén fáth: tá cuibheoirí iterator leisciúil, agus
+caithfimid an iterator a ithe anseo.</p>
+<p>Chun an rabhadh seo a shocrú agus an t-iteadóir a ithe, úsáidfimid an modh <code>collect</code>,
+a d’úsáideamar i gCaibidil 12 le <code>env::args</code> i Liostú 12-1. An modh seo
+ídíonn sé an t-iterator agus bailíonn sé na luachanna mar thoradh air i mbailiúchán sonraí
+cineál.</p>
+<p>I Liostáil 13-15, bailímid torthaí atriallta thar an atriallta sin
+ar ais ón nglao go dtí <code>map</code> isteach i veicteoir. Beidh deireadh leis an veicteoir seo
+ina bhfuil gach ítim as an veicteoir bunaidh méadaithe faoi 1.</p>
+<Listing number="13-15" file-name="src/main.rs" caption="Calling the `map` method to create a new iterator and then calling the `collect` method to consume the new iterator and create a vector">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v1: Vec&lt;i32&gt; = vec![1, 2, 3];
+
+    let v2: Vec&lt;_&gt; = v1.iter().map(|x| x + 1).collect();
+
+    assert_eq!(v2, vec![2, 3, 4]);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Toisc go dtógann <code>map</code> dúnadh, is féidir linn aon oibríocht ba mhaith linn a dhéanamh a shonrú
+ar gach mír. Is sampla iontach é seo ar an gcaoi a ligeann dúnadh duit roinnt a shaincheapadh
+iompar agus an t-iompar atriallta á athúsáid ag an trait <code>Iterator</code>
+soláthraíonn.</p>
+<p>Is féidir leat glaonna iolracha a shlabhra ar oiriúntóirí atrialach chun gníomhartha casta a dhéanamh iontu
+ar bhealach inléite. Ach toisc go bhfuil gach iterators leisciúil, caithfidh tú glaoch ar cheann de na
+modhanna oiriúnaitheora a ídiú chun torthaí a fháil ó ghlaonna ar oiriúntóirí iterator.</p>
+<h3 id="ag-Úsáid-dúnta-a-ghabhann-a-dtimpeallacht"><a class="header" href="#ag-Úsáid-dúnta-a-ghabhann-a-dtimpeallacht">Ag Úsáid Dúnta a Ghabhann A dTimpeallacht</a></h3>
+<p>Glacann go leor oiriúntóirí iterator dúnadh mar argóintí, agus go coitianta na dúnta
+sonróidh muid mar argóintí d’oiriúnóirí atriallta a bheidh ina ndúntaí a ghabhfaidh
+a dtimpeallacht.</p>
+<p>Mar shampla seo, úsáidfimid an modh <code>filter</code> a thógann dúnadh. Tá an
+faigheann dúnadh mír ón atrialltóir agus tugann sé <code>bool</code> ar ais. Má tá an dúnadh
+tuairisceáin <code>true</code>, cuirfear an luach san áireamh san atriall a tháirgtear trí
+<code>filter</code>. Má thugann an dúnadh 'bréagach' ar ais, ní chuirfear an luach san áireamh.</p>
+<p>I Liostú 13-16, úsáidimid <code>filter</code> le dúnadh a ghlacann an <code>shoe_size</code>
+athróg óna thimpeallacht chun athrá a dhéanamh thar bhailiúchán de struchtúr <code>Shoe</code>
+cásanna. Tabharfaidh sé ar ais ach bróga go bhfuil an méid sonraithe.</p>
+<Listing number="13-16" file-name="src/lib.rs" caption="Using the `filter` method with a closure that captures `shoe_size`">
+<pre><code class="language-rust noplayground">#[derive(PartialEq, Debug)]
+struct Shoe {
+    size: u32,
+    style: String,
+}
+
+fn shoes_in_size(shoes: Vec&lt;Shoe&gt;, shoe_size: u32) -&gt; Vec&lt;Shoe&gt; {
+    shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn filters_by_size() {
+        let shoes = vec![
+            Shoe {
+                size: 10,
+                style: String::from("sneaker"),
+            },
+            Shoe {
+                size: 13,
+                style: String::from("sandal"),
+            },
+            Shoe {
+                size: 10,
+                style: String::from("boot"),
+            },
+        ];
+
+        let in_my_size = shoes_in_size(shoes, 10);
+
+        assert_eq!(
+            in_my_size,
+            vec![
+                Shoe {
+                    size: 10,
+                    style: String::from("sneaker")
+                },
+                Shoe {
+                    size: 10,
+                    style: String::from("boot")
+                },
+            ]
+        );
+    }
+}</code></pre>
+</Listing>
+<p>Glacann an fheidhm <code>shoes_in_size</code> úinéireacht ar veicteoir bróga agus bróg
+méid mar pharaiméadair. Filleann sé veicteoir nach bhfuil ann ach bróga den mhéid sonraithe
+méid.</p>
+<p>I gcorp <code>shoes_in_size</code>, tugaimid <code>into_iter</code> chun atriaradóir a chruthú
+a ghlacann úinéireacht ar an veicteoir. Ansin tugaimid <code>filter</code> chun é sin a oiriúnú
+iterator isteach i iterator nua go bhfuil ach gnéithe a dhúnadh
+Filleann <code>true</code>.</p>
+<p>Gabhann an dúnadh an paraiméadar <code>shoe_size</code> ón timpeallacht agus
+comparáid a dhéanamh idir an luach agus méid gach bróg, gan ach bróga den mhéid a choinneáil
+sonraithe. Ar deireadh, trí <code>collect</code> a ghlaoch bailítear na luachanna a thugann an
+iterator oiriúnaithe isteach i veicteoir atá tugtha ar ais ag an bhfeidhm.</p>
+<p>Léiríonn an tástáil nuair a thugaimid <code>shoes_in_size</code>, nach bhfaighimid ach bróga ar ais
+go bhfuil an méid céanna leis an luach e shonraigh muid.</p>
 
                     </main>
 

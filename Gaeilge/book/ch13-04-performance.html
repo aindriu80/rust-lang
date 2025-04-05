@@ -159,7 +159,85 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="comparing-performance-loops-vs-iterators"><a class="header" href="#comparing-performance-loops-vs-iterators">Comparing Performance: Loops vs. Iterators</a></h1>
+                        <h2 id="feidhmíocht-a-chomparáid-lúb-vs-iterators"><a class="header" href="#feidhmíocht-a-chomparáid-lúb-vs-iterators">Feidhmíocht a Chomparáid: Lúb vs. Iterators</a></h2>
+<p>Chun a chinneadh cé acu lúb nó iterators a úsáid, ní mór duit fios a bheith agat cé acu
+tá cur i bhfeidhm níos tapúla: an leagan den fheidhm <code>search</code> le sainráite
+<code>for</code> lúb nó an leagan le iterators.</p>
+<p>Reáchtáileamar tagarmharc trí ábhar iomlán <em>The Adventures of
+Sherlock Holmes</em> le Sir Arthur Conan Doyle isteach i <code>String</code> agus ag lorg an
+focal <em>the</em> san ábhar. Seo iad torthaí an tagarmhairc ar an
+leagan de <code>search</code> ag baint úsáide as an lúb <code>for</code> agus an leagan ag baint úsáide as iterators:</p>
+<pre><code class="language-text">test bench_search_for  ... bench:  19,620,300 ns/iter (+/- 915,700)
+test bench_search_iter ... bench:  19,234,900 ns/iter (+/- 657,200)
+</code></pre>
+<p>Tá feidhmíocht den chineál céanna ag an dá fheidhmiú! Ní mhíneoimid an
+cód tagarmharcála anseo, toisc nach bhfuil an pointe a chruthú go bhfuil an dá leagan
+comhionann ach chun tuiscint ghinearálta a fháil ar an gcaoi a bhfuil an dá fheidhmiú seo
+i gcomparáid le feidhmíocht-ciallmhar.</p>
+<p>Chun tagarmharc níos cuimsithí a fháil, ba cheart duit seiceáil ag baint úsáide as téacsanna éagsúla de
+méideanna éagsúla mar an <code>contents</code>, focail éagsúla agus focail d'fhaid éagsúla
+mar an <code>query</code>, agus gach cineál éagsúlachta eile. Is é an pointe seo:
+iterators, cé gur astarraingt ardleibhéil, a thiomsú síos go dtí thart ar an
+an cód céanna agus a bheadh ​​dá scríobhfá an cód leibhéal níos ísle tú féin. Tá iterators amháin
+as astarraingtí <em>nialais-chostais</em> Rust, rud a chiallaíonn úsáid as an astarraingt
+ní fhorchuirtear aon am rite breise. Tá sé seo cosúil le conas Bjarne
+Sainmhíníonn Stroustrup, dearthóir bunaidh agus feidhmitheoir C++
+<em>zero-overhead</em> in “Fondúireachtaí C++” (2012):</p>
+<blockquote>
+<p>Go ginearálta, cloíonn feidhmeanna C++ leis an bprionsabal náid forchostais: Cad atá tú
+ná húsáid, ní íocann tú as. Agus anuas air sin: An rud a úsáideann tú, ní fhéadfá lámh a chur air
+cód ar bith níos fearr.</p>
+</blockquote>
+<p>Mar shampla eile, tógtar an cód seo a leanas ó dhíchódóir fuaime. Tá an
+úsáideann algartam díchódaithe an oibríocht matamaitice tuar líneach chun
+meastachán a dhéanamh ar luachanna na todhchaí bunaithe ar fheidhm líneach de na samplaí roimhe seo. seo
+Úsáideann cód slabhra iterator chun roinnt matamaitice a dhéanamh ar thrí athróg i raon feidhme: a
+slice de shonraí <code>buffer</code>, sraith de 12 <code>coefficients</code>, agus méid faoina
+chun sonraí a aistriú in <code>qlp_shift</code>. Dhearbhaigh muid na hathróga laistigh den sampla seo
+ach níor tugadh aon luachanna dóibh; cé nach bhfuil mórán brí leis an gcód seo
+taobh amuigh dá chomhthéacs, is sampla gonta, fíor-dhomhain é fós den chaoi a bhfuil Rust
+aistríonn smaointe ardleibhéil go cód ísealleibhéil.</p>
+<pre><code class="language-rust ignore">let buffer: &amp;mut [i32];
+let coefficients: [i64; 12];
+let qlp_shift: i16;
+
+for i in 12..buffer.len() {
+    let prediction = coefficients.iter()
+                                 .zip(&amp;buffer[i - 12..i])
+                                 .map(|(&amp;c, &amp;s)| c * s as i64)
+                                 .sum::&lt;i64&gt;() &gt;&gt; qlp_shift;
+    let delta = buffer[i];
+    buffer[i] = prediction as i32 + delta;
+}</code></pre>
+<p>Chun luach <code>prediction</code> a ríomh, atriálann an cód seo trí gach ceann de na
+12 luach i <code>coefficients</code> agus úsáidtear an modh <code>zip</code> chun an chomhéifeacht a phéireáil
+luachanna leis na 12 luach roimhe seo sa <code>buffer</code>. Ansin, do gach péire, muid
+iolrú na luachanna le chéile, suim na torthaí go léir, agus aistrigh na giotán sa
+suimigh <code>qlp_shift</code> ar dheis.</p>
+<p>Is minic a thugann ríomhanna in fheidhmchláir mar dhíchódóirí fuaime tosaíocht don fheidhmíocht
+is airde. Anseo, tá iterator á chruthú againn, ag baint úsáide as dhá oiriúntóir, agus ansin
+ag caitheamh an luacha. Cén cód tionóil a dhéanfadh an cód Rust seo a thiomsú dó? Bhuel,
+ó thaobh na scríbhneoireachta seo de, tiomsaíonn sé síos go dtí an tionól céanna a scríobhfá de láimh.
+Níl aon lúb ar chor ar bith a fhreagraíonn don atriall thar na luachanna i
+<code>coefficients</code>: Tá a fhios ag Rust go bhfuil 12 atriall ann, mar sin "dírollaíonn sé" an
+lúb. Is optamú é <em>Unrolling</em> a bhainfidh an lastuas den lúb
+cód rialaithe agus ina ionad sin gineann sé cód athchleachtach do gach atriall de
+an lúb.</p>
+<p>Faigheann gach comhéifeachtaí a stóráil i gcláir, rud a chiallaíonn rochtain a fháil ar an
+luachanna an-tapa. Níl aon seiceálacha teorann ar an rochtain eagair ag am rite.
+Déanann na huasmhéaduithe seo go léir a bhfuil Rust in ann a chur i bhfeidhm an cód a eascraíonn as
+thar a bheith éifeachtach. Anois go bhfuil sé seo ar eolas agat, is féidir leat iterators agus dúnta a úsáid
+gan eagla! Déanann siad cosúil go bhfuil cód ag leibhéal níos airde ach ní fhorchuireann siad a
+pionós feidhmíochta ritime as é sin a dhéanamh.</p>
+<h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
+<p>Is gnéithe Rust iad dúnta agus iterators spreagtha ag ríomhchlárú feidhmiúil
+smaointe teanga. Cuireann siad le cumas Rust a chur in iúl go soiléir
+smaointe ardleibhéil ar fheidhmíocht ísealleibhéil. Feidhmeanna dúnta agus
+is amhlaidh nach gcuirtear isteach ar fheidhmíocht am rite. Tá sé seo mar chuid de
+Tá sé mar sprioc ag Rust a dhícheall a dhéanamh astarraingtí gan costas a sholáthar.</p>
+<p>Anois go bhfuil sainléiriú ár dtionscadal I/O feabhsaithe againn, féachaimis
+roinnt gnéithe níos mó de <code>cargo</code> a chabhróidh linn an tionscadal a roinnt leis an
+domhan.</p>
 
                     </main>
 

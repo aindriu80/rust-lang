@@ -159,7 +159,560 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="closures-anonymous-functions-that-capture-their-environment"><a class="header" href="#closures-anonymous-functions-that-capture-their-environment">Closures: Anonymous Functions that Capture Their Environment</a></h1>
+                        <!-- Sean-cheannteideal. Ná bain amach nó seans go mbrisfidh naisc. -->
+<p><a id="closures-anonymous-feidhmeanna-a-féidir-a ghabháil-a-timpeallacht"></a></p>
+<h2 id="dúnadh-feidhmeanna-gan-ainm-a-gabhann-a-dtimpeallacht"><a class="header" href="#dúnadh-feidhmeanna-gan-ainm-a-gabhann-a-dtimpeallacht">Dúnadh: Feidhmeanna Gan Ainm a Gabhann A dTimpeallacht</a></h2>
+<p>Is feidhmeanna gan ainm iad dúnadh Rust is féidir leat a shábháil in athróg nó pas a fháil mar
+argóintí le feidhmeanna eile. Is féidir leat an dúnadh a chruthú in aon áit amháin agus ansin
+glaoch ar an dúnadh áit eile chun é a mheas i gcomhthéacs difriúil. Murab ionann
+feidhmeanna, is féidir le dúnadh luachanna a ghabháil ón raon feidhme ina bhfuil siad sainithe.
+Léireoimid conas a cheadaíonn na gnéithe dúnta seo athúsáid cód agus iompar
+saincheaptha.</p>
+<!-- Sean-cheannteidil. Ná bain amach nó seans go mbrisfidh naisc. -->
+<p><a id="creating-an-abstraction-of-behavior-with-closures"></a>
+<a id="refactoring-using-functions"></a>
+<a id="refactoring-with-closures-to-store-code"></a></p>
+<h3 id="ag-gabháil-na-timpeallachta-le-dúnadh"><a class="header" href="#ag-gabháil-na-timpeallachta-le-dúnadh">Ag Gabháil na Timpeallachta le Dúnadh</a></h3>
+<p>Scrúdóimid ar dtús conas is féidir linn dúnadh a úsáid chun luachanna a fháil ó na
+timpeallacht ina bhfuil siad sainithe le húsáid níos déanaí. Seo é an scéal: Gach cás
+go minic, tugann ár gcomhlacht t-léine léine eisiach, eagrán teoranta do
+duine ar ár liosta postála mar chur chun cinn. Is féidir le daoine ar an liosta postála
+go roghnach a dath is fearr leat a chur ar a bpróifíl. Má tá an duine a roghnaíodh le haghaidh
+tá a sraith dathanna is fearr leat ag léine saor in aisce, faigheann siad an léine dath sin. Má tá an
+níl dath is fearr leat sonraithe ag an duine, faigheann siad cibé dath atá ar an gcuideachta
+faoi ​​láthair tá an chuid is mó de.</p>
+<p>Tá go leor bealaí ann chun é seo a chur i bhfeidhm. Mar shampla, bainfimid úsáid as
+enum ar a dtugtar <code>ShirtColor</code> a bhfuil na leaganacha <code>Red</code> agus <code>Blue</code> (le teorainn
+líon na dathanna atá ar fáil ar mhaithe le simplíocht). Déanaimid ionadaíocht ar son na cuideachta
+fardal le struchtúr <code>Inventory</code> ar a bhfuil réimse darb ainm <code>shirts</code> sin
+ina bhfuil <code>Vec&lt;ShirtColor&gt;</code> a sheasann do dhathanna na léine atá sa stoc faoi láthair.
+Faigheann an modh <code>giveaway</code> a shainmhínítear ar <code>Inventory</code> an léine roghnach
+rogha dath an bhuaiteoir léine in aisce, agus filleann dath an léine an
+gheobhaidh duine. Taispeántar an socrú seo i Liostú 13-1:</p>
+<Listing number="13-1" file-name="src/main.rs" caption="Shirt company giveaway situation">
+<pre><code class="language-rust noplayground">#[derive(Debug, PartialEq, Copy, Clone)]
+enum ShirtColor {
+    Red,
+    Blue,
+}
+
+struct Inventory {
+    shirts: Vec&lt;ShirtColor&gt;,
+}
+
+impl Inventory {
+    fn giveaway(&amp;self, user_preference: Option&lt;ShirtColor&gt;) -&gt; ShirtColor {
+        user_preference.unwrap_or_else(|| self.most_stocked())
+    }
+
+    fn most_stocked(&amp;self) -&gt; ShirtColor {
+        let mut num_red = 0;
+        let mut num_blue = 0;
+
+        for color in &amp;self.shirts {
+            match color {
+                ShirtColor::Red =&gt; num_red += 1,
+                ShirtColor::Blue =&gt; num_blue += 1,
+            }
+        }
+        if num_red &gt; num_blue {
+            ShirtColor::Red
+        } else {
+            ShirtColor::Blue
+        }
+    }
+}
+
+fn main() {
+    let store = Inventory {
+        shirts: vec![ShirtColor::Blue, ShirtColor::Red, ShirtColor::Blue],
+    };
+
+    let user_pref1 = Some(ShirtColor::Red);
+    let giveaway1 = store.giveaway(user_pref1);
+    println!(
+        "The user with preference {:?} gets {:?}",
+        user_pref1, giveaway1
+    );
+
+    let user_pref2 = None;
+    let giveaway2 = store.giveaway(user_pref2);
+    println!(
+        "The user with preference {:?} gets {:?}",
+        user_pref2, giveaway2
+    );
+}</code></pre>
+</Listing>
+<p>Tá dhá léine ghorma agus léine dhearg amháin fágtha sa <code>store</code> a shainmhínítear sa <code>main</code>
+a dháileadh don chur chun cinn eagrán teoranta seo. Tugaimid an modh <code>giveaway</code>
+d'úsáideoir a bhfuil rogha le haghaidh léine dearg agus úsáideoir gan aon rogha.</p>
+<p>Arís, d’fhéadfaí an cód seo a chur i bhfeidhm ar go leor bealaí, agus anseo, chun díriú air
+dúnadh, táimid tar éis cloí le coincheapa atá foghlamtha agat cheana féin seachas an corpán
+an modh <code>giveaway</code> a úsáideann clabhsúr. Sa mhodh <code>giveaway</code>, faigheann muid an
+rogha an úsáideora mar pharaiméadar den chineál <code>Option&lt;ShirtColor&gt;</code> agus glaoigh ar an
+modh <code>unwrap_or_else</code> ar <code>user_preference</code>. Tá an modh <a href="../std/option/enum.Option.html#method.unwrap_or_else"><code>unwrap_or_else</code> ar siúl
+<code>Option&lt;T&gt;</code></a><!-- neamhaird --> ag an ngnáthleabharlann.
+Bíonn argóint amháin ann: dúnadh gan argóintí ar bith a thugann luach <code>T</code> ar ais
+(an cineál céanna atá stóráilte sa leagan <code>Some</code> den <code>Option&lt;T&gt;</code>, sa chás seo
+<code>ShirtColor</code>). Más é an <code>Option&lt;T&gt;</code> an ​​leagan <code>Some</code>, <code>unwrap_or_else</code>
+aischuireann an luach ó laistigh den <code>Some</code>. Más é an <code>Option&lt;T&gt;</code> an ​​<code>None</code>
+leagan eile, glaonn <code>unwrap_or_else</code> an dúnadh agus seolann sé an luach ar ais le
+an dúnadh.</p>
+<p>Sonraimid an slonn dúnta <code>|| self.most_stocked()</code> mar an argóint chun
+<code>unwrap_or_else</code>. Seo dúnadh nach nglacann aon pharaiméadair féin (má tá an
+Bhí paraiméadair ag dúnadh, bheadh ​​siad le feiceáil idir an dá bharra ingearach). Tá an
+glaonn comhlacht an dúnta <code>self.most_stocked()</code>. Táimid ag sainmhíniú an dúnadh
+anseo, agus déanfaidh feidhmiú <code>unwrap_or_else</code> an dúnadh a mheas
+níos déanaí má tá an toradh ag teastáil.</p>
+<p>Ag rith an chóid seo priontaí:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling shirt-company v0.1.0 (file:///projects/shirt-company)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
+     Running `target/debug/shirt-company`
+The user with preference Some(Red) gets Red
+The user with preference None gets Blue
+</code></pre>
+<p>Gné shuimiúil amháin anseo ná gur éirigh linn dúnadh a ghlaonn
+<code>self.most_stocked()</code> ar an gcás reatha <code>Inventory</code>. An leabharlann caighdeánach
+níor ghá go mbeadh eolas ar bith againn ar na cineálacha <code>Inventory</code> nó <code>ShirtColor</code> atá againn
+sainithe, nó an loighic ba mhaith linn a úsáid sa chás seo. Gabhann an dúnadh an
+tagairt domhalartaithe don ásc <code>self</code> <code>Inventory</code> agus é a chur ar aghaidh leis an
+cód a shonraimid leis an modh <code>unwrap_or_else</code>. Feidhmeanna, ar an láimh eile,
+nach bhfuil in ann a dtimpeallacht a ghabháil ar an mbealach seo.</p>
+<h3 id="tátail-agus-anótáil-cineál-dúnadh"><a class="header" href="#tátail-agus-anótáil-cineál-dúnadh">Tátail agus Anótáil Cineál Dúnadh</a></h3>
+<p>Tá níos mó difríochtaí idir feidhmeanna agus dúnta. Ní dhéanann dúnta
+de ghnáth éilíonn tú cineálacha na bparaiméadar nó an luach tuairisceáin a anótáil
+mar a dhéanann feidhmeanna <code>fn</code>. Teastaíonn nótaí cineáil ar fheidhmeanna toisc go bhfuil an
+tá cineálacha mar chuid de chomhéadan follasach a nochtar do d'úsáideoirí. Ag sainmhíniú seo
+comhéadan docht tábhachtach chun a chinntiú go n-aontaíonn gach duine ar cad iad na cineálacha
+de luachanna úsáideann feidhm agus tuairisceáin. Ar an láimh eile, ní úsáidtear dúnta
+i gcomhéadan nochta mar seo: déantar iad a stóráil in athróga agus úsáidtear iad gan
+iad a ainmniú agus iad a nochtadh d'úsáideoirí ár leabharlann.</p>
+<p>Is iondúil go mbíonn dúnta gearr agus ní bhaineann siad ach le comhthéacs cúng
+ná in aon chás treallach. Laistigh de na comhthéacsanna teoranta seo, is féidir leis an tiomsaitheoir
+tátail na bparaiméadar agus an cineál tuairisceáin, cosúil leis an gcaoi a bhfuil sé in ann
+chun tátal a bhaint as na cineálacha athróg is mó (tá cásanna annamh nuair a bhíonn an tiomsaitheoir
+tá nótaí dúnta de dhíth freisin).</p>
+<p>Mar is amhlaidh le hathróga, is féidir linn nótaí cineáil a chur leis más mian linn méadú a dhéanamh
+soiléireacht agus soiléireacht ar chostas a bheith níos briathartha ná mar atá go docht
+riachtanach. Is cosúil leis an sainmhíniú an sainmhíniú a thabhairt ar na cineálacha le haghaidh dúnadh
+léirithe i Liostú 13-2. Sa sampla seo, táimid ag sainmhíniú dúnadh agus á stóráil
+in athróg seachas an dúnadh a shainiú sa spota tugaimid thairis é mar
+argóint mar a rinneamar i Liosta 13-1.</p>
+<Listing number="13-2" file-name="src/main.rs" caption="Adding optional type annotations of the parameter and return value types in the closure">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::thread;
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn generate_workout(intensity: u32, random_number: u32) {
+</span>    let expensive_closure = |num: u32| -&gt; u32 {
+        println!("calculating slowly...");
+        thread::sleep(Duration::from_secs(2));
+        num
+    };
+<span class="boring">
+</span><span class="boring">    if intensity &lt; 25 {
+</span><span class="boring">        println!("Today, do {} pushups!", expensive_closure(intensity));
+</span><span class="boring">        println!("Next, do {} situps!", expensive_closure(intensity));
+</span><span class="boring">    } else {
+</span><span class="boring">        if random_number == 3 {
+</span><span class="boring">            println!("Take a break today! Remember to stay hydrated!");
+</span><span class="boring">        } else {
+</span><span class="boring">            println!(
+</span><span class="boring">                "Today, run for {} minutes!",
+</span><span class="boring">                expensive_closure(intensity)
+</span><span class="boring">            );
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let simulated_user_specified_value = 10;
+</span><span class="boring">    let simulated_random_number = 7;
+</span><span class="boring">
+</span><span class="boring">    generate_workout(simulated_user_specified_value, simulated_random_number);
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Agus nótaí cineáil curtha leis, tá cuma níos cosúla ar chomhréir na ndúntaí leis an
+comhréir feidhmeanna. Anseo sainímid feidhm a chuireann 1 lena pharaiméadar agus
+clabhsúr a bhfuil an t-iompar céanna air, chun comparáid a dhéanamh. Chuireamar roinnt spásanna leis
+chun na codanna ábhartha a líneáil. Léiríonn sé seo an chomhréir dúnta comhchosúil
+chun comhréir a fheidhmiú ach amháin maidir le húsáid píopaí agus an méid comhréire atá
+roghnach:</p>
+<pre><code class="language-rust ignore">fn  add_one_v1   (x: u32) -&gt; u32 { x + 1 }
+let add_one_v2 = |x: u32| -&gt; u32 { x + 1 };
+let add_one_v3 = |x|             { x + 1 };
+let add_one_v4 = |x|               x + 1  ;</code></pre>
+<p>Taispeánann an chéad líne sainmhíniú ar fheidhm, agus taispeánann an dara líne sainmhíniú iomlán
+sainmhíniú dúnta anótáilte. Sa tríú líne, bainimid na nótaí cineáil
+ón sainmhíniú dúnta. Sa cheathrú líne, bainimid na lúibíní, a bhfuil
+atá roghnach toisc nach bhfuil ach léiriú amháin ag an gcomhlacht dúnta. Is iad seo go léir
+sainmhínithe bailí a thabharfaidh an t-iompar céanna nuair a ghlaotar orthu. Tá an
+Éilíonn línte <code>add_one_v3</code> agus <code>cuir_one_v4</code> go ndéanfaí na dúnta a mheas
+in ann a thiomsú mar go mbeidh na cineálacha a thuiscint óna n-úsáid. Tá sé seo
+cosúil le <code>let v = Vec::new();</code> a dteastaíonn ceachtar den chineál nótaí nó luachanna de
+cineál éigin le cur isteach sa <code>Vec</code> le go mbeidh Rust in ann an cineál a thuiscint.</p>
+<p>Maidir le sainmhínithe dúnta, bainfidh an tiomsaitheoir le tátal a bhaint as cineál coincréite amháin do gach ceann díobh
+a bparaiméadar agus a luach aischuir. Mar shampla, taispeánann Liostú 13-3
+an sainmhíniú ar dhúnadh gairid nach dtugann ach an luach a fhaigheann sé ar ais mar a
+paraiméadar. Níl an dúnadh seo an-úsáideach ach amháin chun críocha seo
+shampla. Tabhair faoi deara nach bhfuil aon chineál nótaí curtha againn leis an sainmhíniú.
+Toisc nach bhfuil aon nótaí cineáil ann, is féidir linn an dúnadh a ghlaoch le haon chineál,
+rud atá déanta againn anseo le <code>String</code> an chéad uair. Má dhéanaimid iarracht ansin glaoch
+<code>example_closure</code> le slánuimhir, gheobhaidh muid earráid.</p>
+<Listing number="13-3" file-name="src/main.rs" caption="Attempting to call a closure whose types are inferred with two different types">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let example_closure = |x| x;
+
+    let s = example_closure(String::from("hello"));
+    let n = example_closure(5);
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Tugann an tiomsaitheoir an earráid seo dúinn:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling closure-example v0.1.0 (file:///projects/closure-example)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:5:29
+  |
+5 |     let n = example_closure(5);
+  |             --------------- ^- help: try using a conversion method: `.to_string()`
+  |             |               |
+  |             |               expected `String`, found integer
+  |             arguments to this function are incorrect
+  |
+note: expected because the closure was earlier called with an argument of type `String`
+ --&gt; src/main.rs:4:29
+  |
+4 |     let s = example_closure(String::from("hello"));
+  |             --------------- ^^^^^^^^^^^^^^^^^^^^^ expected because this argument is of type `String`
+  |             |
+  |             in this closure call
+note: closure parameter defined here
+ --&gt; src/main.rs:2:28
+  |
+2 |     let example_closure = |x| x;
+  |                            ^
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `closure-example` (bin "closure-example") due to 1 previous error
+</code></pre>
+<p>An chéad uair a thugaimid <code>example_closure</code> air leis an luach <code>String</code>, an tiomsaitheoir
+tugtar le tuiscint gur <code>String</code> an cineál <code>x</code> agus an cineál fillte den dúnadh. Iad siúd
+cuirtear cineálacha faoi ghlas ansin sa dúnadh i <code>example_closure</code>, agus faigheann muid cineál
+earráid nuair a dhéanaimid iarracht cineál eile a úsáid leis an dúnadh céanna.</p>
+<h3 id="tagairtí-a-ghabháil-nó-Úinéireacht-a-bhogadh"><a class="header" href="#tagairtí-a-ghabháil-nó-Úinéireacht-a-bhogadh">Tagairtí a Ghabháil nó Úinéireacht a Bhogadh</a></h3>
+<p>Is féidir le dúnta luachanna a ghabháil óna dtimpeallacht ar thrí bhealach, rud a
+léarscáil go díreach chuig na trí bhealach is féidir le feidhm a ghlacadh paraiméadar: iasacht a fháil
+go do-athraithe, iasachtaí a fháil go comhuaineach, agus úinéireacht a ghlacadh. Cinnfidh an dúnadh
+cé acu seo atá le húsáid bunaithe ar cad a dhéanann corp na feidhme leis an
+luachanna gafa.</p>
+<p>I Liostú 13-4, sainmhínímid dúnadh a ghabhann tagairt do-athlasach do
+an veicteoir darb ainm <code>list</code> toisc nach bhfuil de dhíth air ach tagairt do-athlasta le priontáil
+an luach:</p>
+<Listing number="13-4" file-name="src/main.rs" caption="Defining and calling a closure that captures an immutable reference">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
+
+    let only_borrows = || println!("From closure: {list:?}");
+
+    println!("Before calling closure: {list:?}");
+    only_borrows();
+    println!("After calling closure: {list:?}");
+}</code></pre></pre>
+</Listing>
+<p>Léiríonn an sampla seo freisin gur féidir le hathróg ceangal le sainmhíniú dúnta,.
+agus is féidir linn an dúnadh a ghlaoch níos déanaí tríd an ainm athróg agus lúibíní a úsáid mar
+dá mba ainm feidhme é an t-ainm athróg.</p>
+<p>Toisc gur féidir linn go leor tagairtí do-athlasta a bheith againn do <code>list</code> ag an am céanna,
+tá <code>list</code> fós inrochtana ón gcód roimh an sainmhíniú dúnta, tar éis
+an sainmhíniú ar dhúnadh ach sula dtugtar an dúnadh, agus tar éis an dúnadh
+ar a dtugtar. Tiomsaíonn, ritheann agus priontaí an cód seo:</p>
+<pre><code class="language-console">$ cargo run
+     Locking 1 package to latest compatible version
+      Adding closure-example v0.1.0 (/Users/chris/dev/rust-lang/book/tmp/listings/ch13-functional-features/listing-13-04)
+   Compiling closure-example v0.1.0 (file:///projects/closure-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/debug/closure-example`
+Before defining closure: [1, 2, 3]
+Before calling closure: [1, 2, 3]
+From closure: [1, 2, 3]
+After calling closure: [1, 2, 3]
+</code></pre>
+<p>Ansin, i Liostú 13-5, athraíonn muid an corp dúnta ionas go gcuireann sé eilimint leis
+an veicteoir <code>list</code>. Gabhann an dúnadh tagairt mutable anois:</p>
+<Listing number="13-5" file-name="src/main.rs" caption="Defining and calling a closure that captures a mutable reference">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let mut list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
+
+    let mut borrows_mutably = || list.push(7);
+
+    borrows_mutably();
+    println!("After calling closure: {list:?}");
+}</code></pre></pre>
+</Listing>
+<p>Tiomsaíonn, ritheann agus priontaí an cód seo:</p>
+<pre><code class="language-console">$ cargo run
+     Locking 1 package to latest compatible version
+      Adding closure-example v0.1.0 (/Users/chris/dev/rust-lang/book/tmp/listings/ch13-functional-features/listing-13-05)
+   Compiling closure-example v0.1.0 (file:///projects/closure-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/debug/closure-example`
+Before defining closure: [1, 2, 3]
+After calling closure: [1, 2, 3, 7]
+</code></pre>
+<p>Tabhair faoi deara nach bhfuil <code>println!</code> a thuilleadh idir an sainmhíniú agus an glao ar
+an dúnadh <code>borrows_mutably</code>: nuair a shainmhínítear <code>borrows_mutably</code>, gabhann sé
+tagairt mutable do <code>list</code>. Ní úsáidimid an dúnadh arís tar éis an dúnta
+ar a dtugtar, mar sin a thagann deireadh leis an iasacht mutable. Idir an sainmhíniú dúnta agus an
+glao dúnta, ní cheadaítear iasacht neamh-inaistrithe le priontáil toisc nach bhfuil ceann eile
+ceadaítear iasachtaí nuair a bhíonn iasacht shochorraithe ann. Bain triail as <code>println!</code> a chur leis
+ann a fheiceáil cén teachtaireacht earráide a fhaigheann tú!</p>
+<p>Más mian leat iallach a chur ar an dúnadh úinéireacht a ghlacadh ar na luachanna a úsáideann sé sa
+timpeallacht cé nach gá go docht le corp an dúnta
+úinéireacht, is féidir leat an eochairfhocal <code>move</code> a úsáid roimh liosta na bparaiméadar.</p>
+<p>Tá an teicníocht seo úsáideach den chuid is mó agus dúnadh á rith ag snáithe nua le bogadh
+na sonraí ionas go mbeidh sé faoi úinéireacht an snáithe nua. Pléifimid snáitheanna agus cén fáth
+ba mhaith leat iad a úsáid go mion i gCaibidil 16 agus muid ag caint faoi
+concurrency, ach faoi láthair, déanaimis iniúchadh gairid ar sceite snáithe nua ag baint úsáide as a
+dúnadh a dteastaíonn an eochairfhocal <code>move</code>. Léiríonn Liostú 13-6 Liosta 13-4 modhnaithe
+chun an veicteoir a phriontáil i snáithe nua seachas sa phríomhshnáithe:</p>
+<Listing number="13-6" file-name="src/main.rs" caption="Using `move` to force the closure for the thread to take ownership of `list`">
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+
+fn main() {
+    let list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
+
+    thread::spawn(move || println!("From thread: {list:?}"))
+        .join()
+        .unwrap();
+}</code></pre></pre>
+</Listing>
+<p>Scaipimid snáithe nua, rud a fhágann gur dúnadh an snáithe a rith mar argóint. Tá an
+comhlacht dúnadh priontaí amach an liosta. I Liosta 13-4, níor gabhadh ach an dúnadh
+<code>list</code> ag baint úsáide as tagairt neamh-inmhalartaithe toisc gurb é sin an méid rochtana is lú
+chun <code>list</code> a theastaíonn chun é a phriontáil. Sa sampla seo, cé go bhfuil an comhlacht dúnta
+fós ag teastáil ach tagairt do- immutable, ní mór dúinn a shonrú gur chóir <code>list</code>
+a bhogadh isteach sa dúnadh tríd an eochairfhocal <code>move</code> a chur ag tús an
+sainmhíniú dúnta. Seans go gcríochnódh an snáithe nua roimh an gcuid eile den phríomhshnáithe
+bailchríocha an tsnáithe, nó b'fhéidir go gcríochnódh an príomhshnáithe ar dtús. Má tá an snáithe is mó
+choinnigh úinéireacht ar <code>list</code> ach tháinig deireadh leis sular tháinig agus thit an snáithe nua
+<code>list</code>, bheadh ​​an tagairt do-athlasta sa snáithe neamhbhailí. Dá bhrí sin, an
+Éilíonn tiomsaitheoir go n-aistreofar <code>list</code> isteach sa dúnadh a thugtar don snáithe nua
+mar sin beidh an tagairt bailí. Bain triail as an eochairfhocal <code>move</code> a bhaint nó úsáid a bhaint as <code>list</code>
+sa snáithe is mó tar éis an dúnadh a shainmhíniú a fheiceáil cad earráidí tiomsaitheoir tú
+faigh!</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="storing-closures-using-generic-parameters-and-the-fn-traits"></a>
+<a id="limitations-of-the-cacher-implementation"></a>
+<a id="moving-captured-values-out-of-the-closure-and-the-fn-traits"></a></p>
+<h3 id="luachanna-gafa-á-bogadh-as-dúnadh-agus-na-tréithe-fn"><a class="header" href="#luachanna-gafa-á-bogadh-as-dúnadh-agus-na-tréithe-fn">Luachanna Gafa á Bogadh As Dúnadh agus na Tréithe <code>Fn</code></a></h3>
+<p>Nuair a bheidh tagairt faighte ag dúnadh nó úinéireacht luach a ghabháil ó
+an timpeallacht ina sainmhínítear an dúnadh (ar an gcaoi sin bíonn tionchar aige ar cad, más rud ar bith,
+ar athraíodh a ionad <em>into</em> an dúnadh), sainmhíníonn an cód i gcorp an dúnta cad
+a tharlaíonn do na tagairtí nó na luachanna nuair a dhéantar an dúnadh a mheas níos déanaí (mar sin
+ag cur isteach ar an rud, más rud ar bith, a bhogtar <em>amach as</em> an dúnadh). Is féidir le comhlacht dúnadh
+déan aon cheann díobh seo a leanas: bog luach gafa amach as an dúnadh, mutate an
+luach a gabhadh, ná bogadh ná mutate an luach, nó a ghabháil aon rud ó na
+timpeallacht ar dtús.</p>
+<p>Bíonn tionchar ag an mbealach a shealbhaíonn agus a láimhseálann dúnadh luachanna ón gcomhshaol
+a bhfuil tréithe na n-uirlisí dúnta, agus na tréithe a bhaineann le feidhmeanna agus struchtúir
+is féidir a shonrú cad iad na cineálacha dúnta is féidir leo a úsáid. Dúnfar go huathoibríoch
+cuir ceann amháin, dhá cheann, nó trí cinn de na tréithe <code>Fn</code> seo i bhfeidhm ar bhealach suimitheach,
+ag brath ar an gcaoi a láimhseálann corp an dúnaidh na luachanna:</p>
+<ol>
+<li>Baineann <code>FnOnce</code> le dúnadh ar féidir glaoch orthu uair amháin. Cuireann gach dúnadh i bhfeidhm
+an trait seo ar a laghad, mar is féidir glaoch ar gach dúnadh. Dúnadh sin
+ní chuirfidh bogann luachanna a gabhadh amach as a chorp ach <code>FnOnce</code> agus ní chuirfidh sé aon cheann i bhfeidhm
+de na tréithe <code>Fn</code> eile, mar ní féidir é a ghlaoch ach uair amháin.</li>
+<li>Baineann <code>FnMut</code> le dúnadh nach n-aistríonn luachanna a gabhadh amach as a gcuid
+comhlacht, ach d'fhéadfadh sé sin na luachanna a gabhadh a athrú. Is féidir leis na dúnta seo a bheith
+ar a dtugtar níos mó ná uair amháin.</li>
+<li>Baineann <code>Fn</code> le dúnadh nach n-aistríonn luachanna gafa amach as a gcorp
+agus nach mutálann luachanna a gabhadh, chomh maith le dúnadh a ghabháil
+rud ar bith óna dtimpeallacht. Is féidir glaoch ar na dúnta seo níos mó ná uair amháin
+gan mutating a dtimpeallacht, rud atá tábhachtach i gcásanna mar
+dúnadh a ghlaoch go minic i gcomhthráth.</li>
+</ol>
+<p>Breathnaímid ar an sainmhíniú ar an modh <code>unwrap_or_else</code> ar <code>Option&lt;T&gt;</code> go
+d’úsáideamar i Liostú 13-1:</p>
+<pre><code class="language-rust ignore">impl&lt;T&gt; Option&lt;T&gt; {
+    pub fn unwrap_or_else&lt;F&gt;(self, f: F) -&gt; T
+    where
+        F: FnOnce() -&gt; T
+    {
+        match self {
+            Some(x) =&gt; x,
+            None =&gt; f(),
+        }
+    }
+}</code></pre>
+<p>Thabhairt chun cuimhne gurb é <code>T</code> an cineál cineálach a léiríonn an cineál luacha sa
+Leagan <code>Some</code> de <code>Option</code>. Is é an cineál sin <code>T</code> freisin an cineál tuairisceáin den
+feidhm <code>unwrap_or_else</code>: cód a ghlaonn <code>unwrap_or_else</code> ar an
+Gheobhaidh <code>Option&lt;String&gt;</code>, mar shampla, <code>String</code>.</p>
+<p>Ansin, tabhair faoi deara go bhfuil an cineál cineálach breise ag an bhfeidhm <code>unwrap_or_else</code>
+paraiméadar <code>F</code>. Is é an cineál <code>F</code> ná cineál an pharaiméadar darb ainm <code>f</code>, mar atá
+an dúnadh a chuirimid ar fáil nuair a ghlaonn tú ar <code>unwrap_or_else</code>.</p>
+<p>Is í an tréith a shonraítear ar an gcineál cineálach <code>F</code> ná <code>FnOnce() -&gt; T</code>, a
+ciallaíonn sé go gcaithfidh <code>F</code> a bheith in ann glaoch a chur air uair amháin, gan argóintí a ghlacadh, agus <code>T</code> a thabhairt ar ais.
+Trí úsáid a bhaint as <code>FnOnce</code> sa tréith faoi cheangal cuirtear an srian sin in iúl
+Ní dhéanfaidh <code>unwrap_or_else</code> ach <code>f</code> a ghlaoch ar uair amháin ar a mhéad. I gcorp na
+<code>unwrap_or_else</code>, feicimid más <code>Some</code> an <code>Option</code>, ní bheidh <code>f</code>
+ar a dtugtar. Murab é an <code>Option</code> ná <code>None</code>, tabharfar <code>f</code> uair amháin. Mar gheall ar go léir
+feidhmíonn dúnta <code>FnOnce</code>, glacann <code>unwrap_or_else</code> leis na trí chineál
+dúnta agus tá sé chomh solúbtha agus is féidir.</p>
+<blockquote>
+<p>Nóta: Más rud é nach gá luach a ghabháil ón méid is mian linn a dhéanamh
+timpeallacht, is féidir linn ainm feidhm a úsáid seachas dúnadh. Le haghaidh
+mar shampla, d'fhéadfaimis <code>unwrap_or_else(Vec::nua)</code> a ghlaoch ar luach <code>Option&lt;Vec&lt;T&gt;&gt;</code>
+chun veicteoir nua, folamh a fháil más é an luach <code>None</code>. An tiomsaitheoir go huathoibríoch
+cuireann sé i bhfeidhm cibé ceann de na tréithe <code>Fn</code> a bhaineann le feidhm
+sainmhíniú.</p>
+</blockquote>
+<p>Anois breathnaímid ar an modh caighdeánach leabharlainne <code>sort_by_key</code> atá sainmhínithe ar slisní,
+a fheiceáil conas atá sé difriúil ó <code>unwrap_or_else</code> agus cén fáth a n-úsáideann <code>sort_by_key</code>
+<code>FnMut</code> in ionad <code>FnOnce</code> don trait faoi cheangal. Faigheann an dúnadh argóint amháin
+i bhfoirm tagartha don mhír reatha sa tslis atá á bhreithniú,.
+agus cuireann sé ar ais luach cineál <code>K</code> is féidir a ordú. Tá an fheidhm seo úsáideach
+nuair is mian leat slice a shórtáil de réir tréith ar leith de gach mír. I
+Ag liostú 13-7, tá liosta cásanna <code>Rectangle</code> againn agus úsáidimid <code>sort_by_key</code>
+chun iad a ordú de réir a tréith <code>width</code> ó íseal go hard:</p>
+<Listing number="13-7" file-name="src/main.rs" caption="Using `sort_by_key` to order rectangles by width">
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let mut list = [
+        Rectangle { width: 10, height: 1 },
+        Rectangle { width: 3, height: 5 },
+        Rectangle { width: 7, height: 12 },
+    ];
+
+    list.sort_by_key(|r| r.width);
+    println!("{list:#?}");
+}</code></pre></pre>
+</Listing>
+<p>Priontálann an cód seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.41s
+     Running `target/debug/rectangles`
+[
+    Rectangle {
+        width: 3,
+        height: 5,
+    },
+    Rectangle {
+        width: 7,
+        height: 12,
+    },
+    Rectangle {
+        width: 10,
+        height: 1,
+    },
+]
+</code></pre>
+<p>Is é an chúis a shainmhínítear <code>sort_by_key</code> chun dúnadh <code>FnMut</code> a ghlacadh ná go nglaonn sé
+an dúnadh iolraí: uair amháin do gach mír sa slice. Ní dhéanann an dúnadh <code>|r| r.width</code> aon rud a ghabháil, a mutadh ná a bhogadh amach óna thimpeallacht, mar sin
+comhlíonann sé na ceanglais a bhaineann le tréithe.</p>
+<p>I gcodarsnacht leis sin, léiríonn Liosta 13-8 sampla de dhúnadh a fheidhmíonn díreach
+an trait <code>FnOnce</code>, toisc go mbogann sé luach amach as an timpeallacht. Tá an
+ní ligfidh an tiomsaitheoir dúinn an dúnadh seo a úsáid le <code>sort_by_key</code>:</p>
+<Listing number="13-8" file-name="src/main.rs" caption="Attempting to use an `FnOnce` closure with `sort_by_key`">
+<pre><code class="language-rust ignore does_not_compile">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let mut list = [
+        Rectangle { width: 10, height: 1 },
+        Rectangle { width: 3, height: 5 },
+        Rectangle { width: 7, height: 12 },
+    ];
+
+    let mut sort_operations = vec![];
+    let value = String::from("closure called");
+
+    list.sort_by_key(|r| {
+        sort_operations.push(value);
+        r.width
+    });
+    println!("{list:#?}");
+}</code></pre>
+</Listing>
+<p>Is bealach suarach, convoluted é seo (nach n-oibríonn) chun iarracht a dhéanamh na
+líon uaireanta a ghlaonn <code>sort_by_key</code> ar an dúnadh agus <code>list</code> á shórtáil. An cód seo
+déanann sé iarracht an comhaireamh seo a dhéanamh trí <code>value</code>—a <code>String</code> a bhrú ó na dúnta
+timpeallacht - isteach sa veicteoir <code>sort_operations</code>. Gabhann an dúnadh <code>value</code>
+ansin bogtar <code>value</code> amach as an dúnadh trí úinéireacht <code>value</code> a aistriú go dtí
+an veicteoir <code>sort_operations</code>. Is féidir an dúnadh seo a ghairm uair amháin; ag iarraidh glaoch
+ní n-oibreodh sé an dara huair mar ní bheadh ​​<code>value</code> sa
+timpeallacht a bhrú isteach i <code>sort_operations</code> arís! Dá bhrí sin, an dúnadh seo
+ní chuireann ach <code>FnOnce</code> i bhfeidhm. Nuair a dhéanaimid iarracht an cód seo a thiomsú, faigheann muid an earráid seo
+nach féidir an <code>value</code> sin a bhogadh amach as an dúnadh mar ní mór an dúnadh
+cuir <code>FnMut</code> i bhfeidhm:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+error[E0507]: cannot move out of `value`, a captured variable in an `FnMut` closure
+  --&gt; src/main.rs:18:30
+   |
+15 |     let value = String::from("closure called");
+   |         ----- captured outer variable
+16 |
+17 |     list.sort_by_key(|r| {
+   |                      --- captured by this `FnMut` closure
+18 |         sort_operations.push(value);
+   |                              ^^^^^ move occurs because `value` has type `String`, which does not implement the `Copy` trait
+   |
+help: consider cloning the value if the performance cost is acceptable
+   |
+18 |         sort_operations.push(value.clone());
+   |                                   ++++++++
+
+For more information about this error, try `rustc --explain E0507`.
+error: could not compile `rectangles` (bin "rectangles") due to 1 previous error
+</code></pre>
+<p>Díríonn an earráid ar an líne sa chorp dúnta a bhogann <code>value</code> amach as an
+timpeallacht. Chun é seo a shocrú, ní mór dúinn an comhlacht dúnta a athrú ionas nach ndéanann sé
+luachanna a bhogadh amach as an timpeallacht. Chun an líon uaireanta an dúnadh a chomhaireamh
+ar a dtugtar, cuntar a choinneáil sa timpeallacht agus a luach a mhéadú i
+Is bealach níos simplí é an comhlacht dúnta chun é sin a ríomh. An dúnadh
+i Liostú 13-9 oibríonn sé le <code>sort_by_key</code> toisc nach bhfuil ann ach mutable a ghabháil
+tagairt don chuntar <code>num_sort_operations</code> agus mar sin is féidir níos mó a ghlaoch air
+ná uair amháin:</p>
+<Listing number="13-9" file-name="src/main.rs" caption="Using an `FnMut` closure with `sort_by_key` is allowed">
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let mut list = [
+        Rectangle { width: 10, height: 1 },
+        Rectangle { width: 3, height: 5 },
+        Rectangle { width: 7, height: 12 },
+    ];
+
+    let mut num_sort_operations = 0;
+    list.sort_by_key(|r| {
+        num_sort_operations += 1;
+        r.width
+    });
+    println!("{list:#?}, sorted in {num_sort_operations} operations");
+}</code></pre></pre>
+</Listing>
+<p>Tá na tréithe <code>Fn</code> tábhachtach nuair a bhíonn feidhmeanna nó cineálacha sin á sainiú nó á n-úsáid
+úsáid a bhaint as dúnta. Sa chéad chuid eile, déanfaimid plé ar atriallta. go leor
+Glacann modhanna iterator argóintí dúnta, mar sin coinnigh na sonraí dúnta seo san áireamh
+agus muid ag leanúint ar aghaidh!</p>
 
                     </main>
 

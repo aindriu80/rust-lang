@@ -529,17 +529,17 @@ Bhuel, rud a dhéanfaimid sa chéad liostú eile.</p>
     }
 }</code></pre>
 </Listing>
-<p>Our <code>build</code> function returns a <code>Result</code> with a <code>Config</code> instance in the success
-case and a string literal in the error case. Our error values will always be
-string literals that have the <code>'static</code> lifetime.</p>
-<p>We’ve made two changes in the body of the function: instead of calling <code>panic!</code>
-when the user doesn’t pass enough arguments, we now return an <code>Err</code> value, and
-we’ve wrapped the <code>Config</code> return value in an <code>Ok</code>. These changes make the
-function conform to its new type signature.</p>
-<p>Returning an <code>Err</code> value from <code>Config::build</code> allows the <code>main</code> function to
-handle the <code>Result</code> value returned from the <code>build</code> function and exit the
-process more cleanly in the error case.</p>
-<!-- Old headings. Do not remove or links may break. -->
+<p>Tugann ár bhfeidhm <code>build</code> <code>Result</code> ar ais agus sampla <code>Config</code> sa rath
+cás agus teaghrán litriúil sa chás earráide. Beidh ár luachanna earráide i gcónaí
+téadlitreacha a bhfuil an saolré <code>'static</code> acu.</p>
+<p>Tá dhá athrú déanta againn i gcorp na feidhme: in ionad <code>panic!</code> a ghlaoch
+nuair nach n-éiríonn leis an úsáideoir go leor argóintí a dhéanamh, tugaimid luach <code>Err</code> ar ais anois, agus
+tá an luach aischuir <code>Config</code> fillte againn i <code>OK</code>. Déanann na hathruithe seo an
+feidhm cloí lena síniú cineáil nua.</p>
+<p>Má chuirtear luach <code>Err</code> ar ais ó <code>Config::build</code> ceadaíonn sé don phríomhfheidhm
+láimhseáil an luach <code>Result</code> a cuireadh ar ais ón bhfeidhm <code>build</code> agus scoir an
+próiseáil níos glaine i gcás earráide.</p>
+<!-- Old headings. Do not remove or links may break. --> 
 <p><a id="calling-confignew-and-handling-errors"></a></p>
 <h4 id="ag-glaoch-configbuild-agus-ag-láimhseáil-earráidí"><a class="header" href="#ag-glaoch-configbuild-agus-ag-láimhseáil-earráidí">Ag glaoch <code>Config::build</code> agus ag Láimhseáil Earráidí</a></h4>
 <p>Chun an cás earráide a láimhseáil agus teachtaireacht atá éasca le húsáid a phriontáil, ní mór dúinn nuashonrú a dhéanamh
