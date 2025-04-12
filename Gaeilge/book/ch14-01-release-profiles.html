@@ -159,7 +159,61 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="customizing-builds-with-release-profiles"><a class="header" href="#customizing-builds-with-release-profiles">Customizing Builds with Release Profiles</a></h1>
+                        <h2 id="tógann-saincheapadh-le-próifílí-eisiúna"><a class="header" href="#tógann-saincheapadh-le-próifílí-eisiúna">Tógann Saincheapadh le Próifílí Eisiúna</a></h2>
+<p>I Rust, tá próifílí <em>release</em> réamhshainithe agus próifílí inoiriúnaithe le
+cumraíochtaí éagsúla a ligeann do ríomhchláraitheoir níos mó smachta a bheith acu
+roghanna éagsúla chun cód a thiomsú. Tá gach próifíl cumraithe neamhspleách ar
+na cinn eile.</p>
+<p>Tá dhá phríomhphróifíl ag Cargo: an phróifíl <code>dev</code> a úsáideann Cargo nuair a ritheann tú <code>cargo build</code> agus an phróifíl <code>release</code> a úsáideann Cargo nuair a ritheann tú <code>cargo build --release</code>. Sainmhínítear an phróifíl <code>dev</code> le réamhshocruithe maithe le haghaidh forbartha,
+agus tá mainneachtainí maithe ag an bpróifíl <code>release</code> maidir le tógáil scaoileadh.</p>
+<p>Seans go bhfuil cur amach ar na hainmneacha próifíle seo ó aschur do chuid tógála:</p>
+<!-- athghiniúint de láimh
+áit ar bith, rith:
+tógáil lasta
+lasta a thógáil --scaoileadh
+agus a chinntiú go bhfuil an t-aschur thíos cruinn
+-->
+<pre><code class="language-console">$ cargo build
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
+$ cargo build --release
+    Finished `release` profile [optimized] target(s) in 0.32s
+</code></pre>
+<p>Is iad na <code>dev</code> agus <code>release</code> na próifílí éagsúla seo a úsáideann an tiomsaitheoir.</p>
+<p>Tá socruithe réamhshocraithe ag Cargo do gach ceann de na próifílí a bhíonn i bhfeidhm nuair nach bhfuil
+cuireadh aon rannáin <code>[profile.*]</code> isteach go sainráite i gcomhad <em>Cargo.toml</em> an tionscadail.
+Trí rannáin <code>[profile.*]</code> a chur isteach d'aon phróifíl is mian leat a shaincheapadh, ní mór duit
+aon fho-thacar de na socruithe réamhshocraithe a shárú. Mar shampla, anseo tá an réamhshocraithe
+luachanna don socrú <code>opt-level</code> do na próifílí <code>dev</code> agus <code>release</code>:</p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
+<pre><code class="language-toml">[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+</code></pre>
+<p>Rialaíonn an socrú <code>opt-level</code> líon na n-uasmhéaduithe a mbainfidh Rust leo
+do chód, le raon de 0 go 3. Síneann cur i bhfeidhm níos mó optimizations
+am a thiomsú, mar sin má tá tú ag forbairt agus ag tiomsú do chód go minic,
+beidh tú ag iarraidh níos lú optimizations a thiomsú níos tapúla fiú má tá an cód mar thoradh air
+ritheann níos moille. Mar sin is é <code>0</code> an <code>opt-level</code> réamhshocraithe do <code>dev</code>. Nuair atá tú
+réidh chun do chód a scaoileadh, is fearr níos mó ama a chaitheamh ag tiomsú. Beidh tú amháin
+tiomsaigh i mód eisithe uair amháin, ach reáchtálfaidh tú an clár tiomsaithe go minic,
+mar sin ceirdeanna modh scaoileadh níos faide ama a thiomsú le haghaidh cód a ritheann níos tapúla. Is é sin
+cén fáth gurb é <code>3</code> an <code>opt-level</code> réamhshocraithe don phróifíl <code>release</code>.</p>
+<p>Is féidir leat socrú réamhshocraithe a shárú trí luach difriúil a chur leis
+<em>Cargo.toml</em>. Mar shampla, más mian linn leas iomlán a bhaint as leibhéal 1 sa
+próifíl forbartha, is féidir linn an dá líne seo a chur le <em>Cargo.toml</em> ár dtionscadal
+comhad:</p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
+<pre><code class="language-toml">[profile.dev]
+opt-level = 1
+</code></pre>
+<p>Sáraíonn an cód seo an socrú réamhshocraithe <code>0</code>. Anois agus muid ag rith <code>cargo build</code>,
+Úsáidfidh Cargo na réamhshocruithe don phróifíl <code>dev</code> móide ár n-oiriúnú do
+<code>opt-level</code>. Toisc go bhfuil <code>opt-level</code> socraithe againn go <code>1</code>, beidh feidhm ag Cargo níos mó
+optimizations ná an réamhshocrú, ach ní oiread agus is i scaoileadh scaoileadh.</p>
+<p>Le haghaidh liosta iomlán na roghanna cumraíochta agus mainneachtainí do gach próifíl, féach
+<a href="https://doc.rust-lang.org/cargo/reference/profiles.html">Doiciméadú Cargo</a>.</p>
 
                     </main>
 

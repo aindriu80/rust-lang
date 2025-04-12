@@ -159,7 +159,318 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="cargo-workspaces"><a class="header" href="#cargo-workspaces">Cargo Workspaces</a></h1>
+                        <h2 id="spásanna-oibre-cargo"><a class="header" href="#spásanna-oibre-cargo">Spásanna Oibre Cargo</a></h2>
+<p>I gCaibidil 12, thógamar pacáiste a chuimsigh cliathbhosca dénártha agus leabharlann
+cliathbhosca. De réir mar a théann do thionscadal chun cinn, seans go bhfaighidh tú an crate leabharlainne
+ag éirí níos mó fós agus ba mhaith leat do phacáiste a roinnt níos faide isteach
+crates leabharlann il. Cuireann Cargo gné ar a dtugtar <em>workspaces</em> ar fáil ar féidir
+cabhrú le ilphacáistí gaolmhara a fhorbraítear in éineacht.</p>
+<h3 id="spás-oibre-á-chruthú"><a class="header" href="#spás-oibre-á-chruthú">Spás Oibre á Chruthú</a></h3>
+<p>Is é atá i <em>workspace</em> ná sraith pacáistí a roinneann an <em>Cargo.lock</em> céanna agus an t-aschur céanna
+eolaire. Déanaimis tionscadal ag baint úsáide as spás oibre - úsáidfimid cód fánach mar sin déanfaimid
+is féidir díriú ar struchtúr an spáis oibre. Tá bealaí éagsúla chun
+spás oibre a struchtúrú, mar sin ní léireoimid ach bealach coiteann amháin. Beidh a
+spás oibre ina bhfuil dénártha agus dhá leabharlann. An dénártha, a sholáthróidh
+an phríomhfheidhmíocht, ag brath ar an dá leabharlann. Beidh leabharlann amháin
+cuir feidhm <code>add_one</code> ar fáil, agus feidhm <code>add_two</code> leis an dara leabharlann.
+Beidh na trí chliathbhosca seo mar chuid den spás oibre céanna. Tosóimid ag cruthú
+eolaire nua don spás oibre:</p>
+<pre><code class="language-console">$ mkdir add
+$ cd add
+</code></pre>
+<p>Ansin, san eolaire <em>add</em>, cruthaímid an comhad <em>Cargo.toml</em> a dhéanfaidh
+cumraigh an spás oibre ar fad. Ní bheidh alt <code>[package]</code> ag an gcomhad seo.
+Ina áit sin, tosóidh sé le rannán <code>[workspace]</code> a ligfidh dúinn cur leis
+baill chuig an spás oibre. Déanaimid pointe freisin chun an ceann is déanaí agus is mó a úsáid
+leagan de algartam réitithe Cargo inár spás oibre tríd an
+<code>resolver</code> go <code>"2"</code>.</p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
+<pre><code class="language-toml">[workspace]
+resolver = "2"
+</code></pre>
+<p>Ansin, cruthóimid an gcliathbhosca dénártha <code>adder</code> trí <code>cargo new</code> a rith laistigh den
+<em>cuir</em> eolaire:</p>
+<!-- athghiniúint de láimh
+liostaí cd/ch14-tuilleadh-faoi-lasta/aschur-amháin-01-adder-crate/add
+rm -rf adder
+adder nua lasta
+cóip den aschur thíos
+-->
+<pre><code class="language-console">$ cargo new adder
+    Creating binary (application) `adder` package
+      Adding `adder` as member of workspace at `file:///projects/add`
+</code></pre>
+<p>Nuair a ritheann <code>cargo new</code> taobh istigh de spás oibre cuireann sé go huathoibríoch leis an nuachruthaithe
+pacáiste chuig an eochair <code>members</code> sa sainmhíniú <code>[workspace]</code> sa spás oibre
+<code>Cargo.toml</code>, mar seo:</p>
+<pre><code class="language-toml">[workspace]
+resolver = "2"
+members = ["adder"]
+</code></pre>
+<p>Ag an bpointe seo, is féidir linn an spás oibre a thógáil trí <code>cargo build</code> a reáchtáil. Na comhaid
+ba cheart go mbeadh cuma mar seo i do <em>add</em> eolaire:</p>
+<pre><code class="language-text">├── Cargo.lock
+├── Cargo.toml
+├── adder
+│   ├── Cargo.toml
+│   └── src
+│       └── main.rs
+└── target
+</code></pre>
+<p>Tá eolaire <em>target</em> amháin sa spás oibre ar an leibhéal is airde a tiomsaíodh
+cuirfear artifacts isteach; níl a chuid féin ag an bpacáiste <code>adder</code>
+<em>target</em> eolaire. Fiú dá mbeadh muid chun <code>cargo build</code> a rith ón taobh istigh den
+<em>adder</em> eolaire, bheadh ​​na déantáin tiomsaithe fós i <em>add/target</em>
+seachas <em>add/adder/target</em>. Struchtúraíonn Cargo an t-eolaire <em>target</em> i
+spás oibre mar seo mar go bhfuil na crates i spás oibre i gceist a bheith ag brath ar
+chéile. Dá mbeadh a eolaire <em>target</em> féin ag gach cliathbhosca, bheadh ​​ag gach cliathbhosca
+chun gach ceann de na crates eile sa spás oibre a ath-thiomsú chun na déantáin a chur
+ina <em>target</em> eolaire féin. Trí chomhadlann <em>target</em> amháin a roinnt, na crates
+is féidir atógáil gan ghá a sheachaint.</p>
+<h3 id="an-dara-pacáiste-a-chruthú-sa-spás-oibre"><a class="header" href="#an-dara-pacáiste-a-chruthú-sa-spás-oibre">An Dara Pacáiste a Chruthú sa Spás Oibre</a></h3>
+<p>Ansin, cruthaímid pacáiste ball eile sa spás oibre agus cuirfimid glaoch air
+<code>add_one</code> leis. Athraigh an barrleibhéal <em>Cargo.toml</em> chun an cosán <em>add_one</em> a shonrú
+liosta na <code>members</code>:</p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
+<pre><code class="language-toml">[workspace]
+resolver = "2"
+members = ["adder", "add_one"]
+</code></pre>
+<p>Ansin ginigh cliathbhosca leabharlainne nua darb ainm <code>add_one</code>:</p>
+<!-- athghiniúint de láimh
+liostaí cd/ch14-níos mó faoi-lasta/aschur-amháin-02-cuir-amháin/cuir leis
+rm -rf add_one
+lasta add_one nua --lib
+cóip den aschur thíos
+-->
+<pre><code class="language-consól">$cargo add_one nua --lib
+ Leabharlann á chruthú pacáiste `add_one`
+ Ag cur `add_one` isteach mar bhall den spás oibre ag `comhad:///projects/add`
+</code></pre>
+<p>Ba cheart go mbeadh na heolairí agus na comhaid seo i do chomhadlann <em>add</em> anois:</p>
+<pre><code class="language-téacs">├── Cargo.lock
+├── Cargo.toml
+├── add_one
+│ ├── Cargo.toml
+│ └── src
+│ └── lib.rs
+├── nathair
+│ ├── Cargo.toml
+│ └── src
+│ └── príomh.rs
+└── sprioc
+</code></pre>
+<p>Sa chomhad <em>add_one/src/lib.rs</em>, cuirimis feidhm <code>add_one</code> leis:</p>
+<p><span class="filename">Ainm comhaid: add_one/src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">pub fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}</code></pre>
+<p>Anois is féidir linn an pacáiste <code> adder</code> a bheith againn lenár dénártha ag brath ar an <code>add_one</code>
+pacáiste a bhfuil ár leabharlann. Ar dtús, ní mór dúinn spleáchas cosán a chur leis
+<code>add_one</code> le <em>adder/Cargo.toml</em>.</p>
+<p><span class="filename">Ainm comhaid: adder/Cargo.toml</span></p>
+<pre><code class="language-toml">[dependencies]
+add_one = { path = "../add_one" }
+</code></pre>
+<p>Ní ghlacann Cargo leis go mbeidh crates i spás oibre ag brath ar a chéile, mar sin de
+ní mór dúinn a bheith soiléir faoi na caidrimh spleáchais.</p>
+<p>Ansin, bainimis úsáid as an bhfeidhm <code>add_one</code> (ón gcliathbhosca <code>add_one</code>) sa
+cliathbhosca <code>adder</code>. Oscail an comhad <em>adder/src/main.rs</em> agus athraigh an <code>main</code>
+feidhm chun an fheidhm <code>add_one</code> a ghlaoch, mar atá i Liostú 14-7.</p>
+<Listing number="14-7" file-name="adder/src/main.rs" caption="Ag baint úsáide as an gcliathbhosca leabharlainne `add_one` i gcliathbhosca `adder`">
+<pre><code class="language-rust ignore">fn main() {
+    let num = 10;
+    println!("Hello, world! {num} plus one is {}!", add_one::add_one(num));
+}</code></pre>
+</Listing>
+<p>Déanaimis an spás oibre a thógáil trí <code>cargo build</code> a rith sa bharrleibhéal <em>add</em>
+eolaire!</p>
+<!-- athghiniúint de láimh
+liostaí cd/ch14-more-about-cargo/listing-14-07/add
+tógáil lasta
+aschur cóip thíos; ní láimhseálann an script nuashonraithe aschuir fochomhadlanna i gcosáin i gceart
+-->
+<pre><code class="language-console">$ cargo build
+   Compiling add_one v0.1.0 (file:///projects/add/add_one)
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.22s
+</code></pre>
+<p>Chun an cliathbhosca dénártha a rith ón eolaire <em>add</em>, is féidir linn a shonrú cé acu
+pacáiste sa spás oibre ba mhaith linn a rith tríd an argóint <code>-p</code> agus an
+ainm an phacáiste le <code>cargo run</code>:</p>
+<!-- athghiniúint de láimh
+liostaí cd/ch14-more-about-cargo/listing-14-07/add
+rith lasta -p adder
+aschur cóip thíos; ní láimhseálann an script nuashonraithe aschuir fochomhadlanna i gcosáin i gceart
+-->
+<pre><code class="language-console">$ cargo run -p adder
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running `target/debug/adder`
+Hello, world! 10 plus one is 11!
+</code></pre>
+<p>Ritheann sé seo an cód in <em>adder/src/main.rs</em>, atá ag brath ar an gcliathbhosca <code>add_one</code>.</p>
+<h4 id="ag-brath-ar-phacáiste-seachtrach-i-spás-oibre"><a class="header" href="#ag-brath-ar-phacáiste-seachtrach-i-spás-oibre">Ag brath ar Phacáiste Seachtrach i Spás Oibre</a></h4>
+<p>Tabhair faoi deara nach bhfuil ach comhad <em>Cargo.lock</em> amháin ag an mbarrleibhéal,
+seachas <em>Cargo.lock</em> a bheith i gcomhadlann gach cliathbhosca. Cinntíonn sé seo go
+tá na crates go léir ag baint úsáide as an leagan céanna de gach spleáchas. Má chuirimid an <code>rand</code>
+pacáiste chuig na comhaid <em>adder/Cargo.toml</em> agus <em>add_one/Cargo.toml</em>, déanfaidh Cargo
+Réitigh an dá cheann go leagan amháin de <code>rand</code> agus taifead é sin sa cheann
+<em>Cargo.glas</em>. Má dhéantar na crates go léir sa spás oibre, bain úsáid as na spleáchais chéanna
+ciallaíonn sé seo go mbeidh na crates ag luí lena chéile i gcónaí. Cuirimis an
+cliathbhosca <code>rand</code> chuig an rannán <code>[dependencies]</code> sa chomhad <em>add_one/Cargo.toml</em>
+ionas gur féidir linn an cliathbhosca <code>rand</code> a úsáid sa crate <code>add_one</code>:</p>
+<!-- Agus an leagan de `rand` á nuashonrú, nuashonraigh an leagan de
+úsáidtear `rand` sna comhaid seo ionas go dtagann siad go léir le:
+* ch02-00-buille faoi thuairim-cluiche-tutorial.md
+*ch07-04-ag tabhairt-cosáin-i--scóip-leis-an-úsáid-eochairfhocal.md
+-->
+<p><span class="filename">Ainm comhaid: add_one/Cargo.toml</span></p>
+<pre><code class="language-toml">[dependencies]
+rand = "0.8.5"
+</code></pre>
+<p>Is féidir linn <code>use rand;</code> a chur leis an gcomhad <em>add_one/src/lib.rs</em> anois, agus an
+spás oibre iomlán trí <code>cargo build</code> a rith san eolaire <em>add</em> a thabhairt isteach
+agus an gcliathbhosca <code>rand</code> a thiomsú. Gheobhaidh muid rabhadh amháin mar nílimid
+ag tagairt don <code>rand</code> a thugamar isteach sa scóip:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/no-listing-03-workspace-with-external-dependency/add
+cargo build
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+<pre><code class="language-console">$ cargo build
+    Updating crates.io index
+  Downloaded rand v0.8.5
+   --snip--
+   Compiling rand v0.8.5
+   Compiling add_one v0.1.0 (file:///projects/add/add_one)
+warning: unused import: `rand`
+ --&gt; add_one/src/lib.rs:1:5
+  |
+1 | use rand;
+  |     ^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: `add_one` (lib) generated 1 warning (run `cargo fix --lib -p add_one` to apply 1 suggestion)
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.95s
+</code></pre>
+<p>Tá faisnéis sa <em>Cargo.lock</em> barrleibhéil anois faoi spleáchas na
+<code>add_one</code> ar <code>rand</code>. Mar sin féin, cé go n-úsáidtear <code>rand</code> áit éigin sa
+spás oibre, ní féidir linn é a úsáid i crates eile sa spás oibre mura gcuirimid leis
+<code>rand</code> chuig a gcuid comhad <em>Cargo.toml</em> freisin. Mar shampla, má chuirimid <code>use rand;</code> leis
+chuig an gcomhad <em>adder/src/main.rs</em> don phacáiste <code>adder</code>, gheobhaidh muid earráid:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/output-only-03-use-rand/add
+cargo build
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+<pre><code class="language-console">$ cargo build
+  --snip--
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+error[E0432]: unresolved import `rand`
+ --&gt; adder/src/main.rs:2:5
+  |
+2 | use rand;
+  |     ^^^^ no external crate `rand`
+</code></pre>
+<p>Chun é seo a shocrú, cuir an comhad <em>Cargo.toml</em> in eagar don phacáiste <code>adder</code> agus cuir in iúl
+go bhfuil <code>rand</code> ina spleáchas dó freisin. Déanfar an pacáiste <code>adder</code> a thógáil
+cuir <code>rand</code> leis an liosta spleáchais do <code>adder</code> in <em>Cargo.lock</em>, ach níl
+íoslódálfar cóipeanna breise de <code>rand</code>. Cinnteoidh Cargo go mbeidh gach
+cliathbhosca i ngach pacáiste sa spás oibre a bheidh in úsáid ag an bpacáiste <code>rand</code>
+an leagan céanna chomh fada agus a shonraíonn siad leaganacha comhoiriúnacha de <code>rand</code>, ag sábháil
+spás dúinn agus a chinntiú go mbeidh na crates sa spás oibre ag luí leis
+chéile.</p>
+<p>Má shonraíonn crates sa spás oibre leaganacha neamh-chomhoiriúnacha den spleáchas céanna,
+Réiteoidh Cargo gach ceann acu, ach déanfaidh sé iarracht fós gan ach cúpla leagan a réiteach
+agus is féidir.</p>
+<h4 id="tástáil-á-chur-le-spás-oibre"><a class="header" href="#tástáil-á-chur-le-spás-oibre">Tástáil á Chur le Spás Oibre</a></h4>
+<p>Le feabhsú eile, cuirimis tástáil ar an bhfeidhm <code>add_one::add_one</code> laistigh den crate <code>add_one</code>:</p>
+<p><span class="filename">Filename: add_one/src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">pub fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        assert_eq!(3, add_one(2));
+    }
+}</code></pre>
+<p>Anois reáchtáil <code>cargo test</code> san eolaire <em>add</em> barrleibhéil. Rith <code>cargo test</code> isteach
+reáchtálfar spás oibre struchtúrtha mar seo na trialacha do na crates ar fad i
+an spás oibre:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
+cargo test
+copy output below; the output updating script doesn't handle subdirectories in
+paths properly
+-->
+<pre><code class="language-console">$ cargo test
+   Compiling add_one v0.1.0 (file:///projects/add/add_one)
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.20s
+     Running unittests src/lib.rs (target/debug/deps/add_one-f0253159197f7841)
+
+running 1 test
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/adder-49979ff40686fa8e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests add_one
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+</code></pre>
+<p>Léiríonn an chéad chuid den aschur go bhfuil an tástáil <code>it_works</code> sa <code>add_one</code>
+cliathbhosca a rith. Léiríonn an chéad chuid eile nach bhfuarthas tástálacha nialais sa <code>adder</code>
+gcliathbhosca, agus ansin taispeánann an t-alt deireanach náid tástálacha doiciméadú a fuarthas i
+an gcliathbhosca <code>add_one</code>.</p>
+<p>Is féidir linn tástálacha a reáchtáil freisin le haghaidh cliathbhosca ar leith amháin i spás oibre ón
+eolaire barrleibhéil tríd an mbratach <code>-p</code> a úsáid agus ainm an chliabháin a shonrú
+ba mhaith linn tástáil a dhéanamh:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
+cargo test -p add_one
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+<pre><code class="language-console">$ cargo test -p add_one
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/add_one-b3235fea9a156f74)
+
+running 1 test
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests add_one
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+</code></pre>
+<p>Léiríonn an t-aschur seo nach ndearna <code>cargo test</code> ach na tástálacha don crate <code>add_one</code>  agus
+níor rith na tástálacha crate <code>adder</code>.</p>
+<p>Má fhoilsíonn tú na crates sa spás oibre chuig <a href="https://crates.io/">crates.io</a>,
+ní mór gach cliathbhosca sa spás oibre a fhoilsiú ar leithligh. Cosúil le <code>cargo test</code>, is féidir linn cliathbhosca ar leith a fhoilsiú inár spás oibre trí úsáid a bhaint as an <code>-p</code>
+bratach agus ag sonrú ainm an chliathbhosca ba mhaith linn a fhoilsiú.</p>
+<p>Chun cleachtadh breise a fháil, cuir crate <code>cuir_two</code> leis an spás oibre seo i gceann cosúil leis
+mar an crate <code>add_one</code>!</p>
+<p>De réir mar a fhásann do thionscadal, smaoinigh ar spás oibre a úsáid: is fusa é a thuiscint
+comhpháirteanna aonair níos lú ná blob mór cód. Ina theannta sin, a choinneáil
+is féidir leis na crates i spás oibre comhordú idir crates a dhéanamh níos éasca má bhíonn siad
+a athrú go minic ag an am céanna.</p>
 
                     </main>
 

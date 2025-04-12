@@ -159,7 +159,452 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="publishing-a-crate-to-cratesio"><a class="header" href="#publishing-a-crate-to-cratesio">Publishing a Crate to Crates.io</a></h1>
+                        <h2 id="foilsitheoireacht-crate-go-cratesio"><a class="header" href="#foilsitheoireacht-crate-go-cratesio">Foilsitheoireacht Crate go Crates.io</a></h2>
+<p>D'úsáideamar pacáistí ó <a href="https://crates.io/">crates.io</a> <!-- neamhaird --> mar
+spleáchais ár dtionscadal, ach is féidir leat do chód a roinnt le daoine eile freisin
+trí do phacáistí féin a fhoilsiú. Clárlann na gcliathbhosca ag
+<a href="https://crates.io/">crates.io</a> <!-- neamhaird --> dáileann an cód foinse
+do phacáistí, mar sin go príomha óstálann sé cód foinse oscailte.</p>
+<p>Tá gnéithe ag Rust and Cargo a dhéanann do phacáiste foilsithe níos éasca do dhaoine
+a aimsiú agus a úsáid. Labhróimid faoi chuid de na gnéithe seo ina dhiaidh sin agus míneoimid ansin
+conas pacáiste a fhoilsiú.</p>
+<h3 id="tráchtanna-doiciméadúcháin-Úsáideacha-a-dhéanamh"><a class="header" href="#tráchtanna-doiciméadúcháin-Úsáideacha-a-dhéanamh">Tráchtanna Doiciméadúcháin Úsáideacha a Dhéanamh</a></h3>
+<p>Má dhéantar do phacáistí a dhoiciméadú go cruinn cabhróidh sé seo le húsáideoirí eile a bheith ar an eolas faoi conas agus cathain
+iad a úsáid, mar sin is fiú an t-am a infheistiú chun doiciméid a scríobh. I gCaibidil
+3, phléamar conas trácht a dhéanamh ar chód meirge ag baint úsáide as dhá slais, <code>//</code>. Tá meirge freisin
+trácht de chineál ar leith maidir le doiciméadú, ar a dtugtar go caothúil a
+<em>documentation comment</em>, a ghinfidh doiciméadú HTML. An HTML
+taispeánann sé an t-ábhar tuairimí doiciméadú le haghaidh míreanna API poiblí atá beartaithe
+do ríomhchláraitheoirí a bhfuil suim acu fios a bheith agat conas do chliabhán a <em>úsáid</em> seachas conas
+tá do chliabhán <em>curtha i bhfeidhm</em>.</p>
+<p>Úsáideann tuairimí doiciméadaithe trí shlis, <code>///</code>, in ionad dhá cheann agus tacaíocht
+Nodaireacht marcáil síos chun an téacs a fhormáidiú. Cuir tuairimí doiciméadaithe díreach
+roimh an mír atá á dhoiciméadú acu. Léiríonn liostú 14-1 tuairimí doiciméadachta
+le haghaidh feidhm <code>add_one</code> i gcliathbhosca darb ainm <code>my_crate</code>.</p>
+<Listing number="14-1" file-name="src/lib.rs" caption="A documentation comment for a function">
+<pre><code class="language-rust ignore">/// Adds one to the number given.
+///
+/// # Examples
+///
+/// ```
+/// let arg = 5;
+/// let answer = my_crate::add_one(arg);
+///
+/// assert_eq!(6, answer);
+/// ```
+pub fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}</code></pre>
+</Listing>
+<p>Anseo, tugaimid cur síos ar cad a dhéanann an fheidhm <code>add_one</code>, tús a
+alt leis an gceannteideal <code>Examples</code>, agus ansin cuir cód ar fáil a thaispeánann
+conas an fheidhm <code>add_one</code> a úsáid. Is féidir linn na doiciméid HTML a ghiniúint ó
+tráchtann an doiciméadú seo trí <code>cargo doc</code> a rith. Ritheann an t-ordú seo an
+uirlis <code>rustdoc</code> a dháiltear le Rust agus cuireann sé an doiciméadú HTML ginte
+san eolaire <em>target/doc</em>.</p>
+<p>Ar mhaithe le caoithiúlacht, tógfar HTML do do chuid nuair a ritheann tú <code>cargo doc --open</code>'
+doiciméid reatha an chliabháin (chomh maith leis na doiciméid le haghaidh do chuid
+spleáchais an chliabháin) agus oscail an toradh i mbrabhsálaí gréasáin. Déan nascleanúint go dtí an
+feidhm <code>add_one</code> agus feicfidh tú conas atá an téacs sna tuairimí doiciméadachta
+rindreáilte, mar a thaispeántar i bhFíor 14-1:</p>
+<img alt="Rendered HTML documentation for the `add_one` function of `my_crate`" src="img/trpl14-01.png" class="center" />
+<p><span class="caption">Fíor 14-1: Doiciméadúchán HTML don <code>add_one</code>
+feidhm</span></p>
+<h4 id="rannóga-a-Úsáidtear-go-coitianta"><a class="header" href="#rannóga-a-Úsáidtear-go-coitianta">Rannóga a Úsáidtear go Coitianta</a></h4>
+<p>D’úsáideamar an ceannteideal Markdown <code># Examples</code> i Liostú 14-1 chun roinn a chruthú
+sa HTML leis an teideal "Examples." Seo a leanas roinnt ailt eile a cliathbhoscaí
+úsáideann údair go coitianta ina gcuid doiciméad:</p>
+<ul>
+<li><strong>Panics</strong>: Na cásanna ina bhféadfadh an fheidhm atá á doiciméadú
+scaoll. Ba cheart do ghlaoiteoirí na feidhme nach dteastaíonn uathu a gcláir scaoll
+déan cinnte nach dtugann siad an fheidhm sna cásanna seo.</li>
+<li><strong>Earráidí</strong>: Má thugann an fheidhm <code>Result</code> ar ais, ag cur síos ar na cineálacha
+earráidí a d’fhéadfadh tarlú agus cad iad na coinníollacha a d’fhéadfadh a bheith ina gcúis leis na hearráidí sin
+d'fhéadfadh sé a bheith cabhrach do ghlaoiteoirí ionas gur féidir leo cód a scríobh chun an
+cineálacha éagsúla earráidí ar bhealaí éagsúla.</li>
+<li><strong>Sábháilteacht</strong>: Má tá an fheidhm 'neamhshábháilte' le glaoch (pléimid neamhshábháilteacht i
+Caibidil 20), ba chóir go mbeadh alt ann a mhíníonn cén fáth a bhfuil an fheidhm neamhshábháilte
+agus ag clúdach na malairtí a bhfuil an fheidhm ag súil go seasfaidh glaoiteoirí leo.</li>
+</ul>
+<p>Ní bhíonn na hailt seo go léir ag teastáil ó fhormhór na dtuairimí doiciméadaithe, ach is a
+seicliosta maith chun na gnéithe de do chuid úsáideoirí cód a chur i gcuimhne duit
+suim acu eolas a fháil faoi.</p>
+<h4 id="tuairimí-doiciméadúcháin-mar-thrialacha"><a class="header" href="#tuairimí-doiciméadúcháin-mar-thrialacha">Tuairimí Doiciméadúcháin mar Thrialacha</a></h4>
+<p>Is féidir cabhrú le bloic shamplacha de chóid a chur i do thuairimí doiciméadaithe a léiriú
+conas do leabharlann a úsáid, agus tá bónas breise ag baint leis sin: ag rith <code>cargo test</code> reáchtálfar na samplaí cód i do dhoiciméadú mar thástálacha! Ní dhéanfaidh aon ní
+níos fearr ná doiciméadú le samplaí. Ach níl aon rud níos measa ná samplaí
+nach n-oibríonn toisc go bhfuil an cód athraithe ó bhí an doiciméadú
+scríofa. Má rithimid <code>cargo test</code> leis na doiciméid don <code>add_one</code>
+fheidhm ó Liostú 14-1, feicfimid roinn sna torthaí tástála mar seo:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/listing-14-01/
+cargo test
+copy just the doc-tests section below
+-->
+<pre><code class="language-text">   Doc-tests my_crate
+
+running 1 test
+test src/lib.rs - add_one (line 5) ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s
+</code></pre>
+<p>Anois má athraíonn muid an fheidhm nó an sampla mar sin beidh an <code>assert_eq!</code> sa
+mar shampla scaoll agus rith <code>cargo test</code> arís, feicfidh muid go nglacann na tástálacha doc
+go bhfuil an sampla agus an cód as info lena chéile!</p>
+<h4 id="ag-trácht-ar-mhíreanna-cuimsithe"><a class="header" href="#ag-trácht-ar-mhíreanna-cuimsithe">Ag Trácht ar Mhíreanna Cuimsithe</a></h4>
+<p>Cuireann an stíl doc comment <code>//!</code> doiciméadú leis an mír ina bhfuil an
+tuairimí seachas na míreanna a leanann na tuairimí. Úsáidimid de ghnáth
+na tuairimí doc seo taobh istigh den fhréamhchomhad cliathbhosca (<em>src/lib.rs</em> de réir an ghnáis) nó
+taobh istigh de mhodúl chun an gcliathbhosca nó an modúl ina iomláine a dhoiciméadú.</p>
+<p>Mar shampla, doiciméadú a chur leis a chuireann síos ar chuspóir an <code>my_crate</code>
+cliathbhosca ina bhfuil an fheidhm <code>add_one</code>, cuirimid tuairimí doiciméadaithe leis sin
+tosú le <code>//!</code> go dtí tús an chomhaid <em>src/lib.rs</em>, mar a thaispeántar i Liostú
+14-2:</p>
+<Listing number="14-2" file-name="src/lib.rs" caption="Documentation for the `my_crate` crate as a whole">
+<pre><code class="language-rust ignore">//! # My Crate
+//!
+//! `my_crate` is a collection of utilities to make performing certain
+//! calculations more convenient.
+
+/// Adds one to the number given.
+// --snip--
+<span class="boring">///
+</span><span class="boring">/// # Examples
+</span><span class="boring">///
+</span><span class="boring">/// ```
+</span><span class="boring">/// let arg = 5;
+</span><span class="boring">/// let answer = my_crate::add_one(arg);
+</span><span class="boring">///
+</span><span class="boring">/// assert_eq!(6, answer);
+</span><span class="boring">/// ```
+</span><span class="boring">pub fn add_one(x: i32) -&gt; i32 {
+</span><span class="boring">    x + 1
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Tabhair faoi deara nach bhfuil aon chód tar éis na líne deiridh a thosaíonn le <code>//!</code>. Toisc
+chuireamar tús leis na tuairimí le <code>//!</code> in ionad <code>///</code>, táimid ag doiciméadú na míre
+ina bhfuil an trácht seo seachas mír a leanann an nóta tráchta seo. I
+sa chás seo, is é an mhír sin an comhad <em>src/lib.rs</em>, arb é fréamh an chliabháin é. iad seo
+cuireann tuairimí síos ar an gcliathbhosca iomlán.</p>
+<p>Nuair a rithimid <code>cargo doc --open</code>, taispeánfar na tuairimí seo ar an tosach
+leathanach den cháipéisíocht le haghaidh <code>my_crate</code> os cionn liosta na míreanna poiblí sa
+cliathbhosca, mar a thaispeántar i bhFíor 14-2:</p>
+<img alt="Cáipéisíocht HTML soláthraithe le nóta tráchta don chliathán ina iomláine" src="img/trpl14-02.png" class="center" />
+<p><span class="caption">Fíor 14-2: Doiciméadú rindreáilte do <code>my_crate</code>,
+lena n-áirítear an trácht a dhéanann cur síos ar an gcliathbhosca ina iomláine</span></p>
+<p>Tá tuairimí doiciméadúcháin laistigh de mhíreanna úsáideach chun cur síos a dhéanamh ar chliabháin agus
+modúil go háirithe. Úsáid iad le cuspóir iomlán an choimeádáin a mhíniú
+cabhrú le do chuid úsáideoirí eagraíocht an chliabháin a thuiscint.</p>
+<h3 id="api-Áisiúil-poiblí-á-heaspórtáil-le-pub-use"><a class="header" href="#api-Áisiúil-poiblí-á-heaspórtáil-le-pub-use">API Áisiúil Poiblí á heaspórtáil le <code>pub use</code></a></h3>
+<p>Is mór an breithniú é struchtúr d’API poiblí agus tú ag foilsiú a
+cliathbhosca. Is lú an eolas atá ag daoine a úsáideann do chliabhán ar an struchtúr ná mar atá tú féin
+Tá agus b'fhéidir go mbeadh deacracht acu na píosaí is mian leo a úsáid a fháil má tá do chliabhán
+tá ordlathas mór modúl aige.</p>
+<p>I gCaibidil 7, chlúdaíomar conas míreanna a phoibliú ag baint úsáide as an eochairfhocal <code>pub</code>, agus
+míreanna a thabhairt isteach i scóip leis an eochairfhocal <code>use</code>. Mar sin féin, an struchtúr a
+a dhéanann ciall duit agus tú ag forbairt cliathbhosca seans nach mbeadh sé an-áisiúil
+do d'úsáideoirí. B'fhéidir gur mhaith leat do struchtúir a eagrú in ordlathas
+ina bhfuil leibhéil iolracha, ach ansin daoine atá ag iarraidh cineál atá agat a úsáid
+sainmhínithe go domhain san ordlathas d'fhéadfadh sé go mbeadh deacracht ag fáil amach go bhfuil cineál ann.
+D'fhéadfadh sé go mbeadh siad buartha freisin go mbeadh orthu <code>use</code> a chur isteach
+<code>my_crate::some_module::another_module::UsefulType;</code>  seachas <code>use</code>
+<code>my_crate::UsefulType;</code>.</p>
+<p>Is é an dea-scéal ná mura bhfuil an struchtúr áisiúil do dhaoine eile a úsáid
+ó leabharlann eile, ní gá duit d’eagraíocht inmheánach a atheagrú:
+ina ionad sin, is féidir leat míreanna a ath-onnmhairiú chun struchtúr poiblí éagsúil a dhéanamh
+ó do struchtúr príobháideach trí úsáid a bhaint as <code>pub use</code>. Tógann ath-onnmhairiú poiblí
+mír in aon áit amháin agus cuireann sé go poiblí é in áit eile, amhail is dá mba
+sainithe sa suíomh eile ina ionad sin.</p>
+<p>Mar shampla, abair go ndearnamar leabharlann darb ainm <code>art</code> chun coincheapa ealaíne a shamhaltú.
+Laistigh den leabharlann seo tá dhá mhodúl: modúl <code>kinds</code> ina bhfuil dhá enum
+darb ainm <code>PrimaryColor</code> agus <code>SecondaryColor</code> agus modúl <code>utils</code> ina bhfuil a
+feidhm darb ainm <code>mix</code>, mar a thaispeántar i Liostú 14-3:</p>
+<Listing number="14-3" file-name="src/lib.rs" caption="Leabharlann `art` le míreanna eagraithe i modúil `kinds` agus `utils`">
+<pre><code class="language-rust noplayground test_harness">//! # Art
+//!
+//! A library for modeling artistic concepts.
+
+pub mod kinds {
+    /// The primary colors according to the RYB color model.
+    pub enum PrimaryColor {
+        Red,
+        Yellow,
+        Blue,
+    }
+
+    /// The secondary colors according to the RYB color model.
+    pub enum SecondaryColor {
+        Orange,
+        Green,
+        Purple,
+    }
+}
+
+pub mod utils {
+    use crate::kinds::*;
+
+    /// Combines two primary colors in equal amounts to create
+    /// a secondary color.
+    pub fn mix(c1: PrimaryColor, c2: PrimaryColor) -&gt; SecondaryColor {
+        // --snip--
+<span class="boring">        unimplemented!();
+</span>    }
+}</code></pre>
+</Listing>
+<p>Léiríonn Fíor 14-3 cad é an leathanach tosaigh de na doiciméid don chliathbhosca seo
+ghintear le <code>cargo doc</code> cuma:</p>
+<img alt="Cáipéisíocht rindreáilte don chliathán `art` a liostaíonn na modúil `kinds` agus `utils`" src="img/trpl14-03.png" class="center" />
+<p><span class="caption">Fíor 14-3: Leathanach tosaigh na doiciméid le haghaidh <code>art</code>
+a liostaíonn na modúil <code>kinds</code> agus <code>utils</code></span></p>
+<p>Tabhair faoi deara nach bhfuil na cineálacha <code>PrimaryColor</code> agus <code>SecondaryColor</code> liostaithe ar an
+leathanach tosaigh, ná an fheidhm <code>mix</code>. Ní mór dúinn <code>kinds</code> agus <code>utils</code> a chliceáil chun
+iad a fheiceáil.</p>
+<p>Teastaíonn ráitis <code>use</code> ar chliathbhosca eile a bhraitheann ar an leabharlann seo
+na míreanna ó <code>art</code> a thabhairt isteach sa scóip, ag sonrú struchtúr an mhodúil sin
+sainithe faoi láthair. Taispeánann liosta 14-4 sampla de chliabhán a úsáideann an
+<code>PrimaryColor</code> agus <code>mix</code> míreanna ón gcliathbhosca <code>art</code>:</p>
+<Listing number="14-4" file-name="src/main.rs" caption="Cliathbhosca ag baint úsáide as míreanna an chliabháin `art` agus a struchtúr inmheánach easpórtáilte">
+<pre><code class="language-rust ignore">use art::kinds::PrimaryColor;
+use art::utils::mix;
+
+fn main() {
+    let red = PrimaryColor::Red;
+    let yellow = PrimaryColor::Yellow;
+    mix(red, yellow);
+}</code></pre>
+</Listing>
+<p>B'éigean d'údar an chóid i Liostú 14-4, a úsáideann an cliathbhosca <code>art</code>
+déan amach go bhfuil <code>PrimaryColor</code> sa mhodúl <code>kinds</code> agus go bhfuil <code>mix</code> sa mhodúl
+modúl <code>utils</code>. Tá struchtúr modúil an chliathbhosca <code>art</code> níos ábhartha do
+forbróirí atá ag obair ar an gcliathbhosca <code>art</code> ná dóibh siúd a úsáideann é. An inmheánach
+níl aon fhaisnéis úsáideach sa struchtúr do dhuine atá ag iarraidh
+tuiscint a fháil ar conas an cliathbhosca <code>art</code> a úsáid, ach is cúis le mearbhall mar gheall ar
+ní mór d'fhorbróirí a úsáideann é a dhéanamh amach cá háit le breathnú, agus ní mór dóibh an
+ainmneacha modúil sna ráitis <code>use</code>.</p>
+<p>Chun an eagraíocht inmheánach a bhaint den API poiblí, is féidir linn an
+cód cliathbhosca <code>art</code> i Liostú 14-3 chun ráitis <code>pub use</code> a chur leis chun an
+míreanna ar an leibhéal is airde, mar a thaispeántar i Liostú 14-5:</p>
+<Listing number="14-5" file-name="src/lib.rs" caption="Ag cur ráitis `úsáid tí tábhairne` chun míreanna a athonnmhairiú">
+<pre><code class="language-rust ignore">//! # Art
+//!
+//! A library for modeling artistic concepts.
+
+pub use self::kinds::PrimaryColor;
+pub use self::kinds::SecondaryColor;
+pub use self::utils::mix;
+
+pub mod kinds {
+    // --snip--
+<span class="boring">    /// The primary colors according to the RYB color model.
+</span><span class="boring">    pub enum PrimaryColor {
+</span><span class="boring">        Red,
+</span><span class="boring">        Yellow,
+</span><span class="boring">        Blue,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    /// The secondary colors according to the RYB color model.
+</span><span class="boring">    pub enum SecondaryColor {
+</span><span class="boring">        Orange,
+</span><span class="boring">        Green,
+</span><span class="boring">        Purple,
+</span><span class="boring">    }
+</span>}
+
+pub mod utils {
+    // --snip--
+<span class="boring">    use crate::kinds::*;
+</span><span class="boring">
+</span><span class="boring">    /// Combines two primary colors in equal amounts to create
+</span><span class="boring">    /// a secondary color.
+</span><span class="boring">    pub fn mix(c1: PrimaryColor, c2: PrimaryColor) -&gt; SecondaryColor {
+</span><span class="boring">        SecondaryColor::Orange
+</span><span class="boring">    }
+</span>}</code></pre>
+</Listing>
+<p>Liostálfar anois na doiciméid API a ghineann <code>cargo doc</code> don chliathbhosca seo
+agus nasc ath-onnmhairí ar an leathanach tosaigh, mar a thaispeántar i bhFíor 14-4, ag déanamh an
+Cineálacha <code>PrimaryColor</code> agus <code>SecondaryColor</code> agus is fusa teacht ar an bhfeidhm <code>mix</code>.</p>
+<img alt="Cáipéisíocht rindreáilte don chliathán `art` leis na hathonnmhairí ar an leathanach tosaigh" src="img/trpl14-04.png" class="center" />
+<p><span class="caption">Fíor 14-4: Leathanach tosaigh an doiciméid le haghaidh <code>art</code>
+a liostaíonn na hathonnmhairí</span></p>
+<p>Is féidir leis an gcliathbhosca <code>art</code> fós an struchtúr inmheánach ó Liostú a fheiceáil agus a úsáid
+14-3 mar a léirítear i Liosta 14-4, nó is féidir leo an ceann is áisiúla a úsáid
+struchtúr i Liostú 14-5, mar a thaispeántar i Liostú 14-6:</p>
+<Listing number="14-6" file-name="src/main.rs" caption="Clár a úsáideann na míreanna ath-onnmhairithe ón gcliathbhosca `art`">
+<pre><code class="language-rust ignore">use art::mix;
+use art::PrimaryColor;
+
+fn main() {
+    // --snip--
+<span class="boring">    let red = PrimaryColor::Red;
+</span><span class="boring">    let yellow = PrimaryColor::Yellow;
+</span><span class="boring">    mix(red, yellow);
+</span>}</code></pre>
+</Listing>
+<p>I gcásanna ina bhfuil go leor modúil neadaithe, ath-onnmhairiú na cineálacha ag an mbarr
+leibhéal le <code>pub use</code> difríocht shuntasach a dhéanamh i dtaithí na
+daoine a bhaineann úsáid as an gcliathbhosca. Úsáid choitianta eile a bhaintear as <code>pub use</code> is ea ath-onnmhairiú
+sainmhínithe ar spleáchas sa chliathbhosca reatha chun na cliathbhoscaí sin a dhéanamh
+sainmhínithe mar chuid de API poiblí do chliabhán.</p>
+<p>Is ealaín níos mó ná eolaíocht é struchtúr API poiblí úsáideach a chruthú, agus
+is féidir leat athrá chun an API is fearr a oibríonn do d’úsáideoirí a aimsiú. Ag roghnú <code>pub use</code> solúbthacht duit maidir leis an gcaoi a struchtúraíonn tú do chliabhán go hinmheánach agus
+díchúpláil an struchtúr inmheánach sin ón méid a chuireann tú i láthair d’úsáideoirí. Féach ar
+cuid den chód cliathbhoscaí atá suiteáilte agat féachaint an bhfuil a struchtúr inmheánach
+difriúil óna API poiblí.</p>
+<h3 id="cuntas-cratesio-a-bhunú"><a class="header" href="#cuntas-cratesio-a-bhunú">Cuntas Crates.io a Bhunú</a></h3>
+<p>Sular féidir leat cliathbhoscaí ar bith a fhoilsiú, ní mór duit cuntas a chruthú ar
+<a href="https://crates.io/">crates.io</a> <!-- neamhaird --> agus faigh comhartha API. Chun é sin a dhéanamh,
+tabhair cuairt ar an leathanach baile ag <a href="https://crates.io/">crates.io</a> <!-- neamhaird --> agus logáil isteach
+isteach trí chuntas GitHub. (Tá an cuntas GitHub ina riachtanas faoi láthair, ach
+seans go dtacódh an suíomh le bealaí eile chun cuntas a chruthú amach anseo.) Uair amháin
+tá tú logáilte isteach, tabhair cuairt ar do shocruithe cuntais ag
+<a href="https://crates.io/me/">https://crates.io/me/</a> <!-- neamhaird --> agus faigh ar ais do
+Eochair API. Ansin rith an t-ordú <code>cargo login</code> agus greamaigh d'eochair API nuair a iarrtar ort é, mar seo:</p>
+<pre><code class="language-console">$ cargo login
+abcdefghijklmnopqrstuvwxyz012345
+</code></pre>
+<p>Cuirfidh an t-ordú seo in iúl do cargo faoi do chomhartha API agus stórálfar isteach go háitiúil é
+~/.cargo/credentials. Tabhair faoi deara gur <em>secret</em> é an comhartha seo: ná roinn é
+le haon duine eile. Má roinneann tú é le duine ar bith ar chúis ar bith, ba cheart duit
+é a chúlghairm agus giniúint comhartha nua ar <a href="https://crates.io/">crates.io</a><!-- neamhaird
+-->.</p>
+<h3 id="meiteashonraí-á-gcur-le-cliathbhosca-nua"><a class="header" href="#meiteashonraí-á-gcur-le-cliathbhosca-nua">Meiteashonraí á gcur le cliathbhosca Nua</a></h3>
+<p>Ligean le rá go bhfuil cliathbhosca agat is mian leat a fhoilsiú. Roimh fhoilsiú, beidh ort
+roinnt meiteashonraí a chur leis sa rannán <code>[package]</code> de <em>Cargo.toml</em> an chliathbhosca
+comhad.</p>
+<p>Beidh ainm uathúil ag teastáil ó do chliabhán. Agus tú ag obair ar chliabhán go háitiúil,
+is féidir leat cliathbhosca a ainmniú cibé rud is mian leat. Mar sin féin, ainmneacha cliathbhoscaí ar
+<a href="https://crates.io/">crates.io</a><!-- neamhaird --> a leithdháileadh ar an gcéad teacht,
+bonn freastail ar an gcéad dul síos. Nuair a ghlactar ainm cliathbhosca, ní féidir le haon duine eile cliathbhosca a fhoilsiú
+leis an ainm sin. Sula ndéanann tú iarracht cliathbhosca a fhoilsiú, cuardaigh an t-ainm atá ort
+ag iarraidh a úsáid. Má úsáideadh an t-ainm, beidh ort ainm eile a aimsiú agus
+cuir an réimse <code>name</code> in eagar sa chomhad <em>Cargo.toml</em> faoin rannán <code>[package]</code> go
+úsáid an t-ainm nua le haghaidh foilsitheoireachta, mar sin:</p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
+<pre><code class="language-toml">[package]
+name = "guessing_game"
+</code></pre>
+<p>Fiú má tá ainm ar leith roghnaithe agat, nuair a ritheann tú ‘cargo publish’ le foilsiú
+an cliathbhosca ag an bpointe seo, gheobhaidh tú rabhadh agus ansin earráid:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/listing-14-01/
+cargo publish
+copy just the relevant lines below
+-->
+<pre><code class="language-console">$ cargo publish
+    Updating crates.io index
+warning: manifest has no description, license, license-file, documentation, homepage or repository.
+See https://doc.rust-lang.org/cargo/reference/manifest.html#package-metadata for more info.
+--snip--
+error: failed to publish to registry at https://crates.io
+
+Caused by:
+  the remote server responded with an error (status 400 Bad Request): missing or empty metadata fields: description, license. Please see https://doc.rust-lang.org/cargo/reference/manifest.html for more information on configuring these field
+</code></pre>
+<p>Earraíonn sé seo toisc go bhfuil roinnt faisnéise ríthábhachtach in easnamh ort: cur síos agus
+tá ceadúnas ag teastáil le go mbeidh a fhios ag daoine cad a dhéanann do chliabhán agus faoina bhfuil
+téarmaí is féidir leo é a úsáid. In <em>Cargo.toml</em>, cuir cur síos nach bhfuil ann ach a
+abairt nó dhó, mar go mbeidh sé le feiceáil le do chliabhán sna torthaí cuardaigh. Le haghaidh
+sa réimse <code>license</code>, ní mór duit luach aitheantóra <em>cheadúnas</em> a thabhairt. Tá an <a href="http://spdx.org/licenses/">Linux
+Liostaíonn Malartú Sonraí Pacáiste Bogearraí an Fhorais (SPDX)</a> na haitheantóirí
+is féidir leat é a úsáid don luach seo. Mar shampla, a shonrú go bhfuil do cheadúnas agat
+cliathbhosca ag baint úsáide as an gCeadúnas MIT, cuir an t-aitheantóir <code>MIT</code> leis:</p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
+<pre><code class="language-toml">[package]
+name = "guessing_game"
+license = "MIT"
+</code></pre>
+<p>Más mian leat ceadúnas a úsáid nach bhfuil le feiceáil sa SPDX, ní mór duit é a chur
+téacs an cheadúnais sin i gcomhad, cuir an comhad san áireamh i do thionscadal, agus ansin
+úsáid <code>license-file</code> chun ainm an chomhaid sin a shonrú in ionad an comhad ceadúnais a úsáid
+eochair <code>license</code>.</p>
+<p>Tá treoir maidir le cén ceadúnas atá oiriúnach do do thionscadal thar an raon feidhme
+den leabhar seo. Ceadaíonn go leor daoine sa phobal Rust a gcuid tionscadal sa
+ar an mbealach céanna le Rust trí úsáid a bhaint as ceadúnas dé de <code>MIT OR Apache-2.0</code>. An cleachtas seo
+léiríonn sé gur féidir leat a shonrú freisin aitheantóirí ceadúnais iolrach scartha
+ag <code>OR</code> chun ceadúnais iolracha a bheith agat do do thionscadal.</p>
+<p>Le hainm uathúil, an leagan, do chur síos, agus ceadúnas curtha leis, beidh an
+Seans go mbeidh cuma mar seo ar chomhad <em>Cargo.toml</em> do thionscadal atá réidh le foilsiú:</p>
+<p><span class="filename">Filename: Cargo.toml</span></p>
+<pre><code class="language-toml">[package]
+name = "guessing_game"
+version = "0.1.0"
+edition = "2021"
+description = "A fun game where you guess what number the computer has chosen."
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+</code></pre>
+<p>Déanann <a href="https://doc.rust-lang.org/cargo/">doiciméadú cargo</a> cur síos ar cheann eile
+meiteashonraí is féidir leat a shonrú chun a chinntiú gur féidir le daoine eile do chliabhán a aimsiú agus a úsáid níos mó
+go héasca.</p>
+<h3 id="foilsitheoireacht-chuig-cratesio"><a class="header" href="#foilsitheoireacht-chuig-cratesio">Foilsitheoireacht chuig Crates.io</a></h3>
+<p>Anois go bhfuil cuntas cruthaithe agat, shábháil tú do chomhartha API, roghnaigh tú ainm dó
+do chliabhán, agus na meiteashonraí riachtanacha sonraithe agat, tá tú réidh le foilsiú!
+Uaslódálann foilsiú cliathbhosca leagan ar leith go
+<a href="https://crates.io/">crates.io</a> <!-- neamhaird --> le húsáid ag daoine eile.</p>
+<p>Bí cúramach, mar tá foilsiú <em>buan</em>. Ní féidir leis an leagan a bheith riamh
+forscríofa, agus ní féidir an cód a scriosadh. Príomhsprioc amháin de
+<a href="https://crates.io/">crates.io</a> <!-- neamhaird --> chun feidhmiú mar chartlann bhuan
+de chód ionas go mbeidh tógáil de gach tionscadal atá ag brath ar cliathbhoscaí ó
+<a href="https://crates.io/">crates.io</a> <!-- neamhaird --> leanfaidh sé ag obair. Ag ceadú
+dá scriosfaí an leagan bheadh ​​sé dodhéanta an sprioc sin a chomhlíonadh. Mar sin féin, tá
+gan teorainn le líon na leaganacha cliathbhoscaí is féidir leat a fhoilsiú.</p>
+<p>Rith an t-ordú <code>cargo publish</code> arís. Ba cheart go n-éireodh leis anois:</p>
+<!-- manual-regeneration
+go to some valid crate, publish a new version
+cargo publish
+copy just the relevant lines below
+-->
+<pre><code class="language-console">$ cargo publish
+    Updating crates.io index
+   Packaging guessing_game v0.1.0 (file:///projects/guessing_game)
+   Verifying guessing_game v0.1.0 (file:///projects/guessing_game)
+   Compiling guessing_game v0.1.0
+(file:///projects/guessing_game/target/package/guessing_game-0.1.0)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.19s
+   Uploading guessing_game v0.1.0 (file:///projects/guessing_game)
+</code></pre>
+<p>Comhghairdeachas! Tá do chód roinnte agat anois le pobal Rust, agus
+is féidir le duine ar bith do chliabhán a chur leis go héasca mar spleáchas dá dtionscadal.</p>
+<h3 id="leagan-nua-de-chliathbhosca-reatha-a-fhoilsiú"><a class="header" href="#leagan-nua-de-chliathbhosca-reatha-a-fhoilsiú">Leagan Nua de Chliathbhosca Reatha a Fhoilsiú</a></h3>
+<p>Nuair a bheidh athruithe déanta agat ar do chliabhán agus tú réidh le leagan nua a scaoileadh,
+athraíonn tú an luach <code>version</code> atá sonraithe i do chomhad <em>Cargo.toml</em> agus
+athfhoilsiú. Bain úsáid as na <a href="http://semver.org/">rialacha maidir le Leagan Séimeantach</a> le socrú cad is
+tá uimhir chuí an chéad leagain eile bunaithe ar na cineálacha athruithe atá déanta agat.
+Ansin rith <code>cargo publish</code> chun an leagan nua a uaslódáil.</p>
+<!-- Seannasc, ná bain -->
+<p><a id="removing-versions-from-cratesio-with-cargo-yank"></a></p>
+<h3 id="leaganacha-á-dtarraingt-siar-ó-cratesio-le-cargo-yank"><a class="header" href="#leaganacha-á-dtarraingt-siar-ó-cratesio-le-cargo-yank">Leaganacha á dtarraingt siar ó Crates.io le <code>cargo yank</code></a></h3>
+<p>Cé nach féidir leat leaganacha roimhe seo de chliabhán a bhaint, is féidir leat aon cheann a chosc
+tionscadail amach anseo ó chur leo mar spleáchas nua. Tá sé seo úsáideach nuair a
+Tá leagan an gcliathbhosca briste ar chúis amháin nó ar chúis eile. I gcásanna den sórt sin, cargo
+tacaíonn <em>yanking</em> leagan gcliathbhosca.</p>
+<p>Cuireann Yanking a version cosc ​​ar thionscadail nua ó bheith ag brath ar an leagan sin fad a bheidh sé
+ag ligean do gach tionscadal reatha atá ag brath air leanúint ar aghaidh. Go bunúsach, a
+ciallaíonn yank nach bhriseadh gach tionscadal le <em>Cargo.lock</em>, agus aon todhchaí
+Ní bhainfidh comhaid <em>Cargo.lock</em> úsáid as an leagan yanked.</p>
+<p>Chun leagan de chliathbhosca a yancáil, in eolaire an chliathbhosca atá agat
+foilsithe roimhe seo, rith <code>cargo yank</code> agus sonraigh an leagan atá uait
+yanc. Mar shampla, má tá cliathbhosca darb ainm <code>guessing_game</code> foilsithe againn
+1.0.1 agus ba mhaith linn é a yank, san eolaire tionscadail do <code>guessing_game</code> ba mhaith linn
+rith:</p>
+<!-- manual-regeneration:
+cargo yank carol-test --version 2.1.0
+cargo yank carol-test --version 2.1.0 --undo
+-->
+<pre><code class="language-console">$ cargo yank --vers 1.0.1
+    Updating crates.io index
+        Yank guessing_game@1.0.1
+</code></pre>
+<p>Trí <code>--undo</code> a chur leis an ordú, is féidir leat yank a chealú agus tionscadail a cheadú
+chun tosú ag brath ar leagan arís:</p>
+<pre><code class="language-console">$ cargo yank --vers 1.0.1 --undo
+    Updating crates.io index
+      Unyank guessing_game@1.0.1
+</code></pre>
+<p>A yank <em>ní</em> scriosann sé cód ar bith. Ní féidir, mar shampla, é a scriosadh de thaisme
+rúin uaslódáilte. Má tharlaíonn sé sin, ní mór duit na rúin sin a athshocrú láithreach.</p>
 
                     </main>
 

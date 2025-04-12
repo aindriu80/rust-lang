@@ -16559,12 +16559,884 @@ Tá sé mar sprioc ag Rust a dhícheall a dhéanamh astarraingtí gan costas a s
 <p>Anois go bhfuil sainléiriú ár dtionscadal I/O feabhsaithe againn, féachaimis
 roinnt gnéithe níos mó de <code>cargo</code> a chabhróidh linn an tionscadal a roinnt leis an
 domhan.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="more-about-cargo-and-cratesio"><a class="header" href="#more-about-cargo-and-cratesio">More about Cargo and Crates.io</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="customizing-builds-with-release-profiles"><a class="header" href="#customizing-builds-with-release-profiles">Customizing Builds with Release Profiles</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="publishing-a-crate-to-cratesio"><a class="header" href="#publishing-a-crate-to-cratesio">Publishing a Crate to Crates.io</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="cargo-workspaces"><a class="header" href="#cargo-workspaces">Cargo Workspaces</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="installing-binaries-from-cratesio-with-cargo-install"><a class="header" href="#installing-binaries-from-cratesio-with-cargo-install">Installing Binaries from Crates.io with cargo install</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="extending-cargo-with-custom-commands"><a class="header" href="#extending-cargo-with-custom-commands">Extending Cargo with Custom Commands</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="tuilleadh-faoi-cargo-agus-cratesio"><a class="header" href="#tuilleadh-faoi-cargo-agus-cratesio">Tuilleadh Faoi Cargo agus Crates.io</a></h1>
+<p>Go dtí seo níor úsáideamar ach na gnéithe is bunúsaí de Cargo chun tógáil, rith agus tástáil
+ár gcód, ach is féidir leis i bhfad níos mó a dhéanamh. Sa chaibidil seo, pléifimid cuid dá cuid
+gnéithe eile níos airde chun a thaispeáint duit conas iad seo a leanas a dhéanamh:</p>
+<ul>
+<li>Saincheap do thógáil trí phróifílí scaoileadh</li>
+<li>Foilsigh leabharlanna ar <a href="https://crates.io/">crates.io</a> <!-- neamhaird --></li>
+<li>Eagraigh tionscadail mhóra le spásanna oibre</li>
+<li>Suiteáil binaries ó <a href="https://crates.io/">crates.io</a> <!-- neamhaird --></li>
+<li>Leathnaigh Lasta ag baint úsáide as orduithe saincheaptha</li>
+</ul>
+<p>Is féidir le Cargo níos mó a dhéanamh ná an fheidhmiúlacht a chlúdaíonn muid sa chaibidil seo, mar sin de
+míniú iomlán ar a chuid gnéithe go léir, féach <a href="https://doc.rust-lang.org/cargo/">a dhoiciméadú</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="tógann-saincheapadh-le-próifílí-eisiúna"><a class="header" href="#tógann-saincheapadh-le-próifílí-eisiúna">Tógann Saincheapadh le Próifílí Eisiúna</a></h2>
+<p>I Rust, tá próifílí <em>release</em> réamhshainithe agus próifílí inoiriúnaithe le
+cumraíochtaí éagsúla a ligeann do ríomhchláraitheoir níos mó smachta a bheith acu
+roghanna éagsúla chun cód a thiomsú. Tá gach próifíl cumraithe neamhspleách ar
+na cinn eile.</p>
+<p>Tá dhá phríomhphróifíl ag Cargo: an phróifíl <code>dev</code> a úsáideann Cargo nuair a ritheann tú <code>cargo build</code> agus an phróifíl <code>release</code> a úsáideann Cargo nuair a ritheann tú <code>cargo build --release</code>. Sainmhínítear an phróifíl <code>dev</code> le réamhshocruithe maithe le haghaidh forbartha,
+agus tá mainneachtainí maithe ag an bpróifíl <code>release</code> maidir le tógáil scaoileadh.</p>
+<p>Seans go bhfuil cur amach ar na hainmneacha próifíle seo ó aschur do chuid tógála:</p>
+<!-- athghiniúint de láimh
+áit ar bith, rith:
+tógáil lasta
+lasta a thógáil --scaoileadh
+agus a chinntiú go bhfuil an t-aschur thíos cruinn
+-->
+<pre><code class="language-console">$ cargo build
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
+$ cargo build --release
+    Finished `release` profile [optimized] target(s) in 0.32s
+</code></pre>
+<p>Is iad na <code>dev</code> agus <code>release</code> na próifílí éagsúla seo a úsáideann an tiomsaitheoir.</p>
+<p>Tá socruithe réamhshocraithe ag Cargo do gach ceann de na próifílí a bhíonn i bhfeidhm nuair nach bhfuil
+cuireadh aon rannáin <code>[profile.*]</code> isteach go sainráite i gcomhad <em>Cargo.toml</em> an tionscadail.
+Trí rannáin <code>[profile.*]</code> a chur isteach d'aon phróifíl is mian leat a shaincheapadh, ní mór duit
+aon fho-thacar de na socruithe réamhshocraithe a shárú. Mar shampla, anseo tá an réamhshocraithe
+luachanna don socrú <code>opt-level</code> do na próifílí <code>dev</code> agus <code>release</code>:</p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
+<pre><code class="language-toml">[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+</code></pre>
+<p>Rialaíonn an socrú <code>opt-level</code> líon na n-uasmhéaduithe a mbainfidh Rust leo
+do chód, le raon de 0 go 3. Síneann cur i bhfeidhm níos mó optimizations
+am a thiomsú, mar sin má tá tú ag forbairt agus ag tiomsú do chód go minic,
+beidh tú ag iarraidh níos lú optimizations a thiomsú níos tapúla fiú má tá an cód mar thoradh air
+ritheann níos moille. Mar sin is é <code>0</code> an <code>opt-level</code> réamhshocraithe do <code>dev</code>. Nuair atá tú
+réidh chun do chód a scaoileadh, is fearr níos mó ama a chaitheamh ag tiomsú. Beidh tú amháin
+tiomsaigh i mód eisithe uair amháin, ach reáchtálfaidh tú an clár tiomsaithe go minic,
+mar sin ceirdeanna modh scaoileadh níos faide ama a thiomsú le haghaidh cód a ritheann níos tapúla. Is é sin
+cén fáth gurb é <code>3</code> an <code>opt-level</code> réamhshocraithe don phróifíl <code>release</code>.</p>
+<p>Is féidir leat socrú réamhshocraithe a shárú trí luach difriúil a chur leis
+<em>Cargo.toml</em>. Mar shampla, más mian linn leas iomlán a bhaint as leibhéal 1 sa
+próifíl forbartha, is féidir linn an dá líne seo a chur le <em>Cargo.toml</em> ár dtionscadal
+comhad:</p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
+<pre><code class="language-toml">[profile.dev]
+opt-level = 1
+</code></pre>
+<p>Sáraíonn an cód seo an socrú réamhshocraithe <code>0</code>. Anois agus muid ag rith <code>cargo build</code>,
+Úsáidfidh Cargo na réamhshocruithe don phróifíl <code>dev</code> móide ár n-oiriúnú do
+<code>opt-level</code>. Toisc go bhfuil <code>opt-level</code> socraithe againn go <code>1</code>, beidh feidhm ag Cargo níos mó
+optimizations ná an réamhshocrú, ach ní oiread agus is i scaoileadh scaoileadh.</p>
+<p>Le haghaidh liosta iomlán na roghanna cumraíochta agus mainneachtainí do gach próifíl, féach
+<a href="https://doc.rust-lang.org/cargo/reference/profiles.html">Doiciméadú Cargo</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="foilsitheoireacht-crate-go-cratesio"><a class="header" href="#foilsitheoireacht-crate-go-cratesio">Foilsitheoireacht Crate go Crates.io</a></h2>
+<p>D'úsáideamar pacáistí ó <a href="https://crates.io/">crates.io</a> <!-- neamhaird --> mar
+spleáchais ár dtionscadal, ach is féidir leat do chód a roinnt le daoine eile freisin
+trí do phacáistí féin a fhoilsiú. Clárlann na gcliathbhosca ag
+<a href="https://crates.io/">crates.io</a> <!-- neamhaird --> dáileann an cód foinse
+do phacáistí, mar sin go príomha óstálann sé cód foinse oscailte.</p>
+<p>Tá gnéithe ag Rust and Cargo a dhéanann do phacáiste foilsithe níos éasca do dhaoine
+a aimsiú agus a úsáid. Labhróimid faoi chuid de na gnéithe seo ina dhiaidh sin agus míneoimid ansin
+conas pacáiste a fhoilsiú.</p>
+<h3 id="tráchtanna-doiciméadúcháin-Úsáideacha-a-dhéanamh"><a class="header" href="#tráchtanna-doiciméadúcháin-Úsáideacha-a-dhéanamh">Tráchtanna Doiciméadúcháin Úsáideacha a Dhéanamh</a></h3>
+<p>Má dhéantar do phacáistí a dhoiciméadú go cruinn cabhróidh sé seo le húsáideoirí eile a bheith ar an eolas faoi conas agus cathain
+iad a úsáid, mar sin is fiú an t-am a infheistiú chun doiciméid a scríobh. I gCaibidil
+3, phléamar conas trácht a dhéanamh ar chód meirge ag baint úsáide as dhá slais, <code>//</code>. Tá meirge freisin
+trácht de chineál ar leith maidir le doiciméadú, ar a dtugtar go caothúil a
+<em>documentation comment</em>, a ghinfidh doiciméadú HTML. An HTML
+taispeánann sé an t-ábhar tuairimí doiciméadú le haghaidh míreanna API poiblí atá beartaithe
+do ríomhchláraitheoirí a bhfuil suim acu fios a bheith agat conas do chliabhán a <em>úsáid</em> seachas conas
+tá do chliabhán <em>curtha i bhfeidhm</em>.</p>
+<p>Úsáideann tuairimí doiciméadaithe trí shlis, <code>///</code>, in ionad dhá cheann agus tacaíocht
+Nodaireacht marcáil síos chun an téacs a fhormáidiú. Cuir tuairimí doiciméadaithe díreach
+roimh an mír atá á dhoiciméadú acu. Léiríonn liostú 14-1 tuairimí doiciméadachta
+le haghaidh feidhm <code>add_one</code> i gcliathbhosca darb ainm <code>my_crate</code>.</p>
+<Listing number="14-1" file-name="src/lib.rs" caption="A documentation comment for a function">
+<pre><code class="language-rust ignore">/// Adds one to the number given.
+///
+/// # Examples
+///
+/// ```
+/// let arg = 5;
+/// let answer = my_crate::add_one(arg);
+///
+/// assert_eq!(6, answer);
+/// ```
+pub fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}</code></pre>
+</Listing>
+<p>Anseo, tugaimid cur síos ar cad a dhéanann an fheidhm <code>add_one</code>, tús a
+alt leis an gceannteideal <code>Examples</code>, agus ansin cuir cód ar fáil a thaispeánann
+conas an fheidhm <code>add_one</code> a úsáid. Is féidir linn na doiciméid HTML a ghiniúint ó
+tráchtann an doiciméadú seo trí <code>cargo doc</code> a rith. Ritheann an t-ordú seo an
+uirlis <code>rustdoc</code> a dháiltear le Rust agus cuireann sé an doiciméadú HTML ginte
+san eolaire <em>target/doc</em>.</p>
+<p>Ar mhaithe le caoithiúlacht, tógfar HTML do do chuid nuair a ritheann tú <code>cargo doc --open</code>'
+doiciméid reatha an chliabháin (chomh maith leis na doiciméid le haghaidh do chuid
+spleáchais an chliabháin) agus oscail an toradh i mbrabhsálaí gréasáin. Déan nascleanúint go dtí an
+feidhm <code>add_one</code> agus feicfidh tú conas atá an téacs sna tuairimí doiciméadachta
+rindreáilte, mar a thaispeántar i bhFíor 14-1:</p>
+<img alt="Rendered HTML documentation for the `add_one` function of `my_crate`" src="img/trpl14-01.png" class="center" />
+<p><span class="caption">Fíor 14-1: Doiciméadúchán HTML don <code>add_one</code>
+feidhm</span></p>
+<h4 id="rannóga-a-Úsáidtear-go-coitianta"><a class="header" href="#rannóga-a-Úsáidtear-go-coitianta">Rannóga a Úsáidtear go Coitianta</a></h4>
+<p>D’úsáideamar an ceannteideal Markdown <code># Examples</code> i Liostú 14-1 chun roinn a chruthú
+sa HTML leis an teideal "Examples." Seo a leanas roinnt ailt eile a cliathbhoscaí
+úsáideann údair go coitianta ina gcuid doiciméad:</p>
+<ul>
+<li><strong>Panics</strong>: Na cásanna ina bhféadfadh an fheidhm atá á doiciméadú
+scaoll. Ba cheart do ghlaoiteoirí na feidhme nach dteastaíonn uathu a gcláir scaoll
+déan cinnte nach dtugann siad an fheidhm sna cásanna seo.</li>
+<li><strong>Earráidí</strong>: Má thugann an fheidhm <code>Result</code> ar ais, ag cur síos ar na cineálacha
+earráidí a d’fhéadfadh tarlú agus cad iad na coinníollacha a d’fhéadfadh a bheith ina gcúis leis na hearráidí sin
+d'fhéadfadh sé a bheith cabhrach do ghlaoiteoirí ionas gur féidir leo cód a scríobh chun an
+cineálacha éagsúla earráidí ar bhealaí éagsúla.</li>
+<li><strong>Sábháilteacht</strong>: Má tá an fheidhm 'neamhshábháilte' le glaoch (pléimid neamhshábháilteacht i
+Caibidil 20), ba chóir go mbeadh alt ann a mhíníonn cén fáth a bhfuil an fheidhm neamhshábháilte
+agus ag clúdach na malairtí a bhfuil an fheidhm ag súil go seasfaidh glaoiteoirí leo.</li>
+</ul>
+<p>Ní bhíonn na hailt seo go léir ag teastáil ó fhormhór na dtuairimí doiciméadaithe, ach is a
+seicliosta maith chun na gnéithe de do chuid úsáideoirí cód a chur i gcuimhne duit
+suim acu eolas a fháil faoi.</p>
+<h4 id="tuairimí-doiciméadúcháin-mar-thrialacha"><a class="header" href="#tuairimí-doiciméadúcháin-mar-thrialacha">Tuairimí Doiciméadúcháin mar Thrialacha</a></h4>
+<p>Is féidir cabhrú le bloic shamplacha de chóid a chur i do thuairimí doiciméadaithe a léiriú
+conas do leabharlann a úsáid, agus tá bónas breise ag baint leis sin: ag rith <code>cargo test</code> reáchtálfar na samplaí cód i do dhoiciméadú mar thástálacha! Ní dhéanfaidh aon ní
+níos fearr ná doiciméadú le samplaí. Ach níl aon rud níos measa ná samplaí
+nach n-oibríonn toisc go bhfuil an cód athraithe ó bhí an doiciméadú
+scríofa. Má rithimid <code>cargo test</code> leis na doiciméid don <code>add_one</code>
+fheidhm ó Liostú 14-1, feicfimid roinn sna torthaí tástála mar seo:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/listing-14-01/
+cargo test
+copy just the doc-tests section below
+-->
+<pre><code class="language-text">   Doc-tests my_crate
+
+running 1 test
+test src/lib.rs - add_one (line 5) ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s
+</code></pre>
+<p>Anois má athraíonn muid an fheidhm nó an sampla mar sin beidh an <code>assert_eq!</code> sa
+mar shampla scaoll agus rith <code>cargo test</code> arís, feicfidh muid go nglacann na tástálacha doc
+go bhfuil an sampla agus an cód as info lena chéile!</p>
+<h4 id="ag-trácht-ar-mhíreanna-cuimsithe"><a class="header" href="#ag-trácht-ar-mhíreanna-cuimsithe">Ag Trácht ar Mhíreanna Cuimsithe</a></h4>
+<p>Cuireann an stíl doc comment <code>//!</code> doiciméadú leis an mír ina bhfuil an
+tuairimí seachas na míreanna a leanann na tuairimí. Úsáidimid de ghnáth
+na tuairimí doc seo taobh istigh den fhréamhchomhad cliathbhosca (<em>src/lib.rs</em> de réir an ghnáis) nó
+taobh istigh de mhodúl chun an gcliathbhosca nó an modúl ina iomláine a dhoiciméadú.</p>
+<p>Mar shampla, doiciméadú a chur leis a chuireann síos ar chuspóir an <code>my_crate</code>
+cliathbhosca ina bhfuil an fheidhm <code>add_one</code>, cuirimid tuairimí doiciméadaithe leis sin
+tosú le <code>//!</code> go dtí tús an chomhaid <em>src/lib.rs</em>, mar a thaispeántar i Liostú
+14-2:</p>
+<Listing number="14-2" file-name="src/lib.rs" caption="Documentation for the `my_crate` crate as a whole">
+<pre><code class="language-rust ignore">//! # My Crate
+//!
+//! `my_crate` is a collection of utilities to make performing certain
+//! calculations more convenient.
+
+/// Adds one to the number given.
+// --snip--
+<span class="boring">///
+</span><span class="boring">/// # Examples
+</span><span class="boring">///
+</span><span class="boring">/// ```
+</span><span class="boring">/// let arg = 5;
+</span><span class="boring">/// let answer = my_crate::add_one(arg);
+</span><span class="boring">///
+</span><span class="boring">/// assert_eq!(6, answer);
+</span><span class="boring">/// ```
+</span><span class="boring">pub fn add_one(x: i32) -&gt; i32 {
+</span><span class="boring">    x + 1
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Tabhair faoi deara nach bhfuil aon chód tar éis na líne deiridh a thosaíonn le <code>//!</code>. Toisc
+chuireamar tús leis na tuairimí le <code>//!</code> in ionad <code>///</code>, táimid ag doiciméadú na míre
+ina bhfuil an trácht seo seachas mír a leanann an nóta tráchta seo. I
+sa chás seo, is é an mhír sin an comhad <em>src/lib.rs</em>, arb é fréamh an chliabháin é. iad seo
+cuireann tuairimí síos ar an gcliathbhosca iomlán.</p>
+<p>Nuair a rithimid <code>cargo doc --open</code>, taispeánfar na tuairimí seo ar an tosach
+leathanach den cháipéisíocht le haghaidh <code>my_crate</code> os cionn liosta na míreanna poiblí sa
+cliathbhosca, mar a thaispeántar i bhFíor 14-2:</p>
+<img alt="Cáipéisíocht HTML soláthraithe le nóta tráchta don chliathán ina iomláine" src="img/trpl14-02.png" class="center" />
+<p><span class="caption">Fíor 14-2: Doiciméadú rindreáilte do <code>my_crate</code>,
+lena n-áirítear an trácht a dhéanann cur síos ar an gcliathbhosca ina iomláine</span></p>
+<p>Tá tuairimí doiciméadúcháin laistigh de mhíreanna úsáideach chun cur síos a dhéanamh ar chliabháin agus
+modúil go háirithe. Úsáid iad le cuspóir iomlán an choimeádáin a mhíniú
+cabhrú le do chuid úsáideoirí eagraíocht an chliabháin a thuiscint.</p>
+<h3 id="api-Áisiúil-poiblí-á-heaspórtáil-le-pub-use"><a class="header" href="#api-Áisiúil-poiblí-á-heaspórtáil-le-pub-use">API Áisiúil Poiblí á heaspórtáil le <code>pub use</code></a></h3>
+<p>Is mór an breithniú é struchtúr d’API poiblí agus tú ag foilsiú a
+cliathbhosca. Is lú an eolas atá ag daoine a úsáideann do chliabhán ar an struchtúr ná mar atá tú féin
+Tá agus b'fhéidir go mbeadh deacracht acu na píosaí is mian leo a úsáid a fháil má tá do chliabhán
+tá ordlathas mór modúl aige.</p>
+<p>I gCaibidil 7, chlúdaíomar conas míreanna a phoibliú ag baint úsáide as an eochairfhocal <code>pub</code>, agus
+míreanna a thabhairt isteach i scóip leis an eochairfhocal <code>use</code>. Mar sin féin, an struchtúr a
+a dhéanann ciall duit agus tú ag forbairt cliathbhosca seans nach mbeadh sé an-áisiúil
+do d'úsáideoirí. B'fhéidir gur mhaith leat do struchtúir a eagrú in ordlathas
+ina bhfuil leibhéil iolracha, ach ansin daoine atá ag iarraidh cineál atá agat a úsáid
+sainmhínithe go domhain san ordlathas d'fhéadfadh sé go mbeadh deacracht ag fáil amach go bhfuil cineál ann.
+D'fhéadfadh sé go mbeadh siad buartha freisin go mbeadh orthu <code>use</code> a chur isteach
+<code>my_crate::some_module::another_module::UsefulType;</code>  seachas <code>use</code>
+<code>my_crate::UsefulType;</code>.</p>
+<p>Is é an dea-scéal ná mura bhfuil an struchtúr áisiúil do dhaoine eile a úsáid
+ó leabharlann eile, ní gá duit d’eagraíocht inmheánach a atheagrú:
+ina ionad sin, is féidir leat míreanna a ath-onnmhairiú chun struchtúr poiblí éagsúil a dhéanamh
+ó do struchtúr príobháideach trí úsáid a bhaint as <code>pub use</code>. Tógann ath-onnmhairiú poiblí
+mír in aon áit amháin agus cuireann sé go poiblí é in áit eile, amhail is dá mba
+sainithe sa suíomh eile ina ionad sin.</p>
+<p>Mar shampla, abair go ndearnamar leabharlann darb ainm <code>art</code> chun coincheapa ealaíne a shamhaltú.
+Laistigh den leabharlann seo tá dhá mhodúl: modúl <code>kinds</code> ina bhfuil dhá enum
+darb ainm <code>PrimaryColor</code> agus <code>SecondaryColor</code> agus modúl <code>utils</code> ina bhfuil a
+feidhm darb ainm <code>mix</code>, mar a thaispeántar i Liostú 14-3:</p>
+<Listing number="14-3" file-name="src/lib.rs" caption="Leabharlann `art` le míreanna eagraithe i modúil `kinds` agus `utils`">
+<pre><code class="language-rust noplayground test_harness">//! # Art
+//!
+//! A library for modeling artistic concepts.
+
+pub mod kinds {
+    /// The primary colors according to the RYB color model.
+    pub enum PrimaryColor {
+        Red,
+        Yellow,
+        Blue,
+    }
+
+    /// The secondary colors according to the RYB color model.
+    pub enum SecondaryColor {
+        Orange,
+        Green,
+        Purple,
+    }
+}
+
+pub mod utils {
+    use crate::kinds::*;
+
+    /// Combines two primary colors in equal amounts to create
+    /// a secondary color.
+    pub fn mix(c1: PrimaryColor, c2: PrimaryColor) -&gt; SecondaryColor {
+        // --snip--
+<span class="boring">        unimplemented!();
+</span>    }
+}</code></pre>
+</Listing>
+<p>Léiríonn Fíor 14-3 cad é an leathanach tosaigh de na doiciméid don chliathbhosca seo
+ghintear le <code>cargo doc</code> cuma:</p>
+<img alt="Cáipéisíocht rindreáilte don chliathán `art` a liostaíonn na modúil `kinds` agus `utils`" src="img/trpl14-03.png" class="center" />
+<p><span class="caption">Fíor 14-3: Leathanach tosaigh na doiciméid le haghaidh <code>art</code>
+a liostaíonn na modúil <code>kinds</code> agus <code>utils</code></span></p>
+<p>Tabhair faoi deara nach bhfuil na cineálacha <code>PrimaryColor</code> agus <code>SecondaryColor</code> liostaithe ar an
+leathanach tosaigh, ná an fheidhm <code>mix</code>. Ní mór dúinn <code>kinds</code> agus <code>utils</code> a chliceáil chun
+iad a fheiceáil.</p>
+<p>Teastaíonn ráitis <code>use</code> ar chliathbhosca eile a bhraitheann ar an leabharlann seo
+na míreanna ó <code>art</code> a thabhairt isteach sa scóip, ag sonrú struchtúr an mhodúil sin
+sainithe faoi láthair. Taispeánann liosta 14-4 sampla de chliabhán a úsáideann an
+<code>PrimaryColor</code> agus <code>mix</code> míreanna ón gcliathbhosca <code>art</code>:</p>
+<Listing number="14-4" file-name="src/main.rs" caption="Cliathbhosca ag baint úsáide as míreanna an chliabháin `art` agus a struchtúr inmheánach easpórtáilte">
+<pre><code class="language-rust ignore">use art::kinds::PrimaryColor;
+use art::utils::mix;
+
+fn main() {
+    let red = PrimaryColor::Red;
+    let yellow = PrimaryColor::Yellow;
+    mix(red, yellow);
+}</code></pre>
+</Listing>
+<p>B'éigean d'údar an chóid i Liostú 14-4, a úsáideann an cliathbhosca <code>art</code>
+déan amach go bhfuil <code>PrimaryColor</code> sa mhodúl <code>kinds</code> agus go bhfuil <code>mix</code> sa mhodúl
+modúl <code>utils</code>. Tá struchtúr modúil an chliathbhosca <code>art</code> níos ábhartha do
+forbróirí atá ag obair ar an gcliathbhosca <code>art</code> ná dóibh siúd a úsáideann é. An inmheánach
+níl aon fhaisnéis úsáideach sa struchtúr do dhuine atá ag iarraidh
+tuiscint a fháil ar conas an cliathbhosca <code>art</code> a úsáid, ach is cúis le mearbhall mar gheall ar
+ní mór d'fhorbróirí a úsáideann é a dhéanamh amach cá háit le breathnú, agus ní mór dóibh an
+ainmneacha modúil sna ráitis <code>use</code>.</p>
+<p>Chun an eagraíocht inmheánach a bhaint den API poiblí, is féidir linn an
+cód cliathbhosca <code>art</code> i Liostú 14-3 chun ráitis <code>pub use</code> a chur leis chun an
+míreanna ar an leibhéal is airde, mar a thaispeántar i Liostú 14-5:</p>
+<Listing number="14-5" file-name="src/lib.rs" caption="Ag cur ráitis `úsáid tí tábhairne` chun míreanna a athonnmhairiú">
+<pre><code class="language-rust ignore">//! # Art
+//!
+//! A library for modeling artistic concepts.
+
+pub use self::kinds::PrimaryColor;
+pub use self::kinds::SecondaryColor;
+pub use self::utils::mix;
+
+pub mod kinds {
+    // --snip--
+<span class="boring">    /// The primary colors according to the RYB color model.
+</span><span class="boring">    pub enum PrimaryColor {
+</span><span class="boring">        Red,
+</span><span class="boring">        Yellow,
+</span><span class="boring">        Blue,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    /// The secondary colors according to the RYB color model.
+</span><span class="boring">    pub enum SecondaryColor {
+</span><span class="boring">        Orange,
+</span><span class="boring">        Green,
+</span><span class="boring">        Purple,
+</span><span class="boring">    }
+</span>}
+
+pub mod utils {
+    // --snip--
+<span class="boring">    use crate::kinds::*;
+</span><span class="boring">
+</span><span class="boring">    /// Combines two primary colors in equal amounts to create
+</span><span class="boring">    /// a secondary color.
+</span><span class="boring">    pub fn mix(c1: PrimaryColor, c2: PrimaryColor) -&gt; SecondaryColor {
+</span><span class="boring">        SecondaryColor::Orange
+</span><span class="boring">    }
+</span>}</code></pre>
+</Listing>
+<p>Liostálfar anois na doiciméid API a ghineann <code>cargo doc</code> don chliathbhosca seo
+agus nasc ath-onnmhairí ar an leathanach tosaigh, mar a thaispeántar i bhFíor 14-4, ag déanamh an
+Cineálacha <code>PrimaryColor</code> agus <code>SecondaryColor</code> agus is fusa teacht ar an bhfeidhm <code>mix</code>.</p>
+<img alt="Cáipéisíocht rindreáilte don chliathán `art` leis na hathonnmhairí ar an leathanach tosaigh" src="img/trpl14-04.png" class="center" />
+<p><span class="caption">Fíor 14-4: Leathanach tosaigh an doiciméid le haghaidh <code>art</code>
+a liostaíonn na hathonnmhairí</span></p>
+<p>Is féidir leis an gcliathbhosca <code>art</code> fós an struchtúr inmheánach ó Liostú a fheiceáil agus a úsáid
+14-3 mar a léirítear i Liosta 14-4, nó is féidir leo an ceann is áisiúla a úsáid
+struchtúr i Liostú 14-5, mar a thaispeántar i Liostú 14-6:</p>
+<Listing number="14-6" file-name="src/main.rs" caption="Clár a úsáideann na míreanna ath-onnmhairithe ón gcliathbhosca `art`">
+<pre><code class="language-rust ignore">use art::mix;
+use art::PrimaryColor;
+
+fn main() {
+    // --snip--
+<span class="boring">    let red = PrimaryColor::Red;
+</span><span class="boring">    let yellow = PrimaryColor::Yellow;
+</span><span class="boring">    mix(red, yellow);
+</span>}</code></pre>
+</Listing>
+<p>I gcásanna ina bhfuil go leor modúil neadaithe, ath-onnmhairiú na cineálacha ag an mbarr
+leibhéal le <code>pub use</code> difríocht shuntasach a dhéanamh i dtaithí na
+daoine a bhaineann úsáid as an gcliathbhosca. Úsáid choitianta eile a bhaintear as <code>pub use</code> is ea ath-onnmhairiú
+sainmhínithe ar spleáchas sa chliathbhosca reatha chun na cliathbhoscaí sin a dhéanamh
+sainmhínithe mar chuid de API poiblí do chliabhán.</p>
+<p>Is ealaín níos mó ná eolaíocht é struchtúr API poiblí úsáideach a chruthú, agus
+is féidir leat athrá chun an API is fearr a oibríonn do d’úsáideoirí a aimsiú. Ag roghnú <code>pub use</code> solúbthacht duit maidir leis an gcaoi a struchtúraíonn tú do chliabhán go hinmheánach agus
+díchúpláil an struchtúr inmheánach sin ón méid a chuireann tú i láthair d’úsáideoirí. Féach ar
+cuid den chód cliathbhoscaí atá suiteáilte agat féachaint an bhfuil a struchtúr inmheánach
+difriúil óna API poiblí.</p>
+<h3 id="cuntas-cratesio-a-bhunú"><a class="header" href="#cuntas-cratesio-a-bhunú">Cuntas Crates.io a Bhunú</a></h3>
+<p>Sular féidir leat cliathbhoscaí ar bith a fhoilsiú, ní mór duit cuntas a chruthú ar
+<a href="https://crates.io/">crates.io</a> <!-- neamhaird --> agus faigh comhartha API. Chun é sin a dhéanamh,
+tabhair cuairt ar an leathanach baile ag <a href="https://crates.io/">crates.io</a> <!-- neamhaird --> agus logáil isteach
+isteach trí chuntas GitHub. (Tá an cuntas GitHub ina riachtanas faoi láthair, ach
+seans go dtacódh an suíomh le bealaí eile chun cuntas a chruthú amach anseo.) Uair amháin
+tá tú logáilte isteach, tabhair cuairt ar do shocruithe cuntais ag
+<a href="https://crates.io/me/">https://crates.io/me/</a> <!-- neamhaird --> agus faigh ar ais do
+Eochair API. Ansin rith an t-ordú <code>cargo login</code> agus greamaigh d'eochair API nuair a iarrtar ort é, mar seo:</p>
+<pre><code class="language-console">$ cargo login
+abcdefghijklmnopqrstuvwxyz012345
+</code></pre>
+<p>Cuirfidh an t-ordú seo in iúl do cargo faoi do chomhartha API agus stórálfar isteach go háitiúil é
+~/.cargo/credentials. Tabhair faoi deara gur <em>secret</em> é an comhartha seo: ná roinn é
+le haon duine eile. Má roinneann tú é le duine ar bith ar chúis ar bith, ba cheart duit
+é a chúlghairm agus giniúint comhartha nua ar <a href="https://crates.io/">crates.io</a><!-- neamhaird
+-->.</p>
+<h3 id="meiteashonraí-á-gcur-le-cliathbhosca-nua"><a class="header" href="#meiteashonraí-á-gcur-le-cliathbhosca-nua">Meiteashonraí á gcur le cliathbhosca Nua</a></h3>
+<p>Ligean le rá go bhfuil cliathbhosca agat is mian leat a fhoilsiú. Roimh fhoilsiú, beidh ort
+roinnt meiteashonraí a chur leis sa rannán <code>[package]</code> de <em>Cargo.toml</em> an chliathbhosca
+comhad.</p>
+<p>Beidh ainm uathúil ag teastáil ó do chliabhán. Agus tú ag obair ar chliabhán go háitiúil,
+is féidir leat cliathbhosca a ainmniú cibé rud is mian leat. Mar sin féin, ainmneacha cliathbhoscaí ar
+<a href="https://crates.io/">crates.io</a><!-- neamhaird --> a leithdháileadh ar an gcéad teacht,
+bonn freastail ar an gcéad dul síos. Nuair a ghlactar ainm cliathbhosca, ní féidir le haon duine eile cliathbhosca a fhoilsiú
+leis an ainm sin. Sula ndéanann tú iarracht cliathbhosca a fhoilsiú, cuardaigh an t-ainm atá ort
+ag iarraidh a úsáid. Má úsáideadh an t-ainm, beidh ort ainm eile a aimsiú agus
+cuir an réimse <code>name</code> in eagar sa chomhad <em>Cargo.toml</em> faoin rannán <code>[package]</code> go
+úsáid an t-ainm nua le haghaidh foilsitheoireachta, mar sin:</p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
+<pre><code class="language-toml">[package]
+name = "guessing_game"
+</code></pre>
+<p>Fiú má tá ainm ar leith roghnaithe agat, nuair a ritheann tú ‘cargo publish’ le foilsiú
+an cliathbhosca ag an bpointe seo, gheobhaidh tú rabhadh agus ansin earráid:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/listing-14-01/
+cargo publish
+copy just the relevant lines below
+-->
+<pre><code class="language-console">$ cargo publish
+    Updating crates.io index
+warning: manifest has no description, license, license-file, documentation, homepage or repository.
+See https://doc.rust-lang.org/cargo/reference/manifest.html#package-metadata for more info.
+--snip--
+error: failed to publish to registry at https://crates.io
+
+Caused by:
+  the remote server responded with an error (status 400 Bad Request): missing or empty metadata fields: description, license. Please see https://doc.rust-lang.org/cargo/reference/manifest.html for more information on configuring these field
+</code></pre>
+<p>Earraíonn sé seo toisc go bhfuil roinnt faisnéise ríthábhachtach in easnamh ort: cur síos agus
+tá ceadúnas ag teastáil le go mbeidh a fhios ag daoine cad a dhéanann do chliabhán agus faoina bhfuil
+téarmaí is féidir leo é a úsáid. In <em>Cargo.toml</em>, cuir cur síos nach bhfuil ann ach a
+abairt nó dhó, mar go mbeidh sé le feiceáil le do chliabhán sna torthaí cuardaigh. Le haghaidh
+sa réimse <code>license</code>, ní mór duit luach aitheantóra <em>cheadúnas</em> a thabhairt. Tá an <a href="http://spdx.org/licenses/">Linux
+Liostaíonn Malartú Sonraí Pacáiste Bogearraí an Fhorais (SPDX)</a> na haitheantóirí
+is féidir leat é a úsáid don luach seo. Mar shampla, a shonrú go bhfuil do cheadúnas agat
+cliathbhosca ag baint úsáide as an gCeadúnas MIT, cuir an t-aitheantóir <code>MIT</code> leis:</p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
+<pre><code class="language-toml">[package]
+name = "guessing_game"
+license = "MIT"
+</code></pre>
+<p>Más mian leat ceadúnas a úsáid nach bhfuil le feiceáil sa SPDX, ní mór duit é a chur
+téacs an cheadúnais sin i gcomhad, cuir an comhad san áireamh i do thionscadal, agus ansin
+úsáid <code>license-file</code> chun ainm an chomhaid sin a shonrú in ionad an comhad ceadúnais a úsáid
+eochair <code>license</code>.</p>
+<p>Tá treoir maidir le cén ceadúnas atá oiriúnach do do thionscadal thar an raon feidhme
+den leabhar seo. Ceadaíonn go leor daoine sa phobal Rust a gcuid tionscadal sa
+ar an mbealach céanna le Rust trí úsáid a bhaint as ceadúnas dé de <code>MIT OR Apache-2.0</code>. An cleachtas seo
+léiríonn sé gur féidir leat a shonrú freisin aitheantóirí ceadúnais iolrach scartha
+ag <code>OR</code> chun ceadúnais iolracha a bheith agat do do thionscadal.</p>
+<p>Le hainm uathúil, an leagan, do chur síos, agus ceadúnas curtha leis, beidh an
+Seans go mbeidh cuma mar seo ar chomhad <em>Cargo.toml</em> do thionscadal atá réidh le foilsiú:</p>
+<p><span class="filename">Filename: Cargo.toml</span></p>
+<pre><code class="language-toml">[package]
+name = "guessing_game"
+version = "0.1.0"
+edition = "2021"
+description = "A fun game where you guess what number the computer has chosen."
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+</code></pre>
+<p>Déanann <a href="https://doc.rust-lang.org/cargo/">doiciméadú cargo</a> cur síos ar cheann eile
+meiteashonraí is féidir leat a shonrú chun a chinntiú gur féidir le daoine eile do chliabhán a aimsiú agus a úsáid níos mó
+go héasca.</p>
+<h3 id="foilsitheoireacht-chuig-cratesio"><a class="header" href="#foilsitheoireacht-chuig-cratesio">Foilsitheoireacht chuig Crates.io</a></h3>
+<p>Anois go bhfuil cuntas cruthaithe agat, shábháil tú do chomhartha API, roghnaigh tú ainm dó
+do chliabhán, agus na meiteashonraí riachtanacha sonraithe agat, tá tú réidh le foilsiú!
+Uaslódálann foilsiú cliathbhosca leagan ar leith go
+<a href="https://crates.io/">crates.io</a> <!-- neamhaird --> le húsáid ag daoine eile.</p>
+<p>Bí cúramach, mar tá foilsiú <em>buan</em>. Ní féidir leis an leagan a bheith riamh
+forscríofa, agus ní féidir an cód a scriosadh. Príomhsprioc amháin de
+<a href="https://crates.io/">crates.io</a> <!-- neamhaird --> chun feidhmiú mar chartlann bhuan
+de chód ionas go mbeidh tógáil de gach tionscadal atá ag brath ar cliathbhoscaí ó
+<a href="https://crates.io/">crates.io</a> <!-- neamhaird --> leanfaidh sé ag obair. Ag ceadú
+dá scriosfaí an leagan bheadh ​​sé dodhéanta an sprioc sin a chomhlíonadh. Mar sin féin, tá
+gan teorainn le líon na leaganacha cliathbhoscaí is féidir leat a fhoilsiú.</p>
+<p>Rith an t-ordú <code>cargo publish</code> arís. Ba cheart go n-éireodh leis anois:</p>
+<!-- manual-regeneration
+go to some valid crate, publish a new version
+cargo publish
+copy just the relevant lines below
+-->
+<pre><code class="language-console">$ cargo publish
+    Updating crates.io index
+   Packaging guessing_game v0.1.0 (file:///projects/guessing_game)
+   Verifying guessing_game v0.1.0 (file:///projects/guessing_game)
+   Compiling guessing_game v0.1.0
+(file:///projects/guessing_game/target/package/guessing_game-0.1.0)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.19s
+   Uploading guessing_game v0.1.0 (file:///projects/guessing_game)
+</code></pre>
+<p>Comhghairdeachas! Tá do chód roinnte agat anois le pobal Rust, agus
+is féidir le duine ar bith do chliabhán a chur leis go héasca mar spleáchas dá dtionscadal.</p>
+<h3 id="leagan-nua-de-chliathbhosca-reatha-a-fhoilsiú"><a class="header" href="#leagan-nua-de-chliathbhosca-reatha-a-fhoilsiú">Leagan Nua de Chliathbhosca Reatha a Fhoilsiú</a></h3>
+<p>Nuair a bheidh athruithe déanta agat ar do chliabhán agus tú réidh le leagan nua a scaoileadh,
+athraíonn tú an luach <code>version</code> atá sonraithe i do chomhad <em>Cargo.toml</em> agus
+athfhoilsiú. Bain úsáid as na <a href="http://semver.org/">rialacha maidir le Leagan Séimeantach</a> le socrú cad is
+tá uimhir chuí an chéad leagain eile bunaithe ar na cineálacha athruithe atá déanta agat.
+Ansin rith <code>cargo publish</code> chun an leagan nua a uaslódáil.</p>
+<!-- Seannasc, ná bain -->
+<p><a id="removing-versions-from-cratesio-with-cargo-yank"></a></p>
+<h3 id="leaganacha-á-dtarraingt-siar-ó-cratesio-le-cargo-yank"><a class="header" href="#leaganacha-á-dtarraingt-siar-ó-cratesio-le-cargo-yank">Leaganacha á dtarraingt siar ó Crates.io le <code>cargo yank</code></a></h3>
+<p>Cé nach féidir leat leaganacha roimhe seo de chliabhán a bhaint, is féidir leat aon cheann a chosc
+tionscadail amach anseo ó chur leo mar spleáchas nua. Tá sé seo úsáideach nuair a
+Tá leagan an gcliathbhosca briste ar chúis amháin nó ar chúis eile. I gcásanna den sórt sin, cargo
+tacaíonn <em>yanking</em> leagan gcliathbhosca.</p>
+<p>Cuireann Yanking a version cosc ​​ar thionscadail nua ó bheith ag brath ar an leagan sin fad a bheidh sé
+ag ligean do gach tionscadal reatha atá ag brath air leanúint ar aghaidh. Go bunúsach, a
+ciallaíonn yank nach bhriseadh gach tionscadal le <em>Cargo.lock</em>, agus aon todhchaí
+Ní bhainfidh comhaid <em>Cargo.lock</em> úsáid as an leagan yanked.</p>
+<p>Chun leagan de chliathbhosca a yancáil, in eolaire an chliathbhosca atá agat
+foilsithe roimhe seo, rith <code>cargo yank</code> agus sonraigh an leagan atá uait
+yanc. Mar shampla, má tá cliathbhosca darb ainm <code>guessing_game</code> foilsithe againn
+1.0.1 agus ba mhaith linn é a yank, san eolaire tionscadail do <code>guessing_game</code> ba mhaith linn
+rith:</p>
+<!-- manual-regeneration:
+cargo yank carol-test --version 2.1.0
+cargo yank carol-test --version 2.1.0 --undo
+-->
+<pre><code class="language-console">$ cargo yank --vers 1.0.1
+    Updating crates.io index
+        Yank guessing_game@1.0.1
+</code></pre>
+<p>Trí <code>--undo</code> a chur leis an ordú, is féidir leat yank a chealú agus tionscadail a cheadú
+chun tosú ag brath ar leagan arís:</p>
+<pre><code class="language-console">$ cargo yank --vers 1.0.1 --undo
+    Updating crates.io index
+      Unyank guessing_game@1.0.1
+</code></pre>
+<p>A yank <em>ní</em> scriosann sé cód ar bith. Ní féidir, mar shampla, é a scriosadh de thaisme
+rúin uaslódáilte. Má tharlaíonn sé sin, ní mór duit na rúin sin a athshocrú láithreach.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="spásanna-oibre-cargo"><a class="header" href="#spásanna-oibre-cargo">Spásanna Oibre Cargo</a></h2>
+<p>I gCaibidil 12, thógamar pacáiste a chuimsigh cliathbhosca dénártha agus leabharlann
+cliathbhosca. De réir mar a théann do thionscadal chun cinn, seans go bhfaighidh tú an crate leabharlainne
+ag éirí níos mó fós agus ba mhaith leat do phacáiste a roinnt níos faide isteach
+crates leabharlann il. Cuireann Cargo gné ar a dtugtar <em>workspaces</em> ar fáil ar féidir
+cabhrú le ilphacáistí gaolmhara a fhorbraítear in éineacht.</p>
+<h3 id="spás-oibre-á-chruthú"><a class="header" href="#spás-oibre-á-chruthú">Spás Oibre á Chruthú</a></h3>
+<p>Is é atá i <em>workspace</em> ná sraith pacáistí a roinneann an <em>Cargo.lock</em> céanna agus an t-aschur céanna
+eolaire. Déanaimis tionscadal ag baint úsáide as spás oibre - úsáidfimid cód fánach mar sin déanfaimid
+is féidir díriú ar struchtúr an spáis oibre. Tá bealaí éagsúla chun
+spás oibre a struchtúrú, mar sin ní léireoimid ach bealach coiteann amháin. Beidh a
+spás oibre ina bhfuil dénártha agus dhá leabharlann. An dénártha, a sholáthróidh
+an phríomhfheidhmíocht, ag brath ar an dá leabharlann. Beidh leabharlann amháin
+cuir feidhm <code>add_one</code> ar fáil, agus feidhm <code>add_two</code> leis an dara leabharlann.
+Beidh na trí chliathbhosca seo mar chuid den spás oibre céanna. Tosóimid ag cruthú
+eolaire nua don spás oibre:</p>
+<pre><code class="language-console">$ mkdir add
+$ cd add
+</code></pre>
+<p>Ansin, san eolaire <em>add</em>, cruthaímid an comhad <em>Cargo.toml</em> a dhéanfaidh
+cumraigh an spás oibre ar fad. Ní bheidh alt <code>[package]</code> ag an gcomhad seo.
+Ina áit sin, tosóidh sé le rannán <code>[workspace]</code> a ligfidh dúinn cur leis
+baill chuig an spás oibre. Déanaimid pointe freisin chun an ceann is déanaí agus is mó a úsáid
+leagan de algartam réitithe Cargo inár spás oibre tríd an
+<code>resolver</code> go <code>"2"</code>.</p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
+<pre><code class="language-toml">[workspace]
+resolver = "2"
+</code></pre>
+<p>Ansin, cruthóimid an gcliathbhosca dénártha <code>adder</code> trí <code>cargo new</code> a rith laistigh den
+<em>cuir</em> eolaire:</p>
+<!-- athghiniúint de láimh
+liostaí cd/ch14-tuilleadh-faoi-lasta/aschur-amháin-01-adder-crate/add
+rm -rf adder
+adder nua lasta
+cóip den aschur thíos
+-->
+<pre><code class="language-console">$ cargo new adder
+    Creating binary (application) `adder` package
+      Adding `adder` as member of workspace at `file:///projects/add`
+</code></pre>
+<p>Nuair a ritheann <code>cargo new</code> taobh istigh de spás oibre cuireann sé go huathoibríoch leis an nuachruthaithe
+pacáiste chuig an eochair <code>members</code> sa sainmhíniú <code>[workspace]</code> sa spás oibre
+<code>Cargo.toml</code>, mar seo:</p>
+<pre><code class="language-toml">[workspace]
+resolver = "2"
+members = ["adder"]
+</code></pre>
+<p>Ag an bpointe seo, is féidir linn an spás oibre a thógáil trí <code>cargo build</code> a reáchtáil. Na comhaid
+ba cheart go mbeadh cuma mar seo i do <em>add</em> eolaire:</p>
+<pre><code class="language-text">├── Cargo.lock
+├── Cargo.toml
+├── adder
+│   ├── Cargo.toml
+│   └── src
+│       └── main.rs
+└── target
+</code></pre>
+<p>Tá eolaire <em>target</em> amháin sa spás oibre ar an leibhéal is airde a tiomsaíodh
+cuirfear artifacts isteach; níl a chuid féin ag an bpacáiste <code>adder</code>
+<em>target</em> eolaire. Fiú dá mbeadh muid chun <code>cargo build</code> a rith ón taobh istigh den
+<em>adder</em> eolaire, bheadh ​​na déantáin tiomsaithe fós i <em>add/target</em>
+seachas <em>add/adder/target</em>. Struchtúraíonn Cargo an t-eolaire <em>target</em> i
+spás oibre mar seo mar go bhfuil na crates i spás oibre i gceist a bheith ag brath ar
+chéile. Dá mbeadh a eolaire <em>target</em> féin ag gach cliathbhosca, bheadh ​​ag gach cliathbhosca
+chun gach ceann de na crates eile sa spás oibre a ath-thiomsú chun na déantáin a chur
+ina <em>target</em> eolaire féin. Trí chomhadlann <em>target</em> amháin a roinnt, na crates
+is féidir atógáil gan ghá a sheachaint.</p>
+<h3 id="an-dara-pacáiste-a-chruthú-sa-spás-oibre"><a class="header" href="#an-dara-pacáiste-a-chruthú-sa-spás-oibre">An Dara Pacáiste a Chruthú sa Spás Oibre</a></h3>
+<p>Ansin, cruthaímid pacáiste ball eile sa spás oibre agus cuirfimid glaoch air
+<code>add_one</code> leis. Athraigh an barrleibhéal <em>Cargo.toml</em> chun an cosán <em>add_one</em> a shonrú
+liosta na <code>members</code>:</p>
+<p><span class="filename">Ainm comhaid: Cargo.toml</span></p>
+<pre><code class="language-toml">[workspace]
+resolver = "2"
+members = ["adder", "add_one"]
+</code></pre>
+<p>Ansin ginigh cliathbhosca leabharlainne nua darb ainm <code>add_one</code>:</p>
+<!-- athghiniúint de láimh
+liostaí cd/ch14-níos mó faoi-lasta/aschur-amháin-02-cuir-amháin/cuir leis
+rm -rf add_one
+lasta add_one nua --lib
+cóip den aschur thíos
+-->
+<pre><code class="language-consól">$cargo add_one nua --lib
+ Leabharlann á chruthú pacáiste `add_one`
+ Ag cur `add_one` isteach mar bhall den spás oibre ag `comhad:///projects/add`
+</code></pre>
+<p>Ba cheart go mbeadh na heolairí agus na comhaid seo i do chomhadlann <em>add</em> anois:</p>
+<pre><code class="language-téacs">├── Cargo.lock
+├── Cargo.toml
+├── add_one
+│ ├── Cargo.toml
+│ └── src
+│ └── lib.rs
+├── nathair
+│ ├── Cargo.toml
+│ └── src
+│ └── príomh.rs
+└── sprioc
+</code></pre>
+<p>Sa chomhad <em>add_one/src/lib.rs</em>, cuirimis feidhm <code>add_one</code> leis:</p>
+<p><span class="filename">Ainm comhaid: add_one/src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">pub fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}</code></pre>
+<p>Anois is féidir linn an pacáiste <code> adder</code> a bheith againn lenár dénártha ag brath ar an <code>add_one</code>
+pacáiste a bhfuil ár leabharlann. Ar dtús, ní mór dúinn spleáchas cosán a chur leis
+<code>add_one</code> le <em>adder/Cargo.toml</em>.</p>
+<p><span class="filename">Ainm comhaid: adder/Cargo.toml</span></p>
+<pre><code class="language-toml">[dependencies]
+add_one = { path = "../add_one" }
+</code></pre>
+<p>Ní ghlacann Cargo leis go mbeidh crates i spás oibre ag brath ar a chéile, mar sin de
+ní mór dúinn a bheith soiléir faoi na caidrimh spleáchais.</p>
+<p>Ansin, bainimis úsáid as an bhfeidhm <code>add_one</code> (ón gcliathbhosca <code>add_one</code>) sa
+cliathbhosca <code>adder</code>. Oscail an comhad <em>adder/src/main.rs</em> agus athraigh an <code>main</code>
+feidhm chun an fheidhm <code>add_one</code> a ghlaoch, mar atá i Liostú 14-7.</p>
+<Listing number="14-7" file-name="adder/src/main.rs" caption="Ag baint úsáide as an gcliathbhosca leabharlainne `add_one` i gcliathbhosca `adder`">
+<pre><code class="language-rust ignore">fn main() {
+    let num = 10;
+    println!("Hello, world! {num} plus one is {}!", add_one::add_one(num));
+}</code></pre>
+</Listing>
+<p>Déanaimis an spás oibre a thógáil trí <code>cargo build</code> a rith sa bharrleibhéal <em>add</em>
+eolaire!</p>
+<!-- athghiniúint de láimh
+liostaí cd/ch14-more-about-cargo/listing-14-07/add
+tógáil lasta
+aschur cóip thíos; ní láimhseálann an script nuashonraithe aschuir fochomhadlanna i gcosáin i gceart
+-->
+<pre><code class="language-console">$ cargo build
+   Compiling add_one v0.1.0 (file:///projects/add/add_one)
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.22s
+</code></pre>
+<p>Chun an cliathbhosca dénártha a rith ón eolaire <em>add</em>, is féidir linn a shonrú cé acu
+pacáiste sa spás oibre ba mhaith linn a rith tríd an argóint <code>-p</code> agus an
+ainm an phacáiste le <code>cargo run</code>:</p>
+<!-- athghiniúint de láimh
+liostaí cd/ch14-more-about-cargo/listing-14-07/add
+rith lasta -p adder
+aschur cóip thíos; ní láimhseálann an script nuashonraithe aschuir fochomhadlanna i gcosáin i gceart
+-->
+<pre><code class="language-console">$ cargo run -p adder
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running `target/debug/adder`
+Hello, world! 10 plus one is 11!
+</code></pre>
+<p>Ritheann sé seo an cód in <em>adder/src/main.rs</em>, atá ag brath ar an gcliathbhosca <code>add_one</code>.</p>
+<h4 id="ag-brath-ar-phacáiste-seachtrach-i-spás-oibre"><a class="header" href="#ag-brath-ar-phacáiste-seachtrach-i-spás-oibre">Ag brath ar Phacáiste Seachtrach i Spás Oibre</a></h4>
+<p>Tabhair faoi deara nach bhfuil ach comhad <em>Cargo.lock</em> amháin ag an mbarrleibhéal,
+seachas <em>Cargo.lock</em> a bheith i gcomhadlann gach cliathbhosca. Cinntíonn sé seo go
+tá na crates go léir ag baint úsáide as an leagan céanna de gach spleáchas. Má chuirimid an <code>rand</code>
+pacáiste chuig na comhaid <em>adder/Cargo.toml</em> agus <em>add_one/Cargo.toml</em>, déanfaidh Cargo
+Réitigh an dá cheann go leagan amháin de <code>rand</code> agus taifead é sin sa cheann
+<em>Cargo.glas</em>. Má dhéantar na crates go léir sa spás oibre, bain úsáid as na spleáchais chéanna
+ciallaíonn sé seo go mbeidh na crates ag luí lena chéile i gcónaí. Cuirimis an
+cliathbhosca <code>rand</code> chuig an rannán <code>[dependencies]</code> sa chomhad <em>add_one/Cargo.toml</em>
+ionas gur féidir linn an cliathbhosca <code>rand</code> a úsáid sa crate <code>add_one</code>:</p>
+<!-- Agus an leagan de `rand` á nuashonrú, nuashonraigh an leagan de
+úsáidtear `rand` sna comhaid seo ionas go dtagann siad go léir le:
+* ch02-00-buille faoi thuairim-cluiche-tutorial.md
+*ch07-04-ag tabhairt-cosáin-i--scóip-leis-an-úsáid-eochairfhocal.md
+-->
+<p><span class="filename">Ainm comhaid: add_one/Cargo.toml</span></p>
+<pre><code class="language-toml">[dependencies]
+rand = "0.8.5"
+</code></pre>
+<p>Is féidir linn <code>use rand;</code> a chur leis an gcomhad <em>add_one/src/lib.rs</em> anois, agus an
+spás oibre iomlán trí <code>cargo build</code> a rith san eolaire <em>add</em> a thabhairt isteach
+agus an gcliathbhosca <code>rand</code> a thiomsú. Gheobhaidh muid rabhadh amháin mar nílimid
+ag tagairt don <code>rand</code> a thugamar isteach sa scóip:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/no-listing-03-workspace-with-external-dependency/add
+cargo build
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+<pre><code class="language-console">$ cargo build
+    Updating crates.io index
+  Downloaded rand v0.8.5
+   --snip--
+   Compiling rand v0.8.5
+   Compiling add_one v0.1.0 (file:///projects/add/add_one)
+warning: unused import: `rand`
+ --&gt; add_one/src/lib.rs:1:5
+  |
+1 | use rand;
+  |     ^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: `add_one` (lib) generated 1 warning (run `cargo fix --lib -p add_one` to apply 1 suggestion)
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.95s
+</code></pre>
+<p>Tá faisnéis sa <em>Cargo.lock</em> barrleibhéil anois faoi spleáchas na
+<code>add_one</code> ar <code>rand</code>. Mar sin féin, cé go n-úsáidtear <code>rand</code> áit éigin sa
+spás oibre, ní féidir linn é a úsáid i crates eile sa spás oibre mura gcuirimid leis
+<code>rand</code> chuig a gcuid comhad <em>Cargo.toml</em> freisin. Mar shampla, má chuirimid <code>use rand;</code> leis
+chuig an gcomhad <em>adder/src/main.rs</em> don phacáiste <code>adder</code>, gheobhaidh muid earráid:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/output-only-03-use-rand/add
+cargo build
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+<pre><code class="language-console">$ cargo build
+  --snip--
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+error[E0432]: unresolved import `rand`
+ --&gt; adder/src/main.rs:2:5
+  |
+2 | use rand;
+  |     ^^^^ no external crate `rand`
+</code></pre>
+<p>Chun é seo a shocrú, cuir an comhad <em>Cargo.toml</em> in eagar don phacáiste <code>adder</code> agus cuir in iúl
+go bhfuil <code>rand</code> ina spleáchas dó freisin. Déanfar an pacáiste <code>adder</code> a thógáil
+cuir <code>rand</code> leis an liosta spleáchais do <code>adder</code> in <em>Cargo.lock</em>, ach níl
+íoslódálfar cóipeanna breise de <code>rand</code>. Cinnteoidh Cargo go mbeidh gach
+cliathbhosca i ngach pacáiste sa spás oibre a bheidh in úsáid ag an bpacáiste <code>rand</code>
+an leagan céanna chomh fada agus a shonraíonn siad leaganacha comhoiriúnacha de <code>rand</code>, ag sábháil
+spás dúinn agus a chinntiú go mbeidh na crates sa spás oibre ag luí leis
+chéile.</p>
+<p>Má shonraíonn crates sa spás oibre leaganacha neamh-chomhoiriúnacha den spleáchas céanna,
+Réiteoidh Cargo gach ceann acu, ach déanfaidh sé iarracht fós gan ach cúpla leagan a réiteach
+agus is féidir.</p>
+<h4 id="tástáil-á-chur-le-spás-oibre"><a class="header" href="#tástáil-á-chur-le-spás-oibre">Tástáil á Chur le Spás Oibre</a></h4>
+<p>Le feabhsú eile, cuirimis tástáil ar an bhfeidhm <code>add_one::add_one</code> laistigh den crate <code>add_one</code>:</p>
+<p><span class="filename">Filename: add_one/src/lib.rs</span></p>
+<pre><code class="language-rust noplayground">pub fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        assert_eq!(3, add_one(2));
+    }
+}</code></pre>
+<p>Anois reáchtáil <code>cargo test</code> san eolaire <em>add</em> barrleibhéil. Rith <code>cargo test</code> isteach
+reáchtálfar spás oibre struchtúrtha mar seo na trialacha do na crates ar fad i
+an spás oibre:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
+cargo test
+copy output below; the output updating script doesn't handle subdirectories in
+paths properly
+-->
+<pre><code class="language-console">$ cargo test
+   Compiling add_one v0.1.0 (file:///projects/add/add_one)
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.20s
+     Running unittests src/lib.rs (target/debug/deps/add_one-f0253159197f7841)
+
+running 1 test
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/adder-49979ff40686fa8e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests add_one
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+</code></pre>
+<p>Léiríonn an chéad chuid den aschur go bhfuil an tástáil <code>it_works</code> sa <code>add_one</code>
+cliathbhosca a rith. Léiríonn an chéad chuid eile nach bhfuarthas tástálacha nialais sa <code>adder</code>
+gcliathbhosca, agus ansin taispeánann an t-alt deireanach náid tástálacha doiciméadú a fuarthas i
+an gcliathbhosca <code>add_one</code>.</p>
+<p>Is féidir linn tástálacha a reáchtáil freisin le haghaidh cliathbhosca ar leith amháin i spás oibre ón
+eolaire barrleibhéil tríd an mbratach <code>-p</code> a úsáid agus ainm an chliabháin a shonrú
+ba mhaith linn tástáil a dhéanamh:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
+cargo test -p add_one
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+<pre><code class="language-console">$ cargo test -p add_one
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/add_one-b3235fea9a156f74)
+
+running 1 test
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests add_one
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+</code></pre>
+<p>Léiríonn an t-aschur seo nach ndearna <code>cargo test</code> ach na tástálacha don crate <code>add_one</code>  agus
+níor rith na tástálacha crate <code>adder</code>.</p>
+<p>Má fhoilsíonn tú na crates sa spás oibre chuig <a href="https://crates.io/">crates.io</a>,
+ní mór gach cliathbhosca sa spás oibre a fhoilsiú ar leithligh. Cosúil le <code>cargo test</code>, is féidir linn cliathbhosca ar leith a fhoilsiú inár spás oibre trí úsáid a bhaint as an <code>-p</code>
+bratach agus ag sonrú ainm an chliathbhosca ba mhaith linn a fhoilsiú.</p>
+<p>Chun cleachtadh breise a fháil, cuir crate <code>cuir_two</code> leis an spás oibre seo i gceann cosúil leis
+mar an crate <code>add_one</code>!</p>
+<p>De réir mar a fhásann do thionscadal, smaoinigh ar spás oibre a úsáid: is fusa é a thuiscint
+comhpháirteanna aonair níos lú ná blob mór cód. Ina theannta sin, a choinneáil
+is féidir leis na crates i spás oibre comhordú idir crates a dhéanamh níos éasca má bhíonn siad
+a athrú go minic ag an am céanna.</p>
+<div style="break-before: page; page-break-before: always;"></div><!-- Old link, do not remove -->
+<p><a id="installing-binaries-from-cratesio-with-cargo-install"></a></p>
+<h2 id="dénártha-a-shuiteáil-le-cargo-install"><a class="header" href="#dénártha-a-shuiteáil-le-cargo-install">Dénártha a shuiteáil le <code>cargo install</code></a></h2>
+<p>Ligeann an t-ordú <code>shuiteáil lasta</code> duit cliathbhoscaí dénártha a shuiteáil agus a úsáid
+go háitiúil. Níl sé seo beartaithe chun pacáistí córais a athsholáthar; tá sé i gceist a
+bealach áisiúil d'fhorbróirí Rust uirlisí a shuiteáil a bhfuil daoine eile roinnte orthu
+<a href="https://crates.io/">crates.io</a> <!-- neamhaird -->. Tabhair faoi deara nach féidir leat ach a shuiteáil
+pacáistí a bhfuil spriocanna dénártha acu. Is é sprioc <em>dhénártha</em> an clár inrite
+cruthaítear é sin má tá comhad <em>src/main.rs</em> nó comhad eile sonraithe ag an gcliathbhosca
+mar dhénártha, i gcomparáid le sprioc leabharlainne nach féidir a rith leis féin ach
+oiriúnach lena n-áirítear laistigh de chláir eile. De ghnáth, tá cliathbhoscaí
+faisnéis sa chomhad <em>README</em> faoi cé acu an leabharlann é cliathbhosca, an bhfuil a
+sprioc dhénártha, nó an dá cheann.</p>
+<p>Stóráiltear gach dénártha atá suiteáilte le <code>cargo install</code> sa suiteáil
+fillteán <em>bin</em> an fhréamh. Má shuiteáil tú Rust ag baint úsáide as <em>rustup.rs</em> agus nach bhfuil aon cheann agat
+cumraíochtaí saincheaptha, beidh an eolaire seo <em>$HOME/.cargo/bin</em>. Cinntigh go
+tá an t-eolaire i do <code>$PATH</code> le go mbeidh tú in ann na cláir atá suiteáilte agat le <code>cargo install</code> a rith.</p>
+<p>Mar shampla, i gCaibidil 12 luaigh muid go bhfuil cur i bhfeidhm Rust de
+an uirlis <code>grep</code> ar a dtugtar <code>ripgrep</code> chun comhaid a chuardach. Chun <code>ripgrep</code> a shuiteáil, ní mór dúinn
+is féidir leis an méid seo a leanas a rith:</p>
+<!-- manual-regeneration
+cargo install something you don't have, copy relevant output below
+-->
+<pre><code class="language-console">$ cargo install ripgrep
+    Updating crates.io index
+  Downloaded ripgrep v13.0.0
+  Downloaded 1 crate (243.3 KB) in 0.88s
+  Installing ripgrep v13.0.0
+--snip--
+   Compiling ripgrep v13.0.0
+    Finished `release` profile [optimized + debuginfo] target(s) in 10.64s
+  Installing ~/.cargo/bin/rg
+   Installed package `ripgrep v13.0.0` (executable `rg`)
+</code></pre>
+<p>Taispeánann an dara líne go deireanach den aschur suíomh agus ainm an
+dénártha suiteáilte, arb é <code>rg</code> é i gcás <code>ripgrep</code>. Chomh fada leis an
+tá an t-eolaire suiteála i do <code>$PATH</code>, mar a luadh cheana, is féidir leat
+ansin rith <code>rg --help</code> agus tosú ag baint úsáide as uirlis níos tapúla, níos meirgeach chun comhaid a chuardach!</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="cargo-a-shíneadh-le-orduithe-saincheaptha"><a class="header" href="#cargo-a-shíneadh-le-orduithe-saincheaptha">Cargo a Shíneadh le Orduithe Saincheaptha</a></h2>
+<p>Tá Cargo deartha ionas gur féidir leat é a leathnú le fo-orduithe nua gan a bheith ort
+Cargo a mhodhnú. Má thugtar <code>cargo-something</code> ar dhénártha i do <code>$PATH</code>, is féidir leat
+rith é amhail is gur fo-ordú Cargo é trí <code>cargo something</code> a rith. Saincheaptha
+Tá orduithe mar seo liostaithe freisin nuair a ritheann tú <code>cargo --list</code>. A bheith in ann
+bain úsáid as <code>cargo install</code> chun síntí a shuiteáil agus ansin iad a rith díreach mar an
+Is buntáiste iontach áisiúil iad uirlisí Cargo ionsuite de dhearadh Cargo!</p>
+<h2 id="achoimre-13"><a class="header" href="#achoimre-13">Achoimre</a></h2>
+<p>Comhroinnt cód le Cargo agus <a href="https://crates.io/">crates.io</a> <!-- neamhaird --> is
+cuid den rud a dhéanann éiceachóras Rust úsáideach le haghaidh go leor tascanna éagsúla. meirge
+Tá leabharlann caighdeánach beag agus cobhsaí, ach tá cliathbhoscaí éasca a roinnt, a úsáid, agus
+feabhas a chur ar amlíne difriúil ó cheann na teanga. Ná bí cúthail faoi
+cód a roinnt atá úsáideach duit ar <a href="https://crates.io/">crates.io</a><!-- neamhaird
+-->; is dócha go mbeidh sé úsáideach do dhuine eile freisin!</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="smart-pointers"><a class="header" href="#smart-pointers">Smart Pointers</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="using-boxt-to-point-to-data-on-the-heap"><a class="header" href="#using-boxt-to-point-to-data-on-the-heap">Using Box&lt;T&gt; to Point to Data on the Heap</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="treating-smart-pointers-like-regular-references-with-the-deref-trait"><a class="header" href="#treating-smart-pointers-like-regular-references-with-the-deref-trait">Treating Smart Pointers Like Regular References with the Deref Trait</a></h1>
