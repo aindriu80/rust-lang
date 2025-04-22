@@ -17437,13 +17437,2034 @@ Tá leabharlann caighdeánach beag agus cobhsaí, ach tá cliathbhoscaí éasca 
 feabhas a chur ar amlíne difriúil ó cheann na teanga. Ná bí cúthail faoi
 cód a roinnt atá úsáideach duit ar <a href="https://crates.io/">crates.io</a><!-- neamhaird
 -->; is dócha go mbeidh sé úsáideach do dhuine eile freisin!</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="smart-pointers"><a class="header" href="#smart-pointers">Smart Pointers</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="using-boxt-to-point-to-data-on-the-heap"><a class="header" href="#using-boxt-to-point-to-data-on-the-heap">Using Box&lt;T&gt; to Point to Data on the Heap</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="treating-smart-pointers-like-regular-references-with-the-deref-trait"><a class="header" href="#treating-smart-pointers-like-regular-references-with-the-deref-trait">Treating Smart Pointers Like Regular References with the Deref Trait</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="running-code-on-cleanup-with-the-drop-trait"><a class="header" href="#running-code-on-cleanup-with-the-drop-trait">Running Code on Cleanup with the Drop Trait</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="rct-the-reference-counted-smart-pointer"><a class="header" href="#rct-the-reference-counted-smart-pointer">Rc&lt;T&gt;, the Reference Counted Smart Pointer</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="refcellt-and-the-interior-mutability-pattern"><a class="header" href="#refcellt-and-the-interior-mutability-pattern">RefCell&lt;T&gt; and the Interior Mutability Pattern</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="reference-cycles-can-leak-memory"><a class="header" href="#reference-cycles-can-leak-memory">Reference Cycles Can Leak Memory</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="leideanna-cliste"><a class="header" href="#leideanna-cliste">Leideanna Cliste</a></h1>
+<p>Is coincheap ginearálta é <em>pointeoir</em> d’athróg ina bhfuil seoladh i
+cuimhne. Tagraíonn an seoladh seo do, nó “pointí ag,” do roinnt sonraí eile. An chuid is mó
+Is tagairt í an cineál pointeoir coitianta i Rust, ar fhoghlaim tú faoi i
+Caibidil 4. Cuirtear tagairtí in iúl leis an tsiombail <code>&amp;</code> agus faigheann siad an luach ar iasacht
+pointe ar. Níl aon chumais speisialta acu seachas tagairt a dhéanamh dóibh
+sonraí, agus gan aon forchostais.</p>
+<p>Ar an láimh eile, is struchtúir sonraí iad <em>Smart pointers</em> a fheidhmíonn mar a
+pointeoir ach tá meiteashonraí agus cumais bhreise acu freisin. Coincheap na
+níl leideanna cliste uathúil do Rust: tháinig leideanna cliste ó C ++ agus tá siad ann
+i dteangacha eile chomh maith. Tá éagsúlacht leideanna cliste sainithe ag Rust sa
+leabharlann caighdeánach a sholáthraíonn feidhmiúlacht thar an gceann a sholáthraíonn tagairtí.
+Chun an coincheap ginearálta a iniúchadh, féachfaimid ar chúpla sampla éagsúla de
+leideanna cliste, lena n-áirítear cineál pointeoir cliste <em>reference counting</em>. seo
+cuireann pointeoir ar do chumas sonraí úinéirí iolracha a bheith agat trí súil a choinneáil orthu
+líon na n-úinéirí agus, nuair nach bhfuil aon úinéirí fágtha, na sonraí a ghlanadh.</p>
+<p>Tá difríocht bhreise ag meirge, lena choincheap úinéireachta agus iasachtaíochta
+idir thagairtí agus leideanna cliste: cé nach bhfaigheann tagairtí ach sonraí ar iasacht, i
+go leor cásanna, leideanna cliste <em>ow</em> na sonraí a díríonn siad ar.</p>
+<p>Cé nár thugamar glaoch orthu mar sin ag an am, thángamar ar roinnt acu cheana féin
+leideanna cliste sa leabhar seo, ina measc <code>String</code> agus <code>Vec&lt;T&gt;</code> i gCaibidil 8. An dá cheann
+áirítear na cineálacha seo mar threoracha cliste mar go bhfuil roinnt cuimhne acu agus go gceadaíonn siad duit
+a ionramháil. Tá meiteashonraí agus cumais nó ráthaíochtaí breise acu freisin.
+Stringeann <code>String</code>, mar shampla, a chumas mar mheiteashonraí agus tá an breiseán breise aige
+an cumas a áirithiú go mbeidh a chuid sonraí bailí i gcónaí UTF-8.</p>
+<p>De ghnáth cuirtear leideanna cliste i bhfeidhm ag baint úsáide as struchtúir. Murab ionann agus gnáth
+struct, leideanna cliste a chur i bhfeidhm na tréithe <code>Deref</code> agus <code>Drop</code>. An <code>Deref</code>
+Ceadaíonn an trait do shampla den struchtúr pointeoir cliste é féin a iompar mar thagairt
+ionas gur féidir leat do chód a scríobh chun oibriú le tagairtí nó le leideanna cliste.
+Ligeann an tréith <code>Drop</code> duit an cód a rithtear nuair a bhíonn tú a shaincheapadh
+Téann an pointeoir cliste as an raon feidhme. Sa chaibidil seo, pléifimid an dá cheann
+tréithe agus a léiriú cén fáth a bhfuil siad tábhachtach do leideanna cliste.</p>
+<p>Ós rud é gur patrún dearadh ginearálta é an patrún pointeoir cliste a úsáidtear
+go minic i Rust, ní chlúdóidh an chaibidil seo gach pointeoir cliste atá ann cheana féin. go leor
+tá a gcuid leideanna cliste féin ag leabharlanna, agus is féidir leat do chuid féin a scríobh fiú. Déanfaimid
+clúdaíonn siad na leideanna cliste is coitianta sa ghnáthleabharlann:</p>
+<ul>
+<li><code>Bosca &lt;T&gt;</code> chun luachanna a leithdháileadh ar an gcarn</li>
+<li><code>Rc&lt;T&gt;</code>, cineál comhairimh tagartha a chumasaíonn úinéireacht iolrach</li>
+<li><code>Ref&lt;T&gt;</code> agus <code>RefMut&lt;T&gt;</code>, a rochtain trí <code>RefCell&lt;T&gt;</code>, cineál a fhorfheidhmíonn
+na rialacha iasachtaithe ag am rite in ionad am tiomsaithe</li>
+</ul>
+<p>Ina theannta sin, clúdóimid an patrún <em>interior mutability</em> nuair nach féidir é a mhalartú
+Nochtann cineál API chun luach istigh a shóchán. Déanfaimid plé freisin
+<em>reference cycles</em>: conas is féidir leo cuimhne a sceitheadh ​​agus conas iad a chosc.</p>
+<p>Léimís isteach!</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="ag-baint-úsáide-as-boxt-chun-pointe-ar-shonraí-ar-an-charn"><a class="header" href="#ag-baint-úsáide-as-boxt-chun-pointe-ar-shonraí-ar-an-charn">Ag baint úsáide as <code>Box&lt;T&gt;</code> chun Pointe ar Shonraí ar an Charn</a></h2>
+<p>Is é an pointeoir cliste is simplí ná <em>box</em>, a bhfuil a chineál scríofa
+<code>Box&lt;T&gt;</code>. Ligeann boscaí duit sonraí a stóráil ar an gcarn seachas ar an gcruach. Cad
+fós ar an chairn an pointeoir do na sonraí gcarn. Déan tagairt do Chaibidil 4 go
+athbhreithniú a dhéanamh ar an difríocht idir an chairn agus an gcarn.</p>
+<p>Níl forchostais feidhmíochta ag boscaí, seachas a gcuid sonraí a stóráil ar an
+gcarn in ionad ar an chruach. Ach níl mórán cumais bhreise acu
+ach an oiread. Úsáidfidh tú iad is minice sna cásanna seo:</p>
+<ul>
+<li>Nuair a bhíonn cineál agat nach féidir a mhéid a bheith ar eolas ag am tiomsaithe agus atá uait
+luach den chineál sin a úsáid i gcomhthéacs a éilíonn méid beacht</li>
+<li>Nuair a bheidh tú méid mór sonraí agus ba mhaith leat a aistriú úinéireachta ach
+cinntigh nach ndéanfar na sonraí a chóipeáil nuair a dhéanann tú amhlaidh</li>
+<li>Nuair is mian leat luach a bheith agat agus is cuma leat ach gur cineál é sin
+cuireann sé tréith ar leith i bhfeidhm seachas a bheith de chineál ar leith</li>
+</ul>
+<p>Léireoimid an chéad staid sna <a href="ch15-01-box.html#enabling-recursive-types-with-boxes">“Cumasú Cineálacha Athchúrsacha le
+Boscaí”</a><!-- neamhaird -->. Sa roinn
+sa dara cás, is féidir go dtógfaidh sé tamall fada aistriú úinéireachta ar líon mór sonraí
+am toisc go ndéantar na sonraí a chóipeáil timpeall ar an gcruach. Chun feidhmíocht a fheabhsú i
+an staid seo, is féidir linn an méid mór sonraí a stóráil ar an gcarn i mbosca.
+Ansin, ní dhéantar ach an méid beag sonraí pointeora a chóipeáil timpeall ar an gcruach,
+agus fanann na sonraí dá dtagraíonn sé in aon áit amháin ar an gcarn. Is é an tríú cás
+ar a dtugtar <em>trait object</em>, agus tugann Caibidil 18 roinn iomlán, <a href="ch18-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">“Ag baint úsáide as
+Réada Tréith a Ligeann Luachanna de Chineálacha Éagsúla,”</a><!--
+neamhaird a dhéanamh --> díreach leis an ábhar sin. Mar sin, an méid a fhoghlaimíonn tú anseo, cuirfidh tú isteach arís é
+Caibidil 18!</p>
+<h3 id="ag-baint-úsáide-as-boxt-chun-sonraí-a-stóráil-ar-an-charn"><a class="header" href="#ag-baint-úsáide-as-boxt-chun-sonraí-a-stóráil-ar-an-charn">Ag baint úsáide as <code>Box&lt;T&gt;</code> chun Sonraí a Stóráil ar an Charn</a></h3>
+<p>Sula ndéanaimid plé ar an gcás úsáide stórála carn do <code>Box&lt;T&gt;</code>, clúdóimid an
+comhréir agus conas idirghníomhú le luachanna atá stóráilte laistigh de <code>Box&lt;T&gt;</code>.</p>
+<p>Léiríonn liostú 15-1 conas bosca a úsáid chun luach <code>i32</code> a stóráil ar an gcarn:</p>
+<Listing number="15-1" file-name="src/main.rs" caption="Storing an `i32` value on the heap using a box">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let b = Box::new(5);
+    println!("b = {b}");
+}</code></pre></pre>
+</Listing>
+<p>Sainmhínímid an athróg <code>b</code> chun luach <code>Box</code> a bheith aige a dhíríonn ar an
+luach <code>5</code>, a leithdháiltear ar an gcarn. Priontálfaidh an clár seo <code>b = 5</code>; isteach
+sa chás seo, is féidir linn rochtain a fháil ar na sonraí sa bhosca cosúil le conas a bheadh ​​muid dá mba é seo
+bhí na sonraí ar an gcruach. Díreach mar aon luach faoi úinéireacht, nuair a théann bosca as
+scóip, mar a dhéanann <code>b</code> ag deireadh <code>main</code>, déanfar é a dháileadh. Tá an
+Tarlaíonn deallocation don bhosca (atá stóráilte ar an chruach) agus na sonraí é
+pointí go (stóráilte ar an gcarn).</p>
+<p>Níl sé an-úsáideach luach aonair a chur ar an gcarn, mar sin ní úsáidfidh tú boscaí faoi
+iad féin ar an mbealach seo go minic. Ag luachanna cosúil le <code>i32</code> amháin ar an
+Tá stack, áit a stóráiltear iad de réir réamhshocraithe, níos oiriúnaí don chuid is mó de
+cásanna. Breathnaímid ar chás ina ligeann boscaí dúinn na cineálacha a shainímid
+ní bheadh ​​cead againn mura mbeadh boscaí againn.</p>
+<h3 id="cineálacha-athchúrsacha-a-chumasú-le-boscaí"><a class="header" href="#cineálacha-athchúrsacha-a-chumasú-le-boscaí">Cineálacha Athchúrsacha a Chumasú le Boscaí</a></h3>
+<p>Is féidir luach eile den chineál céanna a bheith ag luach de chineál <em>recursive</em> mar chuid de
+féin. Cruthaíonn cineálacha athchúrsacha ceist mar go gcaithfidh meirge ag am tiomsaithe
+fios cé mhéad spáis a thógann cineál. Mar sin féin, tá neadú luachanna na
+d'fhéadfadh cineálacha athchúrsacha leanúint ar aghaidh go teoiriciúil gan teorainn, mar sin ní féidir le Rust a fhios conas
+go leor spáis de dhíth ar an luach. Toisc go bhfuil méid aitheanta ag boscaí, is féidir linn a chumasú
+cineálacha athchúrsacha trí bhosca a chur isteach sa sainmhíniú ar chineál athchúrsach.</p>
+<p>Mar shampla de chineál athchúrsach, déanaimis iniúchadh ar an liosta <em>cons</em>. Is sonraí é seo
+cineál a fhaightear go coitianta i dteangacha ríomhchlárúcháin feidhme. An cineál liosta míbhuntáistí
+beidh muid a shainiú simplí ach amháin i gcás an atarlú; dá bhrí sin, an
+beidh na coincheapa sa sampla a mbeimid ag obair leo úsáideach am ar bith a rachaidh tú isteach
+cásanna níos casta a bhaineann le cineálacha athfhillteacha.</p>
+<h4 id="tuilleadh-eolais-faoin-liosta-míbhuntáistí"><a class="header" href="#tuilleadh-eolais-faoin-liosta-míbhuntáistí">Tuilleadh Eolais Faoin Liosta Míbhuntáistí</a></h4>
+<p>Is struchtúr sonraí é <em>cons list</em> a thagann ón teanga ríomhchlárúcháin Lisp
+agus a chanúintí agus tá sé comhdhéanta de phéirí neadaithe, agus is é an leagan Lisp d'a
+liosta nasctha. Tagann a ainm ón bhfeidhm <code>cons</code> (gearr le haghaidh "construct
+function”) in Lisp a dhéanann péire nua óna dhá argóint
+ag glaoch <code>cons</code> ar phéire comhdhéanta de luach agus péire eile, is féidir linn
+déan liostaí míbhuntáistí a bheidh comhdhéanta de phéirí athchúrsacha.</p>
+<p>Mar shampla, seo léiriú pseudocode de liosta míbhuntáistí a bhfuil an
+liosta 1, 2, 3 le gach péire i lúibíní:</p>
+<pre><code class="language-téacs">(1, (2, (3, nialas)))
+</code></pre>
+<p>Tá dhá eilimint i ngach mír i liosta míbhuntáistí: luach na míre reatha
+agus an chéad mhír eile. Níl sa mhír dheiridh ar an liosta ach luach darb ainm <code>Nil</code>
+sin an chéad mhír eile. Táirgtear liosta míbhuntáistí trí na 'míbhuntáistí' a ghlaoch go hathchúrsach
+feidhm. Is é an t-ainm canónach chun bunchás an atarlaithe a chur in iúl ná <code>Nil</code>.
+Tabhair faoi deara nach ionann é seo agus an coincheap “neamhní” i gCaibidil 6,
+atá ina luach neamhbhailí nó as láthair.</p>
+<p>Ní struchtúr sonraí a úsáidtear go coitianta i Rust é an liosta míbhuntáistí. An chuid is mó den am
+nuair a bhíonn liosta míreanna agat i Rust, is rogha níos fearr é <code>Vec&lt;T&gt;</code> le húsáid.
+Cineálacha sonraí athfhillteacha eile atá níos casta <em>are</em> úsáideach i gcásanna éagsúla,
+ach ag tosú leis an liosta míbhuntáistí sa chaibidil seo, is féidir linn a iniúchadh conas boscaí
+lig dúinn cineál sonraí athchúrsach a shainiú gan mórán seachráin.</p>
+<p>I liostú 15-2 tá sainmhíniú enum le haghaidh liosta míbhuntáistí. Tabhair faoi deara go bhfuil an cód
+ní thiomsóidh sé fós toisc nach bhfuil méid aitheanta ag an gcineál <code>List</code>, rud a
+léireoimid.</p>
+<Listing number="15-2" file-name="src/main.rs" caption="The first attempt at defining an enum to represent a cons list data structure of `i32` values">
+<pre><code class="language-rust ignore does_not_compile">enum List {
+    Cons(i32, List),
+    Nil,
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
+</Listing>
+<blockquote>
+<p>Tabhair faoi deara: Tá liosta míbhuntáistí á gcur i bhfeidhm againn nach bhfuil ach luachanna <code>i32</code> le haghaidh an
+críocha an tsampla seo. D'fhéadfaimis é a chur i bhfeidhm ag baint úsáide as generics, mar a dhéanaimid
+a phléitear i gCaibidil 10, chun cineál liosta míbhuntáistí a shainiú a d'fhéadfadh luachanna de
+de shaghas ar bith.</p>
+</blockquote>
+<p>Ag baint úsáide as an gcineál <code>List</code> chun an liosta <code>1, 2, 3</code> a stóráil bheadh ​​cuma an chóid ann
+Liostáil 15-3:</p>
+<Listing number="15-3" file-name="src/main.rs" caption="Using the `List` enum to store the list `1, 2, 3`">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">enum List {
+</span><span class="boring">    Cons(i32, List),
+</span><span class="boring">    Nil,
+</span><span class="boring">}
+</span><span class="boring">
+</span>use crate::List::{Cons, Nil};
+
+fn main() {
+    let list = Cons(1, Cons(2, Cons(3, Nil)));
+}</code></pre>
+</Listing>
+<p>Tá <code>1</code> ag an gcéad luach <code>Cons</code> agus luach <code>List</code> eile. Is é an luach <code>List</code> seo
+luach <code>Cons</code> eile a bhfuil <code>2</code> aige agus luach <code>List</code> eile. An luach <code>List</code> seo
+is luach <code>Cons</code> amháin eile a shealbhaíonn <code>3</code> agus luach <code>List</code>, atá ar deireadh
+<code>Nil</code>, an t-athraitheach neamh-athfhillteach a chomharthaíonn deireadh an liosta.</p>
+<p>Má dhéanaimid iarracht an cód a thiomsú i Liostú 15-3, faighimid an earráid a thaispeántar i
+Liostáil 15-4:</p>
+<Listing number="15-4" file-name="output.txt" caption="The error we get when attempting to define a recursive enum">
+<pre><code class="language-console">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+error[E0072]: recursive type `List` has infinite size
+ --&gt; src/main.rs:1:1
+  |
+1 | enum List {
+  | ^^^^^^^^^
+2 |     Cons(i32, List),
+  |               ---- recursive without indirection
+  |
+help: insert some indirection (e.g., a `Box`, `Rc`, or `&amp;`) to break the cycle
+  |
+2 |     Cons(i32, Box&lt;List&gt;),
+  |               ++++    +
+
+error[E0391]: cycle detected when computing when `List` needs drop
+ --&gt; src/main.rs:1:1
+  |
+1 | enum List {
+  | ^^^^^^^^^
+  |
+  = note: ...which immediately requires computing when `List` needs drop again
+  = note: cycle used when computing whether `List` needs drop
+  = note: see https://rustc-dev-guide.rust-lang.org/overview.html#queries and https://rustc-dev-guide.rust-lang.org/query.html for more information
+
+Some errors have detailed explanations: E0072, E0391.
+For more information about an error, try `rustc --explain E0072`.
+error: could not compile `cons-list` (bin "cons-list") due to 2 previous errors
+</code></pre>
+</Listing>
+<p>Léiríonn an earráid seo "go bhfuil méid gan teorainn." Is é an chúis atá sainmhínithe againn
+<code>List</code> le malairt athfhillteach: tá luach eile ann féin
+go díreach. Mar thoradh air sin, ní féidir le Rust a dhéanamh amach cé mhéad spáis a theastaíonn uaidh a stóráil
+luach <code>List</code>. Déanaimis briseadh síos cén fáth a bhfaighimid an earráid seo. Ar dtús, féachfaimid conas
+Cinneann Rust cé mhéad spáis a theastaíonn uaidh chun luach de chineál neamh-athfhillteach a stóráil.</p>
+<h4 id="méid-cineál-neamh-athchúrsach-a-ríomh"><a class="header" href="#méid-cineál-neamh-athchúrsach-a-ríomh">Méid Cineál Neamh-Athchúrsach a Ríomh</a></h4>
+<p>Athghairm an <code>Message</code> enum a mhínigh muid i Liostú 6-2 nuair a phléamar enum
+sainmhínithe i gCaibidil 6:</p>
+<pre><pre class="playground"><code class="language-rust">enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+<p>Chun a chinneadh cé mhéad spáis atá le leithdháileadh ar luach <code>Message</code>, téann Rust
+trí gach leagan chun a fháil amach cé acu malairt de dhíth ar an spás is mó. Meirge
+feictear nach bhfuil spás ar bith de dhíth ar <code>Message::Quit</code>, tá go leor de dhíth ar <code>Message::Move</code>
+spás chun dhá luach <code>i32</code> a stóráil, agus mar sin de. Toisc nach mbeidh ach leagan amháin ann
+úsáidte, is é an spás is mó a bheidh ag teastáil ó luach <code>Message</code> ná an spás a thógfadh sé
+stóráil an ceann is mó dá leagan.</p>
+<p>Cuir é seo i gcodarsnacht leis an méid a tharlaíonn nuair a dhéanann Rust iarracht a fháil amach cé mhéad spáis a
+cineál athchúrsach cosúil leis an enum <code>List</code> i Liostú 15-2 riachtanas. Tosaíonn an tiomsaitheoir
+trí bhreathnú ar an leagan <code>Cons</code>, a bhfuil luach de chineál <code>i32</code> agus luach aige
+den chineál <code>List</code>. Mar sin, tá gá le <code>Cons</code> méid spáis atá comhionann le méid
+an <code>i32</code> móide méid <code>List</code>. Chun a dhéanamh amach cé mhéad cuimhne an <code>List</code>
+riachtanais cineáil, breathnaíonn an tiomsaitheoir ar na leaganacha, ag tosú leis an <code>Cons</code>
+athraitheach. Tá luach cineál <code>i32</code> agus luach cineáil ag an leagan <code>Cons</code>
+<code>List</code>, agus leanann an próiseas seo gan teorainn, mar a thaispeántar i bhFíor 15-1.</p>
+<img alt="Liosta CONS gan teorainn" src="img/trpl15-01.svg" class="center" style="leithead: 50%;" />
+<p><span class="caption">Fíor 15-1: ‘Liosta’ gan teorainn ina bhfuil éigríoch
+Leaganacha <code>cons</code></span></p>
+<h4 id="ag-baint-úsáide-as-boxt-chun-cineál-athchúrsach-a-fháil-le-méid-aitheanta"><a class="header" href="#ag-baint-úsáide-as-boxt-chun-cineál-athchúrsach-a-fháil-le-méid-aitheanta">Ag baint úsáide as <code>Box&lt;T&gt;</code> chun Cineál Athchúrsach a Fháil le Méid Aitheanta</a></h4>
+<p>Toisc nach féidir le Rust a dhéanamh amach cé mhéad spáis atá le leithdháileadh le haghaidh athchúrsach
+cineálacha sainithe, tugann an tiomsaitheoir earráid leis an moladh cabhrach seo:</p>
+<!-- manual-regeneration
+after doing automatic regeneration, look at listings/ch15-smart-pointers/listing-15-03/output.txt and copy the relevant line
+-->
+<pre><code class="language-text">help: insert some indirection (e.g., a `Box`, `Rc`, or `&amp;`) to break the cycle
+  |
+2 |     Cons(i32, Box&lt;List&gt;),
+  |               ++++    +
+</code></pre>
+<p>Sa mholadh seo, ciallaíonn “indíreach” sin in ionad luach a stóráil
+go díreach, ba cheart dúinn an struchtúr sonraí a athrú chun an luach a stóráil go hindíreach trí
+ag stóráil pointeoir don luach ina ionad sin.</p>
+<p>Toisc gur pointeoir é <code>Box&lt;T&gt;</code>, bíonn a fhios ag Rust i gcónaí cé mhéad spáis atá i <code>Box&lt;T&gt;</code>
+riachtanais: ní athraíonn méid an phointeora bunaithe ar an méid sonraí atá ann
+ag tagairt do. Ciallaíonn sé seo gur féidir linn <code>Box&lt;T&gt;</code> a chur taobh istigh den leagan <code>Cons</code> ina ionad sin
+de luach <code>List</code> eile go díreach. Díreoidh an <code>Box&lt;T&gt;</code> go dtí an chéad <code>List</code> eile
+luach a bheidh ar an gcarn seachas taobh istigh den leagan <code>Cons</code>.
+Go coincheapúil, tá liosta fós againn, a cruthaíodh le liostaí a bhfuil liostaí eile acu, ach
+tá an cur i bhfeidhm seo níos cosúla anois leis na míreanna a chur in aice lena chéile
+seachas taobh istigh dá chéile.</p>
+<p>Is féidir linn an sainmhíniú ar an <code>List</code> enum i Liostú 15-2 agus an úsáid a athrú
+den <code>List</code> i Liostú 15-3 leis an gcód i Liostú 15-5, a thiomsóidh:</p>
+<Listing number="15-5" file-name="src/main.rs" caption="Definition of `List` that uses `Box<T>` in order to have a known size">
+<pre><pre class="playground"><code class="language-rust">enum List {
+    Cons(i32, Box&lt;List&gt;),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+
+fn main() {
+    let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
+}</code></pre></pre>
+</Listing>
+<p>Tá méid <code>i32</code> de dhíth ar an leagan <code>Cons</code> mar aon leis an spás chun an
+sonraí pointeoir an bhosca. Ní stórálann an leagan <code>Nil</code> aon luachanna, mar sin teastaíonn níos lú spáis uaidh
+ná an leagan <code>Cons</code>. Tá a fhios againn anois go nglacfaidh aon luach <code>List</code> leis an
+méid <code>i32</code> móide méid sonraí pointeoir an bhosca. Trí úsáid a bhaint as bosca, tá
+briste an slabhra gan teorainn, athchúrsach, ionas gur féidir leis an tiomsaitheoir an méid a dhéanamh amach
+ní mór dó luach <code>List</code> a stóráil. Léiríonn Figiúr 15-2 cad é an leagan <code>Cons</code>
+cuma anois.</p>
+<img alt="A finite Cons list" src="img/trpl15-02.svg" class="center" />
+<p><span class="caption">Figure 15-2: A <code>List</code> that is not infinitely sized
+because <code>Cons</code> holds a <code>Box</code></span></p>
+<p>Ní sholáthraíonn boscaí ach an t-indíreach agus an leithdháileadh carn; níl aon acu
+cumais speisialta eile, cosúil leis na cinn a fheicfimid leis an bpointeoir cliste eile
+cineálacha. Níl an forchostas feidhmíochta acu chomh maith ná na cinn speisialta seo
+cumais a thabhú, ionas gur féidir leo a bheith úsáideach i gcásanna cosúil leis an liosta míbhuntáistí a bhfuil an
+is é indirection an t-aon ghné a theastaíonn uainn. Breathnóimid ar níos mó cásanna úsáide do bhoscaí
+i gCaibidil 18, freisin.</p>
+<p>Is pointeoir cliste é an cineál <code>Box&lt;T&gt;</code> toisc go gcuireann sé an trait <code>Deref</code> i bhfeidhm,
+rud a ligeann do luachanna <code>Box&lt;T&gt;</code> a láimhseáil mar thagairtí. Nuair a bhíonn <code>Box&lt;T&gt;</code>
+Téann luach as an raon feidhme, déantar na sonraí carn a bhfuil an bosca ag díriú orthu a ghlanadh
+suas chomh maith mar gheall ar chur i bhfeidhm na tréithe <code>Drop</code>. Beidh an dá thréith seo
+níos tábhachtaí fós maidir leis an bhfeidhmiúlacht a sholáthraíonn an pointeoir cliste eile
+cineálacha a phléfaimid sa chuid eile den chaibidil seo. Déanaimis iniúchadh ar an dá thréith seo
+níos mine.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="leideanna-cliste-a-chaitheamh-cosúil-le-tagairtí-rialta-leis-an-dtréith-deref"><a class="header" href="#leideanna-cliste-a-chaitheamh-cosúil-le-tagairtí-rialta-leis-an-dtréith-deref">Leideanna Cliste a Chaitheamh Cosúil le Tagairtí Rialta leis an dTréith <code>Deref</code></a></h2>
+<p>Nuair a chuirtear an trait <code>Deref</code> i bhfeidhm is féidir leat iompar an
+<em>dereference operator</em> <code>*</code> (gan a chur amú leis an iolrú nó glob
+oibreoir). Trí <code>Deref</code> a chur i bhfeidhm sa chaoi is gur féidir pointeoir cliste a bheith ann
+cóireáilte cosúil le tagairt rialta, is féidir leat scríobh cód a oibríonn ar
+tagairtí agus úsáid an cód sin le leideanna cliste freisin.</p>
+<p>Breathnaímid ar dtús ar an gcaoi a n-oibríonn an t-oibreoir díreference le tagairtí rialta.
+Ansin déanfaimid iarracht cineál saincheaptha a shainiú a iompraíonn mar <code>Box&lt;T&gt;</code>, agus féach cén fáth
+ní oibríonn an t-oibreoir díreference mar thagairt ar ár nua-shainithe
+cineál. Déanfaimid iniúchadh ar an gcaoi a bhféadfar é seo a dhéanamh má chuirtear an tréith 'Deref' i bhfeidhm
+leideanna cliste a bheith ag obair ar bhealaí cosúil le tagairtí. Ansin féachfaimid ar
+Gné <em>deref coercion</em> Rust agus conas a ligeann sé dúinn oibriú le ceachtar tagairt
+nó leideanna cliste.</p>
+<blockquote>
+<p>Nóta: Tá difríocht mhór amháin idir an cineál <code>MyBox&lt;T&gt;</code> atáimid ar tí
+build and the real <code>Box&lt;T&gt;</code>: ní stórálfaidh ár leagan a shonraí ar an gcarn.
+Táimid ag díriú an sampla seo ar <code>Deref</code>, mar sin áit a bhfuil na sonraí stóráilte i ndáiríre
+nach bhfuil chomh tábhachtach leis an iompar atá cosúil le pointeoir.</p>
+</blockquote>
+<!-- Seannasc, ná bain -->
+<p><a id="following-the-pointer-to-the-value-with-the-dereference-operator"></a></p>
+<h3 id="tar-éis-an-pointeoir-don-luach"><a class="header" href="#tar-éis-an-pointeoir-don-luach">Tar éis an Pointeoir don Luach</a></h3>
+<p>Is cineál pointeoir é tagairt rialta, agus bealach amháin chun smaoineamh ar phointeoir
+mar shaighead le luach atá stóráilte in áit éigin eile. I Liostú 15-6, cruthaímid a
+tagairt do luach <code>i32</code> agus ansin úsáid an t-oibreoir díreference chun an
+tagairt don luach:</p>
+<Listing number="15-6" file-name="src/main.rs" caption="Using the dereference operator to follow a reference to an `i32` value">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = 5;
+    let y = &amp;x;
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}</code></pre></pre>
+</Listing>
+<p>Tá luach <code>i32</code> <code>5</code> ag an athróg <code>x</code>. Leagamar <code>y</code> comhionann le tagairt do
+<code>x</code>. Is féidir linn a dhearbhú go bhfuil <code>x</code> cothrom le <code>5</code>. Mar sin féin, más mian linn a dhéanamh ar
+dearbhú faoin luach in <code>y</code>, caithfimid <code>*y</code> a úsáid chun an tagairt a leanúint
+chuig an luach a bhfuil sé ag díriú air (mar sin <em>dereference</em>) ionas gur féidir leis an tiomsaitheoir comparáid a dhéanamh
+an luach iarbhír. Nuair a dhírímid <code>y</code>, tá rochtain againn ar an luach slánuimhir
+Tá <code>y</code> ag cur in iúl gur féidir linn comparáid a dhéanamh le <code>5</code>.</p>
+<p>Dá ndéanfaimis iarracht <code>assert_eq!(5, y);</code> a scríobh ina ionad sin, gheobhaimid an tiomsú seo
+earráid:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling deref-example v0.1.0 (file:///projects/deref-example)
+error[E0277]: can't compare `{integer}` with `&amp;{integer}`
+ --&gt; src/main.rs:6:5
+  |
+6 |     assert_eq!(5, y);
+  |     ^^^^^^^^^^^^^^^^ no implementation for `{integer} == &amp;{integer}`
+  |
+  = help: the trait `PartialEq&lt;&amp;{integer}&gt;` is not implemented for `{integer}`
+  = note: this error originates in the macro `assert_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider dereferencing here
+ --&gt; file:///home/.rustup/toolchains/1.82/lib/rustlib/src/rust/library/core/src/macros/mod.rs:46:35
+  |
+46|                 if !(*left_val == **right_val) {
+  |                                   +
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `deref-example` (bin "deref-example") due to 1 previous error
+</code></pre>
+<p>Ní cheadaítear uimhir a chur i gcomparáid agus tagairt d’uimhir toisc go bhfuil siad
+cineálacha éagsúla. Ní mór dúinn an t-oibreoir díreference a úsáid chun an tagairt a leanúint
+leis an luach atá á lua aige.</p>
+<h3 id="ag-baint-úsáide-as-boxt-cosúil-le-tagairt"><a class="header" href="#ag-baint-úsáide-as-boxt-cosúil-le-tagairt">Ag baint úsáide as <code>Box&lt;T&gt;</code> Cosúil le Tagairt</a></h3>
+<p>Is féidir linn an cód a athscríobh i Liostú 15-6 chun <code>Box&lt;T&gt;</code> a úsáid in ionad a
+tagairt ; an t-oibreoir díreference a úsáidtear ar an <code>Box&lt;T&gt;</code> i Liostú 15-7
+feidhmeanna ar an mbealach céanna leis an oibreoir dereference a úsáidtear ar an tagairt i
+Liostáil 15-6:</p>
+<Listing number="15-7" file-name="src/main.rs" caption="Using the dereference operator on a `Box<i32>`">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = 5;
+    let y = Box::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}</code></pre></pre>
+</Listing>
+<p>Is é an príomhdhifríocht idir Liostú 15-7 agus Liostú 15-6 ná gur anseo a shocraímid
+<code>y</code> a bheith ina shampla de <code>Box&lt;T&gt;</code> ag tagairt do luach cóipeáilte de <code>x</code> in áit
+ná tagairt a dhíríonn ar luach <code>x</code>. Sa dearbhú deireanach, is féidir linn
+úsáid an t-oibreoir díreference chun pointeoir an <code>Box&lt;T&gt;</code> a leanúint mar an gcéanna
+bealach a rinne muid nuair a bhí <code>y</code> mar thagairt. Ansin, déanfaimid iniúchadh ar a bhfuil speisialta
+faoi ​​<code>Box&lt;T&gt;</code> a chuireann ar ár gcumas an t-oibreoir díthagartha a úsáid trí ár n-
+cineál féin.</p>
+<h3 id="Ár-pointeoir-cliste-féin-a-shainmhíniú"><a class="header" href="#Ár-pointeoir-cliste-féin-a-shainmhíniú">Ár Pointeoir Cliste Féin a Shainmhíniú</a></h3>
+<p>Déanaimis pointeoir cliste a thógáil cosúil leis an gcineál <code>Box&lt;T&gt;</code> a sholáthraíonn an
+leabharlann caighdeánach chun taithí a fháil ar an gcaoi a n-iompraíonn leideanna cliste difriúil ó
+tagairtí de réir réamhshocraithe. Ansin féachfaimid ar conas an cumas a úsáid chun an
+oibreoir dereference.</p>
+<p>Sainmhínítear an cineál <code>Box&lt;T&gt;</code> ar deireadh mar struchtúr tuple le eilimint amháin, mar sin
+Sainmhíníonn liostú 15-8 cineál <code>MyBox&lt;T&gt;</code> ar an mbealach céanna. Déanfaimid sainmhíniú freisin ar a
+feidhm <code>new</code> chun an fheidhm <code>new</code> a shainmhínítear ar <code>Box&lt;T&gt;</code> a mheaitseáil.</p>
+<Listing number="15-8" file-name="src/main.rs" caption="Defining a `MyBox<T>` type">
+<pre><pre class="playground"><code class="language-rust">struct MyBox&lt;T&gt;(T);
+
+impl&lt;T&gt; MyBox&lt;T&gt; {
+    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+        MyBox(x)
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Sainmhínímid struchtúr darb ainm <code>MyBox</code> agus dearbhaímid paraiméadar cineálach <code>T</code>, mar gheall ar
+ba mhaith linn go mbeadh luachanna d'aon chineál ag ár gcineál. Is struchtúr tuple é an cineál <code>MyBox</code>
+le gné amháin den chineál <code>T</code>. Glacann an fheidhm <code>MyBox::new</code> paraiméadar amháin de
+clóscríobh <code>T</code> agus seolann tú sampla <code>MyBox</code> a choinníonn an luach a cuireadh isteach.</p>
+<p>Déanaimis iarracht an <code>main</code> i Liostú 15-7 a chur le Liostú 15-8 agus
+é a athrú chun an cineál <code>MyBox&lt;T&gt;</code> a shainmhínigh muid a úsáid in ionad <code>Box&lt;T&gt;</code>. Tá an
+ní thiomsóidh an cód i Liostú 15-9 toisc nach bhfuil a fhios ag Rust conas díthagairt a dhéanamh
+<code>MyBox</code>.</p>
+<Listing number="15-9" file-name="src/main.rs" caption="Attempting to use `MyBox<T>` in the same way we used references and `Box<T>`">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let x = 5;
+    let y = MyBox::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}</code></pre>
+</Listing>
+<p>Here’s the resulting compilation error:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling deref-example v0.1.0 (file:///projects/deref-example)
+error[E0614]: type `MyBox&lt;{integer}&gt;` cannot be dereferenced
+  --&gt; src/main.rs:14:19
+   |
+14 |     assert_eq!(5, *y);
+   |                   ^^
+
+For more information about this error, try `rustc --explain E0614`.
+error: could not compile `deref-example` (bin "deref-example") due to 1 previous error
+</code></pre>
+<p>Ní féidir ár gcineál <code>MyBox&lt;T&gt;</code> a dhímheas toisc nach bhfuil sé sin curtha i bhfeidhm againn
+cumas ar ár gcineál. Chun díthagairt a dhéanamh leis an oibreoir <code>*</code>, déanaimid
+an trait <code>Deref</code> a chur i bhfeidhm.</p>
+<h3 id="caitheamh-cineál-cosúil-le-tagairt-tríd-an-trait-deref-a-chur-i-bhfeidhm"><a class="header" href="#caitheamh-cineál-cosúil-le-tagairt-tríd-an-trait-deref-a-chur-i-bhfeidhm">Caitheamh Cineál Cosúil le Tagairt tríd an Trait <code>Deref</code> a Chur i bhFeidhm</a></h3>
+<p>Mar a pléadh sa <a href="ch10-02-traits.html#implementing-a-trait-on-a-type">“Tréith a Chur i bhFeidhm ar Chineál”</a><!-- neamhaird a dhéanamh
+--> alt de Chaibidil 10, a chur i bhfeidhm tréith, ní mór dúinn a chur ar fáil
+cur i bhfeidhm do mhodhanna riachtanacha an trait. An trait <code>Deref</code>, ar fáil
+ag an leabharlann chaighdeánach, éilíonn orainn modh amháin darb ainm <code>deref</code> sin a chur i bhfeidhm
+faigheann sé <code>self</code> ar iasacht agus cuireann sé tagairt ar ais do na sonraí istigh. Liostáil 15-10
+ina bhfuil <code>Deref</code> curtha i bhfeidhm le cur leis an sainmhíniú ar <code>MyBox</code>:</p>
+<Listing number="15-10" file-name="src/main.rs" caption="Implementing `Deref` on `MyBox<T>`">
+<pre><pre class="playground"><code class="language-rust">use std::ops::Deref;
+
+impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+    type Target = T;
+
+    fn deref(&amp;self) -&gt; &amp;Self::Target {
+        &amp;self.0
+    }
+}
+<span class="boring">
+</span><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let x = 5;
+</span><span class="boring">    let y = MyBox::new(x);
+</span><span class="boring">
+</span><span class="boring">    assert_eq!(5, x);
+</span><span class="boring">    assert_eq!(5, *y);
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Sainmhíníonn an chomhréir <code>type Target = T;</code> cineál gaolmhar don <code>Deref</code>
+tréithe a úsáid. Is bealach beagán difriúil iad cineálacha comhlachaithe chun a
+paraiméadar cineálach, ach ní gá duit a bheith buartha fúthu faoi láthair; clúdóidh muid
+iad go mion i gCaibidil 20.</p>
+<p>Líonaimid corp an mhodha <code>deref</code> le <code>&amp;self.0</code> mar sin filleann <code>deref</code> a
+tagairt don luach a theastaíonn uainn a rochtain leis an oibreoir <code>*</code>; aisghairm ó na
+<a href="ch05-01-defining-structs.html#using-tuple-structs-without-named-fields-to-create-different-types">“Úsáid Struchtúir Tuple gan Réimsí Ainmnithe chun Éagsúla a Chruthú
+Cineálacha”</a><!-- neamhaird --> roinn de Chaibidil 5 a bhfuil rochtain ag <code>.0</code> air
+an chéad luach i struchtúr tuple. An fheidhm <code>main</code> i Liostú 15-9 go
+glaonna <code>*</code> ar an luach <code>MyBox&lt;T&gt;</code> le chéile anois, agus na dearbhuithe pas!</p>
+<p>Gan an tréithe <code>Deref</code>, ní féidir leis an tiomsaitheoir ach tagairtí <code>&amp;</code> a dhímheas.
+Tugann an modh <code>deref</code> an cumas don tiomsaitheoir luach d'aon chineál a ghlacadh
+a chuireann <code>Deref</code> i bhfeidhm agus a ghlaonn an modh <code>deref</code> chun tagairt <code>&amp;</code> a fháil go
+tá a fhios aige conas dereference.</p>
+<p>Nuair a chuamar isteach <code>* y</code> i Liosta 15-9, rith Rust é seo taobh thiar de na cásanna
+cód:</p>
+<pre><code class="language-meirge  neamhaird">*(y.deref())
+</code></pre>
+<p>Cuireann Rust glaoch chuig an modh <code>deref</code> in ionad an oibreora <code>*</code> agus ansin a
+tagairt shimplí ionas nach mbeidh orainn smaoineamh ar cé acu an gcaithfimid nó nach gá
+glaoigh ar an modh <code>deref</code>. Ligeann an ghné Rust seo dúinn cód a scríobh a fheidhmíonn
+mar an gcéanna cibé an bhfuil tagairt rialta againn nó cineál a chuireann i bhfeidhm
+<code>Deref</code>.</p>
+<p>Is é an fáth go dtugann an modh <code>deref</code> tagairt ar ais do luach, agus go bhfuil an
+tá gá le tagairt shimplí lasmuigh de na lúibíní in <code>*(y.deref())</code> fós,
+a bhaineann leis an gcóras úinéireachta. Má thug an modh <code>deref</code> an luach ar ais
+go díreach in ionad tagairt don luach, bhogfaí an luach amach as
+<code>self</code>. Nílimid ag iarraidh úinéireacht a ghlacadh ar an luach inmheánach taobh istigh de <code>MyBox&lt;T&gt;</code> in
+sa chás seo nó i bhformhór na gcásanna ina n-úsáidimid an t-oibreoir díreference.</p>
+<p>Tabhair faoi deara go gcuirtear glao chuig an modh <code>deref</code> in ionad an oibreora <code>*</code> agus
+ansin cuir glaoch chuig an oibreoir <code>*</code> uair amháin, gach uair a úsáidimid <code>*</code> inár gcód.
+Toisc nach dtagann ionadú an oibreora <code>*</code> arís gan teorainn, ní mór dúinn
+deireadh suas le sonraí den chineál <code>i32</code>, a mheaitseálann an <code>5</code> in <code>assert_eq!</code> i
+Liostáil 15-9.</p>
+<h3 id="comhéigeantais-fhoréigthe-intuigthe-le-feidhmeanna-agus-modhanna"><a class="header" href="#comhéigeantais-fhoréigthe-intuigthe-le-feidhmeanna-agus-modhanna">Comhéigeantais Fhoréigthe intuigthe le Feidhmeanna agus Modhanna</a></h3>
+<p>Tiontaíonn <em>Deref coercion</em> tagairt do chineál a chuireann an <code>Deref</code> i bhfeidhm
+tréith isteach i dtagairt do chineál eile. Mar shampla, is féidir comhéigean deref a thiontú
+<code>&amp;String</code> go <code>&amp;str</code> toisc go gcuireann <code>String</code> an trait <code>Deref</code> i bhfeidhm ionas go mbeidh sé
+Filleann <code>&amp;str</code>. Is áis é comhéigean deref a fheidhmíonn Rust ar argóintí chun
+feidhmeanna agus modhanna, agus ní oibríonn sé ach ar chineálacha a chuireann an <code>Deref</code> i bhfeidhm
+trait. Tarlaíonn sé go huathoibríoch nuair a thugaimid tagairt do chineál áirithe
+luach mar argóint le feidhm nó modh nach bhfuil ag teacht leis an bparaiméadar
+clóscríobh an sainmhíniú ar fheidhm nó modh. Seicheamh glaonna chuig an <code>deref</code>
+athraíonn modh an cineál a sholáthraíomar isteach sa chineál a theastaíonn ón bparaiméadar.</p>
+<p>Cuireadh comhéigean deref le Rust ionas go mbeidh feidhm ag ríomhchláraitheoirí ag scríobh agus
+ní gá an oiread tagairtí agus díthagairtí follasacha a chur isteach i nglaonna modha
+le <code>&amp;</code> agus <code>*</code>. Ligeann an ghné comhéigean deref dúinn níos mó cód a scríobh freisin
+is féidir oibriú le haghaidh tagairtí nó leideanna cliste.</p>
+<p>Chun comhéigean deref a fheiceáil i ngníomh, bainimis úsáid as an gcineál <code>MyBox&lt;T&gt;</code> a shainmhíníomar ann
+Liostáil 15-8 chomh maith le cur i bhfeidhm <code>Deref</code> a chuireamar leis sa Liostú
+15-10. Léiríonn liosta 15-11 an sainmhíniú ar fheidhm a bhfuil sreangshleasa aici
+paraiméadar:</p>
+<Listing number="15-11" file-name="src/main.rs" caption="A `hello` function that has the parameter `name` of type `&str`">
+<pre><pre class="playground"><code class="language-rust">fn hello(name: &amp;str) {
+    println!("Hello, {name}!");
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Is féidir linn an fheidhm <code>hello</code> a thabhairt le slisne teaghrán mar argóint, mar shampla
+<code>hello("Rust");</code> mar shampla. Trí chomhéigean deref is féidir <code>hello</code> a thabhairt air
+le tagairt do luach cineáil <code>MyBox&lt;String&gt;</code>, mar a thaispeántar i Liostú 15-12:</p>
+<Listing number="15-12" file-name="src/main.rs" caption="Calling `hello` with a reference to a `MyBox<String>` value, which works because of deref coercion">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::ops::Deref;
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+</span><span class="boring">    type Target = T;
+</span><span class="boring">
+</span><span class="boring">    fn deref(&amp;self) -&gt; &amp;T {
+</span><span class="boring">        &amp;self.0
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn hello(name: &amp;str) {
+</span><span class="boring">    println!("Hello, {name}!");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let m = MyBox::new(String::from("Rust"));
+    hello(&amp;m);
+}</code></pre></pre>
+</Listing>
+<p>Anseo táimid ag glaoch ar an bhfeidhm <code>hello</code> leis an argóint <code>&amp;m</code>, is é sin a
+tagairt do luach <code>MyBox&lt;String&gt;</code>. Toisc gur chuireamar an trait <code>Deref</code> i bhfeidhm
+ar <code>MyBox&lt;T&gt;</code> i Liostú 15-10, is féidir le Rust <code>&amp;MyBox &lt;String&gt;</code> a iompú ina <code>&amp;String</code>
+trí ghlaoch ar <code>deref</code>. Soláthraíonn an leabharlann chaighdeánach cur i bhfeidhm <code>Deref</code>
+ar <code>String</code> a sheolann sreangán ar ais, agus tá sé seo i gcáipéisíocht an API
+le haghaidh <code>Deref</code>. Glaonn Rust ar <code>deref</code> arís chun an <code>&amp;String</code> a iompú ina <code>&amp;str</code>, a
+ag teacht le sainmhíniú na feidhme <code>hello</code>.</p>
+<p>Murar chuir Rust comhéigean deref i bhfeidhm, bheadh ​​orainn an cód a scríobh isteach
+Liostáil 15-13 in ionad an chóid i Liostú 15-12 chun <code>hello</code> a ghlaoch le luach
+den chineál <code>&amp;MyBox&lt;String&gt;</code>.</p>
+<Listing number="15-13" file-name="src/main.rs" caption="The code we would have to write if Rust didn’t have deref coercion">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::ops::Deref;
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+</span><span class="boring">    type Target = T;
+</span><span class="boring">
+</span><span class="boring">    fn deref(&amp;self) -&gt; &amp;T {
+</span><span class="boring">        &amp;self.0
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn hello(name: &amp;str) {
+</span><span class="boring">    println!("Hello, {name}!");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let m = MyBox::new(String::from("Rust"));
+    hello(&amp;(*m)[..]);
+}</code></pre></pre>
+</Listing>
+<p>Déanann an <code>(*m)</code> tagairt don <code>MyBox&lt;String&gt;</code> mar <code>String</code>. Ansin tá an <code>&amp;</code> agus
+<code>[..]</code> glac sliseog teaghrán den <code>String</code> atá comhionann leis an teaghrán iomlán go
+mheaitseáil síniú <code>hello</code>. Tá sé níos deacra an cód seo gan comhéigeantais deref a dhéanamh
+léamh, scríobh, agus tuiscint leis na siombailí seo go léir atá i gceist. Deref comhéigean
+ligeann do Rust na tiontuithe seo a láimhseáil dúinn go huathoibríoch.</p>
+<p>Nuair a shainmhínítear an tréith <code>Deref</code> do na cineálacha atá i gceist, déanfaidh Rust anailís ar an
+cineálacha agus úsáid <code>Deref::deref</code> a mhéad uair is gá chun tagairt a fháil
+mheaitseáil le cineál an pharaiméadar. An líon uaireanta is gá go mbeadh <code>Deref::deref</code>
+a cuireadh isteach réitithe ag am tiomsaithe, mar sin níl aon phionós ama rite as a ghlacadh
+buntáiste a bhaint as comhéigean deref!</p>
+<h3 id="mar-a-idirghníomhaíonn-comhéigean-deref-le-mutability"><a class="header" href="#mar-a-idirghníomhaíonn-comhéigean-deref-le-mutability">Mar a Idirghníomhaíonn Comhéigean Deref le Mutability</a></h3>
+<p>Cosúil leis an gcaoi a n-úsáideann tú an tréith <code>Deref</code> chun an t-oibreoir <code>*</code> a shárú
+tagairtí domhalartaithe, is féidir leat an tréith <code>DerefMut</code> a úsáid chun an <code>*</code> a shárú
+oibreoir ar thagairtí mutable.</p>
+<p>Déanann Rust comhéigean a dhíspreagadh nuair a aimsíonn sé cineálacha agus cur i bhfeidhm tréithe i dtrí cinn
+cásanna:</p>
+<ul>
+<li>Ó <code>&amp;T</code> go <code>&amp;U</code> nuair a <code>T: Deref &lt;Target=U&gt;</code></li>
+<li>Ó <code>&amp;mut T</code> go <code>&amp;mut U</code> nuair <code>T: DerefMut&lt;Target=U&gt;</code></li>
+<li>Ó <code>&amp;mut T</code> go <code>&amp;U</code> nuair a <code>T: Deref &lt;Target=U&gt;</code></li>
+</ul>
+<p>Is ionann an chéad dá chás agus a chéile ach amháin an dara cás
+feidhmíonn mutability. Deir an chéad chás má tá <code>&amp;T</code>, agus <code>T</code> agat
+cuireann sé <code>Deref</code> i bhfeidhm do chineál éigin <code>U</code>, is féidir leat <code>&amp;U</code> a fháil go trédhearcach. Tá an
+deir an dara cás go dtarlaíonn an comhéigean deref céanna le haghaidh tagairtí mutable.</p>
+<p>Tá an tríú cás níos deacra: comhleanfaidh meirge tagairt chomhshóite do chás
+do-mhothúchánach. Ach is <em>not</em> a mhalairt is féidir: beidh tagairtí do-laghdaithe
+riamh iallach a chur ar thagairtí mutable. Mar gheall ar na rialacha iasachtaithe, má tá
+tagairt sho-shóite, ní mór gurb í an tagairt sho-shó-shamhail sin an t-aon tagairt dó sin
+sonraí (ar shlí eile, ní thiomsódh an clár). Comhshó amháin a thiontú
+ní sháróidh tagairt do thagairt neamh-inmhalartaithe amháin na rialacha iasachtaíochta.
+Chun tagairt do-ath-inmheánach a thiontú go tagairt shochorraithe, bheadh ​​gá leis an
+is í an tagairt tosaigh do- immutable an t-aon tagairt domhalartaithe do na sonraí sin, ach
+ní ráthaíonn na rialacha iasachtaíochta é sin. Mar sin, ní féidir le Rust an
+toimhde gur tagairt do-ath-inmheánach a thiontú go tagairt shochorraithe
+is féidir.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="cód-rith-ar-ghlantachán-leis-an-trait-drop"><a class="header" href="#cód-rith-ar-ghlantachán-leis-an-trait-drop">Cód Rith ar Ghlantachán leis an Trait <code>Drop</code></a></h2>
+<p>Is é an dara tréith atá tábhachtach don phatrún pointeoir cliste ná <code>Drop</code>, rud a ligeann
+shaincheapann tú cad a tharlaíonn nuair a bhíonn luach ar tí dul as an raon feidhme. Is féidir leat
+cur i bhfeidhm a sholáthar don tréith <code>Drop</code> ar aon chineál, agus is féidir leis an gcód sin
+a úsáid chun acmhainní cosúil le comhaid nó naisc líonra a scaoileadh.</p>
+<p>Táimid ag tabhairt isteach <code>Drop</code> i gcomhthéacs leideanna cliste mar go bhfuil an
+is beagnach i gcónaí a úsáidtear feidhmiúlacht na tréithe <code>Drop</code> agus a
+pointeoir cliste. Mar shampla, nuair a scaoiltear <code>Box&lt;T&gt;</code> díroinnfidh sé an
+spás ar an gcarn a díríonn an bosca air.</p>
+<p>I dteangacha áirithe, i gcás cineálacha áirithe, ní mór don ríomhchláraitheoir cód a ghlaoch chun cuimhne saor in aisce
+nó acmhainní gach uair a chríochnaíonn siad ag baint úsáide as sampla de na cineálacha sin. Samplaí
+cuir láimhseálacha comhaid, soicéid nó glais san áireamh. Má dhéanann siad dearmad, d'fhéadfadh an córas
+éirí ró-ualaithe agus tuairteála. I Rust, is féidir leat a shonrú go bhfuil beagán áirithe de
+cód a rith aon uair a théann luach as raon feidhme, agus cuirfidh an tiomsaitheoir isteach
+an cód seo go huathoibríoch. Mar thoradh air sin, ní gá duit a bheith cúramach faoi
+cód glanta a chur i ngach áit i gclár a chuireann cás ar leith
+tá an cineál críochnaithe - ní bheidh tú ag sceitheadh ​​acmhainní fós!</p>
+<p>Sonraíonn tú an cód le rith nuair a théann luach as raon feidhme trí chur i bhfeidhm an
+Tréith <code>drop</code>. Éilíonn an tréith <code>Drop</code> ort modh amháin ainmnithe a chur i bhfeidhm
+<code>drop</code> a thógann tagairt mutable do <code>self</code>. Chun féachaint nuair a ghlaonn Rust 'titim',
+cuirimis ráitis <code>drop</code> le <code>println!</code> i bhfeidhm faoi láthair.</p>
+<p>Léiríonn liostú 15-14 struchtúr <code>CustomSmartPointer</code> nach bhfuil ach saincheaptha aige
+feidhmiúlacht ná go ndéanfaidh sé <code>Dropping CustomSmartPointer!</code> a phriontáil nuair a bheidh an
+mar shampla téann as raon feidhme, chun a thaispeáint nuair a ritheann Rust an fheidhm <code>drop</code>.</p>
+<Listing number="15-14" file-name="src/main.rs" caption="A `CustomSmartPointer` struct that implements the `Drop` trait where we would put our cleanup code">
+<pre><pre class="playground"><code class="language-rust">struct CustomSmartPointer {
+    data: String,
+}
+
+impl Drop for CustomSmartPointer {
+    fn drop(&amp;mut self) {
+        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+    }
+}
+
+fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("my stuff"),
+    };
+    let d = CustomSmartPointer {
+        data: String::from("other stuff"),
+    };
+    println!("CustomSmartPointers created.");
+}</code></pre></pre>
+</Listing>
+<p>Tá an trait <code>Drop</code> san áireamh sa réamhrá, mar sin ní gá dúinn é a thabhairt isteach
+scóip. Cuirimid an tréith <code>Drop</code> ar <code>CustomSmartPointer</code> i bhfeidhm agus soláthraímid an
+cur i bhfeidhm don mhodh <code>drop</code> ar a dtugtar <code>println!</code>. An comhlacht ar an
+Is éard is feidhm <code>drop</code> ann ná áit a gcuirfeá aon loighic a theastaigh uait a rith
+téann sampla de do chineál as raon feidhme. Táimid ag priontáil roinnt téacs anseo chun
+léiriú go radhairc cathain a ghlaonn Rust 'titim'.</p>
+<p>I <code>main</code>, cruthaímid dhá chás de <code>CustomSmartPointer</code> agus ansin priontáil
+<code>CustomSmartPointers created</code>. Ag deireadh <code>main</code>, ár gcásanna de
+Rachaidh <code>CustomSmartPointer</code> as an scóip, agus cuirfidh Rust glaoch ar an gcód a chuireamar
+sa mhodh <code>drop</code>, ár dteachtaireacht deiridh a phriontáil. Tabhair faoi deara nár ghá dúinn
+glaoigh ar an modh <code>drop</code> go sainráite.</p>
+<p>Agus an clár seo á rith againn, feicfidh muid an t-aschur seo a leanas:</p>
+<pre><pre class="playground"><code class="language-rust">struct CustomSmartPointer {
+    data: String,
+}
+
+impl Drop for CustomSmartPointer {
+    fn drop(&amp;mut self) {
+        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+    }
+}
+
+fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("my stuff"),
+    };
+    let d = CustomSmartPointer {
+        data: String::from("other stuff"),
+    };
+    println!("CustomSmartPointers created.");
+}</code></pre></pre>
+<p>Thug Rust <code>drop</code> orainn go huathoibríoch nuair a chuaigh ár gcásanna amach as an scóip,
+ag glaoch ar an gcód a shonraigh muid. Cuirtear athróga in ord droim ar ais de
+a greadadh, mar sin thit <code>d</code> roimh <code>c</code>. Is é cuspóir an tsampla seo ná
+treoir amhairc a thabhairt duit ar conas a oibríonn an modh <code>drop</code>; de ghnáth dhéanfá
+sonraigh an cód glanta nach mór do do chineál a rith seachas prionta
+teachtaireacht.</p>
+<h3 id="luach-a-ísliú-go-luath-le-stdmemdrop"><a class="header" href="#luach-a-ísliú-go-luath-le-stdmemdrop">Luach a ísliú go luath le <code>std::mem::drop</code></a></h3>
+<p>Ar an drochuair, níl sé éasca an <code>drop</code> uathoibríoch a dhíchumasú
+feidhmiúlacht. De ghnáth ní gá ‘titim’ a dhíchumasú; pointe iomlán an
+Is éard atá i gceist le tréithe “titim” go dtugtar aire uathoibríoch dó. Ó am go chéile, áfach,
+b'fhéidir gur mhaith leat luach a ghlanadh go luath. Sampla amháin is ea nuair a úsáidtear cliste
+leideanna a bhainistíonn glais: b'fhéidir gur mhaith leat an modh <code>drop</code> a chur i bhfeidhm
+scaoileann sé an glas ionas gur féidir le cód eile sa raon feidhme céanna an glas a fháil.
+Ní ligeann Rust duit modh ‘titim’ na trait ‘Drop’ a ghlaoch de láimh; ina ionad
+caithfidh tú glaoch ar an bhfeidhm <code>std::mem::drop</code> a sholáthraíonn an leabharlann chaighdeánach
+más mian leat iallach a chur ar luach a ísliú roimh dheireadh a scóip.</p>
+<p>Má dhéanaimid iarracht modh 'titim' an trait <code>Drop</code> a ghlaoch de láimh trí athrú a dhéanamh ar an
+`príomhfheidhm' ó Liostú 15-14, mar a thaispeántar i Liostú 15-15, gheobhaidh muid
+earráid tiomsaithe:</p>
+<Listing number="15-16" file-name="src/main.rs" caption="Calling `std::mem::drop` to explicitly drop a value before it goes out of scope">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct CustomSmartPointer {
+</span><span class="boring">    data: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Drop for CustomSmartPointer {
+</span><span class="boring">    fn drop(&amp;mut self) {
+</span><span class="boring">        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("some data"),
+    };
+    println!("CustomSmartPointer created.");
+    drop(c);
+    println!("CustomSmartPointer dropped before the end of main.");
+}</code></pre></pre>
+</Listing>
+<p>Nuair a dhéanaimid iarracht an cód seo a thiomsú, gheobhaidh muid an earráid seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling drop-example v0.1.0 (file:///projects/drop-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running `target/debug/drop-example`
+CustomSmartPointer created.
+Dropping CustomSmartPointer with data `some data`!
+CustomSmartPointer dropped before the end of main.
+</code></pre>
+<p>Deir an teachtaireacht earráide seo nach bhfuil cead againn ‘titim’ a ghlaoch go sainráite. Tá an
+Úsáideann teachtaireacht earráide an téarma <em>destructor</em>, arb é an téarma ríomhchlárúcháin ginearálta é
+le haghaidh feidhm a ghlanann sampla. Tá <em>destructor</em> ar aon dul le a
+<em>constructor</em>, rud a chruthaíonn sampla. Is é an fheidhm <code>drop</code> i Rust amháin
+scriostóir ar leith.</p>
+<p>Ní ligeann Rust dúinn ‘titim’ a ghlaoch go sainráite mar go mbeadh Rust fós
+glaoigh go huathoibríoch ar <code>drop</code> ar an luach ag deireadh <code>main</code>. Chuirfeadh sé seo faoi deara a
+earráid <em>double free</em> toisc go mbeadh Rust ag iarraidh an luach céanna a ghlanadh
+faoi ​​dhó.</p>
+<p>Ní féidir linn ionsá uathoibríoch <code>drop</code> a dhíchumasú nuair a théann luach as
+scóip, agus ní féidir linn an modh <code>drop</code> a ghlaoch go sainráite. Mar sin, más gá dúinn bhfeidhm
+luach atá le glanadh suas go luath, úsáidimid an fheidhm <code>std::mem::drop</code>.</p>
+<p>Tá an fheidhm <code>std::mem::drop</code> difriúil ón modh <code>drop</code> sa <code>Drop</code>
+trait. Tugaimid é trí rith mar argóint an luach ba mhaith linn a bhrú chun titim.
+Tá an fheidhm sa réamhrá, ionas /../listings/gur féidir linn <code>main</code> i Liostú 15-15 a mhodhnú go
+cuir glaoch ar an bhfeidhm <code>drop</code>, mar a thaispeántar i Liostú 15-16:</p>
+<Listing number="15-16" file-name="src/main.rs" caption="Ag glaoch ar `std::mem::drop` chun luach a laghdú go sainráite sula dtéann sé as an scóip">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct CustomSmartPointer {
+</span><span class="boring">    data: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Drop for CustomSmartPointer {
+</span><span class="boring">    fn drop(&amp;mut self) {
+</span><span class="boring">        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("some data"),
+    };
+    println!("CustomSmartPointer created.");
+    drop(c);
+    println!("CustomSmartPointer dropped before the end of main.");
+}</code></pre></pre>
+</Listing>
+<p>Má ritheann tú an cód seo, déanfar na rudaí seo a leanas a phriontáil:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling drop-example v0.1.0 (file:///projects/drop-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running `target/debug/drop-example`
+CustomSmartPointer created.
+Dropping CustomSmartPointer with data `some data`!
+CustomSmartPointer dropped before the end of main.
+</code></pre>
+<p>Tá an téacs <code>Dropping CustomSmartPointer with data `some data`!</code> clóite
+idir an <code>CustomSmartPointer created.</code> agus <code>CustomSmartPointer dropped before the end of main.</code> a thaispeánann go dtugtar an cód modha <code>drop</code> ar
+titim <code>c</code> ag an bpointe sin.</p>
+<p>Is féidir leat cód sonraithe i gcur i bhfeidhm tréithe <code>Drop</code> a úsáid ar go leor bealaí chun
+glantachán a dhéanamh áisiúil agus sábháilte: mar shampla, d'fhéadfá é a úsáid chun do chuid féin a chruthú
+leithdháilteoir cuimhne féin! Leis an tréith <code>Drop</code> agus córas úinéireachta Rust, tusa
+ní gá cuimhneamh ar ghlanadh suas toisc go ndéanann Rust é go huathoibríoch.</p>
+<p>Ní gá freisin a bheith buartha faoi fhadhbanna a eascraíonn de thaisme
+glanadh suas luachanna atá fós in úsáid: an córas úinéireachta a dhéanann cinnte
+tá tagairtí bailí i gcónaí cinntíonn sé freisin nach nglaofar <code>drop</code> ach uair amháin nuair
+níl an luach á úsáid a thuilleadh.</p>
+<p>Anois agus <code>Box&lt;T&gt;</code> agus roinnt de thréithe an chliste scrúdaithe againn
+leideanna, breathnaímis ar roinnt leideanna cliste eile atá sainmhínithe sa chaighdeán
+leabharlann.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="rct-an-pointeoir-cliste-a-chomhairtear-le-tagairt"><a class="header" href="#rct-an-pointeoir-cliste-a-chomhairtear-le-tagairt"><code>Rc&lt;T&gt;</code>, an Pointeoir Cliste a Chomhairtear le Tagairt</a></h2>
+<p>I bhformhór na gcásanna, tá úinéireacht soiléir: tá a fhios agat go díreach cén athróg
+úinéireacht luach tugtha. Mar sin féin, tá cásanna nuair a d'fhéadfadh luach amháin a bheith
+úinéirí iolracha. Mar shampla, i struchtúir sonraí graf, d'fhéadfadh imill iolracha
+pointe go dtí an nód céanna, agus tá an nód sin faoi úinéireacht choincheapúil ag gach ceann de na himill
+an pointe sin dó. Níor cheart nód a ghlanadh suas mura bhfuil aon cheann ann
+imill dírithe air agus mar sin níl aon úinéirí.</p>
+<p>Caithfidh tú úinéireacht iolrach a chumasú go sainráite trí úsáid a bhaint as an gcineál Rust
+<code>Rc&lt;T&gt;</code>, ar giorrúchán é le haghaidh comhaireamh <em>tagartha</em>. An cineál <code>Rc&lt;T&gt;</code>
+coinníonn sé cuntas ar líon na dtagairtí do luach chun a chinneadh an bhfuil nó nach bhfuil
+tá an luach fós in úsáid. Má tá nialas tagairtí do luach, an luach
+is féidir é a ghlanadh gan aon tagairtí a bheith neamhbhailí.</p>
+<p>Samhlaigh <code>Rc&lt;T&gt;</code> mar theilifís i seomra teaghlaigh. Nuair a thagann duine amháin isteach chun féachaint ar an teilifís,
+cuireann siad ar siúl é. Is féidir le daoine eile teacht isteach sa seomra agus féachaint ar an teilifís. Nuair a bheidh an ceann deireanach
+fágann duine an seomra, casfaidh siad as an teilifís toisc nach bhfuil sé in úsáid a thuilleadh.
+Má chasann duine éigin as an teilifís agus daoine eile fós ag breathnú air, bheadh
+uproar ó na faireoirí teilifíse atá fágtha!</p>
+<p>Bainimid úsáid as an gcineál <code>Rc&lt;T&gt;</code> nuair is mian linn roinnt sonraí a leithdháileadh ar an gcarn le haghaidh
+codanna iomadúla dár gclár le léamh agus ní féidir linn a chinneadh ag am tiomsaithe
+cén chuid a chríochnóidh agus na sonraí á n-úsáid go deireanach. Dá mbeadh a fhios againn cén chuid a chríochnódh
+Ar deireadh, d'fhéadfaimis an chuid sin a dhéanamh mar úinéir na sonraí, agus an ghnáthúinéireacht
+thiocfadh éifeacht leis na rialacha a chuirtear i bhfeidhm ag am tiomsaithe.</p>
+<p>Tabhair faoi deara nach bhfuil <code>Rc&lt;T&gt;</code> le húsáid ach i gcásanna aon-snáithithe. Nuair a phléimid
+comhairgeadra i gCaibidil 16, clúdóimid conas comhaireamh tagartha a dhéanamh
+cláir ilshnáithe.</p>
+<h3 id="ag-baint-úsáide-as-rct-chun-sonraí-a-chomhroinnt"><a class="header" href="#ag-baint-úsáide-as-rct-chun-sonraí-a-chomhroinnt">Ag baint úsáide as <code>Rc&lt;T&gt;</code> chun Sonraí a Chomhroinnt</a></h3>
+<p>Fillfimid ar ár sampla liosta míbhuntáistí i Liostú 15-5. Thabhairt chun cuimhne go bhfuil sainmhínithe againn
+é ag baint úsáide as <code>Box&lt;T&gt;</code>. An uair seo, cruthóimid dhá liosta a roinneann an bheirt acu faoi úinéireacht
+den tríú liosta. Go coincheapúil, is cosúil é seo le Fíor 15-3:</p>
+<img alt="Dhá liosta a roinneann úinéireacht tríú liosta" src="img/trpl15-03.svg" class="center" />
+<p><span class="caption">Fíor 15-3: Dhá liosta, <code>b</code> agus <code>c</code>, ag roinnt úinéireachta ar
+an tríú liosta, <code>a</code></span></p>
+<p>Cruthóimid liosta <code>a</code> ina bhfuil 5 agus ansin 10. Ansin déanfaimid dhá cheann eile
+liostaí: <code>b</code> a thosaíonn le 3 agus <code>c</code> a thosaíonn le 4. An dá <code>b</code> agus <code>c</code>
+Leanfaidh liostaí ar aghaidh ansin go dtí an chéad liosta <code>a</code> ina bhfuil 5 agus 10. I gceann eile
+focail, roinnfidh an dá liosta an chéad liosta ina bhfuil 5 agus 10.</p>
+<p>Ag iarraidh an cás seo a chur i bhfeidhm ag baint úsáide as ár sainmhíniú ar <code>List</code> le <code>Box&lt;T&gt;</code>
+nach n-oibreoidh sé, mar a thaispeántar i Liostú 15-17:</p>
+<Listing number="15-17" file-name="src/main.rs" caption="Demonstrating we’re not allowed to have two lists using `Box<T>` that try to share ownership of a third list">
+<pre><code class="language-rust ignore does_not_compile">enum List {
+    Cons(i32, Box&lt;List&gt;),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+
+fn main() {
+    let a = Cons(5, Box::new(Cons(10, Box::new(Nil))));
+    let b = Cons(3, Box::new(a));
+    let c = Cons(4, Box::new(a));
+}</code></pre>
+</Listing>
+<p>Nuair a thiomsaimid an cód seo, faighimid an earráid seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+error[E0382]: use of moved value: `a`
+  --&gt; src/main.rs:11:30
+   |
+9  |     let a = Cons(5, Box::new(Cons(10, Box::new(Nil))));
+   |         - move occurs because `a` has type `List`, which does not implement the `Copy` trait
+10 |     let b = Cons(3, Box::new(a));
+   |                              - value moved here
+11 |     let c = Cons(4, Box::new(a));
+   |                              ^ value used here after move
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `cons-list` (bin "cons-list") due to 1 previous error
+</code></pre>
+<p>Is leis na leaganacha <code>Cons</code> na sonraí atá ina seilbh, mar sin nuair a chruthaímid an liosta <code>b</code>, <code>a</code>
+bogtar isteach i <code>b</code> agus is le <code>b`` a</code>. Ansin, nuair a dhéanaimid iarracht <code>a</code> a úsáid arís nuair
+ag cruthú <code>c</code>, níl cead againn mar go bhfuil <code>a</code> bogtha.</p>
+<p>D'fhéadfaimis an sainmhíniú ar <code>Cons</code> a athrú chun tagairtí a choinneáil ina ionad, ach ansin
+bheadh ​​orainn paraiméadair saoil a shonrú. Trí shaolré a shonrú
+paraiméadair, ba mhaith linn a shonrú go mbeidh gach eilimint sa liosta beo ag
+ar a laghad chomh fada leis an liosta iomlán. Is é seo an cás maidir leis na heilimintí agus na liostaí
+i Liosta 15-17, ach ní i ngach cás.</p>
+<p>Ina áit sin, athróimid ár sainmhíniú ar <code>List</code> chun <code>Rc&lt;T&gt;</code> a úsáid ina ionad
+<code>Box&lt;T&gt;</code>, mar a thaispeántar i Liosta 15-18. Beidh luach ag gach leagan <code>Cons</code> anois
+agus <code>Rc&lt;T&gt;</code> ag tagairt do <code>List</code>. Nuair a chruthaímid <code>b</code>, in ionad a ghlacadh
+úinéireacht <code>a</code>, clónálfaimid an <code>Rc&lt;List&gt;</code> atá á choimeád ag <code>a</code>, mar sin
+líon na dtagairtí a mhéadú ó dhuine amháin go dtí dhá agus ligean do <code>a</code> agus <code>b</code>
+comhúinéireacht na sonraí sa <code>Rc&lt;List&gt;</code> sin. Clónfaimid <code>a</code> freisin nuair
+ag cruthú <code>c</code>, ag méadú líon na dtagairtí ó dhó go dtí trí. Gach uair
+tugaimid <code>Rc::clone</code>, beidh an comhaireamh tagartha do na sonraí laistigh den <code>Rc&lt;List&gt;</code>
+méadú, agus ní dhéanfar na sonraí a ghlanadh mura bhfuil tagairtí nialasacha ann
+é.</p>
+<Listing number="15-18" file-name="src/main.rs" caption="A definition of `List` that uses `Rc<T>`">
+<pre><pre class="playground"><code class="language-rust">enum List {
+    Cons(i32, Rc&lt;List&gt;),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::rc::Rc;
+
+fn main() {
+    let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+    let b = Cons(3, Rc::clone(&amp;a));
+    let c = Cons(4, Rc::clone(&amp;a));
+}</code></pre></pre>
+</Listing>
+<p>Ní mór dúinn ráiteas <code>use</code> a chur leis chun <code>Rc&lt;T&gt;</code> a thabhairt isteach sa scóip toisc nach bhfuil
+sa réamhrá. I <code>main</code>, cruthaímid an liosta ina bhfuil 5 agus 10 agus stóráilimid é
+<code>Rc&lt;List&gt;</code> nua in <code>a</code>. Ansin nuair a chruthaímid <code>b</code> agus <code>c</code>, tugaimid an
+Feidhm <code>Rc::clone</code> agus cuir tagairt don <code>Rc&lt;List&gt;</code> in <code>a</code> mar
+argóint.</p>
+<p>D’fhéadfaimis ‘a.clone()’ a bheith tugtha air seachas ‘Rc::clone(&amp;a)’, ach Rust’s
+Is é an coinbhinsiún <code>Rc::clone</code> a úsáid sa chás seo. Cur i bhfeidhm na
+Ní dhéanann <code>Rc::clone</code> cóip dhomhain de na sonraí go léir cosúil le formhór na gcineálacha'
+feidhmithe <code>clone</code> a dhéanamh. Ní dhéanann an glao chuig <code>Rc::clone</code> ach incrimintí an
+comhaireamh tagartha, rud nach dtógann mórán ama. Is féidir le cóipeanna domhain de shonraí a
+go leor ama. Trí úsáid a bhaint as <code>Rc::clone</code> le haghaidh comhaireamh tagartha, is féidir linn ó thaobh amhairc de
+idirdhealú a dhéanamh idir na cineálacha cóip domhain de Chluain Eois agus na cineálacha Chluain Eois a
+an líon tagartha a mhéadú. Nuair a lorg fadhbanna feidhmíochta sa
+chód, ní gá dúinn ach machnamh a dhéanamh ar na clóin dhomhainchóipe agus is féidir neamhaird a dhéanamh ar ghlaonna chuig
+<code>Rc::clone</code>.</p>
+<h3 id="méadaíonn-clónáil-an-rct-an-líon-tagartha"><a class="header" href="#méadaíonn-clónáil-an-rct-an-líon-tagartha">Méadaíonn Clónáil an <code>Rc&lt;T&gt;</code> an ​​Líon Tagartha</a></h3>
+<p>Athraímis ár sampla oibre i Liostú 15-18 ionas gur féidir linn an tagairt a fheiceáil
+athraítear an comhaireamh de réir mar a chruthaímid agus a scaoiltear tagairtí don <code>Rc&lt;List&gt;</code> in <code>a</code>.</p>
+<p>I Liostú 15-19, athróimid <code>main</code> ionas go mbeidh scóip istigh aige thart ar an liosta <code>c</code>;
+ansin is féidir linn a fheiceáil conas a athraíonn an comhaireamh tagartha nuair a théann <code>c</code> as raon feidhme.</p>
+<Listing number="15-19" file-name="src/main.rs" caption="Printing the reference count">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">enum List {
+</span><span class="boring">    Cons(i32, Rc&lt;List&gt;),
+</span><span class="boring">    Nil,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">use crate::List::{Cons, Nil};
+</span><span class="boring">use std::rc::Rc;
+</span><span class="boring">
+</span>fn main() {
+    let a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+    println!("count after creating a = {}", Rc::strong_count(&amp;a));
+    let b = Cons(3, Rc::clone(&amp;a));
+    println!("count after creating b = {}", Rc::strong_count(&amp;a));
+    {
+        let c = Cons(4, Rc::clone(&amp;a));
+        println!("count after creating c = {}", Rc::strong_count(&amp;a));
+    }
+    println!("count after c goes out of scope = {}", Rc::strong_count(&amp;a));
+}</code></pre></pre>
+</Listing>
+<p>Ag gach pointe den chlár ina n-athraíonn an comhaireamh tagartha, priontálaimid an
+comhaireamh tagartha, a fhaighimid ach glaoch ar an bhfeidhm <code>Rc::strong_count</code>. seo
+tugtar <code>strong_count</code> ar an bhfeidhm seachas <code>count</code> mar go bhfuil an cineál <code>Rc&lt;T&gt;</code>
+freisin tá <code>count_lag</code>; Feicfimid cén úsáid a bhaintear as <code>count_lag</code> sa
+[“Timthriallta Tagartha a Chosc: Ag iompú <code>Rc&lt;T&gt;</code> ina a
+<code>lag&lt;T&gt;</code>”][cosc-ref-timthriallta] <!-- neamhaird a dhéanamh ar --> alt.</p>
+<p>Priontálann an cód seo iad seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.45s
+     Running `target/debug/cons-list`
+count after creating a = 1
+count after creating b = 2
+count after creating c = 3
+count after c goes out of scope = 2
+</code></pre>
+<p>Feicimid go bhfuil comhaireamh tagartha tosaigh 1 ag an <code>Rc&lt;List&gt;</code> in <code>a</code>; ansin
+gach uair a thugaimid <code>clone</code>, ardaíonn an comhaireamh faoi 1. Nuair a théann <code>c</code> as an scóip,
+téann an comhaireamh síos faoi 1. Ní gá dúinn feidhm a ghlaoch chun laghdú a dhéanamh ar an
+comhaireamh tagartha mar ní mór dúinn <code>Rc::clone</code> a ghlaoch chun an tagairt a mhéadú
+comhaireamh: laghdaítear an comhaireamh tagartha le cur i bhfeidhm na tréithe <code>Buail</code>
+go huathoibríoch nuair a théann luach <code>Rc&lt;T&gt;</code> as raon feidhme.</p>
+<p>Is é an rud nach féidir linn a fheiceáil sa sampla seo ná nuair a théann <code>b</code> agus ansin <code>a</code> as raon feidhme
+ag deireadh <code>main</code>, is é an comhaireamh ansin 0, agus an <code>Rc&lt;List&gt;</code> glanta suas
+go hiomlán. Trí úsáid a bhaint as <code>Rc&lt;T&gt;</code> is féidir il-úinéirí a bheith ag luach amháin, agus
+cinntíonn an comhaireamh go bhfanann an luach bailí chomh fada le haon cheann de na húinéirí
+fós ann.</p>
+<p>Trí thagairtí domhalartaithe, ligeann <code>Rc&lt;T&gt;</code> duit sonraí a roinnt idir iolraí
+codanna de do chlár le léamh amháin. Má cheadaigh <code>Rc&lt;T&gt;</code> duit iolra a bheith agat
+tagairtí mutable freisin, d'fhéadfá sárú a dhéanamh ar cheann de na rialacha iasachtaithe a pléadh
+i gCaibidil 4: is féidir le hiasachtaí mutable iolracha go dtí an áit chéanna a bheith ina chúis le rásaí sonraí
+agus neamhréireachtaí. Ach tá sé an-úsáideach a bheith in ann sonraí a mutadh! Sa chéad cheann eile
+alt seo, pléifimid an patrún sócmhainneachta intí agus an <code>RefCell&lt;T&gt;</code>
+clóscríobh gur féidir leat a úsáid in éineacht le <code>Rc&lt;T&gt;</code> chun oibriú leis seo
+srian immutability.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="refcellt-agus-an-patrún-um-shócmhainneacht-intí"><a class="header" href="#refcellt-agus-an-patrún-um-shócmhainneacht-intí"><code>RefCell&lt;T&gt;</code> agus an Patrún um Shócmhainneacht Intí</a></h2>
+<p>Is patrún deartha é <em>Interior mutability</em> i Rust a ligeann duit sóchán a dhéanamh
+sonraí fiú nuair a bhíonn tagairtí do-chomhtháthaithe ann do na sonraí sin; de ghnáth, seo
+dícheadaítear gníomhaíocht leis na rialacha iasachtaithe. Chun sonraí a mutate, úsáideann an patrún
+cód <code>unsafe</code> taobh istigh de struchtúr sonraí chun gnáthrialacha Rust a rialaíonn a lúbadh
+sóchán agus iasacht. Cuireann cód neamhshábháilte in iúl don tiomsaitheoir go bhfuilimid
+na rialacha a sheiceáil de láimh seachas a bheith ag brath ar an tiomsaitheoir chun iad a sheiceáil
+dúinne; déanfaimid tuilleadh plé ar chód neamhshábháilte i gCaibidil 20.</p>
+<p>Ní féidir linn cineálacha a úsáid a úsáideann an patrún sócmhainneachta taobh istigh ach amháin nuair is féidir linn
+a áirithiú go leanfar na rialacha iasachtaíochta ag am rite, cé go bhfuil an
+ní féidir leis an tiomsaitheoir é sin a ráthú. Tá an cód <code>unsafe</code> atá i gceist fillte ansin i a
+API sábháilte, agus tá an cineál seachtrach fós immutable.</p>
+<p>Déanaimis an coincheap seo a iniúchadh trí bhreathnú ar an gcineál <code>RefCell&lt;T&gt;</code> a leanann an
+patrún muability istigh.</p>
+<h3 id="rialacha-iasachta-a-fhorfheidhmiú-ag-am-rite-le-refcellt"><a class="header" href="#rialacha-iasachta-a-fhorfheidhmiú-ag-am-rite-le-refcellt">Rialacha Iasachta a Fhorfheidhmiú ag Am Rite le <code>RefCell&lt;T&gt;</code></a></h3>
+<p>Murab ionann agus <code>Rc&lt;T&gt;</code>, is ionann an cineál <code>RefCell&lt;T&gt;</code> agus úinéireacht aonair ar na sonraí
+coinníonn sé. Mar sin, cad a dhéanann difríocht idir <code>RefCell&lt;T&gt;</code> agus cineál mar <code>Box&lt;T&gt;</code>?
+Tabhair chun cuimhne na rialacha iasachtaithe a d’fhoghlaim tú i gCaibidil 4:</p>
+<ul>
+<li>Ag aon am ar leith, féadfaidh tú <em>either</em> (ach ní an dá cheann) tagairt sho-shóite amháin a bheith agat
+nó líon ar bith tagairtí do-inaistrithe.</li>
+<li>Caithfidh teistiméireachtaí a bheith bailí i gcónaí.</li>
+</ul>
+<p>Le tagairtí agus <code>Box&lt;T&gt;</code>, cuirtear malairtí na rialacha iasachtaíochta i bhfeidhm ag
+am tiomsaithe. Le <code>RefCell&lt;T&gt;</code>, cuirtear na hathróga seo i bhfeidhm <em>ag am rite</em>.
+Le tagairtí, má sháraíonn tú na rialacha seo, gheobhaidh tú earráid tiomsaithe. Le
+<code>RefCell&lt;T&gt;</code>, má sháraíonn tú na rialacha seo, beidh do chlár i scaoll agus scoirfidh tú.</p>
+<p>Is iad na buntáistí a bhaineann le seiceáil na rialacha iasachtaithe ag am tiomsaithe ná earráidí
+a ghabháil níos luaithe sa phróiseas forbartha, agus níl aon tionchar ar
+feidhmíocht runtime toisc go bhfuil an anailís ar fad críochnaithe roimh ré. Dóibh siúd
+cúiseanna, is é seiceáil na rialacha iasachtaithe ag am tiomsaithe an rogha is fearr sa
+formhór na gcásanna, agus sin an fáth gurb é seo réamhshocrú Rust.</p>
+<p>Is é an buntáiste a bhaineann leis na rialacha iasachtaithe a sheiceáil ag am rite ina ionad sin
+ceadaítear cásanna áirithe cuimhne-sábháilte ansin, áit a mbeidís
+dícheadaithe ag na seiceálacha ama tiomsaithe. Anailís statach, cosúil leis an tiomsaitheoir Rust,
+coimeádach ó dhúchas é. Tá roinnt airíonna de chód dodhéanta a bhrath trí
+ag déanamh anailís ar an gcód: is é an sampla is cáiliúla ná an Fadhb Stad, mar atá
+thar raon feidhme an leabhair seo ach is ábhar spéisiúil é le taighde a dhéanamh air.</p>
+<p>Toisc go bhfuil roinnt anailíse dodhéanta, más rud é nach féidir leis an tiomsaitheoir Rust a bheith cinnte an
+Comhlíonann cód na rialacha úinéireachta, d'fhéadfadh sé diúltú do chlár ceart; isteach
+ar an mbealach seo, tá sé coimeádach. Má ghlac Rust le clár mícheart, úsáideoirí
+ní bheadh ​​muinín agat as na ráthaíochtaí a thugann Rust. Mar sin féin, má Rust
+ndiúltóidh clár ceart, beidh an ríomhchláraitheoir míchaoithiúlacht, ach rud ar bith
+is féidir tubaisteach tarlú. Tá an cineál <code>RefCell&lt;T&gt;</code> úsáideach nuair atá tú cinnte go bhfuil do
+Leanann an cód na rialacha iasachtaithe ach níl an tiomsaitheoir in ann a thuiscint agus
+ráthaíocht go.</p>
+<p>Cosúil le <code>Rc&lt;T&gt;</code>, tá <code>RefCell&lt;T&gt;</code> le húsáid i gcásanna aon-snáithe amháin
+agus tabharfaidh sé earráid ama tiomsaithe duit má dhéanann tú iarracht é a úsáid i snáithe ilshnáithe
+comhthéacs. Labhróimid faoi conas feidhmiúlacht <code>RefCell&lt;T&gt;</code> a fháil in a
+clár ilshnáithe i gCaibidil 16.</p>
+<p>Seo achoimre ar na fáthanna le <code>Box&lt;T&gt;</code>, <code>Rc&lt;T&gt;</code>, nó <code>RefCell&lt;T&gt;</code> a roghnú:</p>
+<ul>
+<li>Cuireann <code>Rc&lt;T&gt;</code> ar chumas úinéirí iolracha na sonraí céanna; <code>Box&lt;T&gt;</code> agus <code>RefCell&lt;T&gt;</code>
+úinéirí aonair a bheith acu.</li>
+<li>Ceadaíonn <code>Box&lt;T&gt;</code> iasachtaí domhalartaithe nó só-aistrithe a sheiceáil ag am tiomsaithe; <code>Rc&lt;T&gt;</code>
+ní cheadaíonn sé ach iasachtaí domhalartaithe a sheiceáil ag am tiomsaithe; Ceadaíonn <code>RefCell&lt;T&gt;</code>
+iasachtaí domhalartaithe nó só-aistrithe arna seiceáil ag am rite.</li>
+<li>Toisc go gceadaíonn <code>RefCell&lt;T&gt;</code> iasachtaí só-aistrithe a sheiceáil ag am rite, is féidir leat
+mutnaigh an luach taobh istigh den <code>RefCell&lt;T&gt;</code> fiú nuair atá an <code>RefCell&lt;T&gt;</code>
+dochorraithe.</li>
+</ul>
+<p>Ag sóchán an luach taobh istigh de luach neamh-inmhalartaithe tá an <em>só-shócmhainneacht</em>
+patrún. Breathnaímid ar chás ina bhfuil sócmhainneacht istigh úsáideach agus
+scrúdú conas is féidir.</p>
+<h3 id="insó-shócmhainneacht-iasacht-in-chomhshóite-go-luach-neamh-chomhargadh"><a class="header" href="#insó-shócmhainneacht-iasacht-in-chomhshóite-go-luach-neamh-chomhargadh">Insó-shócmhainneacht: Iasacht In-chomhshóite go Luach Neamh-Chomhargadh</a></h3>
+<p>Iarmhairt ar na rialacha iasachtaíochta is ea nuair a bhíonn luach neamh-inmharthana agat, i.e.
+ní féidir leat é a fháil ar iasacht go frithpháirteach. Mar shampla, ní thiomsóidh an cód seo:</p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let x = 5;
+    let y = &amp;mut x;
+}</code></pre>
+<p>Dá ndéanfadh tú iarracht an cód seo a thiomsú, gheobhfá an earráid seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling borrowing v0.1.0 (file:///projects/borrowing)
+error[E0596]: cannot borrow `x` as mutable, as it is not declared as mutable
+ --&gt; src/main.rs:3:13
+  |
+3 |     let y = &amp;mut x;
+  |             ^^^^^^ cannot borrow as mutable
+  |
+help: consider changing this to be mutable
+  |
+2 |     let mut x = 5;
+  |         +++
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `borrowing` (bin "borrowing") due to 1 previous error
+</code></pre>
+<p>Mar sin féin, tá cásanna ann ina mbeadh sé úsáideach luach a athrú
+é féin ina mhodhanna ach is cosúil go bhfuil sé neamh-inchurtha le cód eile. Cód lasmuigh den
+ní bheadh ​​modhanna luacha in ann an luach a athrú. Ag baint úsáide as <code>RefCell&lt;T&gt;</code> is
+bealach amháin chun an cumas sócmhainneachta taobh istigh a fháil, ach <code>RefCell&lt;T&gt;</code>
+ní théann sé thart ar na rialacha iasachtaithe go hiomlán: an seiceálaí iasachtaí sa
+Ceadaíonn tiomsaitheoir seo sócmhainneacht istigh, agus na rialacha iasacht a sheiceáil
+ag am rite ina ionad. Má sháraíonn tú na rialacha, gheobhaidh tú <code>panic!</code> ina ionad
+earráid tiomsaitheora.</p>
+<p>Oibrímid trí shampla praiticiúil inar féidir linn <code>RefCell&lt;T&gt;</code> a úsáid chun mutate
+luach domhalartaithe agus féach cén fáth a bhfuil sé sin úsáideach.</p>
+<h4 id="cás-Úsáide-le-haghaidh-inmheánach-mutability-réada-bréige"><a class="header" href="#cás-Úsáide-le-haghaidh-inmheánach-mutability-réada-bréige">Cás Úsáide le haghaidh Inmheánach Mutability: Réada Bréige</a></h4>
+<p>Uaireanta le linn tástála úsáidfidh ríomhchláraitheoir cineál in ionad cineál eile,
+chun iompar ar leith a urramú agus a dhearbhú go bhfuil sé curtha i bhfeidhm i gceart.
+Tugtar <em>tástáil dúbailte</em> ar an gcineál seo coinneálaí. Smaoinigh air sa chiall a
+“stunt dúbailte” i ndéanamh scannán, nuair a chéimíonn duine isteach agus ina ionadaí
+aisteoir radharc tricky ar leith a dhéanamh. Seasann dúbailteanna tástála do chineálacha eile
+nuair atá tástálacha á rith againn. Is cineálacha sainiúla dúbailte tástála iad <em>Mock objects</em>
+a thaifeadann cad a tharlaíonn le linn tástála ionas gur féidir leat a dhearbhú go bhfuil an ceart
+gníomhartha ar siúl.</p>
+<p>Níl réada ag meirge sa chiall chéanna is atá réada ag teangacha eile,
+agus níl feidhmiúlacht réad bréige ag Rust ionsuite sa ghnáthleabharlann
+mar a dhéanann roinnt teangacha eile. Mar sin féin, is féidir leat a chruthú cinnte struchtúr sin
+fónfaidh na críocha céanna le réad bréige.</p>
+<p>Seo an cás a dhéanfaimid tástáil: cruthóimid leabharlann a rianóidh luach
+in aghaidh uasluacha agus seolann sé teachtaireachtaí bunaithe ar cé chomh gar don uasluach
+luach atá ar an luach reatha. D’fhéadfaí an leabharlann seo a úsáid chun súil a choinneáil ar a
+cuóta úsáideora don líon glaonna API a bhfuil cead acu a dhéanamh, mar shampla.</p>
+<p>Ní chuirfidh ár leabharlann ar fáil ach an fheidhmiúlacht chun rianú a dhéanamh ar cé chomh gar do na
+is é luach uasta agus cad ba cheart do na teachtaireachtaí a bheith ag na hamanna. Feidhmchláir
+beifear ag súil go soláthróidh úsáid ár leabharlann an mheicníocht chun an
+teachtaireachtaí: d'fhéadfadh an t-iarratas teachtaireacht a chur san iarratas, seol
+ríomhphost, seol teachtaireacht téacs, nó rud éigin eile. Ní gá go mbeadh a fhios ag an leabharlann
+go mion. Níl ag teastáil uaidh ach rud a chuireann tréith a chuirfimid ar fáil i bhfeidhm
+ar a dtugtar <code>Messenger</code>. Léiríonn liostú 15-20 an cód leabharlainne:</p>
+<Listing number="15-20" file-name="src/lib.rs" caption="A library to keep track of how close a value is to a maximum value and warn when the value is at certain levels">
+<pre><code class="language-rust noplayground">pub trait Messenger {
+    fn send(&amp;self, msg: &amp;str);
+}
+
+pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+    messenger: &amp;'a T,
+    value: usize,
+    max: usize,
+}
+
+impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+where
+    T: Messenger,
+{
+    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+        LimitTracker {
+            messenger,
+            value: 0,
+            max,
+        }
+    }
+
+    pub fn set_value(&amp;mut self, value: usize) {
+        self.value = value;
+
+        let percentage_of_max = self.value as f64 / self.max as f64;
+
+        if percentage_of_max &gt;= 1.0 {
+            self.messenger.send("Error: You are over your quota!");
+        } else if percentage_of_max &gt;= 0.9 {
+            self.messenger
+                .send("Urgent warning: You've used up over 90% of your quota!");
+        } else if percentage_of_max &gt;= 0.75 {
+            self.messenger
+                .send("Warning: You've used up over 75% of your quota!");
+        }
+    }
+}</code></pre>
+</Listing>
+<p>Cuid thábhachtach amháin den chód seo ná go bhfuil modh amháin ag an trait <code>Messenger</code>
+ar a dtugtar <code>send</code> a thógann tagairt do- immutable do <code>self</code> agus téacs an
+teachtaireacht. Is é an tréith seo an comhéadan a chaithfidh ár réad bréige a chur i bhfeidhm ionas go mbeidh
+is féidir an bhréag a úsáid ar an mbealach céanna le réad réadúil. An chuid thábhachtach eile
+is é sin go dteastaíonn uainn iompar an mhodha <code>set_value</code> a thástáil ar an
+<code>LimitTracker</code>. Is féidir linn an méid a thugaimid isteach don pharaiméadar <code>value</code> a athrú, ach
+ní thugann <code>set_value</code> tada ar ais dúinn chun dearbhuithe a dhéanamh air. Ba mhaith linn a bheith
+in ann a rá má chruthaímid <code>LimitTracker</code> le rud éigin a chuireann i bhfeidhm
+an tréithe <code>Messenger</code> agus luach ar leith do <code>max</code>, nuair a théimid ar aghaidh difriúil
+uimhreacha le haghaidh <code>value</code>, deirtear leis an teachtaire na teachtaireachtaí cuí a sheoladh.</p>
+<p>Ní mór dúinn réad bréige a, in ionad a sheoladh r-phost nó teachtaireacht téacs nuair a againn
+glaoigh ar <code>send</code>, ní choinneoidh sé ach súil ar na teachtaireachtaí a iarrtar air a sheoladh. Is féidir linn
+cruthaigh sampla nua den réad bréige, cruthaigh <code>LimitTracker</code> a úsáideann an
+réad bréige, cuir glaoch ar an modh <code>set_value</code> ar <code>LimitTracker</code>, agus ansin seiceáil é sin
+tá na teachtaireachtaí a mbeimid ag súil leo ag an réad bréige. Léiríonn liostú 15-21 iarracht chun
+cuir réad bréige i bhfeidhm chun é sin a dhéanamh, ach ní cheadóidh an seiceálaí iasachtaí é:</p>
+<Listing number="15-21" file-name="src/lib.rs" caption="An attempt to implement a `MockMessenger` that isn’t allowed by the borrow checker">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub trait Messenger {
+</span><span class="boring">    fn send(&amp;self, msg: &amp;str);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+</span><span class="boring">    messenger: &amp;'a T,
+</span><span class="boring">    value: usize,
+</span><span class="boring">    max: usize,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+</span><span class="boring">where
+</span><span class="boring">    T: Messenger,
+</span><span class="boring">{
+</span><span class="boring">    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+</span><span class="boring">        LimitTracker {
+</span><span class="boring">            messenger,
+</span><span class="boring">            value: 0,
+</span><span class="boring">            max,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn set_value(&amp;mut self, value: usize) {
+</span><span class="boring">        self.value = value;
+</span><span class="boring">
+</span><span class="boring">        let percentage_of_max = self.value as f64 / self.max as f64;
+</span><span class="boring">
+</span><span class="boring">        if percentage_of_max &gt;= 1.0 {
+</span><span class="boring">            self.messenger.send("Error: You are over your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.9 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Urgent warning: You've used up over 90% of your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.75 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Warning: You've used up over 75% of your quota!");
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct MockMessenger {
+        sent_messages: Vec&lt;String&gt;,
+    }
+
+    impl MockMessenger {
+        fn new() -&gt; MockMessenger {
+            MockMessenger {
+                sent_messages: vec![],
+            }
+        }
+    }
+
+    impl Messenger for MockMessenger {
+        fn send(&amp;self, message: &amp;str) {
+            self.sent_messages.push(String::from(message));
+        }
+    }
+
+    #[test]
+    fn it_sends_an_over_75_percent_warning_message() {
+        let mock_messenger = MockMessenger::new();
+        let mut limit_tracker = LimitTracker::new(&amp;mock_messenger, 100);
+
+        limit_tracker.set_value(80);
+
+        assert_eq!(mock_messenger.sent_messages.len(), 1);
+    }
+}</code></pre>
+</Listing>
+<p>Sainmhíníonn an cód tástála seo struchtúr <code>MockMessenger</code> a bhfuil <code>sent_messages</code> aige
+réimse le <code>Vec</code> de luachanna <code>String</code> chun súil a choinneáil ar na teachtaireachtaí a insítear dó
+a sheoladh. Sainmhínímid freisin feidhm ghaolmhar <code>new</code> le go mbeidh sé áisiúil di
+cruthaigh luachanna <code>MockMessenger</code> nua a thosaíonn le liosta folamh teachtaireachtaí. muid
+ansin cuir an trait <code>Messenger</code> i bhfeidhm do <code>MockMessenger</code> ionas gur féidir linn a
+<code>MockMessenger</code> go <code>LimitTracker</code>. Sa sainmhíniú ar an modh <code>send</code>, táimid
+tóg an teachtaireacht a tugadh isteach mar pharaiméadar agus stóráil sa <code>MockMessenger</code> í
+liosta de na <code>sent_messages</code>.</p>
+<p>Sa tástáil, táimid ag tástáil cad a tharlaíonn nuair a iarrtar ar an <code>LimitTracker</code> a shocrú
+<code>value</code> go dtí rud atá níos mó ná 75 faoin gcéad den luach <code>max</code>. Gcéad dul síos, muid
+cruthaigh <code>MockMessenger</code> nua, a thosóidh le liosta folamh teachtaireachtaí.
+Ansin cruthaímid <code>LimitTracker</code> nua agus déanaimid tagairt don nua
+<code>MockMessenger</code> agus luach <code>max</code> de 100. Glaoimid ar an modh <code>set_value</code> ar an
+<code>LimitTracker</code> le luach 80, atá níos mó ná 75 faoin gcéad de 100. Ansin
+dearbhaímid go bhfuil liosta na dteachtaireachtaí atá á gcoimeád ag an <code>MockMessenger</code>
+de anois teachtaireacht amháin a bheith ann.</p>
+<p>Mar sin féin, tá fadhb amháin leis an tástáil seo, mar a thaispeántar anseo:</p>
+<pre><code class="language-consól">$ cargo test
+   Compiling limit-tracker v0.1.0 (file:///projects/limit-tracker)
+error[E0596]: cannot borrow `self.sent_messages` as mutable, as it is behind a `&amp;` reference
+  --&gt; src/lib.rs:58:13
+   |
+58 |             self.sent_messages.push(String::from(message));
+   |             ^^^^^^^^^^^^^^^^^^ `self` is a `&amp;` reference, so the data it refers to cannot be borrowed as mutable
+   |
+help: consider changing this to be a mutable reference in the `impl` method and the `trait` definition
+   |
+2  ~     fn send(&amp;mut self, msg: &amp;str);
+3  | }
+...
+56 |     impl Messenger for MockMessenger {
+57 ~         fn send(&amp;mut self, message: &amp;str) {
+   |
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `limit-tracker` (lib test) due to 1 previous error
+</code></pre>
+<p>Ní féidir linn an <code>MockMessenger</code> a mhodhnú chun súil a choinneáil ar na teachtaireachtaí, toisc go bhfuil an
+tagraíonn modh <code>send</code> do <code>self</code>. Ní féidir linn a ghlacadh freisin
+moladh ón téacs earráide <code>&amp;mut self</code> a úsáid sa mhodh <code>impl</code> agus
+an sainmhíniú <code>trait</code>. Nílimid ag iarraidh an trait <code>Messenger</code> a athrú amháin
+ar mhaithe le tástáil. Ina áit sin, ní mór dúinn bealach a aimsiú chun ár gcód tástála a dhéanamh
+oibriú i gceart lenár ndearadh reatha.</p>
+<p>Is é seo an cás inar féidir le sócmhainneacht taobh istigh cabhrú! Stórálfaimid an
+<code>sent_messages</code> laistigh de <code>RefCell&lt;T&gt;</code>, agus ansin beidh an modh <code>send</code>
+in ann <code>sent_messages</code> a mhodhnú chun na teachtaireachtaí atá feicthe againn a stóráil. Liostáil 15-22
+léiríonn an chuma atá air sin:</p>
+<Listing number="15-22" file-name="src/lib.rs" caption="Using `RefCell<T>` to mutate an inner value while the outer value is considered immutable">
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Messenger {
+</span><span class="boring">    fn send(&amp;self, msg: &amp;str);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+</span><span class="boring">    messenger: &amp;'a T,
+</span><span class="boring">    value: usize,
+</span><span class="boring">    max: usize,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+</span><span class="boring">where
+</span><span class="boring">    T: Messenger,
+</span><span class="boring">{
+</span><span class="boring">    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+</span><span class="boring">        LimitTracker {
+</span><span class="boring">            messenger,
+</span><span class="boring">            value: 0,
+</span><span class="boring">            max,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn set_value(&amp;mut self, value: usize) {
+</span><span class="boring">        self.value = value;
+</span><span class="boring">
+</span><span class="boring">        let percentage_of_max = self.value as f64 / self.max as f64;
+</span><span class="boring">
+</span><span class="boring">        if percentage_of_max &gt;= 1.0 {
+</span><span class="boring">            self.messenger.send("Error: You are over your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.9 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Urgent warning: You've used up over 90% of your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.75 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Warning: You've used up over 75% of your quota!");
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::cell::RefCell;
+
+    struct MockMessenger {
+        sent_messages: RefCell&lt;Vec&lt;String&gt;&gt;,
+    }
+
+    impl MockMessenger {
+        fn new() -&gt; MockMessenger {
+            MockMessenger {
+                sent_messages: RefCell::new(vec![]),
+            }
+        }
+    }
+
+    impl Messenger for MockMessenger {
+        fn send(&amp;self, message: &amp;str) {
+            self.sent_messages.borrow_mut().push(String::from(message));
+        }
+    }
+
+    #[test]
+    fn it_sends_an_over_75_percent_warning_message() {
+        // --snip--
+<span class="boring">        let mock_messenger = MockMessenger::new();
+</span><span class="boring">        let mut limit_tracker = LimitTracker::new(&amp;mock_messenger, 100);
+</span><span class="boring">
+</span><span class="boring">        limit_tracker.set_value(80);
+</span>
+        assert_eq!(mock_messenger.sent_messages.borrow().len(), 1);
+    }
+}</code></pre>
+</Listing>
+<p>Tá an réimse <code>sent_messages</code> den chineál <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> anois in ionad
+<code>Vec&lt;String&gt;</code>. San fheidhm <code>new</code>, cruthaímid <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> nua
+shampla thart ar an veicteoir folamh.</p>
+<p>Chun an modh <code>send</code> a chur i bhfeidhm, tá an chéad pharaiméadar fós ina
+iasacht domhalartaithe den <code>self</code>, a thagann leis an sainmhíniú trait. Glaoimid
+<code>borrow_mut</code> ar an <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> i <code>self.sent_messages</code> chun a fháil
+tagairt shochorraithe don luach taobh istigh den <code>RefCell&lt;Vec&lt;String&gt;&gt;</code>, is é sin an
+veicteoir. Ansin is féidir linn <code>brú</code> a ghlaoch ar an tagairt mutable don veicteoir a choinneáil
+rian de na teachtaireachtaí a seoladh le linn na tástála.</p>
+<p>Is é an t-athrú deireanach atá le déanamh againn ná sa dearbhú: féachaint cé mhéad earra atá ann
+sa veicteoir istigh, tugaimid <code>borrow</code> ar an <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> chun
+tagairt domhalartaithe don veicteoir.</p>
+<p>Anois go bhfuil tú feicthe agat conas <code>RefCell&lt;T&gt;</code> a úsáid, déanaimis iniúchadh ar conas a oibríonn sé!</p>
+<h4 id="iasachtaí-a-choimeád-ag-am-rite-le-refcellt"><a class="header" href="#iasachtaí-a-choimeád-ag-am-rite-le-refcellt">Iasachtaí a Choimeád ag Am Rite le <code>RefCell&lt;T&gt;</code></a></h4>
+<p>Nuair a chruthaítear tagairtí domhalartaithe agus mutable, úsáidimid na <code>&amp;</code> agus <code>&amp;mut</code>
+comhréir, faoi seach. Le <code>RefCell&lt;T&gt;</code>, úsáidimid an <code>borrow</code> agus <code>borrow_mut</code>
+modhanna, atá mar chuid den API sábháilte a bhaineann le <code>RefCell&lt;T&gt;</code>. Tá an
+Filleann modh <code>borrow</code> an cineál pointeoir cliste <code>Ref&lt;T&gt;</code>, agus <code>borrow_mut</code>
+ar ais an cineál pointeoir cliste <code>RefMut&lt;T&gt;</code>. Cuireann an dá chineál <code>Deref</code> i bhfeidhm, mar sin táimid
+is féidir leo déileáil leo mar thagairtí rialta.</p>
+<p>Coinnítear sa <code>RefCell&lt;T&gt;</code> cé mhéad <code>Ref&lt;T&gt;</code> agus <code>RefMut&lt;T&gt;</code> cliste
+tá leideanna gníomhach faoi láthair. Gach uair a dtugaimid <code>borrow</code>, an <code>RefCell&lt;T&gt;</code>
+méadaíonn sé a chomhaireamh maidir le cé mhéad iasacht neamh-inmhalartaithe atá gníomhach. Nuair a <code>Tag&lt;T&gt;</code>
+téann luach amach as an raon feidhme, laghdaítear líon na n-iasachtaí do-inaistrithe faoi cheann amháin. Díreach
+cosúil leis na rialacha iasachtaithe maidir le ham tiomsaithe, ligeann <code>RefCell&lt;T&gt;</code> go leor do-athlasaithe a bheith againn
+iasachtaí nó iasacht sho-shóite amháin ag aon am.</p>
+<p>Má dhéanaimid iarracht na rialacha seo a shárú, seachas earráid tiomsaitheora a fháil agus muid
+le tagairtí, beidh scaoll faoi chur i bhfeidhm <code>RefCell&lt;T&gt;</code>
+am rite. Léiríonn liosta 15-23 modhnú ar chur i bhfeidhm <code>send</code> isteach
+Liostáil 15-22. Táimid ag iarraidh dhá iasacht shochorraithe a chruthú d’aon ghnó
+chun an scóip chéanna a léiriú go gcuireann <code>RefCell&lt;T&gt;</code> cosc ​​orainn é seo a dhéanamh
+ag am rite.</p>
+<Listing number="15-23" file-name="src/lib.rs" caption="Creating two mutable references in the same scope to see that `RefCell<T>` will panic">
+<pre><code class="language-rust ignore panics"><span class="boring">pub trait Messenger {
+</span><span class="boring">    fn send(&amp;self, msg: &amp;str);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+</span><span class="boring">    messenger: &amp;'a T,
+</span><span class="boring">    value: usize,
+</span><span class="boring">    max: usize,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+</span><span class="boring">where
+</span><span class="boring">    T: Messenger,
+</span><span class="boring">{
+</span><span class="boring">    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+</span><span class="boring">        LimitTracker {
+</span><span class="boring">            messenger,
+</span><span class="boring">            value: 0,
+</span><span class="boring">            max,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn set_value(&amp;mut self, value: usize) {
+</span><span class="boring">        self.value = value;
+</span><span class="boring">
+</span><span class="boring">        let percentage_of_max = self.value as f64 / self.max as f64;
+</span><span class="boring">
+</span><span class="boring">        if percentage_of_max &gt;= 1.0 {
+</span><span class="boring">            self.messenger.send("Error: You are over your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.9 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Urgent warning: You've used up over 90% of your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.75 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Warning: You've used up over 75% of your quota!");
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">    use std::cell::RefCell;
+</span><span class="boring">
+</span><span class="boring">    struct MockMessenger {
+</span><span class="boring">        sent_messages: RefCell&lt;Vec&lt;String&gt;&gt;,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    impl MockMessenger {
+</span><span class="boring">        fn new() -&gt; MockMessenger {
+</span><span class="boring">            MockMessenger {
+</span><span class="boring">                sent_messages: RefCell::new(vec![]),
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    impl Messenger for MockMessenger {
+        fn send(&amp;self, message: &amp;str) {
+            let mut one_borrow = self.sent_messages.borrow_mut();
+            let mut two_borrow = self.sent_messages.borrow_mut();
+
+            one_borrow.push(String::from(message));
+            two_borrow.push(String::from(message));
+        }
+    }
+<span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn it_sends_an_over_75_percent_warning_message() {
+</span><span class="boring">        let mock_messenger = MockMessenger::new();
+</span><span class="boring">        let mut limit_tracker = LimitTracker::new(&amp;mock_messenger, 100);
+</span><span class="boring">
+</span><span class="boring">        limit_tracker.set_value(80);
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(mock_messenger.sent_messages.borrow().len(), 1);
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Cruthaímid athróg <code>one_borrow</code> don phointeoir cliste <code>RefMut&lt;T&gt;</code> a cuireadh ar ais
+ó <code>borrow_mut</code>. Ansin cruthaímid iasacht mutable eile ar an mbealach céanna sa
+athróg <code>two_borrow</code>. Déanann sé seo dhá thagairt chomhshóite sa raon feidhme céanna,
+nach bhfuil ceadaithe. Nuair a ritheann muid na tástálacha le haghaidh ár leabharlann, an cód i Liostú
+Tiomsóidh 15-23 gan aon earráidí, ach ní theipeann ar an tástáil:</p>
+<pre><code class="language-consól">$ cargo test
+   Compiling limit-tracker v0.1.0 (file:///projects/limit-tracker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running unittests src/lib.rs (target/debug/deps/limit_tracker-e599811fa246dbde)
+
+running 1 test
+test tests::it_sends_an_over_75_percent_warning_message ... FAILED
+
+failures:
+
+---- tests::it_sends_an_over_75_percent_warning_message stdout ----
+thread 'tests::it_sends_an_over_75_percent_warning_message' panicked at src/lib.rs:60:53:
+already borrowed: BorrowMutError
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::it_sends_an_over_75_percent_warning_message
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
+</code></pre>
+<p>Tabhair faoi deara go raibh scaoll ar an gcód leis an teachtaireacht <code>already borrowed: BorrowMutError</code>. Seo mar a láimhseálann <code>RefCell&lt;T&gt;</code> sáruithe ar an iasacht
+rialacha ag am rite.</p>
+<p>Roghnú a dhéanamh ar earráidí iasachtaithe ag am rite seachas am a thiomsú, mar
+atá déanta againn anseo, ciallaíonn sé seo go bhféadfadh sé go mbeadh botúin i do chód á aimsiú agat níos déanaí
+sa phróiseas forbartha: b'fhéidir nach raibh go dtí gur úsáideadh do chód chuig
+táirgeadh. Chomh maith leis sin, thabhódh do chód pionós beag feidhmíochta rite mar
+mar thoradh ar na hiasachtaí a choinneáil ag am rite seachas am tiomsaithe.
+Mar sin féin, trí úsáid a bhaint as <code>RefCell&lt;T&gt;</code> is féidir réad bréige a scríobh is féidir
+modhnaigh é féin chun súil a choinneáil ar na teachtaireachtaí atá feicthe aige agus tú á úsáid
+i gcomhthéacs nach gceadaítear ach luachanna neamh-inmhalartaithe. Is féidir leat <code>RefCell&lt;T&gt;</code> a úsáid
+in ainneoin a chomhbhabhtálacha chun níos mó feidhmiúlachta a fháil ná tagairtí rialta
+sholáthar.</p>
+<h3 id="Úinéirí-iolracha-sonraí-in-chomhshóite-a-bheith-agat-trí-rct-agus-refcellt-a-chomhcheangal"><a class="header" href="#Úinéirí-iolracha-sonraí-in-chomhshóite-a-bheith-agat-trí-rct-agus-refcellt-a-chomhcheangal">Úinéirí Iolracha Sonraí In-chomhshóite a bheith agat trí <code>Rc&lt;T&gt;</code> agus <code>RefCell&lt;T&gt;</code> a Chomhcheangal</a></h3>
+<p>Bealach coitianta <code>RefCell&lt;T&gt;</code> a úsáid is ea <code>Rc&lt;T&gt;</code>. Chun cuimhne go
+Ligeann <code>Rc&lt;T&gt;</code> go bhfuil úinéirí iolracha agat ar roinnt sonraí, ach ní thugann sé ach do-athlasach
+rochtain ar na sonraí sin. Má tá <code>Rc&lt;T&gt;</code> agat a bhfuil <code>RefCell&lt;T&gt;</code> agat, is féidir leat
+faigh luach a fhéadfaidh <em>agus</em> úinéirí iolracha a bheith agat ar féidir leat a shóchán!</p>
+<p>Mar shampla, tabhair chun cuimhne an sampla liosta míbhuntáistí i Liostú 15-18 nuair a d’úsáideamar
+<code>Rc&lt;T&gt;</code> chun liostaí iolracha a cheadú chun úinéireacht liosta eile a roinnt. Toisc
+Ní choinníonn <code>Rc&lt;T&gt;</code> ach luachanna do-athchurtha, ní féidir linn aon cheann de na luachanna sa
+liosta nuair a bheidh siad cruthaithe againn. Cuirimis isteach <code>RefCell&lt;T&gt;</code> chun an cumas a bhaint amach
+athraigh na luachanna sna liostaí. Léiríonn liostú 15-24 gur trí úsáid a bhaint as a
+<code>RefCell&lt;T&gt;</code> sa sainmhíniú <code>Cons</code>, is féidir linn an luach atá stóráilte a mhionathrú
+na liostaí:</p>
+<Listing number="15-24" file-name="src/main.rs" caption="Using `Rc<RefCell<i32>>` to create a `List` that we can mutate">
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+enum List {
+    Cons(Rc&lt;RefCell&lt;i32&gt;&gt;, Rc&lt;List&gt;),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::cell::RefCell;
+use std::rc::Rc;
+
+fn main() {
+    let value = Rc::new(RefCell::new(5));
+
+    let a = Rc::new(Cons(Rc::clone(&amp;value), Rc::new(Nil)));
+
+    let b = Cons(Rc::new(RefCell::new(3)), Rc::clone(&amp;a));
+    let c = Cons(Rc::new(RefCell::new(4)), Rc::clone(&amp;a));
+
+    *value.borrow_mut() += 10;
+
+    println!("a after = {a:?}");
+    println!("b after = {b:?}");
+    println!("c after = {c:?}");
+}</code></pre></pre>
+</Listing>
+<p>Cruthaímid luach ar sampla é de <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code> agus stóráilimid é i
+athróg darb ainm <code>value</code> ionas gur féidir linn rochtain a fháil air níos déanaí. Ansin cruthaímid a
+<code>List</code> in <code>a</code> le malairt <code>Cons</code> a choinníonn <code>value</code>. Ní mór dúinn clónáil
+<code>value</code> mar sin tá úinéireacht ag <code>a</code> agus <code>value</code> araon ar an luach <code>5</code> istigh in áit
+ná úinéireacht a aistriú ó <code>value</code> go <code>a</code> nó <code>a</code> a fháil ar iasacht uaidh
+<code>value</code>.</p>
+<p>Fillteaimid an liosta <code>a</code> i <code>Rc&lt;T&gt;</code> mar sin nuair a chruthaímid liostaí <code>b</code> agus <code>c</code>, déanann siad
+in ann tagairt a dhéanamh do <code>a</code> araon, agus is é sin a rinne muid i Liostú 15-18.</p>
+<p>Tar éis dúinn na liostaí in <code>a</code>,<code>b</code>, agus <code>c</code> a chruthú, ba mhaith linn 10 a chur leis an
+luach i <code>value</code>. Déanaimid é seo trí <code>borrow_mut</code> a ghlaoch ar <code>value</code>, a úsáideann an
+gné dhíreagartha uathoibríoch a phléamar i gCaibidil 5 (féach an rannán
+[“Cá bhfuil an <code>-&gt;</code> Oibreoir?” [cá bhfuil an t-oibreoir---] <!-- déan neamhaird de -->) chun
+déan tagairt don <code>Rc&lt;T&gt;</code> don luach <code>RefCell&lt;T&gt;</code> istigh. An <code>borrow_mut</code>
+seolann an modh pointeoir cliste <code>RefMut&lt;T&gt;</code>, agus úsáidimid an t-oibreoir díthagartha
+air agus athraigh an luach istigh.</p>
+<p>Nuair a phriontáilimid <code>a</code>, <code>b</code>, agus <code>c</code>, feicimid go bhfuil na modhnaithe acu go léir
+luach 15 seachas 5:</p>
+<pre><code class="language-consól">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running `target/debug/cons-list`
+a after = Cons(RefCell { value: 15 }, Nil)
+b after = Cons(RefCell { value: 3 }, Cons(RefCell { value: 15 }, Nil))
+c after = Cons(RefCell { value: 4 }, Cons(RefCell { value: 15 }, Nil))
+</code></pre>
+<p>Tá an teicníc seo go leor néata! Trí úsáid a bhaint as <code>RefCell&lt;T&gt;</code>, tá ceann amuigh againn
+luach <code>List</code> do-laghdaithe. Ach is féidir linn na modhanna ar <code>RefCell&lt;T&gt;</code> a sholáthraíonn
+rochtain ar a shoghluaisteacht istigh ionas gur féidir linn ár sonraí a mhodhnú nuair is gá dúinn.
+Cosnaíonn seiceálacha ama rite na rialacha iasachtaíochta sinn ó rásaí sonraí, agus is amhlaidh atá
+uaireanta is fiú beagán luas a thrádáil don tsolúbthacht seo inár sonraí
+struchtúir. Tabhair faoi deara nach n-oibríonn <code>RefCell&lt;T&gt;</code> do chód ilshnáithe!
+Is é <code>Mutex&lt;T&gt;</code> an ​​leagan sábháilte de <code>RefCell&lt;T&gt;</code> agus pléifimid
+<code>Mutex&lt;T&gt;</code> i gCaibidil 16.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="is-féidir-le-timthriallta-tagartha-an-cuimhne-a-sceitheadh"><a class="header" href="#is-féidir-le-timthriallta-tagartha-an-cuimhne-a-sceitheadh">Is féidir le Timthriallta Tagartha an Cuimhne a sceitheadh</a></h2>
+<p>Mar gheall ar ráthaíochtaí sábháilteachta cuimhne Rust tá sé deacair, ach níl sé dodhéanta
+cruthaigh de thaisme cuimhne nach nglantar riamh (ar a dtugtar <em>memory leak</em>).
+Ní ceann de ráthaíochtaí Rust é sceitheadh ​​cuimhne a chosc go hiomlán, rud a chiallaíonn
+tá sceitheadh ​​cuimhne sábháilte cuimhne i Rust. Is féidir linn a fheiceáil go gceadaíonn Rust sceitheadh ​​cuimhne
+trí úsáid a bhaint as <code>Rc&lt;T&gt;</code> agus <code>RefCell&lt;T&gt;</code>: is féidir tagairtí a chruthú nuair a
+tagraíonn míreanna dá chéile i dtimthriall. Cruthaíonn sé seo leaks cuimhne mar gheall ar an
+Ní bheidh líon tagartha gach míre sa timthriall a bhaint amach 0, agus na luachanna
+ní scaoilfear choíche.</p>
+<h3 id="timthriall-tagartha-á-chruthú"><a class="header" href="#timthriall-tagartha-á-chruthú">Timthriall Tagartha á Chruthú</a></h3>
+<p>Breathnaímid ar conas a d’fhéadfadh timthriall tagartha tarlú agus conas é a chosc,
+ag tosú leis an sainmhíniú ar an <code>List</code> enum agus modh <code>tail</code> sa Liostú
+15-25:</p>
+<Listing number="15-25" file-name="src/main.rs" caption="A cons list definition that holds a `RefCell<T>` so we can modify what a `Cons` variant is referring to">
+<pre><pre class="playground"><code class="language-rust">use crate::List::{Cons, Nil};
+use std::cell::RefCell;
+use std::rc::Rc;
+
+#[derive(Debug)]
+enum List {
+    Cons(i32, RefCell&lt;Rc&lt;List&gt;&gt;),
+    Nil,
+}
+
+impl List {
+    fn tail(&amp;self) -&gt; Option&lt;&amp;RefCell&lt;Rc&lt;List&gt;&gt;&gt; {
+        match self {
+            Cons(_, item) =&gt; Some(item),
+            Nil =&gt; None,
+        }
+    }
+}
+
+fn main() {}</code></pre></pre>
+</Listing>
+<p>Tá athrú eile á úsáid againn ar an sainmhíniú ar <code>List</code> ó Liostú 15-5. Tá an
+is é an dara heilimint sa leagan <code>Cons</code> anois <code>RefCell &lt;Rc&lt;List&gt;&gt;</code>, rud a chiallaíonn go
+in ionad a bheith in ann an luach <code>i32</code> a mhodhnú mar a rinneamar i Liostú
+15-24, ba mhaith linn an luach <code>List</code> a bhfuil malairt <code>Cons</code> dírithe air a mhodhnú.
+Táimid ag cur modh <code>tail</code> leis freisin chun é a dhéanamh áisiúil dúinn rochtain a fháil ar an
+an dara mír má tá leagan <code>Cons</code> againn.</p>
+<p>I Liostú 15-26, táimid ag cur <code>main</code> leis a úsáideann na sainmhínithe i
+Liostáil 15-25. Cruthaíonn an cód seo liosta in <code>a</code> agus liosta i <code>b</code> a dhíríonn
+an liosta in <code>a</code>. Ansin athraíonn sé an liosta in <code>a</code> chun <code>b</code> a chur in iúl, ag cruthú a
+timthriall tagartha. Tá ráitis <code>println!</code> ar an mbealach chun a thaispeáint cad iad na
+tá comhaireamh tagartha ag pointí éagsúla sa phróiseas seo.</p>
+<Listing number="15-26" file-name="src/main.rs" caption="Creating a reference cycle of two `List` values pointing to each other">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use crate::List::{Cons, Nil};
+</span><span class="boring">use std::cell::RefCell;
+</span><span class="boring">use std::rc::Rc;
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum List {
+</span><span class="boring">    Cons(i32, RefCell&lt;Rc&lt;List&gt;&gt;),
+</span><span class="boring">    Nil,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl List {
+</span><span class="boring">    fn tail(&amp;self) -&gt; Option&lt;&amp;RefCell&lt;Rc&lt;List&gt;&gt;&gt; {
+</span><span class="boring">        match self {
+</span><span class="boring">            Cons(_, item) =&gt; Some(item),
+</span><span class="boring">            Nil =&gt; None,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let a = Rc::new(Cons(5, RefCell::new(Rc::new(Nil))));
+
+    println!("a initial rc count = {}", Rc::strong_count(&amp;a));
+    println!("a next item = {:?}", a.tail());
+
+    let b = Rc::new(Cons(10, RefCell::new(Rc::clone(&amp;a))));
+
+    println!("a rc count after b creation = {}", Rc::strong_count(&amp;a));
+    println!("b initial rc count = {}", Rc::strong_count(&amp;b));
+    println!("b next item = {:?}", b.tail());
+
+    if let Some(link) = a.tail() {
+        *link.borrow_mut() = Rc::clone(&amp;b);
+    }
+
+    println!("b rc count after changing a = {}", Rc::strong_count(&amp;b));
+    println!("a rc count after changing a = {}", Rc::strong_count(&amp;a));
+
+    // Uncomment the next line to see that we have a cycle;
+    // it will overflow the stack
+    // println!("a next item = {:?}", a.tail());
+}</code></pre></pre>
+</Listing>
+<p>Cruthaímid sampla <code>Rc&lt;List&gt;</code> a bhfuil luach <code>List</code> san athróg <code>a</code>
+le liosta tosaigh de <code>5, Nil</code>. Cruthaímid gabháltas mar shampla <code>Rc&lt;List&gt;</code> ansin
+luach <code>List</code> eile san athróg <code>b</code> ina bhfuil an luach 10 agus pointí
+chuig an liosta in <code>a</code>.</p>
+<p>Modhnaimid <code>a</code> mar sin díríonn sé ar <code>b</code> in ionad <code>Nil</code>, ag cruthú timthriall. Déanaimid
+sin trí úsáid a bhaint as an modh <code>tail</code> chun tagairt a fháil don <code>RefCell&lt;Rc&lt;List&gt;&gt;</code>
+in <code>a</code>, a chuireamar san athróg <code>link</code>. Ansin úsáidimid an <code>borrow_mut</code>
+modh ar an <code>RefCell&lt;Rc&lt;List&gt;&gt;</code> chun an luach istigh ó <code>Rc&lt;List&gt;</code> a athrú
+a choinníonn luach <code>Nil</code> ar an <code>Rc&lt;List&gt;</code> i <code>b</code>.</p>
+<p>Nuair a rithimid an cód seo, ag coinneáil an <code>println!</code> deireanach a dúirt amach le haghaidh an
+nóiméad, gheobhaidh muid an t-aschur seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.53s
+     Running `target/debug/cons-list`
+a initial rc count = 1
+a next item = Some(RefCell { value: Nil })
+a rc count after b creation = 2
+b initial rc count = 1
+b next item = Some(RefCell { value: Cons(5, RefCell { value: Nil }) })
+b rc count after changing a = 2
+a rc count after changing a = 2
+</code></pre>
+<p>Is iad comhaireamh tagartha na gcásanna <code>Rc&lt;List&gt;</code> sa dá <code>a</code> agus <code>b</code> ná 2 i ndiaidh
+athraíonn muid an liosta in <code>a</code> chun <code>b</code> a chur in iúl. Ag deireadh <code>main</code>, titeann Rust an
+athróg <code>b</code>, a laghdaíonn comhaireamh tagartha an shampla <code>b Rc&lt;List&gt;</code>
+ó 2 go 1. Ní ligfear siar an chuimhne atá ag <code>Rc&lt;List&gt;</code> ar an gcarn ag
+an pointe seo, toisc go bhfuil a chomhaireamh tagartha 1, ní 0. Ansin titeann Rust <code>a</code>, a
+laghdaítear comhaireamh tagartha an ásc <code>a Rc&lt;List&gt;</code> ó 2 go 1 mar
+go maith. Ní féidir cuimhne an ásc seo a ísliú ach an oiread, mar gheall ar an gceann eile
+Tagraíonn <code>Rc&lt;List&gt;</code> shampla dó fós. Déanfaidh an chuimhne a leithdháiltear ar an liosta
+fanacht gan bailiú go deo. Chun an timthriall tagartha seo a shamhlú, tá a
+léaráid i bhFíor 15-4.</p>
+<img alt="Timthriall tagartha na liostaí" src="img/trpl15-04.svg" class="center" />
+<p><span class="caption">Fíor 15-4: Timthriall tagartha liostaí <code>a</code> agus <code>b</code>
+ag tagairt dá chéile</span></p>
+<p>Mura ndéanann tú trácht ar an <code>println!</code> deiridh agus má ritheann tú an clár, déanfaidh Rust iarracht é
+priontáil an timthriall seo le <code>a</code> ag tagairt do <code>b</code> ag cur in iúl do <code>a</code> agus mar sin de go dtí é
+thar maoil an chruach.</p>
+<p>I gcomparáid le clár fíor-domhan, na hiarmhairtí a chruthú timthriall tagartha
+sa sampla seo níl siad an-dochar: díreach tar éis dúinn an timthriall tagartha a chruthú,
+chríochnaíonn an clár. Mar sin féin, má leithdháileadh clár níos casta go leor de chuimhne
+i dtimthriall agus coinnithe air ar feadh i bhfad, d'úsáidfeadh an clár níos mó cuimhne
+ná mar a bhí de dhíth air agus d'fhéadfadh sé an córas a shárú, rud a fhágann go n-imeodh sé as
+cuimhne ar fáil.</p>
+<p>Ní furasta timthriallta tagartha a chruthú, ach níl sé dodhéanta ach an oiread.
+Má tá luachanna <code>RefCell&lt;T&gt;</code> agat ina bhfuil luachanna <code>Rc&lt;T&gt;</code> nó a mhacasamhail neadaithe
+teaglaim de chineálacha le mutability istigh agus comhaireamh tagartha, ní mór duit
+cinntigh nach gcruthaíonn tú timthriallta; ní féidir leat brath ar Rust chun iad a ghabháil.
+Is fabht loighce i do chlár é timthriall tagartha a chruthú agus ba cheart duit
+tástálacha uathoibrithe, athbhreithnithe cód, agus cleachtais forbartha bogearraí eile a úsáid chun
+íoslaghdú.</p>
+<p>Réiteach eile chun timthriallta tagartha a sheachaint is ea do shonraí a atheagrú
+struchtúir sa chaoi is go gcuireann tagairtí áirithe úinéireacht in iúl agus ní léiríonn roinnt tagairtí.
+Mar thoradh air sin, is féidir leat a bheith timthriallta comhdhéanta de roinnt caidreamh úinéireachta agus
+roinnt caidreamh neamh-úinéireachta, agus ní dhéanann ach na caidrimh úinéireachta difear
+cibé an féidir luach a ísliú nó nach féidir. I Liosta 15-25, ba mhaith linn i gcónaí <code>Cons</code>
+roghanna eile chun a liosta a shealbhú, mar sin ní féidir an struchtúr sonraí a atheagrú.
+Breathnaímid ar shampla ag baint úsáide as graif comhdhéanta de nóid tuismitheora agus nóid linbh
+féachaint cén uair is bealach iomchuí chun cosc ​​a chur ar chaidrimh neamhúinéireachta
+timthriallta tagartha.</p>
+<h3 id="timthriallta-tagartha-a-chosc-rct-á-iompú-ina-weakt"><a class="header" href="#timthriallta-tagartha-a-chosc-rct-á-iompú-ina-weakt">Timthriallta Tagartha a Chosc: <code>Rc&lt;T&gt;</code> á iompú ina <code>Weak&lt;T&gt;</code></a></h3>
+<p>Go dtí seo, tá sé léirithe againn go méadaíonn glaoch <code>Rc::clone</code> an
+Ní ghlantar <code>strong_count</code> de shampla <code>Rc&lt;T&gt;</code>, agus <code>Rc&lt;T&gt;</code> ach
+suas más é a <code>strong_count</code> ná 0. Is féidir leat tagairt <em>lag</em> a chruthú freisin don
+luach laistigh de shampla <code>Rc&lt;T&gt;</code> trí <code>Rc::downgrade</code> a ghlaoch agus pas a fháil
+tagairt don <code>Rc&lt;T&gt;</code>. Is tagairtí láidre iad conas is féidir leat úinéireacht a roinnt
+mar shampla <code>Rc&lt;T&gt;</code>. Ní chuireann tagairtí laga caidreamh úinéireachta in iúl,
+agus ní chuireann a n-áireamh isteach nuair a ghlantar sampla <code>Rc&lt;T&gt;</code>. siad
+ní bheidh sé ina chúis le timthriall tagartha mar gheall ar aon timthriall ina bhfuil roinnt tagairtí laga
+Brisfear iad a luaithe is é 0 an comhaireamh láidir tagartha luachanna atá i gceist.</p>
+<p>Nuair a ghlaonn tú ar <code>Rc::downgrade</code>, gheobhaidh tú pointeoir cliste den chineál <code>Weak&lt;T&gt;</code>.
+In ionad an <code>count_strong_count</code> sa chás <code>Rc&lt;T&gt;</code> a mhéadú faoi 1, cuir glaoch
+Méadaíonn <code>Rc::downgrade</code> an <code>weak_count</code> faoi 1. Úsáideann an cineál <code>Rc&lt;T&gt;</code>
+<code>weak_count</code> chun súil a choinneáil ar cé mhéad tagairt <code>Weak&lt;T&gt;</code> atá ann, cosúil le
+<code>strong_count</code>. Is é an difríocht ná ní gá don <code>count_lag</code> a bheith 0 don
+<code>Rc&lt;T&gt;</code> shampla le glanadh suas.</p>
+<p>Toisc go mb’fhéidir gur thit an luach a d’fhéadfadh tagairtí <code>Weak&lt;T&gt;</code> a dhéanamh, le déanamh
+rud ar bith leis an luach a bhfuil <code>Lag&lt;T&gt;</code> ag díriú air, caithfidh tú a chinntiú go bhfuil an
+luach ann fós. Déan é seo trí ghlao a chur ar an modh <code>upgrade</code> ar <code>Weak&lt;T&gt;</code>
+mar shampla, a thabharfaidh ar ais <code>Option&lt;Rc&lt;T&gt;&gt;</code>. Gheobhaidh tú toradh ar <code>Some</code>
+mura bhfuil an luach <code>Rc&lt;T&gt;</code> tite fós agus toradh ar <code>None</code> mura bhfuil an
+Tá luach <code>Rc&lt;T&gt;</code> tite. Toisc go dtugann <code>upgrade</code> <code>Option&lt;Rc&lt;T&gt;&gt;</code> ar ais,
+Cinnteoidh Rust go láimhseálfar an cás <code>Some</code> agus an cás <code>None</code>, agus
+ní bheidh pointeoir neamhbhailí ann.</p>
+<p>Mar shampla, seachas liosta a úsáid nach bhfuil a fhios ag a míreanna ach faoin gcéad cheann eile
+mír, cruthóimid crann a bhfuil a fhios ag na míreanna faoina leanaí míreanna <em>agus</em>
+míreanna a dtuismitheoirí.</p>
+<h4 id="struchtúr-sonraí-crann-a-chruthú-node-le-nóid-leanaí"><a class="header" href="#struchtúr-sonraí-crann-a-chruthú-node-le-nóid-leanaí">Struchtúr Sonraí Crann a Chruthú: <code>Node</code> le Nóid Leanaí</a></h4>
+<p>Chun tús a chur leis, tógfaimid crann le nóid a bhfuil eolas acu ar a nóid linbh.
+Cruthóimid struchtúr darb ainm <code>Node</code> a shealbhaíonn a luach <code>i32</code> féin chomh maith le
+tagairtí dá luachanna <code>Node</code> a leanaí:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">use std::cell::RefCell;
+use std::rc::Rc;
+
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let leaf = Rc::new(Node {
+</span><span class="boring">        value: 3,
+</span><span class="boring">        children: RefCell::new(vec![]),
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    let branch = Rc::new(Node {
+</span><span class="boring">        value: 5,
+</span><span class="boring">        children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+</span><span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
+<p>Teastaíonn uainn <code>Node</code> a mbeadh úinéireacht ag a leanaí air, agus ba mhaith linn an úinéireacht sin a roinnt linn
+athróg ionas gur féidir linn rochtain a fháil ar gach <code>Node</code> sa chrann go díreach. Chun seo a dhéanamh, táimid
+sainmhínigh na míreanna <code>Vec&lt;T&gt;</code> mar luachanna den chineál <code>Rc&lt;Node&gt;</code>. Ba mhaith linn freisin
+modhnaigh cé na nóid atá ina bpáistí de nód eile, ionas go mbeidh <code>RefCell&lt;T&gt;</code> againn isteach
+<code>children</code> timpeall an <code>Vec&lt;Rc&lt;Node&gt;&gt;</code>.</p>
+<p>Ansin, úsáidfimid ár sainmhíniú struchtúr agus cruthóimid sampla amháin <code>Node</code> ainmnithe
+<code>leaf</code> leis an luach 3 agus gan leanaí, agus cás eile darb ainm <code>branch</code>
+leis an luach 5 agus <code>leaf</code> mar dhuine dá leanaí, mar a thaispeántar i Liosta 15-27:</p>
+<Listing number="15-27" file-name="src/main.rs" caption="Cruthú nód `leaf` gan chlann agus nód `branch` le `leaf` mar dhuine dá leanaí">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::cell::RefCell;
+</span><span class="boring">use std::rc::Rc;
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Node {
+</span><span class="boring">    value: i32,
+</span><span class="boring">    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let leaf = Rc::new(Node {
+        value: 3,
+        children: RefCell::new(vec![]),
+    });
+
+    let branch = Rc::new(Node {
+        value: 5,
+        children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+    });
+}</code></pre></pre>
+</Listing>
+<p>Clónaimid an <code>Rc&lt;Node&gt;</code> i <code>leaf</code> agus stóráilimid é sin sa <code>branch</code>, rud a chiallaíonn an
+Tá beirt úinéirí ag <code>Node</code> i <code>leaf</code> anois: <code>leaf</code> agus <code>branch</code>. Is féidir linn a fháil ó
+<code>branch</code> go <code>leaf</code> trí <code>branch.children</code>, ach níl aon bhealach le fáil ó
+<code>leaf</code> go <code>branch</code>. Is é an fáth nach bhfuil aon tagairt ag <code>leaf</code> do <code>branch</code> agus
+ní fios go bhfuil gaol acu leis. Ba mhaith linn go mbeadh a fhios ag <code>leaf</code> gurb é <code>branch</code> a chuid
+tuismitheoir. Déanfaimid é sin chugainn.</p>
+<h4 id="tagairt-ó-pháiste-á-chur-lena-thuismitheoir"><a class="header" href="#tagairt-ó-pháiste-á-chur-lena-thuismitheoir">Tagairt ó Pháiste á Chur lena Thuismitheoir</a></h4>
+<p>Chun an nód leanbh a chur ar an eolas faoina thuismitheoir, ní mór dúinn réimse <code>parent</code> a chur leis
+ár sainmhíniú ar struchtúr <code>Node</code>. Is é an deacracht cinneadh a dhéanamh cén cineál
+ba cheart go mbeadh <code>parent</code>. Tá a fhios againn nach féidir <code>Rc&lt;T&gt;</code> a bheith ann, mar bheadh
+cruthaigh timthriall tagartha le <code>leaf.parent</code> ag tagairt don <code>branch</code> agus
+<code>branch.children</code> ag tagairt do <code>leaf</code>, rud a chuirfeadh lena <code>count_strong</code>
+luachanna gan a bheith 0 riamh.</p>
+<p>Ag smaoineamh ar na caidrimh ar bhealach eile, ba cheart go mbeadh úinéireacht ag nód tuismitheora ar a chuid féin
+leanaí: má thittear nód tuismitheora, ba chóir a nóid linbh a thit mar
+go maith. Mar sin féin, níor cheart go mbeadh úinéireacht ag leanbh ar a thuismitheoir: má scaoilimid nód linbh, beidh an
+ba chóir go mbeadh tuismitheoir ann fós. Is cás é seo le haghaidh tagairtí laga!</p>
+<p>Mar sin in ionad <code>Rc&lt;T&gt;</code>, bainfimid úsáid as <code>Weak&lt;T&gt;</code> don chineál <code>parent</code>,
+go sonrach <code>RefCell&lt;Weak&lt;Node&gt;&gt;</code>. Anois breathnaíonn ár sainmhíniú ar struchtúr <code>Node</code>
+mar seo:</p>
+<p><span class="filename">Filename: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">use std::cell::RefCell;
+use std::rc::{Rc, Weak};
+
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    parent: RefCell&lt;Weak&lt;Node&gt;&gt;,
+    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let leaf = Rc::new(Node {
+</span><span class="boring">        value: 3,
+</span><span class="boring">        parent: RefCell::new(Weak::new()),
+</span><span class="boring">        children: RefCell::new(vec![]),
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+</span><span class="boring">
+</span><span class="boring">    let branch = Rc::new(Node {
+</span><span class="boring">        value: 5,
+</span><span class="boring">        parent: RefCell::new(Weak::new()),
+</span><span class="boring">        children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    *leaf.parent.borrow_mut() = Rc::downgrade(&amp;branch);
+</span><span class="boring">
+</span><span class="boring">    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+</span><span class="boring">}</span></code></pre></pre>
+<p>Beidh nód in ann tagairt a dhéanamh dá mháthairnód ach ní leis a thuismitheoir é.
+I Liosta 15-28, déanaimid <code>main</code> a nuashonrú chun an sainmhíniú nua seo a úsáid mar sin an <code>leaf</code>
+beidh bealach ag nód tagairt a dhéanamh dá thuismitheoir, <code>branch</code>:</p>
+<Listing number="15-28" file-name="src/main.rs" caption="A `leaf` node with a weak reference to its parent node `branch`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::cell::RefCell;
+</span><span class="boring">use std::rc::{Rc, Weak};
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Node {
+</span><span class="boring">    value: i32,
+</span><span class="boring">    parent: RefCell&lt;Weak&lt;Node&gt;&gt;,
+</span><span class="boring">    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let leaf = Rc::new(Node {
+        value: 3,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![]),
+    });
+
+    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+
+    let branch = Rc::new(Node {
+        value: 5,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+    });
+
+    *leaf.parent.borrow_mut() = Rc::downgrade(&amp;branch);
+
+    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+}</code></pre></pre>
+</Listing>
+<p>Breathnaíonn cruthú an nód <code>leaf</code> cosúil le Liostú 15-27 cé is moite de
+an réimse <code>parent</code>: Tosaíonn <code>leaf</code> amach gan tuismitheoir, mar sin cruthaímid ceann nua,
+folamh <code>Weak&lt;Node&gt;</code> mar shampla tagartha.</p>
+<p>Ag an bpointe seo, nuair a dhéanaimid iarracht tagairt a fháil do thuismitheoir <code>leaf</code> trí úsáid a bhaint as
+an modh <code>upgrade</code>, faigheann muid luach <code>None</code>. Feicimid é seo san aschur ó na
+an chéad ráiteas <code>println!</code>:</p>
+<pre><code class="language-text">leaf parent = None
+</code></pre>
+<p>Nuair a chruthaímid an nód <code>branch</code>, beidh <code>Weak&lt;Node&gt;</code> nua aige freisin
+tagairt sa réimse <code>parent</code>, toisc nach bhfuil nód tuismitheora ag <code>branch</code>.
+Tá <code>leaf</code> fós againn mar dhuine de chlann <code>branch</code>. Nuair a bheidh an
+Mar shampla <code>Node</code> i <code>branch</code>, is féidir linn <code>leaf</code> a mhionathrú chun <code>Weak&lt;Node&gt;</code> a thabhairt dó
+tagairt dá thuismitheoir. Úsáidimid an modh <code>borow_mut</code> ar an
+<code>RefCell&lt;Weak&lt;Node&gt;&gt;</code> sa réimse <code>parent</code> ar <code>leaf</code>, agus ansin úsáidimid an
+Feidhm <code>Rc::downgrade</code> chun tagairt <code>Weak&lt;Node&gt;</code> a chruthú do <code>branch</code> ó
+an <code>Rc&lt;Node&gt;</code> sa <code>branch</code>.</p>
+<p>Nuair a phriontáilimid tuismitheoir <code>leaf</code> arís, gheobhaidh muid leagan <code>Some</code> an uair seo
+shealbhú <code>branch</code>: anois is féidir le <code>leaf</code> rochtain a fháil ar a thuismitheoir! Nuair a phriontáilimid <code>leaf</code>, déanaimid
+seachain freisin an timthriall a chríochnaigh sa deireadh le cur thar maoil stoic mar a bhí againn i
+Liostáil 15-26; clóitear na tagairtí <code>Weak&lt;Node&gt;</code> mar <code>(Weak)</code>:</p>
+<pre><code class="language-text">leaf parent = Some(Node { value: 5, parent: RefCell { value: (Weak) },
+children: RefCell { value: [Node { value: 3, parent: RefCell { value: (Weak) },
+children: RefCell { value: [] } }] } })
+</code></pre>
+<p>Léiríonn an easpa aschuir gan teorainn nár chruthaigh an cód seo tagairt
+timthriall. Is féidir linn é seo a insint freisin trí bhreathnú ar na luachanna a fhaighimid ó ghlaoch
+<code>Rc::strong_count</code> agus <code>Rc::weak_count</code>.</p>
+<h4 id="amharcléiriú-athruithe-ar-strong_count-agus-weak_count"><a class="header" href="#amharcléiriú-athruithe-ar-strong_count-agus-weak_count">Amharcléiriú Athruithe ar <code>strong_count</code> agus <code>weak_count</code></a></h4>
+<p>Breathnaímid ar an gcaoi a bhfuil na luachanna <code>strong_count</code> agus <code>count_count_lag</code> an <code>Rc&lt;Node&gt;</code>
+athraíonn cásanna trí raon feidhme inmheánach nua a chruthú agus cruthú na
+<code>branch</code> isteach sa raon feidhme sin. Trí sin a dhéanamh, is féidir linn a fheiceáil cad a tharlaíonn nuair a bhíonn <code>branch</code> cruthaithe agus ansin thit nuair a théann sé as raon feidhme. Taispeántar na modhnuithe
+i Liosta 15-29:</p>
+<Listing number="15-29" file-name="src/main.rs" caption="Creating `branch` in an inner scope and examining strong and weak reference counts">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::cell::RefCell;
+</span><span class="boring">use std::rc::{Rc, Weak};
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Node {
+</span><span class="boring">    value: i32,
+</span><span class="boring">    parent: RefCell&lt;Weak&lt;Node&gt;&gt;,
+</span><span class="boring">    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let leaf = Rc::new(Node {
+        value: 3,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![]),
+    });
+
+    println!(
+        "leaf strong = {}, weak = {}",
+        Rc::strong_count(&amp;leaf),
+        Rc::weak_count(&amp;leaf),
+    );
+
+    {
+        let branch = Rc::new(Node {
+            value: 5,
+            parent: RefCell::new(Weak::new()),
+            children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+        });
+
+        *leaf.parent.borrow_mut() = Rc::downgrade(&amp;branch);
+
+        println!(
+            "branch strong = {}, weak = {}",
+            Rc::strong_count(&amp;branch),
+            Rc::weak_count(&amp;branch),
+        );
+
+        println!(
+            "leaf strong = {}, weak = {}",
+            Rc::strong_count(&amp;leaf),
+            Rc::weak_count(&amp;leaf),
+        );
+    }
+
+    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+    println!(
+        "leaf strong = {}, weak = {}",
+        Rc::strong_count(&amp;leaf),
+        Rc::weak_count(&amp;leaf),
+    );
+}</code></pre></pre>
+</Listing>
+<p>Tar éis <code>leaf</code> a chruthú, tá comhaireamh láidir 1 agus lag ag a <code>Rc&lt;Node&gt;</code>
+comhaireamh 0. Sa scóip inmheánach, cruthaímid <code>branch</code> agus déanaimid é a nascadh le
+<code>leaf</code>, ag an bpointe nuair a phriontáilimid na comhaireamh, an <code>Rc&lt;Node&gt;</code> sa <code>branch</code>
+beidh comhaireamh láidir de 1 agus comhaireamh lag de 1 (do phointeáil <code>leaf.parent</code>
+go <code>branch</code> le <code>Weak&lt;Node&gt;</code>). Nuair a phriontáilimid na háirimh i <code>leaf</code>, feicfimid
+beidh líon láidir de 2 aige, toisc go bhfuil clón de na
+<code>Rc&lt;Node&gt;</code> de <code>leaf</code> arna stóráil i <code>branch.children</code>, ach beidh lag aige fós
+comhaireamh 0.</p>
+<p>Nuair a chríochnaíonn an raon feidhme istigh, téann <code>branch</code> as raon feidhme agus an comhaireamh láidir de
+laghdaítear an <code>Rc&lt;Node&gt;</code> go 0, mar sin laghdaítear a <code>Node</code>. An líon lag de 1
+ó <code>leaf.parent</code> nach bhfuil aon tionchar ar cibé an bhfuil nó nach bhfuil <code>Node</code> thit, mar sin againn
+ná faigh aon sceitheadh ​​cuimhne!</p>
+<p>Má dhéanaimid iarracht rochtain a fháil ar thuismitheoir <code>leaf</code> tar éis dheireadh an scóip, gheobhaidh muid
+<code>None</code> arís. Ag deireadh an chláir, tá an <code>Rc&lt;Node&gt;</code> i <code>leaf</code> láidir
+comhaireamh de 1 agus comhaireamh lag de 0, toisc go bhfuil an athróg <code>leaf</code> an t-aon anois
+tagairt don <code>Rc&lt;Node&gt;</code> arís.</p>
+<p>Tá an loighic ar fad a bhainistíonn an comhaireamh agus an titim luacha ionsuite
+<code>Rc&lt;T&gt;</code> agus <code>Weak&lt;T&gt;</code> agus a gcur i bhfeidhm ar an trait <code>Drop</code>. Le
+ag sonrú gur chóir go mbeadh an gaol ó leanbh lena thuismitheoir a
+Tagairt <code>Weak&lt;T&gt;</code> sa sainmhíniú ar <code>Node</code>, is féidir leat tuismitheoir a bheith agat
+díríonn nóid ar nóid linbh agus vice versa gan timthriall tagartha a chruthú
+agus sceitheadh ​​cuimhne.</p>
+<h2 id="achoimre-14"><a class="header" href="#achoimre-14">Achoimre</a></h2>
+<p>Chlúdaigh an chaibidil seo conas leideanna cliste a úsáid chun ráthaíochtaí éagsúla a dhéanamh agus
+comhbhabhtáil ó na cinn a dhéanann Rust de réir réamhshocraithe le tagairtí rialta. Tá an
+Tá méid aitheanta ag an gcineál <code>Box&lt;T&gt;</code> agus pointí ar na sonraí a leithdháileadh ar an gcarn. Tá an
+Coinníonn cineál <code>Rc&lt;T&gt;</code> líon na dtagairtí do shonraí ar an gcarn mar sin de
+is féidir go mbeadh úinéirí iolracha ag na sonraí sin. An cineál <code>RefCell&lt;T&gt;</code> lena taobh istigh
+Tugann mutability cineál dúinn gur féidir linn a úsáid nuair a theastaíonn uainn cineál do- immutable ach
+gá luach inmheánach den chineál sin a athrú; cuireann sé an iasacht i bhfeidhm freisin
+rialacha ag am rite seachas ag am tiomsaithe.</p>
+<p>Pléadh freisin na tréithe <code>Deref</code> agus <code>Drop</code>, a chuireann ar chumas go leor de na
+feidhmiúlacht na dtreoir cliste. Rinneamar iniúchadh ar thimthriallta tagartha is féidir a bheith ina chúis
+sceitheanna cuimhne agus conas iad a chosc trí úsáid a bhaint as <code>Weak&lt;T&gt;</code>.</p>
+<p>Má tá do spéis sa chaibidil seo agus gur mhaith leat do chuid féin a chur i bhfeidhm
+leideanna cliste, seiceáil amach <a href="../nomicon/index.html">“The Rustonomicon”</a> le haghaidh níos úsáidí
+eolas.</p>
+<p>Next, beidh muid ag caint faoi concurrency i Rust. Foghlaimeoidh tú fiú faoi chúpla rud nua
+leideanna cliste.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="fearless-concurrency"><a class="header" href="#fearless-concurrency">Fearless Concurrency</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="using-threads-to-run-code-simultaneously"><a class="header" href="#using-threads-to-run-code-simultaneously">Using Threads to Run Code Simultaneously</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="using-message-passing-to-transfer-data-between-threads"><a class="header" href="#using-message-passing-to-transfer-data-between-threads">Using Message Passing to Transfer Data Between Threads</a></h1>

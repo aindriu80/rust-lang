@@ -159,7 +159,600 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="refcellt-and-the-interior-mutability-pattern"><a class="header" href="#refcellt-and-the-interior-mutability-pattern">RefCell&lt;T&gt; and the Interior Mutability Pattern</a></h1>
+                        <h2 id="refcellt-agus-an-patrún-um-shócmhainneacht-intí"><a class="header" href="#refcellt-agus-an-patrún-um-shócmhainneacht-intí"><code>RefCell&lt;T&gt;</code> agus an Patrún um Shócmhainneacht Intí</a></h2>
+<p>Is patrún deartha é <em>Interior mutability</em> i Rust a ligeann duit sóchán a dhéanamh
+sonraí fiú nuair a bhíonn tagairtí do-chomhtháthaithe ann do na sonraí sin; de ghnáth, seo
+dícheadaítear gníomhaíocht leis na rialacha iasachtaithe. Chun sonraí a mutate, úsáideann an patrún
+cód <code>unsafe</code> taobh istigh de struchtúr sonraí chun gnáthrialacha Rust a rialaíonn a lúbadh
+sóchán agus iasacht. Cuireann cód neamhshábháilte in iúl don tiomsaitheoir go bhfuilimid
+na rialacha a sheiceáil de láimh seachas a bheith ag brath ar an tiomsaitheoir chun iad a sheiceáil
+dúinne; déanfaimid tuilleadh plé ar chód neamhshábháilte i gCaibidil 20.</p>
+<p>Ní féidir linn cineálacha a úsáid a úsáideann an patrún sócmhainneachta taobh istigh ach amháin nuair is féidir linn
+a áirithiú go leanfar na rialacha iasachtaíochta ag am rite, cé go bhfuil an
+ní féidir leis an tiomsaitheoir é sin a ráthú. Tá an cód <code>unsafe</code> atá i gceist fillte ansin i a
+API sábháilte, agus tá an cineál seachtrach fós immutable.</p>
+<p>Déanaimis an coincheap seo a iniúchadh trí bhreathnú ar an gcineál <code>RefCell&lt;T&gt;</code> a leanann an
+patrún muability istigh.</p>
+<h3 id="rialacha-iasachta-a-fhorfheidhmiú-ag-am-rite-le-refcellt"><a class="header" href="#rialacha-iasachta-a-fhorfheidhmiú-ag-am-rite-le-refcellt">Rialacha Iasachta a Fhorfheidhmiú ag Am Rite le <code>RefCell&lt;T&gt;</code></a></h3>
+<p>Murab ionann agus <code>Rc&lt;T&gt;</code>, is ionann an cineál <code>RefCell&lt;T&gt;</code> agus úinéireacht aonair ar na sonraí
+coinníonn sé. Mar sin, cad a dhéanann difríocht idir <code>RefCell&lt;T&gt;</code> agus cineál mar <code>Box&lt;T&gt;</code>?
+Tabhair chun cuimhne na rialacha iasachtaithe a d’fhoghlaim tú i gCaibidil 4:</p>
+<ul>
+<li>Ag aon am ar leith, féadfaidh tú <em>either</em> (ach ní an dá cheann) tagairt sho-shóite amháin a bheith agat
+nó líon ar bith tagairtí do-inaistrithe.</li>
+<li>Caithfidh teistiméireachtaí a bheith bailí i gcónaí.</li>
+</ul>
+<p>Le tagairtí agus <code>Box&lt;T&gt;</code>, cuirtear malairtí na rialacha iasachtaíochta i bhfeidhm ag
+am tiomsaithe. Le <code>RefCell&lt;T&gt;</code>, cuirtear na hathróga seo i bhfeidhm <em>ag am rite</em>.
+Le tagairtí, má sháraíonn tú na rialacha seo, gheobhaidh tú earráid tiomsaithe. Le
+<code>RefCell&lt;T&gt;</code>, má sháraíonn tú na rialacha seo, beidh do chlár i scaoll agus scoirfidh tú.</p>
+<p>Is iad na buntáistí a bhaineann le seiceáil na rialacha iasachtaithe ag am tiomsaithe ná earráidí
+a ghabháil níos luaithe sa phróiseas forbartha, agus níl aon tionchar ar
+feidhmíocht runtime toisc go bhfuil an anailís ar fad críochnaithe roimh ré. Dóibh siúd
+cúiseanna, is é seiceáil na rialacha iasachtaithe ag am tiomsaithe an rogha is fearr sa
+formhór na gcásanna, agus sin an fáth gurb é seo réamhshocrú Rust.</p>
+<p>Is é an buntáiste a bhaineann leis na rialacha iasachtaithe a sheiceáil ag am rite ina ionad sin
+ceadaítear cásanna áirithe cuimhne-sábháilte ansin, áit a mbeidís
+dícheadaithe ag na seiceálacha ama tiomsaithe. Anailís statach, cosúil leis an tiomsaitheoir Rust,
+coimeádach ó dhúchas é. Tá roinnt airíonna de chód dodhéanta a bhrath trí
+ag déanamh anailís ar an gcód: is é an sampla is cáiliúla ná an Fadhb Stad, mar atá
+thar raon feidhme an leabhair seo ach is ábhar spéisiúil é le taighde a dhéanamh air.</p>
+<p>Toisc go bhfuil roinnt anailíse dodhéanta, más rud é nach féidir leis an tiomsaitheoir Rust a bheith cinnte an
+Comhlíonann cód na rialacha úinéireachta, d'fhéadfadh sé diúltú do chlár ceart; isteach
+ar an mbealach seo, tá sé coimeádach. Má ghlac Rust le clár mícheart, úsáideoirí
+ní bheadh ​​muinín agat as na ráthaíochtaí a thugann Rust. Mar sin féin, má Rust
+ndiúltóidh clár ceart, beidh an ríomhchláraitheoir míchaoithiúlacht, ach rud ar bith
+is féidir tubaisteach tarlú. Tá an cineál <code>RefCell&lt;T&gt;</code> úsáideach nuair atá tú cinnte go bhfuil do
+Leanann an cód na rialacha iasachtaithe ach níl an tiomsaitheoir in ann a thuiscint agus
+ráthaíocht go.</p>
+<p>Cosúil le <code>Rc&lt;T&gt;</code>, tá <code>RefCell&lt;T&gt;</code> le húsáid i gcásanna aon-snáithe amháin
+agus tabharfaidh sé earráid ama tiomsaithe duit má dhéanann tú iarracht é a úsáid i snáithe ilshnáithe
+comhthéacs. Labhróimid faoi conas feidhmiúlacht <code>RefCell&lt;T&gt;</code> a fháil in a
+clár ilshnáithe i gCaibidil 16.</p>
+<p>Seo achoimre ar na fáthanna le <code>Box&lt;T&gt;</code>, <code>Rc&lt;T&gt;</code>, nó <code>RefCell&lt;T&gt;</code> a roghnú:</p>
+<ul>
+<li>Cuireann <code>Rc&lt;T&gt;</code> ar chumas úinéirí iolracha na sonraí céanna; <code>Box&lt;T&gt;</code> agus <code>RefCell&lt;T&gt;</code>
+úinéirí aonair a bheith acu.</li>
+<li>Ceadaíonn <code>Box&lt;T&gt;</code> iasachtaí domhalartaithe nó só-aistrithe a sheiceáil ag am tiomsaithe; <code>Rc&lt;T&gt;</code>
+ní cheadaíonn sé ach iasachtaí domhalartaithe a sheiceáil ag am tiomsaithe; Ceadaíonn <code>RefCell&lt;T&gt;</code>
+iasachtaí domhalartaithe nó só-aistrithe arna seiceáil ag am rite.</li>
+<li>Toisc go gceadaíonn <code>RefCell&lt;T&gt;</code> iasachtaí só-aistrithe a sheiceáil ag am rite, is féidir leat
+mutnaigh an luach taobh istigh den <code>RefCell&lt;T&gt;</code> fiú nuair atá an <code>RefCell&lt;T&gt;</code>
+dochorraithe.</li>
+</ul>
+<p>Ag sóchán an luach taobh istigh de luach neamh-inmhalartaithe tá an <em>só-shócmhainneacht</em>
+patrún. Breathnaímid ar chás ina bhfuil sócmhainneacht istigh úsáideach agus
+scrúdú conas is féidir.</p>
+<h3 id="insó-shócmhainneacht-iasacht-in-chomhshóite-go-luach-neamh-chomhargadh"><a class="header" href="#insó-shócmhainneacht-iasacht-in-chomhshóite-go-luach-neamh-chomhargadh">Insó-shócmhainneacht: Iasacht In-chomhshóite go Luach Neamh-Chomhargadh</a></h3>
+<p>Iarmhairt ar na rialacha iasachtaíochta is ea nuair a bhíonn luach neamh-inmharthana agat, i.e.
+ní féidir leat é a fháil ar iasacht go frithpháirteach. Mar shampla, ní thiomsóidh an cód seo:</p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let x = 5;
+    let y = &amp;mut x;
+}</code></pre>
+<p>Dá ndéanfadh tú iarracht an cód seo a thiomsú, gheobhfá an earráid seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling borrowing v0.1.0 (file:///projects/borrowing)
+error[E0596]: cannot borrow `x` as mutable, as it is not declared as mutable
+ --&gt; src/main.rs:3:13
+  |
+3 |     let y = &amp;mut x;
+  |             ^^^^^^ cannot borrow as mutable
+  |
+help: consider changing this to be mutable
+  |
+2 |     let mut x = 5;
+  |         +++
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `borrowing` (bin "borrowing") due to 1 previous error
+</code></pre>
+<p>Mar sin féin, tá cásanna ann ina mbeadh sé úsáideach luach a athrú
+é féin ina mhodhanna ach is cosúil go bhfuil sé neamh-inchurtha le cód eile. Cód lasmuigh den
+ní bheadh ​​modhanna luacha in ann an luach a athrú. Ag baint úsáide as <code>RefCell&lt;T&gt;</code> is
+bealach amháin chun an cumas sócmhainneachta taobh istigh a fháil, ach <code>RefCell&lt;T&gt;</code>
+ní théann sé thart ar na rialacha iasachtaithe go hiomlán: an seiceálaí iasachtaí sa
+Ceadaíonn tiomsaitheoir seo sócmhainneacht istigh, agus na rialacha iasacht a sheiceáil
+ag am rite ina ionad. Má sháraíonn tú na rialacha, gheobhaidh tú <code>panic!</code> ina ionad
+earráid tiomsaitheora.</p>
+<p>Oibrímid trí shampla praiticiúil inar féidir linn <code>RefCell&lt;T&gt;</code> a úsáid chun mutate
+luach domhalartaithe agus féach cén fáth a bhfuil sé sin úsáideach.</p>
+<h4 id="cás-Úsáide-le-haghaidh-inmheánach-mutability-réada-bréige"><a class="header" href="#cás-Úsáide-le-haghaidh-inmheánach-mutability-réada-bréige">Cás Úsáide le haghaidh Inmheánach Mutability: Réada Bréige</a></h4>
+<p>Uaireanta le linn tástála úsáidfidh ríomhchláraitheoir cineál in ionad cineál eile,
+chun iompar ar leith a urramú agus a dhearbhú go bhfuil sé curtha i bhfeidhm i gceart.
+Tugtar <em>tástáil dúbailte</em> ar an gcineál seo coinneálaí. Smaoinigh air sa chiall a
+“stunt dúbailte” i ndéanamh scannán, nuair a chéimíonn duine isteach agus ina ionadaí
+aisteoir radharc tricky ar leith a dhéanamh. Seasann dúbailteanna tástála do chineálacha eile
+nuair atá tástálacha á rith againn. Is cineálacha sainiúla dúbailte tástála iad <em>Mock objects</em>
+a thaifeadann cad a tharlaíonn le linn tástála ionas gur féidir leat a dhearbhú go bhfuil an ceart
+gníomhartha ar siúl.</p>
+<p>Níl réada ag meirge sa chiall chéanna is atá réada ag teangacha eile,
+agus níl feidhmiúlacht réad bréige ag Rust ionsuite sa ghnáthleabharlann
+mar a dhéanann roinnt teangacha eile. Mar sin féin, is féidir leat a chruthú cinnte struchtúr sin
+fónfaidh na críocha céanna le réad bréige.</p>
+<p>Seo an cás a dhéanfaimid tástáil: cruthóimid leabharlann a rianóidh luach
+in aghaidh uasluacha agus seolann sé teachtaireachtaí bunaithe ar cé chomh gar don uasluach
+luach atá ar an luach reatha. D’fhéadfaí an leabharlann seo a úsáid chun súil a choinneáil ar a
+cuóta úsáideora don líon glaonna API a bhfuil cead acu a dhéanamh, mar shampla.</p>
+<p>Ní chuirfidh ár leabharlann ar fáil ach an fheidhmiúlacht chun rianú a dhéanamh ar cé chomh gar do na
+is é luach uasta agus cad ba cheart do na teachtaireachtaí a bheith ag na hamanna. Feidhmchláir
+beifear ag súil go soláthróidh úsáid ár leabharlann an mheicníocht chun an
+teachtaireachtaí: d'fhéadfadh an t-iarratas teachtaireacht a chur san iarratas, seol
+ríomhphost, seol teachtaireacht téacs, nó rud éigin eile. Ní gá go mbeadh a fhios ag an leabharlann
+go mion. Níl ag teastáil uaidh ach rud a chuireann tréith a chuirfimid ar fáil i bhfeidhm
+ar a dtugtar <code>Messenger</code>. Léiríonn liostú 15-20 an cód leabharlainne:</p>
+<Listing number="15-20" file-name="src/lib.rs" caption="A library to keep track of how close a value is to a maximum value and warn when the value is at certain levels">
+<pre><code class="language-rust noplayground">pub trait Messenger {
+    fn send(&amp;self, msg: &amp;str);
+}
+
+pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+    messenger: &amp;'a T,
+    value: usize,
+    max: usize,
+}
+
+impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+where
+    T: Messenger,
+{
+    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+        LimitTracker {
+            messenger,
+            value: 0,
+            max,
+        }
+    }
+
+    pub fn set_value(&amp;mut self, value: usize) {
+        self.value = value;
+
+        let percentage_of_max = self.value as f64 / self.max as f64;
+
+        if percentage_of_max &gt;= 1.0 {
+            self.messenger.send("Error: You are over your quota!");
+        } else if percentage_of_max &gt;= 0.9 {
+            self.messenger
+                .send("Urgent warning: You've used up over 90% of your quota!");
+        } else if percentage_of_max &gt;= 0.75 {
+            self.messenger
+                .send("Warning: You've used up over 75% of your quota!");
+        }
+    }
+}</code></pre>
+</Listing>
+<p>Cuid thábhachtach amháin den chód seo ná go bhfuil modh amháin ag an trait <code>Messenger</code>
+ar a dtugtar <code>send</code> a thógann tagairt do- immutable do <code>self</code> agus téacs an
+teachtaireacht. Is é an tréith seo an comhéadan a chaithfidh ár réad bréige a chur i bhfeidhm ionas go mbeidh
+is féidir an bhréag a úsáid ar an mbealach céanna le réad réadúil. An chuid thábhachtach eile
+is é sin go dteastaíonn uainn iompar an mhodha <code>set_value</code> a thástáil ar an
+<code>LimitTracker</code>. Is féidir linn an méid a thugaimid isteach don pharaiméadar <code>value</code> a athrú, ach
+ní thugann <code>set_value</code> tada ar ais dúinn chun dearbhuithe a dhéanamh air. Ba mhaith linn a bheith
+in ann a rá má chruthaímid <code>LimitTracker</code> le rud éigin a chuireann i bhfeidhm
+an tréithe <code>Messenger</code> agus luach ar leith do <code>max</code>, nuair a théimid ar aghaidh difriúil
+uimhreacha le haghaidh <code>value</code>, deirtear leis an teachtaire na teachtaireachtaí cuí a sheoladh.</p>
+<p>Ní mór dúinn réad bréige a, in ionad a sheoladh r-phost nó teachtaireacht téacs nuair a againn
+glaoigh ar <code>send</code>, ní choinneoidh sé ach súil ar na teachtaireachtaí a iarrtar air a sheoladh. Is féidir linn
+cruthaigh sampla nua den réad bréige, cruthaigh <code>LimitTracker</code> a úsáideann an
+réad bréige, cuir glaoch ar an modh <code>set_value</code> ar <code>LimitTracker</code>, agus ansin seiceáil é sin
+tá na teachtaireachtaí a mbeimid ag súil leo ag an réad bréige. Léiríonn liostú 15-21 iarracht chun
+cuir réad bréige i bhfeidhm chun é sin a dhéanamh, ach ní cheadóidh an seiceálaí iasachtaí é:</p>
+<Listing number="15-21" file-name="src/lib.rs" caption="An attempt to implement a `MockMessenger` that isn’t allowed by the borrow checker">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub trait Messenger {
+</span><span class="boring">    fn send(&amp;self, msg: &amp;str);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+</span><span class="boring">    messenger: &amp;'a T,
+</span><span class="boring">    value: usize,
+</span><span class="boring">    max: usize,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+</span><span class="boring">where
+</span><span class="boring">    T: Messenger,
+</span><span class="boring">{
+</span><span class="boring">    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+</span><span class="boring">        LimitTracker {
+</span><span class="boring">            messenger,
+</span><span class="boring">            value: 0,
+</span><span class="boring">            max,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn set_value(&amp;mut self, value: usize) {
+</span><span class="boring">        self.value = value;
+</span><span class="boring">
+</span><span class="boring">        let percentage_of_max = self.value as f64 / self.max as f64;
+</span><span class="boring">
+</span><span class="boring">        if percentage_of_max &gt;= 1.0 {
+</span><span class="boring">            self.messenger.send("Error: You are over your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.9 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Urgent warning: You've used up over 90% of your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.75 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Warning: You've used up over 75% of your quota!");
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct MockMessenger {
+        sent_messages: Vec&lt;String&gt;,
+    }
+
+    impl MockMessenger {
+        fn new() -&gt; MockMessenger {
+            MockMessenger {
+                sent_messages: vec![],
+            }
+        }
+    }
+
+    impl Messenger for MockMessenger {
+        fn send(&amp;self, message: &amp;str) {
+            self.sent_messages.push(String::from(message));
+        }
+    }
+
+    #[test]
+    fn it_sends_an_over_75_percent_warning_message() {
+        let mock_messenger = MockMessenger::new();
+        let mut limit_tracker = LimitTracker::new(&amp;mock_messenger, 100);
+
+        limit_tracker.set_value(80);
+
+        assert_eq!(mock_messenger.sent_messages.len(), 1);
+    }
+}</code></pre>
+</Listing>
+<p>Sainmhíníonn an cód tástála seo struchtúr <code>MockMessenger</code> a bhfuil <code>sent_messages</code> aige
+réimse le <code>Vec</code> de luachanna <code>String</code> chun súil a choinneáil ar na teachtaireachtaí a insítear dó
+a sheoladh. Sainmhínímid freisin feidhm ghaolmhar <code>new</code> le go mbeidh sé áisiúil di
+cruthaigh luachanna <code>MockMessenger</code> nua a thosaíonn le liosta folamh teachtaireachtaí. muid
+ansin cuir an trait <code>Messenger</code> i bhfeidhm do <code>MockMessenger</code> ionas gur féidir linn a
+<code>MockMessenger</code> go <code>LimitTracker</code>. Sa sainmhíniú ar an modh <code>send</code>, táimid
+tóg an teachtaireacht a tugadh isteach mar pharaiméadar agus stóráil sa <code>MockMessenger</code> í
+liosta de na <code>sent_messages</code>.</p>
+<p>Sa tástáil, táimid ag tástáil cad a tharlaíonn nuair a iarrtar ar an <code>LimitTracker</code> a shocrú
+<code>value</code> go dtí rud atá níos mó ná 75 faoin gcéad den luach <code>max</code>. Gcéad dul síos, muid
+cruthaigh <code>MockMessenger</code> nua, a thosóidh le liosta folamh teachtaireachtaí.
+Ansin cruthaímid <code>LimitTracker</code> nua agus déanaimid tagairt don nua
+<code>MockMessenger</code> agus luach <code>max</code> de 100. Glaoimid ar an modh <code>set_value</code> ar an
+<code>LimitTracker</code> le luach 80, atá níos mó ná 75 faoin gcéad de 100. Ansin
+dearbhaímid go bhfuil liosta na dteachtaireachtaí atá á gcoimeád ag an <code>MockMessenger</code>
+de anois teachtaireacht amháin a bheith ann.</p>
+<p>Mar sin féin, tá fadhb amháin leis an tástáil seo, mar a thaispeántar anseo:</p>
+<pre><code class="language-consól">$ cargo test
+   Compiling limit-tracker v0.1.0 (file:///projects/limit-tracker)
+error[E0596]: cannot borrow `self.sent_messages` as mutable, as it is behind a `&amp;` reference
+  --&gt; src/lib.rs:58:13
+   |
+58 |             self.sent_messages.push(String::from(message));
+   |             ^^^^^^^^^^^^^^^^^^ `self` is a `&amp;` reference, so the data it refers to cannot be borrowed as mutable
+   |
+help: consider changing this to be a mutable reference in the `impl` method and the `trait` definition
+   |
+2  ~     fn send(&amp;mut self, msg: &amp;str);
+3  | }
+...
+56 |     impl Messenger for MockMessenger {
+57 ~         fn send(&amp;mut self, message: &amp;str) {
+   |
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `limit-tracker` (lib test) due to 1 previous error
+</code></pre>
+<p>Ní féidir linn an <code>MockMessenger</code> a mhodhnú chun súil a choinneáil ar na teachtaireachtaí, toisc go bhfuil an
+tagraíonn modh <code>send</code> do <code>self</code>. Ní féidir linn a ghlacadh freisin
+moladh ón téacs earráide <code>&amp;mut self</code> a úsáid sa mhodh <code>impl</code> agus
+an sainmhíniú <code>trait</code>. Nílimid ag iarraidh an trait <code>Messenger</code> a athrú amháin
+ar mhaithe le tástáil. Ina áit sin, ní mór dúinn bealach a aimsiú chun ár gcód tástála a dhéanamh
+oibriú i gceart lenár ndearadh reatha.</p>
+<p>Is é seo an cás inar féidir le sócmhainneacht taobh istigh cabhrú! Stórálfaimid an
+<code>sent_messages</code> laistigh de <code>RefCell&lt;T&gt;</code>, agus ansin beidh an modh <code>send</code>
+in ann <code>sent_messages</code> a mhodhnú chun na teachtaireachtaí atá feicthe againn a stóráil. Liostáil 15-22
+léiríonn an chuma atá air sin:</p>
+<Listing number="15-22" file-name="src/lib.rs" caption="Using `RefCell<T>` to mutate an inner value while the outer value is considered immutable">
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Messenger {
+</span><span class="boring">    fn send(&amp;self, msg: &amp;str);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+</span><span class="boring">    messenger: &amp;'a T,
+</span><span class="boring">    value: usize,
+</span><span class="boring">    max: usize,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+</span><span class="boring">where
+</span><span class="boring">    T: Messenger,
+</span><span class="boring">{
+</span><span class="boring">    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+</span><span class="boring">        LimitTracker {
+</span><span class="boring">            messenger,
+</span><span class="boring">            value: 0,
+</span><span class="boring">            max,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn set_value(&amp;mut self, value: usize) {
+</span><span class="boring">        self.value = value;
+</span><span class="boring">
+</span><span class="boring">        let percentage_of_max = self.value as f64 / self.max as f64;
+</span><span class="boring">
+</span><span class="boring">        if percentage_of_max &gt;= 1.0 {
+</span><span class="boring">            self.messenger.send("Error: You are over your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.9 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Urgent warning: You've used up over 90% of your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.75 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Warning: You've used up over 75% of your quota!");
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::cell::RefCell;
+
+    struct MockMessenger {
+        sent_messages: RefCell&lt;Vec&lt;String&gt;&gt;,
+    }
+
+    impl MockMessenger {
+        fn new() -&gt; MockMessenger {
+            MockMessenger {
+                sent_messages: RefCell::new(vec![]),
+            }
+        }
+    }
+
+    impl Messenger for MockMessenger {
+        fn send(&amp;self, message: &amp;str) {
+            self.sent_messages.borrow_mut().push(String::from(message));
+        }
+    }
+
+    #[test]
+    fn it_sends_an_over_75_percent_warning_message() {
+        // --snip--
+<span class="boring">        let mock_messenger = MockMessenger::new();
+</span><span class="boring">        let mut limit_tracker = LimitTracker::new(&amp;mock_messenger, 100);
+</span><span class="boring">
+</span><span class="boring">        limit_tracker.set_value(80);
+</span>
+        assert_eq!(mock_messenger.sent_messages.borrow().len(), 1);
+    }
+}</code></pre>
+</Listing>
+<p>Tá an réimse <code>sent_messages</code> den chineál <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> anois in ionad
+<code>Vec&lt;String&gt;</code>. San fheidhm <code>new</code>, cruthaímid <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> nua
+shampla thart ar an veicteoir folamh.</p>
+<p>Chun an modh <code>send</code> a chur i bhfeidhm, tá an chéad pharaiméadar fós ina
+iasacht domhalartaithe den <code>self</code>, a thagann leis an sainmhíniú trait. Glaoimid
+<code>borrow_mut</code> ar an <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> i <code>self.sent_messages</code> chun a fháil
+tagairt shochorraithe don luach taobh istigh den <code>RefCell&lt;Vec&lt;String&gt;&gt;</code>, is é sin an
+veicteoir. Ansin is féidir linn <code>brú</code> a ghlaoch ar an tagairt mutable don veicteoir a choinneáil
+rian de na teachtaireachtaí a seoladh le linn na tástála.</p>
+<p>Is é an t-athrú deireanach atá le déanamh againn ná sa dearbhú: féachaint cé mhéad earra atá ann
+sa veicteoir istigh, tugaimid <code>borrow</code> ar an <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> chun
+tagairt domhalartaithe don veicteoir.</p>
+<p>Anois go bhfuil tú feicthe agat conas <code>RefCell&lt;T&gt;</code> a úsáid, déanaimis iniúchadh ar conas a oibríonn sé!</p>
+<h4 id="iasachtaí-a-choimeád-ag-am-rite-le-refcellt"><a class="header" href="#iasachtaí-a-choimeád-ag-am-rite-le-refcellt">Iasachtaí a Choimeád ag Am Rite le <code>RefCell&lt;T&gt;</code></a></h4>
+<p>Nuair a chruthaítear tagairtí domhalartaithe agus mutable, úsáidimid na <code>&amp;</code> agus <code>&amp;mut</code>
+comhréir, faoi seach. Le <code>RefCell&lt;T&gt;</code>, úsáidimid an <code>borrow</code> agus <code>borrow_mut</code>
+modhanna, atá mar chuid den API sábháilte a bhaineann le <code>RefCell&lt;T&gt;</code>. Tá an
+Filleann modh <code>borrow</code> an cineál pointeoir cliste <code>Ref&lt;T&gt;</code>, agus <code>borrow_mut</code>
+ar ais an cineál pointeoir cliste <code>RefMut&lt;T&gt;</code>. Cuireann an dá chineál <code>Deref</code> i bhfeidhm, mar sin táimid
+is féidir leo déileáil leo mar thagairtí rialta.</p>
+<p>Coinnítear sa <code>RefCell&lt;T&gt;</code> cé mhéad <code>Ref&lt;T&gt;</code> agus <code>RefMut&lt;T&gt;</code> cliste
+tá leideanna gníomhach faoi láthair. Gach uair a dtugaimid <code>borrow</code>, an <code>RefCell&lt;T&gt;</code>
+méadaíonn sé a chomhaireamh maidir le cé mhéad iasacht neamh-inmhalartaithe atá gníomhach. Nuair a <code>Tag&lt;T&gt;</code>
+téann luach amach as an raon feidhme, laghdaítear líon na n-iasachtaí do-inaistrithe faoi cheann amháin. Díreach
+cosúil leis na rialacha iasachtaithe maidir le ham tiomsaithe, ligeann <code>RefCell&lt;T&gt;</code> go leor do-athlasaithe a bheith againn
+iasachtaí nó iasacht sho-shóite amháin ag aon am.</p>
+<p>Má dhéanaimid iarracht na rialacha seo a shárú, seachas earráid tiomsaitheora a fháil agus muid
+le tagairtí, beidh scaoll faoi chur i bhfeidhm <code>RefCell&lt;T&gt;</code>
+am rite. Léiríonn liosta 15-23 modhnú ar chur i bhfeidhm <code>send</code> isteach
+Liostáil 15-22. Táimid ag iarraidh dhá iasacht shochorraithe a chruthú d’aon ghnó
+chun an scóip chéanna a léiriú go gcuireann <code>RefCell&lt;T&gt;</code> cosc ​​orainn é seo a dhéanamh
+ag am rite.</p>
+<Listing number="15-23" file-name="src/lib.rs" caption="Creating two mutable references in the same scope to see that `RefCell<T>` will panic">
+<pre><code class="language-rust ignore panics"><span class="boring">pub trait Messenger {
+</span><span class="boring">    fn send(&amp;self, msg: &amp;str);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+</span><span class="boring">    messenger: &amp;'a T,
+</span><span class="boring">    value: usize,
+</span><span class="boring">    max: usize,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+</span><span class="boring">where
+</span><span class="boring">    T: Messenger,
+</span><span class="boring">{
+</span><span class="boring">    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+</span><span class="boring">        LimitTracker {
+</span><span class="boring">            messenger,
+</span><span class="boring">            value: 0,
+</span><span class="boring">            max,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn set_value(&amp;mut self, value: usize) {
+</span><span class="boring">        self.value = value;
+</span><span class="boring">
+</span><span class="boring">        let percentage_of_max = self.value as f64 / self.max as f64;
+</span><span class="boring">
+</span><span class="boring">        if percentage_of_max &gt;= 1.0 {
+</span><span class="boring">            self.messenger.send("Error: You are over your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.9 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Urgent warning: You've used up over 90% of your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.75 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Warning: You've used up over 75% of your quota!");
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">    use std::cell::RefCell;
+</span><span class="boring">
+</span><span class="boring">    struct MockMessenger {
+</span><span class="boring">        sent_messages: RefCell&lt;Vec&lt;String&gt;&gt;,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    impl MockMessenger {
+</span><span class="boring">        fn new() -&gt; MockMessenger {
+</span><span class="boring">            MockMessenger {
+</span><span class="boring">                sent_messages: RefCell::new(vec![]),
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    impl Messenger for MockMessenger {
+        fn send(&amp;self, message: &amp;str) {
+            let mut one_borrow = self.sent_messages.borrow_mut();
+            let mut two_borrow = self.sent_messages.borrow_mut();
+
+            one_borrow.push(String::from(message));
+            two_borrow.push(String::from(message));
+        }
+    }
+<span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn it_sends_an_over_75_percent_warning_message() {
+</span><span class="boring">        let mock_messenger = MockMessenger::new();
+</span><span class="boring">        let mut limit_tracker = LimitTracker::new(&amp;mock_messenger, 100);
+</span><span class="boring">
+</span><span class="boring">        limit_tracker.set_value(80);
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(mock_messenger.sent_messages.borrow().len(), 1);
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Cruthaímid athróg <code>one_borrow</code> don phointeoir cliste <code>RefMut&lt;T&gt;</code> a cuireadh ar ais
+ó <code>borrow_mut</code>. Ansin cruthaímid iasacht mutable eile ar an mbealach céanna sa
+athróg <code>two_borrow</code>. Déanann sé seo dhá thagairt chomhshóite sa raon feidhme céanna,
+nach bhfuil ceadaithe. Nuair a ritheann muid na tástálacha le haghaidh ár leabharlann, an cód i Liostú
+Tiomsóidh 15-23 gan aon earráidí, ach ní theipeann ar an tástáil:</p>
+<pre><code class="language-consól">$ cargo test
+   Compiling limit-tracker v0.1.0 (file:///projects/limit-tracker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running unittests src/lib.rs (target/debug/deps/limit_tracker-e599811fa246dbde)
+
+running 1 test
+test tests::it_sends_an_over_75_percent_warning_message ... FAILED
+
+failures:
+
+---- tests::it_sends_an_over_75_percent_warning_message stdout ----
+thread 'tests::it_sends_an_over_75_percent_warning_message' panicked at src/lib.rs:60:53:
+already borrowed: BorrowMutError
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::it_sends_an_over_75_percent_warning_message
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
+</code></pre>
+<p>Tabhair faoi deara go raibh scaoll ar an gcód leis an teachtaireacht <code>already borrowed: BorrowMutError</code>. Seo mar a láimhseálann <code>RefCell&lt;T&gt;</code> sáruithe ar an iasacht
+rialacha ag am rite.</p>
+<p>Roghnú a dhéanamh ar earráidí iasachtaithe ag am rite seachas am a thiomsú, mar
+atá déanta againn anseo, ciallaíonn sé seo go bhféadfadh sé go mbeadh botúin i do chód á aimsiú agat níos déanaí
+sa phróiseas forbartha: b'fhéidir nach raibh go dtí gur úsáideadh do chód chuig
+táirgeadh. Chomh maith leis sin, thabhódh do chód pionós beag feidhmíochta rite mar
+mar thoradh ar na hiasachtaí a choinneáil ag am rite seachas am tiomsaithe.
+Mar sin féin, trí úsáid a bhaint as <code>RefCell&lt;T&gt;</code> is féidir réad bréige a scríobh is féidir
+modhnaigh é féin chun súil a choinneáil ar na teachtaireachtaí atá feicthe aige agus tú á úsáid
+i gcomhthéacs nach gceadaítear ach luachanna neamh-inmhalartaithe. Is féidir leat <code>RefCell&lt;T&gt;</code> a úsáid
+in ainneoin a chomhbhabhtálacha chun níos mó feidhmiúlachta a fháil ná tagairtí rialta
+sholáthar.</p>
+<h3 id="Úinéirí-iolracha-sonraí-in-chomhshóite-a-bheith-agat-trí-rct-agus-refcellt-a-chomhcheangal"><a class="header" href="#Úinéirí-iolracha-sonraí-in-chomhshóite-a-bheith-agat-trí-rct-agus-refcellt-a-chomhcheangal">Úinéirí Iolracha Sonraí In-chomhshóite a bheith agat trí <code>Rc&lt;T&gt;</code> agus <code>RefCell&lt;T&gt;</code> a Chomhcheangal</a></h3>
+<p>Bealach coitianta <code>RefCell&lt;T&gt;</code> a úsáid is ea <code>Rc&lt;T&gt;</code>. Chun cuimhne go
+Ligeann <code>Rc&lt;T&gt;</code> go bhfuil úinéirí iolracha agat ar roinnt sonraí, ach ní thugann sé ach do-athlasach
+rochtain ar na sonraí sin. Má tá <code>Rc&lt;T&gt;</code> agat a bhfuil <code>RefCell&lt;T&gt;</code> agat, is féidir leat
+faigh luach a fhéadfaidh <em>agus</em> úinéirí iolracha a bheith agat ar féidir leat a shóchán!</p>
+<p>Mar shampla, tabhair chun cuimhne an sampla liosta míbhuntáistí i Liostú 15-18 nuair a d’úsáideamar
+<code>Rc&lt;T&gt;</code> chun liostaí iolracha a cheadú chun úinéireacht liosta eile a roinnt. Toisc
+Ní choinníonn <code>Rc&lt;T&gt;</code> ach luachanna do-athchurtha, ní féidir linn aon cheann de na luachanna sa
+liosta nuair a bheidh siad cruthaithe againn. Cuirimis isteach <code>RefCell&lt;T&gt;</code> chun an cumas a bhaint amach
+athraigh na luachanna sna liostaí. Léiríonn liostú 15-24 gur trí úsáid a bhaint as a
+<code>RefCell&lt;T&gt;</code> sa sainmhíniú <code>Cons</code>, is féidir linn an luach atá stóráilte a mhionathrú
+na liostaí:</p>
+<Listing number="15-24" file-name="src/main.rs" caption="Using `Rc<RefCell<i32>>` to create a `List` that we can mutate">
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+enum List {
+    Cons(Rc&lt;RefCell&lt;i32&gt;&gt;, Rc&lt;List&gt;),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::cell::RefCell;
+use std::rc::Rc;
+
+fn main() {
+    let value = Rc::new(RefCell::new(5));
+
+    let a = Rc::new(Cons(Rc::clone(&amp;value), Rc::new(Nil)));
+
+    let b = Cons(Rc::new(RefCell::new(3)), Rc::clone(&amp;a));
+    let c = Cons(Rc::new(RefCell::new(4)), Rc::clone(&amp;a));
+
+    *value.borrow_mut() += 10;
+
+    println!("a after = {a:?}");
+    println!("b after = {b:?}");
+    println!("c after = {c:?}");
+}</code></pre></pre>
+</Listing>
+<p>Cruthaímid luach ar sampla é de <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code> agus stóráilimid é i
+athróg darb ainm <code>value</code> ionas gur féidir linn rochtain a fháil air níos déanaí. Ansin cruthaímid a
+<code>List</code> in <code>a</code> le malairt <code>Cons</code> a choinníonn <code>value</code>. Ní mór dúinn clónáil
+<code>value</code> mar sin tá úinéireacht ag <code>a</code> agus <code>value</code> araon ar an luach <code>5</code> istigh in áit
+ná úinéireacht a aistriú ó <code>value</code> go <code>a</code> nó <code>a</code> a fháil ar iasacht uaidh
+<code>value</code>.</p>
+<p>Fillteaimid an liosta <code>a</code> i <code>Rc&lt;T&gt;</code> mar sin nuair a chruthaímid liostaí <code>b</code> agus <code>c</code>, déanann siad
+in ann tagairt a dhéanamh do <code>a</code> araon, agus is é sin a rinne muid i Liostú 15-18.</p>
+<p>Tar éis dúinn na liostaí in <code>a</code>,<code>b</code>, agus <code>c</code> a chruthú, ba mhaith linn 10 a chur leis an
+luach i <code>value</code>. Déanaimid é seo trí <code>borrow_mut</code> a ghlaoch ar <code>value</code>, a úsáideann an
+gné dhíreagartha uathoibríoch a phléamar i gCaibidil 5 (féach an rannán
+[“Cá bhfuil an <code>-&gt;</code> Oibreoir?” [cá bhfuil an t-oibreoir---] <!-- déan neamhaird de -->) chun
+déan tagairt don <code>Rc&lt;T&gt;</code> don luach <code>RefCell&lt;T&gt;</code> istigh. An <code>borrow_mut</code>
+seolann an modh pointeoir cliste <code>RefMut&lt;T&gt;</code>, agus úsáidimid an t-oibreoir díthagartha
+air agus athraigh an luach istigh.</p>
+<p>Nuair a phriontáilimid <code>a</code>, <code>b</code>, agus <code>c</code>, feicimid go bhfuil na modhnaithe acu go léir
+luach 15 seachas 5:</p>
+<pre><code class="language-consól">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running `target/debug/cons-list`
+a after = Cons(RefCell { value: 15 }, Nil)
+b after = Cons(RefCell { value: 3 }, Cons(RefCell { value: 15 }, Nil))
+c after = Cons(RefCell { value: 4 }, Cons(RefCell { value: 15 }, Nil))
+</code></pre>
+<p>Tá an teicníc seo go leor néata! Trí úsáid a bhaint as <code>RefCell&lt;T&gt;</code>, tá ceann amuigh againn
+luach <code>List</code> do-laghdaithe. Ach is féidir linn na modhanna ar <code>RefCell&lt;T&gt;</code> a sholáthraíonn
+rochtain ar a shoghluaisteacht istigh ionas gur féidir linn ár sonraí a mhodhnú nuair is gá dúinn.
+Cosnaíonn seiceálacha ama rite na rialacha iasachtaíochta sinn ó rásaí sonraí, agus is amhlaidh atá
+uaireanta is fiú beagán luas a thrádáil don tsolúbthacht seo inár sonraí
+struchtúir. Tabhair faoi deara nach n-oibríonn <code>RefCell&lt;T&gt;</code> do chód ilshnáithe!
+Is é <code>Mutex&lt;T&gt;</code> an ​​leagan sábháilte de <code>RefCell&lt;T&gt;</code> agus pléifimid
+<code>Mutex&lt;T&gt;</code> i gCaibidil 16.</p>
 
                     </main>
 

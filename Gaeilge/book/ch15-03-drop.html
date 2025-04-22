@@ -159,7 +159,189 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="running-code-on-cleanup-with-the-drop-trait"><a class="header" href="#running-code-on-cleanup-with-the-drop-trait">Running Code on Cleanup with the Drop Trait</a></h1>
+                        <h2 id="cód-rith-ar-ghlantachán-leis-an-trait-drop"><a class="header" href="#cód-rith-ar-ghlantachán-leis-an-trait-drop">Cód Rith ar Ghlantachán leis an Trait <code>Drop</code></a></h2>
+<p>Is é an dara tréith atá tábhachtach don phatrún pointeoir cliste ná <code>Drop</code>, rud a ligeann
+shaincheapann tú cad a tharlaíonn nuair a bhíonn luach ar tí dul as an raon feidhme. Is féidir leat
+cur i bhfeidhm a sholáthar don tréith <code>Drop</code> ar aon chineál, agus is féidir leis an gcód sin
+a úsáid chun acmhainní cosúil le comhaid nó naisc líonra a scaoileadh.</p>
+<p>Táimid ag tabhairt isteach <code>Drop</code> i gcomhthéacs leideanna cliste mar go bhfuil an
+is beagnach i gcónaí a úsáidtear feidhmiúlacht na tréithe <code>Drop</code> agus a
+pointeoir cliste. Mar shampla, nuair a scaoiltear <code>Box&lt;T&gt;</code> díroinnfidh sé an
+spás ar an gcarn a díríonn an bosca air.</p>
+<p>I dteangacha áirithe, i gcás cineálacha áirithe, ní mór don ríomhchláraitheoir cód a ghlaoch chun cuimhne saor in aisce
+nó acmhainní gach uair a chríochnaíonn siad ag baint úsáide as sampla de na cineálacha sin. Samplaí
+cuir láimhseálacha comhaid, soicéid nó glais san áireamh. Má dhéanann siad dearmad, d'fhéadfadh an córas
+éirí ró-ualaithe agus tuairteála. I Rust, is féidir leat a shonrú go bhfuil beagán áirithe de
+cód a rith aon uair a théann luach as raon feidhme, agus cuirfidh an tiomsaitheoir isteach
+an cód seo go huathoibríoch. Mar thoradh air sin, ní gá duit a bheith cúramach faoi
+cód glanta a chur i ngach áit i gclár a chuireann cás ar leith
+tá an cineál críochnaithe - ní bheidh tú ag sceitheadh ​​acmhainní fós!</p>
+<p>Sonraíonn tú an cód le rith nuair a théann luach as raon feidhme trí chur i bhfeidhm an
+Tréith <code>drop</code>. Éilíonn an tréith <code>Drop</code> ort modh amháin ainmnithe a chur i bhfeidhm
+<code>drop</code> a thógann tagairt mutable do <code>self</code>. Chun féachaint nuair a ghlaonn Rust 'titim',
+cuirimis ráitis <code>drop</code> le <code>println!</code> i bhfeidhm faoi láthair.</p>
+<p>Léiríonn liostú 15-14 struchtúr <code>CustomSmartPointer</code> nach bhfuil ach saincheaptha aige
+feidhmiúlacht ná go ndéanfaidh sé <code>Dropping CustomSmartPointer!</code> a phriontáil nuair a bheidh an
+mar shampla téann as raon feidhme, chun a thaispeáint nuair a ritheann Rust an fheidhm <code>drop</code>.</p>
+<Listing number="15-14" file-name="src/main.rs" caption="A `CustomSmartPointer` struct that implements the `Drop` trait where we would put our cleanup code">
+<pre><pre class="playground"><code class="language-rust">struct CustomSmartPointer {
+    data: String,
+}
+
+impl Drop for CustomSmartPointer {
+    fn drop(&amp;mut self) {
+        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+    }
+}
+
+fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("my stuff"),
+    };
+    let d = CustomSmartPointer {
+        data: String::from("other stuff"),
+    };
+    println!("CustomSmartPointers created.");
+}</code></pre></pre>
+</Listing>
+<p>Tá an trait <code>Drop</code> san áireamh sa réamhrá, mar sin ní gá dúinn é a thabhairt isteach
+scóip. Cuirimid an tréith <code>Drop</code> ar <code>CustomSmartPointer</code> i bhfeidhm agus soláthraímid an
+cur i bhfeidhm don mhodh <code>drop</code> ar a dtugtar <code>println!</code>. An comhlacht ar an
+Is éard is feidhm <code>drop</code> ann ná áit a gcuirfeá aon loighic a theastaigh uait a rith
+téann sampla de do chineál as raon feidhme. Táimid ag priontáil roinnt téacs anseo chun
+léiriú go radhairc cathain a ghlaonn Rust 'titim'.</p>
+<p>I <code>main</code>, cruthaímid dhá chás de <code>CustomSmartPointer</code> agus ansin priontáil
+<code>CustomSmartPointers created</code>. Ag deireadh <code>main</code>, ár gcásanna de
+Rachaidh <code>CustomSmartPointer</code> as an scóip, agus cuirfidh Rust glaoch ar an gcód a chuireamar
+sa mhodh <code>drop</code>, ár dteachtaireacht deiridh a phriontáil. Tabhair faoi deara nár ghá dúinn
+glaoigh ar an modh <code>drop</code> go sainráite.</p>
+<p>Agus an clár seo á rith againn, feicfidh muid an t-aschur seo a leanas:</p>
+<pre><pre class="playground"><code class="language-rust">struct CustomSmartPointer {
+    data: String,
+}
+
+impl Drop for CustomSmartPointer {
+    fn drop(&amp;mut self) {
+        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+    }
+}
+
+fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("my stuff"),
+    };
+    let d = CustomSmartPointer {
+        data: String::from("other stuff"),
+    };
+    println!("CustomSmartPointers created.");
+}</code></pre></pre>
+<p>Thug Rust <code>drop</code> orainn go huathoibríoch nuair a chuaigh ár gcásanna amach as an scóip,
+ag glaoch ar an gcód a shonraigh muid. Cuirtear athróga in ord droim ar ais de
+a greadadh, mar sin thit <code>d</code> roimh <code>c</code>. Is é cuspóir an tsampla seo ná
+treoir amhairc a thabhairt duit ar conas a oibríonn an modh <code>drop</code>; de ghnáth dhéanfá
+sonraigh an cód glanta nach mór do do chineál a rith seachas prionta
+teachtaireacht.</p>
+<h3 id="luach-a-ísliú-go-luath-le-stdmemdrop"><a class="header" href="#luach-a-ísliú-go-luath-le-stdmemdrop">Luach a ísliú go luath le <code>std::mem::drop</code></a></h3>
+<p>Ar an drochuair, níl sé éasca an <code>drop</code> uathoibríoch a dhíchumasú
+feidhmiúlacht. De ghnáth ní gá ‘titim’ a dhíchumasú; pointe iomlán an
+Is éard atá i gceist le tréithe “titim” go dtugtar aire uathoibríoch dó. Ó am go chéile, áfach,
+b'fhéidir gur mhaith leat luach a ghlanadh go luath. Sampla amháin is ea nuair a úsáidtear cliste
+leideanna a bhainistíonn glais: b'fhéidir gur mhaith leat an modh <code>drop</code> a chur i bhfeidhm
+scaoileann sé an glas ionas gur féidir le cód eile sa raon feidhme céanna an glas a fháil.
+Ní ligeann Rust duit modh ‘titim’ na trait ‘Drop’ a ghlaoch de láimh; ina ionad
+caithfidh tú glaoch ar an bhfeidhm <code>std::mem::drop</code> a sholáthraíonn an leabharlann chaighdeánach
+más mian leat iallach a chur ar luach a ísliú roimh dheireadh a scóip.</p>
+<p>Má dhéanaimid iarracht modh 'titim' an trait <code>Drop</code> a ghlaoch de láimh trí athrú a dhéanamh ar an
+`príomhfheidhm' ó Liostú 15-14, mar a thaispeántar i Liostú 15-15, gheobhaidh muid
+earráid tiomsaithe:</p>
+<Listing number="15-16" file-name="src/main.rs" caption="Calling `std::mem::drop` to explicitly drop a value before it goes out of scope">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct CustomSmartPointer {
+</span><span class="boring">    data: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Drop for CustomSmartPointer {
+</span><span class="boring">    fn drop(&amp;mut self) {
+</span><span class="boring">        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("some data"),
+    };
+    println!("CustomSmartPointer created.");
+    drop(c);
+    println!("CustomSmartPointer dropped before the end of main.");
+}</code></pre></pre>
+</Listing>
+<p>Nuair a dhéanaimid iarracht an cód seo a thiomsú, gheobhaidh muid an earráid seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling drop-example v0.1.0 (file:///projects/drop-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running `target/debug/drop-example`
+CustomSmartPointer created.
+Dropping CustomSmartPointer with data `some data`!
+CustomSmartPointer dropped before the end of main.
+</code></pre>
+<p>Deir an teachtaireacht earráide seo nach bhfuil cead againn ‘titim’ a ghlaoch go sainráite. Tá an
+Úsáideann teachtaireacht earráide an téarma <em>destructor</em>, arb é an téarma ríomhchlárúcháin ginearálta é
+le haghaidh feidhm a ghlanann sampla. Tá <em>destructor</em> ar aon dul le a
+<em>constructor</em>, rud a chruthaíonn sampla. Is é an fheidhm <code>drop</code> i Rust amháin
+scriostóir ar leith.</p>
+<p>Ní ligeann Rust dúinn ‘titim’ a ghlaoch go sainráite mar go mbeadh Rust fós
+glaoigh go huathoibríoch ar <code>drop</code> ar an luach ag deireadh <code>main</code>. Chuirfeadh sé seo faoi deara a
+earráid <em>double free</em> toisc go mbeadh Rust ag iarraidh an luach céanna a ghlanadh
+faoi ​​dhó.</p>
+<p>Ní féidir linn ionsá uathoibríoch <code>drop</code> a dhíchumasú nuair a théann luach as
+scóip, agus ní féidir linn an modh <code>drop</code> a ghlaoch go sainráite. Mar sin, más gá dúinn bhfeidhm
+luach atá le glanadh suas go luath, úsáidimid an fheidhm <code>std::mem::drop</code>.</p>
+<p>Tá an fheidhm <code>std::mem::drop</code> difriúil ón modh <code>drop</code> sa <code>Drop</code>
+trait. Tugaimid é trí rith mar argóint an luach ba mhaith linn a bhrú chun titim.
+Tá an fheidhm sa réamhrá, ionas /../listings/gur féidir linn <code>main</code> i Liostú 15-15 a mhodhnú go
+cuir glaoch ar an bhfeidhm <code>drop</code>, mar a thaispeántar i Liostú 15-16:</p>
+<Listing number="15-16" file-name="src/main.rs" caption="Ag glaoch ar `std::mem::drop` chun luach a laghdú go sainráite sula dtéann sé as an scóip">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct CustomSmartPointer {
+</span><span class="boring">    data: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Drop for CustomSmartPointer {
+</span><span class="boring">    fn drop(&amp;mut self) {
+</span><span class="boring">        println!("Dropping CustomSmartPointer with data `{}`!", self.data);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let c = CustomSmartPointer {
+        data: String::from("some data"),
+    };
+    println!("CustomSmartPointer created.");
+    drop(c);
+    println!("CustomSmartPointer dropped before the end of main.");
+}</code></pre></pre>
+</Listing>
+<p>Má ritheann tú an cód seo, déanfar na rudaí seo a leanas a phriontáil:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling drop-example v0.1.0 (file:///projects/drop-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running `target/debug/drop-example`
+CustomSmartPointer created.
+Dropping CustomSmartPointer with data `some data`!
+CustomSmartPointer dropped before the end of main.
+</code></pre>
+<p>Tá an téacs <code>Dropping CustomSmartPointer with data `some data`!</code> clóite
+idir an <code>CustomSmartPointer created.</code> agus <code>CustomSmartPointer dropped before the end of main.</code> a thaispeánann go dtugtar an cód modha <code>drop</code> ar
+titim <code>c</code> ag an bpointe sin.</p>
+<p>Is féidir leat cód sonraithe i gcur i bhfeidhm tréithe <code>Drop</code> a úsáid ar go leor bealaí chun
+glantachán a dhéanamh áisiúil agus sábháilte: mar shampla, d'fhéadfá é a úsáid chun do chuid féin a chruthú
+leithdháilteoir cuimhne féin! Leis an tréith <code>Drop</code> agus córas úinéireachta Rust, tusa
+ní gá cuimhneamh ar ghlanadh suas toisc go ndéanann Rust é go huathoibríoch.</p>
+<p>Ní gá freisin a bheith buartha faoi fhadhbanna a eascraíonn de thaisme
+glanadh suas luachanna atá fós in úsáid: an córas úinéireachta a dhéanann cinnte
+tá tagairtí bailí i gcónaí cinntíonn sé freisin nach nglaofar <code>drop</code> ach uair amháin nuair
+níl an luach á úsáid a thuilleadh.</p>
+<p>Anois agus <code>Box&lt;T&gt;</code> agus roinnt de thréithe an chliste scrúdaithe againn
+leideanna, breathnaímis ar roinnt leideanna cliste eile atá sainmhínithe sa chaighdeán
+leabharlann.</p>
 
                     </main>
 

@@ -159,7 +159,349 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="treating-smart-pointers-like-regular-references-with-the-deref-trait"><a class="header" href="#treating-smart-pointers-like-regular-references-with-the-deref-trait">Treating Smart Pointers Like Regular References with the Deref Trait</a></h1>
+                        <h2 id="leideanna-cliste-a-chaitheamh-cosúil-le-tagairtí-rialta-leis-an-dtréith-deref"><a class="header" href="#leideanna-cliste-a-chaitheamh-cosúil-le-tagairtí-rialta-leis-an-dtréith-deref">Leideanna Cliste a Chaitheamh Cosúil le Tagairtí Rialta leis an dTréith <code>Deref</code></a></h2>
+<p>Nuair a chuirtear an trait <code>Deref</code> i bhfeidhm is féidir leat iompar an
+<em>dereference operator</em> <code>*</code> (gan a chur amú leis an iolrú nó glob
+oibreoir). Trí <code>Deref</code> a chur i bhfeidhm sa chaoi is gur féidir pointeoir cliste a bheith ann
+cóireáilte cosúil le tagairt rialta, is féidir leat scríobh cód a oibríonn ar
+tagairtí agus úsáid an cód sin le leideanna cliste freisin.</p>
+<p>Breathnaímid ar dtús ar an gcaoi a n-oibríonn an t-oibreoir díreference le tagairtí rialta.
+Ansin déanfaimid iarracht cineál saincheaptha a shainiú a iompraíonn mar <code>Box&lt;T&gt;</code>, agus féach cén fáth
+ní oibríonn an t-oibreoir díreference mar thagairt ar ár nua-shainithe
+cineál. Déanfaimid iniúchadh ar an gcaoi a bhféadfar é seo a dhéanamh má chuirtear an tréith 'Deref' i bhfeidhm
+leideanna cliste a bheith ag obair ar bhealaí cosúil le tagairtí. Ansin féachfaimid ar
+Gné <em>deref coercion</em> Rust agus conas a ligeann sé dúinn oibriú le ceachtar tagairt
+nó leideanna cliste.</p>
+<blockquote>
+<p>Nóta: Tá difríocht mhór amháin idir an cineál <code>MyBox&lt;T&gt;</code> atáimid ar tí
+build and the real <code>Box&lt;T&gt;</code>: ní stórálfaidh ár leagan a shonraí ar an gcarn.
+Táimid ag díriú an sampla seo ar <code>Deref</code>, mar sin áit a bhfuil na sonraí stóráilte i ndáiríre
+nach bhfuil chomh tábhachtach leis an iompar atá cosúil le pointeoir.</p>
+</blockquote>
+<!-- Seannasc, ná bain -->
+<p><a id="following-the-pointer-to-the-value-with-the-dereference-operator"></a></p>
+<h3 id="tar-éis-an-pointeoir-don-luach"><a class="header" href="#tar-éis-an-pointeoir-don-luach">Tar éis an Pointeoir don Luach</a></h3>
+<p>Is cineál pointeoir é tagairt rialta, agus bealach amháin chun smaoineamh ar phointeoir
+mar shaighead le luach atá stóráilte in áit éigin eile. I Liostú 15-6, cruthaímid a
+tagairt do luach <code>i32</code> agus ansin úsáid an t-oibreoir díreference chun an
+tagairt don luach:</p>
+<Listing number="15-6" file-name="src/main.rs" caption="Using the dereference operator to follow a reference to an `i32` value">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = 5;
+    let y = &amp;x;
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}</code></pre></pre>
+</Listing>
+<p>Tá luach <code>i32</code> <code>5</code> ag an athróg <code>x</code>. Leagamar <code>y</code> comhionann le tagairt do
+<code>x</code>. Is féidir linn a dhearbhú go bhfuil <code>x</code> cothrom le <code>5</code>. Mar sin féin, más mian linn a dhéanamh ar
+dearbhú faoin luach in <code>y</code>, caithfimid <code>*y</code> a úsáid chun an tagairt a leanúint
+chuig an luach a bhfuil sé ag díriú air (mar sin <em>dereference</em>) ionas gur féidir leis an tiomsaitheoir comparáid a dhéanamh
+an luach iarbhír. Nuair a dhírímid <code>y</code>, tá rochtain againn ar an luach slánuimhir
+Tá <code>y</code> ag cur in iúl gur féidir linn comparáid a dhéanamh le <code>5</code>.</p>
+<p>Dá ndéanfaimis iarracht <code>assert_eq!(5, y);</code> a scríobh ina ionad sin, gheobhaimid an tiomsú seo
+earráid:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling deref-example v0.1.0 (file:///projects/deref-example)
+error[E0277]: can't compare `{integer}` with `&amp;{integer}`
+ --&gt; src/main.rs:6:5
+  |
+6 |     assert_eq!(5, y);
+  |     ^^^^^^^^^^^^^^^^ no implementation for `{integer} == &amp;{integer}`
+  |
+  = help: the trait `PartialEq&lt;&amp;{integer}&gt;` is not implemented for `{integer}`
+  = note: this error originates in the macro `assert_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider dereferencing here
+ --&gt; file:///home/.rustup/toolchains/1.82/lib/rustlib/src/rust/library/core/src/macros/mod.rs:46:35
+  |
+46|                 if !(*left_val == **right_val) {
+  |                                   +
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `deref-example` (bin "deref-example") due to 1 previous error
+</code></pre>
+<p>Ní cheadaítear uimhir a chur i gcomparáid agus tagairt d’uimhir toisc go bhfuil siad
+cineálacha éagsúla. Ní mór dúinn an t-oibreoir díreference a úsáid chun an tagairt a leanúint
+leis an luach atá á lua aige.</p>
+<h3 id="ag-baint-úsáide-as-boxt-cosúil-le-tagairt"><a class="header" href="#ag-baint-úsáide-as-boxt-cosúil-le-tagairt">Ag baint úsáide as <code>Box&lt;T&gt;</code> Cosúil le Tagairt</a></h3>
+<p>Is féidir linn an cód a athscríobh i Liostú 15-6 chun <code>Box&lt;T&gt;</code> a úsáid in ionad a
+tagairt ; an t-oibreoir díreference a úsáidtear ar an <code>Box&lt;T&gt;</code> i Liostú 15-7
+feidhmeanna ar an mbealach céanna leis an oibreoir dereference a úsáidtear ar an tagairt i
+Liostáil 15-6:</p>
+<Listing number="15-7" file-name="src/main.rs" caption="Using the dereference operator on a `Box<i32>`">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = 5;
+    let y = Box::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}</code></pre></pre>
+</Listing>
+<p>Is é an príomhdhifríocht idir Liostú 15-7 agus Liostú 15-6 ná gur anseo a shocraímid
+<code>y</code> a bheith ina shampla de <code>Box&lt;T&gt;</code> ag tagairt do luach cóipeáilte de <code>x</code> in áit
+ná tagairt a dhíríonn ar luach <code>x</code>. Sa dearbhú deireanach, is féidir linn
+úsáid an t-oibreoir díreference chun pointeoir an <code>Box&lt;T&gt;</code> a leanúint mar an gcéanna
+bealach a rinne muid nuair a bhí <code>y</code> mar thagairt. Ansin, déanfaimid iniúchadh ar a bhfuil speisialta
+faoi ​​<code>Box&lt;T&gt;</code> a chuireann ar ár gcumas an t-oibreoir díthagartha a úsáid trí ár n-
+cineál féin.</p>
+<h3 id="Ár-pointeoir-cliste-féin-a-shainmhíniú"><a class="header" href="#Ár-pointeoir-cliste-féin-a-shainmhíniú">Ár Pointeoir Cliste Féin a Shainmhíniú</a></h3>
+<p>Déanaimis pointeoir cliste a thógáil cosúil leis an gcineál <code>Box&lt;T&gt;</code> a sholáthraíonn an
+leabharlann caighdeánach chun taithí a fháil ar an gcaoi a n-iompraíonn leideanna cliste difriúil ó
+tagairtí de réir réamhshocraithe. Ansin féachfaimid ar conas an cumas a úsáid chun an
+oibreoir dereference.</p>
+<p>Sainmhínítear an cineál <code>Box&lt;T&gt;</code> ar deireadh mar struchtúr tuple le eilimint amháin, mar sin
+Sainmhíníonn liostú 15-8 cineál <code>MyBox&lt;T&gt;</code> ar an mbealach céanna. Déanfaimid sainmhíniú freisin ar a
+feidhm <code>new</code> chun an fheidhm <code>new</code> a shainmhínítear ar <code>Box&lt;T&gt;</code> a mheaitseáil.</p>
+<Listing number="15-8" file-name="src/main.rs" caption="Defining a `MyBox<T>` type">
+<pre><pre class="playground"><code class="language-rust">struct MyBox&lt;T&gt;(T);
+
+impl&lt;T&gt; MyBox&lt;T&gt; {
+    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+        MyBox(x)
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Sainmhínímid struchtúr darb ainm <code>MyBox</code> agus dearbhaímid paraiméadar cineálach <code>T</code>, mar gheall ar
+ba mhaith linn go mbeadh luachanna d'aon chineál ag ár gcineál. Is struchtúr tuple é an cineál <code>MyBox</code>
+le gné amháin den chineál <code>T</code>. Glacann an fheidhm <code>MyBox::new</code> paraiméadar amháin de
+clóscríobh <code>T</code> agus seolann tú sampla <code>MyBox</code> a choinníonn an luach a cuireadh isteach.</p>
+<p>Déanaimis iarracht an <code>main</code> i Liostú 15-7 a chur le Liostú 15-8 agus
+é a athrú chun an cineál <code>MyBox&lt;T&gt;</code> a shainmhínigh muid a úsáid in ionad <code>Box&lt;T&gt;</code>. Tá an
+ní thiomsóidh an cód i Liostú 15-9 toisc nach bhfuil a fhios ag Rust conas díthagairt a dhéanamh
+<code>MyBox</code>.</p>
+<Listing number="15-9" file-name="src/main.rs" caption="Attempting to use `MyBox<T>` in the same way we used references and `Box<T>`">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let x = 5;
+    let y = MyBox::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}</code></pre>
+</Listing>
+<p>Here’s the resulting compilation error:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling deref-example v0.1.0 (file:///projects/deref-example)
+error[E0614]: type `MyBox&lt;{integer}&gt;` cannot be dereferenced
+  --&gt; src/main.rs:14:19
+   |
+14 |     assert_eq!(5, *y);
+   |                   ^^
+
+For more information about this error, try `rustc --explain E0614`.
+error: could not compile `deref-example` (bin "deref-example") due to 1 previous error
+</code></pre>
+<p>Ní féidir ár gcineál <code>MyBox&lt;T&gt;</code> a dhímheas toisc nach bhfuil sé sin curtha i bhfeidhm againn
+cumas ar ár gcineál. Chun díthagairt a dhéanamh leis an oibreoir <code>*</code>, déanaimid
+an trait <code>Deref</code> a chur i bhfeidhm.</p>
+<h3 id="caitheamh-cineál-cosúil-le-tagairt-tríd-an-trait-deref-a-chur-i-bhfeidhm"><a class="header" href="#caitheamh-cineál-cosúil-le-tagairt-tríd-an-trait-deref-a-chur-i-bhfeidhm">Caitheamh Cineál Cosúil le Tagairt tríd an Trait <code>Deref</code> a Chur i bhFeidhm</a></h3>
+<p>Mar a pléadh sa <a href="ch10-02-traits.html#implementing-a-trait-on-a-type">“Tréith a Chur i bhFeidhm ar Chineál”</a><!-- neamhaird a dhéanamh
+--> alt de Chaibidil 10, a chur i bhfeidhm tréith, ní mór dúinn a chur ar fáil
+cur i bhfeidhm do mhodhanna riachtanacha an trait. An trait <code>Deref</code>, ar fáil
+ag an leabharlann chaighdeánach, éilíonn orainn modh amháin darb ainm <code>deref</code> sin a chur i bhfeidhm
+faigheann sé <code>self</code> ar iasacht agus cuireann sé tagairt ar ais do na sonraí istigh. Liostáil 15-10
+ina bhfuil <code>Deref</code> curtha i bhfeidhm le cur leis an sainmhíniú ar <code>MyBox</code>:</p>
+<Listing number="15-10" file-name="src/main.rs" caption="Implementing `Deref` on `MyBox<T>`">
+<pre><pre class="playground"><code class="language-rust">use std::ops::Deref;
+
+impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+    type Target = T;
+
+    fn deref(&amp;self) -&gt; &amp;Self::Target {
+        &amp;self.0
+    }
+}
+<span class="boring">
+</span><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let x = 5;
+</span><span class="boring">    let y = MyBox::new(x);
+</span><span class="boring">
+</span><span class="boring">    assert_eq!(5, x);
+</span><span class="boring">    assert_eq!(5, *y);
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Sainmhíníonn an chomhréir <code>type Target = T;</code> cineál gaolmhar don <code>Deref</code>
+tréithe a úsáid. Is bealach beagán difriúil iad cineálacha comhlachaithe chun a
+paraiméadar cineálach, ach ní gá duit a bheith buartha fúthu faoi láthair; clúdóidh muid
+iad go mion i gCaibidil 20.</p>
+<p>Líonaimid corp an mhodha <code>deref</code> le <code>&amp;self.0</code> mar sin filleann <code>deref</code> a
+tagairt don luach a theastaíonn uainn a rochtain leis an oibreoir <code>*</code>; aisghairm ó na
+<a href="ch05-01-defining-structs.html#using-tuple-structs-without-named-fields-to-create-different-types">“Úsáid Struchtúir Tuple gan Réimsí Ainmnithe chun Éagsúla a Chruthú
+Cineálacha”</a><!-- neamhaird --> roinn de Chaibidil 5 a bhfuil rochtain ag <code>.0</code> air
+an chéad luach i struchtúr tuple. An fheidhm <code>main</code> i Liostú 15-9 go
+glaonna <code>*</code> ar an luach <code>MyBox&lt;T&gt;</code> le chéile anois, agus na dearbhuithe pas!</p>
+<p>Gan an tréithe <code>Deref</code>, ní féidir leis an tiomsaitheoir ach tagairtí <code>&amp;</code> a dhímheas.
+Tugann an modh <code>deref</code> an cumas don tiomsaitheoir luach d'aon chineál a ghlacadh
+a chuireann <code>Deref</code> i bhfeidhm agus a ghlaonn an modh <code>deref</code> chun tagairt <code>&amp;</code> a fháil go
+tá a fhios aige conas dereference.</p>
+<p>Nuair a chuamar isteach <code>* y</code> i Liosta 15-9, rith Rust é seo taobh thiar de na cásanna
+cód:</p>
+<pre><code class="language-meirge  neamhaird">*(y.deref())
+</code></pre>
+<p>Cuireann Rust glaoch chuig an modh <code>deref</code> in ionad an oibreora <code>*</code> agus ansin a
+tagairt shimplí ionas nach mbeidh orainn smaoineamh ar cé acu an gcaithfimid nó nach gá
+glaoigh ar an modh <code>deref</code>. Ligeann an ghné Rust seo dúinn cód a scríobh a fheidhmíonn
+mar an gcéanna cibé an bhfuil tagairt rialta againn nó cineál a chuireann i bhfeidhm
+<code>Deref</code>.</p>
+<p>Is é an fáth go dtugann an modh <code>deref</code> tagairt ar ais do luach, agus go bhfuil an
+tá gá le tagairt shimplí lasmuigh de na lúibíní in <code>*(y.deref())</code> fós,
+a bhaineann leis an gcóras úinéireachta. Má thug an modh <code>deref</code> an luach ar ais
+go díreach in ionad tagairt don luach, bhogfaí an luach amach as
+<code>self</code>. Nílimid ag iarraidh úinéireacht a ghlacadh ar an luach inmheánach taobh istigh de <code>MyBox&lt;T&gt;</code> in
+sa chás seo nó i bhformhór na gcásanna ina n-úsáidimid an t-oibreoir díreference.</p>
+<p>Tabhair faoi deara go gcuirtear glao chuig an modh <code>deref</code> in ionad an oibreora <code>*</code> agus
+ansin cuir glaoch chuig an oibreoir <code>*</code> uair amháin, gach uair a úsáidimid <code>*</code> inár gcód.
+Toisc nach dtagann ionadú an oibreora <code>*</code> arís gan teorainn, ní mór dúinn
+deireadh suas le sonraí den chineál <code>i32</code>, a mheaitseálann an <code>5</code> in <code>assert_eq!</code> i
+Liostáil 15-9.</p>
+<h3 id="comhéigeantais-fhoréigthe-intuigthe-le-feidhmeanna-agus-modhanna"><a class="header" href="#comhéigeantais-fhoréigthe-intuigthe-le-feidhmeanna-agus-modhanna">Comhéigeantais Fhoréigthe intuigthe le Feidhmeanna agus Modhanna</a></h3>
+<p>Tiontaíonn <em>Deref coercion</em> tagairt do chineál a chuireann an <code>Deref</code> i bhfeidhm
+tréith isteach i dtagairt do chineál eile. Mar shampla, is féidir comhéigean deref a thiontú
+<code>&amp;String</code> go <code>&amp;str</code> toisc go gcuireann <code>String</code> an trait <code>Deref</code> i bhfeidhm ionas go mbeidh sé
+Filleann <code>&amp;str</code>. Is áis é comhéigean deref a fheidhmíonn Rust ar argóintí chun
+feidhmeanna agus modhanna, agus ní oibríonn sé ach ar chineálacha a chuireann an <code>Deref</code> i bhfeidhm
+trait. Tarlaíonn sé go huathoibríoch nuair a thugaimid tagairt do chineál áirithe
+luach mar argóint le feidhm nó modh nach bhfuil ag teacht leis an bparaiméadar
+clóscríobh an sainmhíniú ar fheidhm nó modh. Seicheamh glaonna chuig an <code>deref</code>
+athraíonn modh an cineál a sholáthraíomar isteach sa chineál a theastaíonn ón bparaiméadar.</p>
+<p>Cuireadh comhéigean deref le Rust ionas go mbeidh feidhm ag ríomhchláraitheoirí ag scríobh agus
+ní gá an oiread tagairtí agus díthagairtí follasacha a chur isteach i nglaonna modha
+le <code>&amp;</code> agus <code>*</code>. Ligeann an ghné comhéigean deref dúinn níos mó cód a scríobh freisin
+is féidir oibriú le haghaidh tagairtí nó leideanna cliste.</p>
+<p>Chun comhéigean deref a fheiceáil i ngníomh, bainimis úsáid as an gcineál <code>MyBox&lt;T&gt;</code> a shainmhíníomar ann
+Liostáil 15-8 chomh maith le cur i bhfeidhm <code>Deref</code> a chuireamar leis sa Liostú
+15-10. Léiríonn liosta 15-11 an sainmhíniú ar fheidhm a bhfuil sreangshleasa aici
+paraiméadar:</p>
+<Listing number="15-11" file-name="src/main.rs" caption="A `hello` function that has the parameter `name` of type `&str`">
+<pre><pre class="playground"><code class="language-rust">fn hello(name: &amp;str) {
+    println!("Hello, {name}!");
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Is féidir linn an fheidhm <code>hello</code> a thabhairt le slisne teaghrán mar argóint, mar shampla
+<code>hello("Rust");</code> mar shampla. Trí chomhéigean deref is féidir <code>hello</code> a thabhairt air
+le tagairt do luach cineáil <code>MyBox&lt;String&gt;</code>, mar a thaispeántar i Liostú 15-12:</p>
+<Listing number="15-12" file-name="src/main.rs" caption="Calling `hello` with a reference to a `MyBox<String>` value, which works because of deref coercion">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::ops::Deref;
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+</span><span class="boring">    type Target = T;
+</span><span class="boring">
+</span><span class="boring">    fn deref(&amp;self) -&gt; &amp;T {
+</span><span class="boring">        &amp;self.0
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn hello(name: &amp;str) {
+</span><span class="boring">    println!("Hello, {name}!");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let m = MyBox::new(String::from("Rust"));
+    hello(&amp;m);
+}</code></pre></pre>
+</Listing>
+<p>Anseo táimid ag glaoch ar an bhfeidhm <code>hello</code> leis an argóint <code>&amp;m</code>, is é sin a
+tagairt do luach <code>MyBox&lt;String&gt;</code>. Toisc gur chuireamar an trait <code>Deref</code> i bhfeidhm
+ar <code>MyBox&lt;T&gt;</code> i Liostú 15-10, is féidir le Rust <code>&amp;MyBox &lt;String&gt;</code> a iompú ina <code>&amp;String</code>
+trí ghlaoch ar <code>deref</code>. Soláthraíonn an leabharlann chaighdeánach cur i bhfeidhm <code>Deref</code>
+ar <code>String</code> a sheolann sreangán ar ais, agus tá sé seo i gcáipéisíocht an API
+le haghaidh <code>Deref</code>. Glaonn Rust ar <code>deref</code> arís chun an <code>&amp;String</code> a iompú ina <code>&amp;str</code>, a
+ag teacht le sainmhíniú na feidhme <code>hello</code>.</p>
+<p>Murar chuir Rust comhéigean deref i bhfeidhm, bheadh ​​orainn an cód a scríobh isteach
+Liostáil 15-13 in ionad an chóid i Liostú 15-12 chun <code>hello</code> a ghlaoch le luach
+den chineál <code>&amp;MyBox&lt;String&gt;</code>.</p>
+<Listing number="15-13" file-name="src/main.rs" caption="The code we would have to write if Rust didn’t have deref coercion">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::ops::Deref;
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+</span><span class="boring">    type Target = T;
+</span><span class="boring">
+</span><span class="boring">    fn deref(&amp;self) -&gt; &amp;T {
+</span><span class="boring">        &amp;self.0
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn hello(name: &amp;str) {
+</span><span class="boring">    println!("Hello, {name}!");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let m = MyBox::new(String::from("Rust"));
+    hello(&amp;(*m)[..]);
+}</code></pre></pre>
+</Listing>
+<p>Déanann an <code>(*m)</code> tagairt don <code>MyBox&lt;String&gt;</code> mar <code>String</code>. Ansin tá an <code>&amp;</code> agus
+<code>[..]</code> glac sliseog teaghrán den <code>String</code> atá comhionann leis an teaghrán iomlán go
+mheaitseáil síniú <code>hello</code>. Tá sé níos deacra an cód seo gan comhéigeantais deref a dhéanamh
+léamh, scríobh, agus tuiscint leis na siombailí seo go léir atá i gceist. Deref comhéigean
+ligeann do Rust na tiontuithe seo a láimhseáil dúinn go huathoibríoch.</p>
+<p>Nuair a shainmhínítear an tréith <code>Deref</code> do na cineálacha atá i gceist, déanfaidh Rust anailís ar an
+cineálacha agus úsáid <code>Deref::deref</code> a mhéad uair is gá chun tagairt a fháil
+mheaitseáil le cineál an pharaiméadar. An líon uaireanta is gá go mbeadh <code>Deref::deref</code>
+a cuireadh isteach réitithe ag am tiomsaithe, mar sin níl aon phionós ama rite as a ghlacadh
+buntáiste a bhaint as comhéigean deref!</p>
+<h3 id="mar-a-idirghníomhaíonn-comhéigean-deref-le-mutability"><a class="header" href="#mar-a-idirghníomhaíonn-comhéigean-deref-le-mutability">Mar a Idirghníomhaíonn Comhéigean Deref le Mutability</a></h3>
+<p>Cosúil leis an gcaoi a n-úsáideann tú an tréith <code>Deref</code> chun an t-oibreoir <code>*</code> a shárú
+tagairtí domhalartaithe, is féidir leat an tréith <code>DerefMut</code> a úsáid chun an <code>*</code> a shárú
+oibreoir ar thagairtí mutable.</p>
+<p>Déanann Rust comhéigean a dhíspreagadh nuair a aimsíonn sé cineálacha agus cur i bhfeidhm tréithe i dtrí cinn
+cásanna:</p>
+<ul>
+<li>Ó <code>&amp;T</code> go <code>&amp;U</code> nuair a <code>T: Deref &lt;Target=U&gt;</code></li>
+<li>Ó <code>&amp;mut T</code> go <code>&amp;mut U</code> nuair <code>T: DerefMut&lt;Target=U&gt;</code></li>
+<li>Ó <code>&amp;mut T</code> go <code>&amp;U</code> nuair a <code>T: Deref &lt;Target=U&gt;</code></li>
+</ul>
+<p>Is ionann an chéad dá chás agus a chéile ach amháin an dara cás
+feidhmíonn mutability. Deir an chéad chás má tá <code>&amp;T</code>, agus <code>T</code> agat
+cuireann sé <code>Deref</code> i bhfeidhm do chineál éigin <code>U</code>, is féidir leat <code>&amp;U</code> a fháil go trédhearcach. Tá an
+deir an dara cás go dtarlaíonn an comhéigean deref céanna le haghaidh tagairtí mutable.</p>
+<p>Tá an tríú cás níos deacra: comhleanfaidh meirge tagairt chomhshóite do chás
+do-mhothúchánach. Ach is <em>not</em> a mhalairt is féidir: beidh tagairtí do-laghdaithe
+riamh iallach a chur ar thagairtí mutable. Mar gheall ar na rialacha iasachtaithe, má tá
+tagairt sho-shóite, ní mór gurb í an tagairt sho-shó-shamhail sin an t-aon tagairt dó sin
+sonraí (ar shlí eile, ní thiomsódh an clár). Comhshó amháin a thiontú
+ní sháróidh tagairt do thagairt neamh-inmhalartaithe amháin na rialacha iasachtaíochta.
+Chun tagairt do-ath-inmheánach a thiontú go tagairt shochorraithe, bheadh ​​gá leis an
+is í an tagairt tosaigh do- immutable an t-aon tagairt domhalartaithe do na sonraí sin, ach
+ní ráthaíonn na rialacha iasachtaíochta é sin. Mar sin, ní féidir le Rust an
+toimhde gur tagairt do-ath-inmheánach a thiontú go tagairt shochorraithe
+is féidir.</p>
 
                     </main>
 

@@ -159,7 +159,448 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="reference-cycles-can-leak-memory"><a class="header" href="#reference-cycles-can-leak-memory">Reference Cycles Can Leak Memory</a></h1>
+                        <h2 id="is-féidir-le-timthriallta-tagartha-an-cuimhne-a-sceitheadh"><a class="header" href="#is-féidir-le-timthriallta-tagartha-an-cuimhne-a-sceitheadh">Is féidir le Timthriallta Tagartha an Cuimhne a sceitheadh</a></h2>
+<p>Mar gheall ar ráthaíochtaí sábháilteachta cuimhne Rust tá sé deacair, ach níl sé dodhéanta
+cruthaigh de thaisme cuimhne nach nglantar riamh (ar a dtugtar <em>memory leak</em>).
+Ní ceann de ráthaíochtaí Rust é sceitheadh ​​cuimhne a chosc go hiomlán, rud a chiallaíonn
+tá sceitheadh ​​cuimhne sábháilte cuimhne i Rust. Is féidir linn a fheiceáil go gceadaíonn Rust sceitheadh ​​cuimhne
+trí úsáid a bhaint as <code>Rc&lt;T&gt;</code> agus <code>RefCell&lt;T&gt;</code>: is féidir tagairtí a chruthú nuair a
+tagraíonn míreanna dá chéile i dtimthriall. Cruthaíonn sé seo leaks cuimhne mar gheall ar an
+Ní bheidh líon tagartha gach míre sa timthriall a bhaint amach 0, agus na luachanna
+ní scaoilfear choíche.</p>
+<h3 id="timthriall-tagartha-á-chruthú"><a class="header" href="#timthriall-tagartha-á-chruthú">Timthriall Tagartha á Chruthú</a></h3>
+<p>Breathnaímid ar conas a d’fhéadfadh timthriall tagartha tarlú agus conas é a chosc,
+ag tosú leis an sainmhíniú ar an <code>List</code> enum agus modh <code>tail</code> sa Liostú
+15-25:</p>
+<Listing number="15-25" file-name="src/main.rs" caption="A cons list definition that holds a `RefCell<T>` so we can modify what a `Cons` variant is referring to">
+<pre><pre class="playground"><code class="language-rust">use crate::List::{Cons, Nil};
+use std::cell::RefCell;
+use std::rc::Rc;
+
+#[derive(Debug)]
+enum List {
+    Cons(i32, RefCell&lt;Rc&lt;List&gt;&gt;),
+    Nil,
+}
+
+impl List {
+    fn tail(&amp;self) -&gt; Option&lt;&amp;RefCell&lt;Rc&lt;List&gt;&gt;&gt; {
+        match self {
+            Cons(_, item) =&gt; Some(item),
+            Nil =&gt; None,
+        }
+    }
+}
+
+fn main() {}</code></pre></pre>
+</Listing>
+<p>Tá athrú eile á úsáid againn ar an sainmhíniú ar <code>List</code> ó Liostú 15-5. Tá an
+is é an dara heilimint sa leagan <code>Cons</code> anois <code>RefCell &lt;Rc&lt;List&gt;&gt;</code>, rud a chiallaíonn go
+in ionad a bheith in ann an luach <code>i32</code> a mhodhnú mar a rinneamar i Liostú
+15-24, ba mhaith linn an luach <code>List</code> a bhfuil malairt <code>Cons</code> dírithe air a mhodhnú.
+Táimid ag cur modh <code>tail</code> leis freisin chun é a dhéanamh áisiúil dúinn rochtain a fháil ar an
+an dara mír má tá leagan <code>Cons</code> againn.</p>
+<p>I Liostú 15-26, táimid ag cur <code>main</code> leis a úsáideann na sainmhínithe i
+Liostáil 15-25. Cruthaíonn an cód seo liosta in <code>a</code> agus liosta i <code>b</code> a dhíríonn
+an liosta in <code>a</code>. Ansin athraíonn sé an liosta in <code>a</code> chun <code>b</code> a chur in iúl, ag cruthú a
+timthriall tagartha. Tá ráitis <code>println!</code> ar an mbealach chun a thaispeáint cad iad na
+tá comhaireamh tagartha ag pointí éagsúla sa phróiseas seo.</p>
+<Listing number="15-26" file-name="src/main.rs" caption="Creating a reference cycle of two `List` values pointing to each other">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use crate::List::{Cons, Nil};
+</span><span class="boring">use std::cell::RefCell;
+</span><span class="boring">use std::rc::Rc;
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">enum List {
+</span><span class="boring">    Cons(i32, RefCell&lt;Rc&lt;List&gt;&gt;),
+</span><span class="boring">    Nil,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl List {
+</span><span class="boring">    fn tail(&amp;self) -&gt; Option&lt;&amp;RefCell&lt;Rc&lt;List&gt;&gt;&gt; {
+</span><span class="boring">        match self {
+</span><span class="boring">            Cons(_, item) =&gt; Some(item),
+</span><span class="boring">            Nil =&gt; None,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let a = Rc::new(Cons(5, RefCell::new(Rc::new(Nil))));
+
+    println!("a initial rc count = {}", Rc::strong_count(&amp;a));
+    println!("a next item = {:?}", a.tail());
+
+    let b = Rc::new(Cons(10, RefCell::new(Rc::clone(&amp;a))));
+
+    println!("a rc count after b creation = {}", Rc::strong_count(&amp;a));
+    println!("b initial rc count = {}", Rc::strong_count(&amp;b));
+    println!("b next item = {:?}", b.tail());
+
+    if let Some(link) = a.tail() {
+        *link.borrow_mut() = Rc::clone(&amp;b);
+    }
+
+    println!("b rc count after changing a = {}", Rc::strong_count(&amp;b));
+    println!("a rc count after changing a = {}", Rc::strong_count(&amp;a));
+
+    // Uncomment the next line to see that we have a cycle;
+    // it will overflow the stack
+    // println!("a next item = {:?}", a.tail());
+}</code></pre></pre>
+</Listing>
+<p>Cruthaímid sampla <code>Rc&lt;List&gt;</code> a bhfuil luach <code>List</code> san athróg <code>a</code>
+le liosta tosaigh de <code>5, Nil</code>. Cruthaímid gabháltas mar shampla <code>Rc&lt;List&gt;</code> ansin
+luach <code>List</code> eile san athróg <code>b</code> ina bhfuil an luach 10 agus pointí
+chuig an liosta in <code>a</code>.</p>
+<p>Modhnaimid <code>a</code> mar sin díríonn sé ar <code>b</code> in ionad <code>Nil</code>, ag cruthú timthriall. Déanaimid
+sin trí úsáid a bhaint as an modh <code>tail</code> chun tagairt a fháil don <code>RefCell&lt;Rc&lt;List&gt;&gt;</code>
+in <code>a</code>, a chuireamar san athróg <code>link</code>. Ansin úsáidimid an <code>borrow_mut</code>
+modh ar an <code>RefCell&lt;Rc&lt;List&gt;&gt;</code> chun an luach istigh ó <code>Rc&lt;List&gt;</code> a athrú
+a choinníonn luach <code>Nil</code> ar an <code>Rc&lt;List&gt;</code> i <code>b</code>.</p>
+<p>Nuair a rithimid an cód seo, ag coinneáil an <code>println!</code> deireanach a dúirt amach le haghaidh an
+nóiméad, gheobhaidh muid an t-aschur seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.53s
+     Running `target/debug/cons-list`
+a initial rc count = 1
+a next item = Some(RefCell { value: Nil })
+a rc count after b creation = 2
+b initial rc count = 1
+b next item = Some(RefCell { value: Cons(5, RefCell { value: Nil }) })
+b rc count after changing a = 2
+a rc count after changing a = 2
+</code></pre>
+<p>Is iad comhaireamh tagartha na gcásanna <code>Rc&lt;List&gt;</code> sa dá <code>a</code> agus <code>b</code> ná 2 i ndiaidh
+athraíonn muid an liosta in <code>a</code> chun <code>b</code> a chur in iúl. Ag deireadh <code>main</code>, titeann Rust an
+athróg <code>b</code>, a laghdaíonn comhaireamh tagartha an shampla <code>b Rc&lt;List&gt;</code>
+ó 2 go 1. Ní ligfear siar an chuimhne atá ag <code>Rc&lt;List&gt;</code> ar an gcarn ag
+an pointe seo, toisc go bhfuil a chomhaireamh tagartha 1, ní 0. Ansin titeann Rust <code>a</code>, a
+laghdaítear comhaireamh tagartha an ásc <code>a Rc&lt;List&gt;</code> ó 2 go 1 mar
+go maith. Ní féidir cuimhne an ásc seo a ísliú ach an oiread, mar gheall ar an gceann eile
+Tagraíonn <code>Rc&lt;List&gt;</code> shampla dó fós. Déanfaidh an chuimhne a leithdháiltear ar an liosta
+fanacht gan bailiú go deo. Chun an timthriall tagartha seo a shamhlú, tá a
+léaráid i bhFíor 15-4.</p>
+<img alt="Timthriall tagartha na liostaí" src="img/trpl15-04.svg" class="center" />
+<p><span class="caption">Fíor 15-4: Timthriall tagartha liostaí <code>a</code> agus <code>b</code>
+ag tagairt dá chéile</span></p>
+<p>Mura ndéanann tú trácht ar an <code>println!</code> deiridh agus má ritheann tú an clár, déanfaidh Rust iarracht é
+priontáil an timthriall seo le <code>a</code> ag tagairt do <code>b</code> ag cur in iúl do <code>a</code> agus mar sin de go dtí é
+thar maoil an chruach.</p>
+<p>I gcomparáid le clár fíor-domhan, na hiarmhairtí a chruthú timthriall tagartha
+sa sampla seo níl siad an-dochar: díreach tar éis dúinn an timthriall tagartha a chruthú,
+chríochnaíonn an clár. Mar sin féin, má leithdháileadh clár níos casta go leor de chuimhne
+i dtimthriall agus coinnithe air ar feadh i bhfad, d'úsáidfeadh an clár níos mó cuimhne
+ná mar a bhí de dhíth air agus d'fhéadfadh sé an córas a shárú, rud a fhágann go n-imeodh sé as
+cuimhne ar fáil.</p>
+<p>Ní furasta timthriallta tagartha a chruthú, ach níl sé dodhéanta ach an oiread.
+Má tá luachanna <code>RefCell&lt;T&gt;</code> agat ina bhfuil luachanna <code>Rc&lt;T&gt;</code> nó a mhacasamhail neadaithe
+teaglaim de chineálacha le mutability istigh agus comhaireamh tagartha, ní mór duit
+cinntigh nach gcruthaíonn tú timthriallta; ní féidir leat brath ar Rust chun iad a ghabháil.
+Is fabht loighce i do chlár é timthriall tagartha a chruthú agus ba cheart duit
+tástálacha uathoibrithe, athbhreithnithe cód, agus cleachtais forbartha bogearraí eile a úsáid chun
+íoslaghdú.</p>
+<p>Réiteach eile chun timthriallta tagartha a sheachaint is ea do shonraí a atheagrú
+struchtúir sa chaoi is go gcuireann tagairtí áirithe úinéireacht in iúl agus ní léiríonn roinnt tagairtí.
+Mar thoradh air sin, is féidir leat a bheith timthriallta comhdhéanta de roinnt caidreamh úinéireachta agus
+roinnt caidreamh neamh-úinéireachta, agus ní dhéanann ach na caidrimh úinéireachta difear
+cibé an féidir luach a ísliú nó nach féidir. I Liosta 15-25, ba mhaith linn i gcónaí <code>Cons</code>
+roghanna eile chun a liosta a shealbhú, mar sin ní féidir an struchtúr sonraí a atheagrú.
+Breathnaímid ar shampla ag baint úsáide as graif comhdhéanta de nóid tuismitheora agus nóid linbh
+féachaint cén uair is bealach iomchuí chun cosc ​​a chur ar chaidrimh neamhúinéireachta
+timthriallta tagartha.</p>
+<h3 id="timthriallta-tagartha-a-chosc-rct-á-iompú-ina-weakt"><a class="header" href="#timthriallta-tagartha-a-chosc-rct-á-iompú-ina-weakt">Timthriallta Tagartha a Chosc: <code>Rc&lt;T&gt;</code> á iompú ina <code>Weak&lt;T&gt;</code></a></h3>
+<p>Go dtí seo, tá sé léirithe againn go méadaíonn glaoch <code>Rc::clone</code> an
+Ní ghlantar <code>strong_count</code> de shampla <code>Rc&lt;T&gt;</code>, agus <code>Rc&lt;T&gt;</code> ach
+suas más é a <code>strong_count</code> ná 0. Is féidir leat tagairt <em>lag</em> a chruthú freisin don
+luach laistigh de shampla <code>Rc&lt;T&gt;</code> trí <code>Rc::downgrade</code> a ghlaoch agus pas a fháil
+tagairt don <code>Rc&lt;T&gt;</code>. Is tagairtí láidre iad conas is féidir leat úinéireacht a roinnt
+mar shampla <code>Rc&lt;T&gt;</code>. Ní chuireann tagairtí laga caidreamh úinéireachta in iúl,
+agus ní chuireann a n-áireamh isteach nuair a ghlantar sampla <code>Rc&lt;T&gt;</code>. siad
+ní bheidh sé ina chúis le timthriall tagartha mar gheall ar aon timthriall ina bhfuil roinnt tagairtí laga
+Brisfear iad a luaithe is é 0 an comhaireamh láidir tagartha luachanna atá i gceist.</p>
+<p>Nuair a ghlaonn tú ar <code>Rc::downgrade</code>, gheobhaidh tú pointeoir cliste den chineál <code>Weak&lt;T&gt;</code>.
+In ionad an <code>count_strong_count</code> sa chás <code>Rc&lt;T&gt;</code> a mhéadú faoi 1, cuir glaoch
+Méadaíonn <code>Rc::downgrade</code> an <code>weak_count</code> faoi 1. Úsáideann an cineál <code>Rc&lt;T&gt;</code>
+<code>weak_count</code> chun súil a choinneáil ar cé mhéad tagairt <code>Weak&lt;T&gt;</code> atá ann, cosúil le
+<code>strong_count</code>. Is é an difríocht ná ní gá don <code>count_lag</code> a bheith 0 don
+<code>Rc&lt;T&gt;</code> shampla le glanadh suas.</p>
+<p>Toisc go mb’fhéidir gur thit an luach a d’fhéadfadh tagairtí <code>Weak&lt;T&gt;</code> a dhéanamh, le déanamh
+rud ar bith leis an luach a bhfuil <code>Lag&lt;T&gt;</code> ag díriú air, caithfidh tú a chinntiú go bhfuil an
+luach ann fós. Déan é seo trí ghlao a chur ar an modh <code>upgrade</code> ar <code>Weak&lt;T&gt;</code>
+mar shampla, a thabharfaidh ar ais <code>Option&lt;Rc&lt;T&gt;&gt;</code>. Gheobhaidh tú toradh ar <code>Some</code>
+mura bhfuil an luach <code>Rc&lt;T&gt;</code> tite fós agus toradh ar <code>None</code> mura bhfuil an
+Tá luach <code>Rc&lt;T&gt;</code> tite. Toisc go dtugann <code>upgrade</code> <code>Option&lt;Rc&lt;T&gt;&gt;</code> ar ais,
+Cinnteoidh Rust go láimhseálfar an cás <code>Some</code> agus an cás <code>None</code>, agus
+ní bheidh pointeoir neamhbhailí ann.</p>
+<p>Mar shampla, seachas liosta a úsáid nach bhfuil a fhios ag a míreanna ach faoin gcéad cheann eile
+mír, cruthóimid crann a bhfuil a fhios ag na míreanna faoina leanaí míreanna <em>agus</em>
+míreanna a dtuismitheoirí.</p>
+<h4 id="struchtúr-sonraí-crann-a-chruthú-node-le-nóid-leanaí"><a class="header" href="#struchtúr-sonraí-crann-a-chruthú-node-le-nóid-leanaí">Struchtúr Sonraí Crann a Chruthú: <code>Node</code> le Nóid Leanaí</a></h4>
+<p>Chun tús a chur leis, tógfaimid crann le nóid a bhfuil eolas acu ar a nóid linbh.
+Cruthóimid struchtúr darb ainm <code>Node</code> a shealbhaíonn a luach <code>i32</code> féin chomh maith le
+tagairtí dá luachanna <code>Node</code> a leanaí:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">use std::cell::RefCell;
+use std::rc::Rc;
+
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let leaf = Rc::new(Node {
+</span><span class="boring">        value: 3,
+</span><span class="boring">        children: RefCell::new(vec![]),
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    let branch = Rc::new(Node {
+</span><span class="boring">        value: 5,
+</span><span class="boring">        children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+</span><span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
+<p>Teastaíonn uainn <code>Node</code> a mbeadh úinéireacht ag a leanaí air, agus ba mhaith linn an úinéireacht sin a roinnt linn
+athróg ionas gur féidir linn rochtain a fháil ar gach <code>Node</code> sa chrann go díreach. Chun seo a dhéanamh, táimid
+sainmhínigh na míreanna <code>Vec&lt;T&gt;</code> mar luachanna den chineál <code>Rc&lt;Node&gt;</code>. Ba mhaith linn freisin
+modhnaigh cé na nóid atá ina bpáistí de nód eile, ionas go mbeidh <code>RefCell&lt;T&gt;</code> againn isteach
+<code>children</code> timpeall an <code>Vec&lt;Rc&lt;Node&gt;&gt;</code>.</p>
+<p>Ansin, úsáidfimid ár sainmhíniú struchtúr agus cruthóimid sampla amháin <code>Node</code> ainmnithe
+<code>leaf</code> leis an luach 3 agus gan leanaí, agus cás eile darb ainm <code>branch</code>
+leis an luach 5 agus <code>leaf</code> mar dhuine dá leanaí, mar a thaispeántar i Liosta 15-27:</p>
+<Listing number="15-27" file-name="src/main.rs" caption="Cruthú nód `leaf` gan chlann agus nód `branch` le `leaf` mar dhuine dá leanaí">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::cell::RefCell;
+</span><span class="boring">use std::rc::Rc;
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Node {
+</span><span class="boring">    value: i32,
+</span><span class="boring">    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let leaf = Rc::new(Node {
+        value: 3,
+        children: RefCell::new(vec![]),
+    });
+
+    let branch = Rc::new(Node {
+        value: 5,
+        children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+    });
+}</code></pre></pre>
+</Listing>
+<p>Clónaimid an <code>Rc&lt;Node&gt;</code> i <code>leaf</code> agus stóráilimid é sin sa <code>branch</code>, rud a chiallaíonn an
+Tá beirt úinéirí ag <code>Node</code> i <code>leaf</code> anois: <code>leaf</code> agus <code>branch</code>. Is féidir linn a fháil ó
+<code>branch</code> go <code>leaf</code> trí <code>branch.children</code>, ach níl aon bhealach le fáil ó
+<code>leaf</code> go <code>branch</code>. Is é an fáth nach bhfuil aon tagairt ag <code>leaf</code> do <code>branch</code> agus
+ní fios go bhfuil gaol acu leis. Ba mhaith linn go mbeadh a fhios ag <code>leaf</code> gurb é <code>branch</code> a chuid
+tuismitheoir. Déanfaimid é sin chugainn.</p>
+<h4 id="tagairt-ó-pháiste-á-chur-lena-thuismitheoir"><a class="header" href="#tagairt-ó-pháiste-á-chur-lena-thuismitheoir">Tagairt ó Pháiste á Chur lena Thuismitheoir</a></h4>
+<p>Chun an nód leanbh a chur ar an eolas faoina thuismitheoir, ní mór dúinn réimse <code>parent</code> a chur leis
+ár sainmhíniú ar struchtúr <code>Node</code>. Is é an deacracht cinneadh a dhéanamh cén cineál
+ba cheart go mbeadh <code>parent</code>. Tá a fhios againn nach féidir <code>Rc&lt;T&gt;</code> a bheith ann, mar bheadh
+cruthaigh timthriall tagartha le <code>leaf.parent</code> ag tagairt don <code>branch</code> agus
+<code>branch.children</code> ag tagairt do <code>leaf</code>, rud a chuirfeadh lena <code>count_strong</code>
+luachanna gan a bheith 0 riamh.</p>
+<p>Ag smaoineamh ar na caidrimh ar bhealach eile, ba cheart go mbeadh úinéireacht ag nód tuismitheora ar a chuid féin
+leanaí: má thittear nód tuismitheora, ba chóir a nóid linbh a thit mar
+go maith. Mar sin féin, níor cheart go mbeadh úinéireacht ag leanbh ar a thuismitheoir: má scaoilimid nód linbh, beidh an
+ba chóir go mbeadh tuismitheoir ann fós. Is cás é seo le haghaidh tagairtí laga!</p>
+<p>Mar sin in ionad <code>Rc&lt;T&gt;</code>, bainfimid úsáid as <code>Weak&lt;T&gt;</code> don chineál <code>parent</code>,
+go sonrach <code>RefCell&lt;Weak&lt;Node&gt;&gt;</code>. Anois breathnaíonn ár sainmhíniú ar struchtúr <code>Node</code>
+mar seo:</p>
+<p><span class="filename">Filename: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">use std::cell::RefCell;
+use std::rc::{Rc, Weak};
+
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    parent: RefCell&lt;Weak&lt;Node&gt;&gt;,
+    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let leaf = Rc::new(Node {
+</span><span class="boring">        value: 3,
+</span><span class="boring">        parent: RefCell::new(Weak::new()),
+</span><span class="boring">        children: RefCell::new(vec![]),
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+</span><span class="boring">
+</span><span class="boring">    let branch = Rc::new(Node {
+</span><span class="boring">        value: 5,
+</span><span class="boring">        parent: RefCell::new(Weak::new()),
+</span><span class="boring">        children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    *leaf.parent.borrow_mut() = Rc::downgrade(&amp;branch);
+</span><span class="boring">
+</span><span class="boring">    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+</span><span class="boring">}</span></code></pre></pre>
+<p>Beidh nód in ann tagairt a dhéanamh dá mháthairnód ach ní leis a thuismitheoir é.
+I Liosta 15-28, déanaimid <code>main</code> a nuashonrú chun an sainmhíniú nua seo a úsáid mar sin an <code>leaf</code>
+beidh bealach ag nód tagairt a dhéanamh dá thuismitheoir, <code>branch</code>:</p>
+<Listing number="15-28" file-name="src/main.rs" caption="A `leaf` node with a weak reference to its parent node `branch`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::cell::RefCell;
+</span><span class="boring">use std::rc::{Rc, Weak};
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Node {
+</span><span class="boring">    value: i32,
+</span><span class="boring">    parent: RefCell&lt;Weak&lt;Node&gt;&gt;,
+</span><span class="boring">    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let leaf = Rc::new(Node {
+        value: 3,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![]),
+    });
+
+    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+
+    let branch = Rc::new(Node {
+        value: 5,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+    });
+
+    *leaf.parent.borrow_mut() = Rc::downgrade(&amp;branch);
+
+    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+}</code></pre></pre>
+</Listing>
+<p>Breathnaíonn cruthú an nód <code>leaf</code> cosúil le Liostú 15-27 cé is moite de
+an réimse <code>parent</code>: Tosaíonn <code>leaf</code> amach gan tuismitheoir, mar sin cruthaímid ceann nua,
+folamh <code>Weak&lt;Node&gt;</code> mar shampla tagartha.</p>
+<p>Ag an bpointe seo, nuair a dhéanaimid iarracht tagairt a fháil do thuismitheoir <code>leaf</code> trí úsáid a bhaint as
+an modh <code>upgrade</code>, faigheann muid luach <code>None</code>. Feicimid é seo san aschur ó na
+an chéad ráiteas <code>println!</code>:</p>
+<pre><code class="language-text">leaf parent = None
+</code></pre>
+<p>Nuair a chruthaímid an nód <code>branch</code>, beidh <code>Weak&lt;Node&gt;</code> nua aige freisin
+tagairt sa réimse <code>parent</code>, toisc nach bhfuil nód tuismitheora ag <code>branch</code>.
+Tá <code>leaf</code> fós againn mar dhuine de chlann <code>branch</code>. Nuair a bheidh an
+Mar shampla <code>Node</code> i <code>branch</code>, is féidir linn <code>leaf</code> a mhionathrú chun <code>Weak&lt;Node&gt;</code> a thabhairt dó
+tagairt dá thuismitheoir. Úsáidimid an modh <code>borow_mut</code> ar an
+<code>RefCell&lt;Weak&lt;Node&gt;&gt;</code> sa réimse <code>parent</code> ar <code>leaf</code>, agus ansin úsáidimid an
+Feidhm <code>Rc::downgrade</code> chun tagairt <code>Weak&lt;Node&gt;</code> a chruthú do <code>branch</code> ó
+an <code>Rc&lt;Node&gt;</code> sa <code>branch</code>.</p>
+<p>Nuair a phriontáilimid tuismitheoir <code>leaf</code> arís, gheobhaidh muid leagan <code>Some</code> an uair seo
+shealbhú <code>branch</code>: anois is féidir le <code>leaf</code> rochtain a fháil ar a thuismitheoir! Nuair a phriontáilimid <code>leaf</code>, déanaimid
+seachain freisin an timthriall a chríochnaigh sa deireadh le cur thar maoil stoic mar a bhí againn i
+Liostáil 15-26; clóitear na tagairtí <code>Weak&lt;Node&gt;</code> mar <code>(Weak)</code>:</p>
+<pre><code class="language-text">leaf parent = Some(Node { value: 5, parent: RefCell { value: (Weak) },
+children: RefCell { value: [Node { value: 3, parent: RefCell { value: (Weak) },
+children: RefCell { value: [] } }] } })
+</code></pre>
+<p>Léiríonn an easpa aschuir gan teorainn nár chruthaigh an cód seo tagairt
+timthriall. Is féidir linn é seo a insint freisin trí bhreathnú ar na luachanna a fhaighimid ó ghlaoch
+<code>Rc::strong_count</code> agus <code>Rc::weak_count</code>.</p>
+<h4 id="amharcléiriú-athruithe-ar-strong_count-agus-weak_count"><a class="header" href="#amharcléiriú-athruithe-ar-strong_count-agus-weak_count">Amharcléiriú Athruithe ar <code>strong_count</code> agus <code>weak_count</code></a></h4>
+<p>Breathnaímid ar an gcaoi a bhfuil na luachanna <code>strong_count</code> agus <code>count_count_lag</code> an <code>Rc&lt;Node&gt;</code>
+athraíonn cásanna trí raon feidhme inmheánach nua a chruthú agus cruthú na
+<code>branch</code> isteach sa raon feidhme sin. Trí sin a dhéanamh, is féidir linn a fheiceáil cad a tharlaíonn nuair a bhíonn <code>branch</code> cruthaithe agus ansin thit nuair a théann sé as raon feidhme. Taispeántar na modhnuithe
+i Liosta 15-29:</p>
+<Listing number="15-29" file-name="src/main.rs" caption="Creating `branch` in an inner scope and examining strong and weak reference counts">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">use std::cell::RefCell;
+</span><span class="boring">use std::rc::{Rc, Weak};
+</span><span class="boring">
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Node {
+</span><span class="boring">    value: i32,
+</span><span class="boring">    parent: RefCell&lt;Weak&lt;Node&gt;&gt;,
+</span><span class="boring">    children: RefCell&lt;Vec&lt;Rc&lt;Node&gt;&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let leaf = Rc::new(Node {
+        value: 3,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![]),
+    });
+
+    println!(
+        "leaf strong = {}, weak = {}",
+        Rc::strong_count(&amp;leaf),
+        Rc::weak_count(&amp;leaf),
+    );
+
+    {
+        let branch = Rc::new(Node {
+            value: 5,
+            parent: RefCell::new(Weak::new()),
+            children: RefCell::new(vec![Rc::clone(&amp;leaf)]),
+        });
+
+        *leaf.parent.borrow_mut() = Rc::downgrade(&amp;branch);
+
+        println!(
+            "branch strong = {}, weak = {}",
+            Rc::strong_count(&amp;branch),
+            Rc::weak_count(&amp;branch),
+        );
+
+        println!(
+            "leaf strong = {}, weak = {}",
+            Rc::strong_count(&amp;leaf),
+            Rc::weak_count(&amp;leaf),
+        );
+    }
+
+    println!("leaf parent = {:?}", leaf.parent.borrow().upgrade());
+    println!(
+        "leaf strong = {}, weak = {}",
+        Rc::strong_count(&amp;leaf),
+        Rc::weak_count(&amp;leaf),
+    );
+}</code></pre></pre>
+</Listing>
+<p>Tar éis <code>leaf</code> a chruthú, tá comhaireamh láidir 1 agus lag ag a <code>Rc&lt;Node&gt;</code>
+comhaireamh 0. Sa scóip inmheánach, cruthaímid <code>branch</code> agus déanaimid é a nascadh le
+<code>leaf</code>, ag an bpointe nuair a phriontáilimid na comhaireamh, an <code>Rc&lt;Node&gt;</code> sa <code>branch</code>
+beidh comhaireamh láidir de 1 agus comhaireamh lag de 1 (do phointeáil <code>leaf.parent</code>
+go <code>branch</code> le <code>Weak&lt;Node&gt;</code>). Nuair a phriontáilimid na háirimh i <code>leaf</code>, feicfimid
+beidh líon láidir de 2 aige, toisc go bhfuil clón de na
+<code>Rc&lt;Node&gt;</code> de <code>leaf</code> arna stóráil i <code>branch.children</code>, ach beidh lag aige fós
+comhaireamh 0.</p>
+<p>Nuair a chríochnaíonn an raon feidhme istigh, téann <code>branch</code> as raon feidhme agus an comhaireamh láidir de
+laghdaítear an <code>Rc&lt;Node&gt;</code> go 0, mar sin laghdaítear a <code>Node</code>. An líon lag de 1
+ó <code>leaf.parent</code> nach bhfuil aon tionchar ar cibé an bhfuil nó nach bhfuil <code>Node</code> thit, mar sin againn
+ná faigh aon sceitheadh ​​cuimhne!</p>
+<p>Má dhéanaimid iarracht rochtain a fháil ar thuismitheoir <code>leaf</code> tar éis dheireadh an scóip, gheobhaidh muid
+<code>None</code> arís. Ag deireadh an chláir, tá an <code>Rc&lt;Node&gt;</code> i <code>leaf</code> láidir
+comhaireamh de 1 agus comhaireamh lag de 0, toisc go bhfuil an athróg <code>leaf</code> an t-aon anois
+tagairt don <code>Rc&lt;Node&gt;</code> arís.</p>
+<p>Tá an loighic ar fad a bhainistíonn an comhaireamh agus an titim luacha ionsuite
+<code>Rc&lt;T&gt;</code> agus <code>Weak&lt;T&gt;</code> agus a gcur i bhfeidhm ar an trait <code>Drop</code>. Le
+ag sonrú gur chóir go mbeadh an gaol ó leanbh lena thuismitheoir a
+Tagairt <code>Weak&lt;T&gt;</code> sa sainmhíniú ar <code>Node</code>, is féidir leat tuismitheoir a bheith agat
+díríonn nóid ar nóid linbh agus vice versa gan timthriall tagartha a chruthú
+agus sceitheadh ​​cuimhne.</p>
+<h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
+<p>Chlúdaigh an chaibidil seo conas leideanna cliste a úsáid chun ráthaíochtaí éagsúla a dhéanamh agus
+comhbhabhtáil ó na cinn a dhéanann Rust de réir réamhshocraithe le tagairtí rialta. Tá an
+Tá méid aitheanta ag an gcineál <code>Box&lt;T&gt;</code> agus pointí ar na sonraí a leithdháileadh ar an gcarn. Tá an
+Coinníonn cineál <code>Rc&lt;T&gt;</code> líon na dtagairtí do shonraí ar an gcarn mar sin de
+is féidir go mbeadh úinéirí iolracha ag na sonraí sin. An cineál <code>RefCell&lt;T&gt;</code> lena taobh istigh
+Tugann mutability cineál dúinn gur féidir linn a úsáid nuair a theastaíonn uainn cineál do- immutable ach
+gá luach inmheánach den chineál sin a athrú; cuireann sé an iasacht i bhfeidhm freisin
+rialacha ag am rite seachas ag am tiomsaithe.</p>
+<p>Pléadh freisin na tréithe <code>Deref</code> agus <code>Drop</code>, a chuireann ar chumas go leor de na
+feidhmiúlacht na dtreoir cliste. Rinneamar iniúchadh ar thimthriallta tagartha is féidir a bheith ina chúis
+sceitheanna cuimhne agus conas iad a chosc trí úsáid a bhaint as <code>Weak&lt;T&gt;</code>.</p>
+<p>Má tá do spéis sa chaibidil seo agus gur mhaith leat do chuid féin a chur i bhfeidhm
+leideanna cliste, seiceáil amach <a href="../nomicon/index.html">“The Rustonomicon”</a> le haghaidh níos úsáidí
+eolas.</p>
+<p>Next, beidh muid ag caint faoi concurrency i Rust. Foghlaimeoidh tú fiú faoi chúpla rud nua
+leideanna cliste.</p>
 
                     </main>
 

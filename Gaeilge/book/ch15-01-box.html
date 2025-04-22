@@ -159,7 +159,249 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="using-boxt-to-point-to-data-on-the-heap"><a class="header" href="#using-boxt-to-point-to-data-on-the-heap">Using Box&lt;T&gt; to Point to Data on the Heap</a></h1>
+                        <h2 id="ag-baint-úsáide-as-boxt-chun-pointe-ar-shonraí-ar-an-charn"><a class="header" href="#ag-baint-úsáide-as-boxt-chun-pointe-ar-shonraí-ar-an-charn">Ag baint úsáide as <code>Box&lt;T&gt;</code> chun Pointe ar Shonraí ar an Charn</a></h2>
+<p>Is é an pointeoir cliste is simplí ná <em>box</em>, a bhfuil a chineál scríofa
+<code>Box&lt;T&gt;</code>. Ligeann boscaí duit sonraí a stóráil ar an gcarn seachas ar an gcruach. Cad
+fós ar an chairn an pointeoir do na sonraí gcarn. Déan tagairt do Chaibidil 4 go
+athbhreithniú a dhéanamh ar an difríocht idir an chairn agus an gcarn.</p>
+<p>Níl forchostais feidhmíochta ag boscaí, seachas a gcuid sonraí a stóráil ar an
+gcarn in ionad ar an chruach. Ach níl mórán cumais bhreise acu
+ach an oiread. Úsáidfidh tú iad is minice sna cásanna seo:</p>
+<ul>
+<li>Nuair a bhíonn cineál agat nach féidir a mhéid a bheith ar eolas ag am tiomsaithe agus atá uait
+luach den chineál sin a úsáid i gcomhthéacs a éilíonn méid beacht</li>
+<li>Nuair a bheidh tú méid mór sonraí agus ba mhaith leat a aistriú úinéireachta ach
+cinntigh nach ndéanfar na sonraí a chóipeáil nuair a dhéanann tú amhlaidh</li>
+<li>Nuair is mian leat luach a bheith agat agus is cuma leat ach gur cineál é sin
+cuireann sé tréith ar leith i bhfeidhm seachas a bheith de chineál ar leith</li>
+</ul>
+<p>Léireoimid an chéad staid sna <a href="#enabling-recursive-types-with-boxes">“Cumasú Cineálacha Athchúrsacha le
+Boscaí”</a><!-- neamhaird -->. Sa roinn
+sa dara cás, is féidir go dtógfaidh sé tamall fada aistriú úinéireachta ar líon mór sonraí
+am toisc go ndéantar na sonraí a chóipeáil timpeall ar an gcruach. Chun feidhmíocht a fheabhsú i
+an staid seo, is féidir linn an méid mór sonraí a stóráil ar an gcarn i mbosca.
+Ansin, ní dhéantar ach an méid beag sonraí pointeora a chóipeáil timpeall ar an gcruach,
+agus fanann na sonraí dá dtagraíonn sé in aon áit amháin ar an gcarn. Is é an tríú cás
+ar a dtugtar <em>trait object</em>, agus tugann Caibidil 18 roinn iomlán, <a href="ch18-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">“Ag baint úsáide as
+Réada Tréith a Ligeann Luachanna de Chineálacha Éagsúla,”</a><!--
+neamhaird a dhéanamh --> díreach leis an ábhar sin. Mar sin, an méid a fhoghlaimíonn tú anseo, cuirfidh tú isteach arís é
+Caibidil 18!</p>
+<h3 id="ag-baint-úsáide-as-boxt-chun-sonraí-a-stóráil-ar-an-charn"><a class="header" href="#ag-baint-úsáide-as-boxt-chun-sonraí-a-stóráil-ar-an-charn">Ag baint úsáide as <code>Box&lt;T&gt;</code> chun Sonraí a Stóráil ar an Charn</a></h3>
+<p>Sula ndéanaimid plé ar an gcás úsáide stórála carn do <code>Box&lt;T&gt;</code>, clúdóimid an
+comhréir agus conas idirghníomhú le luachanna atá stóráilte laistigh de <code>Box&lt;T&gt;</code>.</p>
+<p>Léiríonn liostú 15-1 conas bosca a úsáid chun luach <code>i32</code> a stóráil ar an gcarn:</p>
+<Listing number="15-1" file-name="src/main.rs" caption="Storing an `i32` value on the heap using a box">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let b = Box::new(5);
+    println!("b = {b}");
+}</code></pre></pre>
+</Listing>
+<p>Sainmhínímid an athróg <code>b</code> chun luach <code>Box</code> a bheith aige a dhíríonn ar an
+luach <code>5</code>, a leithdháiltear ar an gcarn. Priontálfaidh an clár seo <code>b = 5</code>; isteach
+sa chás seo, is féidir linn rochtain a fháil ar na sonraí sa bhosca cosúil le conas a bheadh ​​muid dá mba é seo
+bhí na sonraí ar an gcruach. Díreach mar aon luach faoi úinéireacht, nuair a théann bosca as
+scóip, mar a dhéanann <code>b</code> ag deireadh <code>main</code>, déanfar é a dháileadh. Tá an
+Tarlaíonn deallocation don bhosca (atá stóráilte ar an chruach) agus na sonraí é
+pointí go (stóráilte ar an gcarn).</p>
+<p>Níl sé an-úsáideach luach aonair a chur ar an gcarn, mar sin ní úsáidfidh tú boscaí faoi
+iad féin ar an mbealach seo go minic. Ag luachanna cosúil le <code>i32</code> amháin ar an
+Tá stack, áit a stóráiltear iad de réir réamhshocraithe, níos oiriúnaí don chuid is mó de
+cásanna. Breathnaímid ar chás ina ligeann boscaí dúinn na cineálacha a shainímid
+ní bheadh ​​cead againn mura mbeadh boscaí againn.</p>
+<h3 id="cineálacha-athchúrsacha-a-chumasú-le-boscaí"><a class="header" href="#cineálacha-athchúrsacha-a-chumasú-le-boscaí">Cineálacha Athchúrsacha a Chumasú le Boscaí</a></h3>
+<p>Is féidir luach eile den chineál céanna a bheith ag luach de chineál <em>recursive</em> mar chuid de
+féin. Cruthaíonn cineálacha athchúrsacha ceist mar go gcaithfidh meirge ag am tiomsaithe
+fios cé mhéad spáis a thógann cineál. Mar sin féin, tá neadú luachanna na
+d'fhéadfadh cineálacha athchúrsacha leanúint ar aghaidh go teoiriciúil gan teorainn, mar sin ní féidir le Rust a fhios conas
+go leor spáis de dhíth ar an luach. Toisc go bhfuil méid aitheanta ag boscaí, is féidir linn a chumasú
+cineálacha athchúrsacha trí bhosca a chur isteach sa sainmhíniú ar chineál athchúrsach.</p>
+<p>Mar shampla de chineál athchúrsach, déanaimis iniúchadh ar an liosta <em>cons</em>. Is sonraí é seo
+cineál a fhaightear go coitianta i dteangacha ríomhchlárúcháin feidhme. An cineál liosta míbhuntáistí
+beidh muid a shainiú simplí ach amháin i gcás an atarlú; dá bhrí sin, an
+beidh na coincheapa sa sampla a mbeimid ag obair leo úsáideach am ar bith a rachaidh tú isteach
+cásanna níos casta a bhaineann le cineálacha athfhillteacha.</p>
+<h4 id="tuilleadh-eolais-faoin-liosta-míbhuntáistí"><a class="header" href="#tuilleadh-eolais-faoin-liosta-míbhuntáistí">Tuilleadh Eolais Faoin Liosta Míbhuntáistí</a></h4>
+<p>Is struchtúr sonraí é <em>cons list</em> a thagann ón teanga ríomhchlárúcháin Lisp
+agus a chanúintí agus tá sé comhdhéanta de phéirí neadaithe, agus is é an leagan Lisp d'a
+liosta nasctha. Tagann a ainm ón bhfeidhm <code>cons</code> (gearr le haghaidh "construct
+function”) in Lisp a dhéanann péire nua óna dhá argóint
+ag glaoch <code>cons</code> ar phéire comhdhéanta de luach agus péire eile, is féidir linn
+déan liostaí míbhuntáistí a bheidh comhdhéanta de phéirí athchúrsacha.</p>
+<p>Mar shampla, seo léiriú pseudocode de liosta míbhuntáistí a bhfuil an
+liosta 1, 2, 3 le gach péire i lúibíní:</p>
+<pre><code class="language-téacs">(1, (2, (3, nialas)))
+</code></pre>
+<p>Tá dhá eilimint i ngach mír i liosta míbhuntáistí: luach na míre reatha
+agus an chéad mhír eile. Níl sa mhír dheiridh ar an liosta ach luach darb ainm <code>Nil</code>
+sin an chéad mhír eile. Táirgtear liosta míbhuntáistí trí na 'míbhuntáistí' a ghlaoch go hathchúrsach
+feidhm. Is é an t-ainm canónach chun bunchás an atarlaithe a chur in iúl ná <code>Nil</code>.
+Tabhair faoi deara nach ionann é seo agus an coincheap “neamhní” i gCaibidil 6,
+atá ina luach neamhbhailí nó as láthair.</p>
+<p>Ní struchtúr sonraí a úsáidtear go coitianta i Rust é an liosta míbhuntáistí. An chuid is mó den am
+nuair a bhíonn liosta míreanna agat i Rust, is rogha níos fearr é <code>Vec&lt;T&gt;</code> le húsáid.
+Cineálacha sonraí athfhillteacha eile atá níos casta <em>are</em> úsáideach i gcásanna éagsúla,
+ach ag tosú leis an liosta míbhuntáistí sa chaibidil seo, is féidir linn a iniúchadh conas boscaí
+lig dúinn cineál sonraí athchúrsach a shainiú gan mórán seachráin.</p>
+<p>I liostú 15-2 tá sainmhíniú enum le haghaidh liosta míbhuntáistí. Tabhair faoi deara go bhfuil an cód
+ní thiomsóidh sé fós toisc nach bhfuil méid aitheanta ag an gcineál <code>List</code>, rud a
+léireoimid.</p>
+<Listing number="15-2" file-name="src/main.rs" caption="The first attempt at defining an enum to represent a cons list data structure of `i32` values">
+<pre><code class="language-rust ignore does_not_compile">enum List {
+    Cons(i32, List),
+    Nil,
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
+</Listing>
+<blockquote>
+<p>Tabhair faoi deara: Tá liosta míbhuntáistí á gcur i bhfeidhm againn nach bhfuil ach luachanna <code>i32</code> le haghaidh an
+críocha an tsampla seo. D'fhéadfaimis é a chur i bhfeidhm ag baint úsáide as generics, mar a dhéanaimid
+a phléitear i gCaibidil 10, chun cineál liosta míbhuntáistí a shainiú a d'fhéadfadh luachanna de
+de shaghas ar bith.</p>
+</blockquote>
+<p>Ag baint úsáide as an gcineál <code>List</code> chun an liosta <code>1, 2, 3</code> a stóráil bheadh ​​cuma an chóid ann
+Liostáil 15-3:</p>
+<Listing number="15-3" file-name="src/main.rs" caption="Using the `List` enum to store the list `1, 2, 3`">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">enum List {
+</span><span class="boring">    Cons(i32, List),
+</span><span class="boring">    Nil,
+</span><span class="boring">}
+</span><span class="boring">
+</span>use crate::List::{Cons, Nil};
+
+fn main() {
+    let list = Cons(1, Cons(2, Cons(3, Nil)));
+}</code></pre>
+</Listing>
+<p>Tá <code>1</code> ag an gcéad luach <code>Cons</code> agus luach <code>List</code> eile. Is é an luach <code>List</code> seo
+luach <code>Cons</code> eile a bhfuil <code>2</code> aige agus luach <code>List</code> eile. An luach <code>List</code> seo
+is luach <code>Cons</code> amháin eile a shealbhaíonn <code>3</code> agus luach <code>List</code>, atá ar deireadh
+<code>Nil</code>, an t-athraitheach neamh-athfhillteach a chomharthaíonn deireadh an liosta.</p>
+<p>Má dhéanaimid iarracht an cód a thiomsú i Liostú 15-3, faighimid an earráid a thaispeántar i
+Liostáil 15-4:</p>
+<Listing number="15-4" file-name="output.txt" caption="The error we get when attempting to define a recursive enum">
+<pre><code class="language-console">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+error[E0072]: recursive type `List` has infinite size
+ --&gt; src/main.rs:1:1
+  |
+1 | enum List {
+  | ^^^^^^^^^
+2 |     Cons(i32, List),
+  |               ---- recursive without indirection
+  |
+help: insert some indirection (e.g., a `Box`, `Rc`, or `&amp;`) to break the cycle
+  |
+2 |     Cons(i32, Box&lt;List&gt;),
+  |               ++++    +
+
+error[E0391]: cycle detected when computing when `List` needs drop
+ --&gt; src/main.rs:1:1
+  |
+1 | enum List {
+  | ^^^^^^^^^
+  |
+  = note: ...which immediately requires computing when `List` needs drop again
+  = note: cycle used when computing whether `List` needs drop
+  = note: see https://rustc-dev-guide.rust-lang.org/overview.html#queries and https://rustc-dev-guide.rust-lang.org/query.html for more information
+
+Some errors have detailed explanations: E0072, E0391.
+For more information about an error, try `rustc --explain E0072`.
+error: could not compile `cons-list` (bin "cons-list") due to 2 previous errors
+</code></pre>
+</Listing>
+<p>Léiríonn an earráid seo "go bhfuil méid gan teorainn." Is é an chúis atá sainmhínithe againn
+<code>List</code> le malairt athfhillteach: tá luach eile ann féin
+go díreach. Mar thoradh air sin, ní féidir le Rust a dhéanamh amach cé mhéad spáis a theastaíonn uaidh a stóráil
+luach <code>List</code>. Déanaimis briseadh síos cén fáth a bhfaighimid an earráid seo. Ar dtús, féachfaimid conas
+Cinneann Rust cé mhéad spáis a theastaíonn uaidh chun luach de chineál neamh-athfhillteach a stóráil.</p>
+<h4 id="méid-cineál-neamh-athchúrsach-a-ríomh"><a class="header" href="#méid-cineál-neamh-athchúrsach-a-ríomh">Méid Cineál Neamh-Athchúrsach a Ríomh</a></h4>
+<p>Athghairm an <code>Message</code> enum a mhínigh muid i Liostú 6-2 nuair a phléamar enum
+sainmhínithe i gCaibidil 6:</p>
+<pre><pre class="playground"><code class="language-rust">enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+<p>Chun a chinneadh cé mhéad spáis atá le leithdháileadh ar luach <code>Message</code>, téann Rust
+trí gach leagan chun a fháil amach cé acu malairt de dhíth ar an spás is mó. Meirge
+feictear nach bhfuil spás ar bith de dhíth ar <code>Message::Quit</code>, tá go leor de dhíth ar <code>Message::Move</code>
+spás chun dhá luach <code>i32</code> a stóráil, agus mar sin de. Toisc nach mbeidh ach leagan amháin ann
+úsáidte, is é an spás is mó a bheidh ag teastáil ó luach <code>Message</code> ná an spás a thógfadh sé
+stóráil an ceann is mó dá leagan.</p>
+<p>Cuir é seo i gcodarsnacht leis an méid a tharlaíonn nuair a dhéanann Rust iarracht a fháil amach cé mhéad spáis a
+cineál athchúrsach cosúil leis an enum <code>List</code> i Liostú 15-2 riachtanas. Tosaíonn an tiomsaitheoir
+trí bhreathnú ar an leagan <code>Cons</code>, a bhfuil luach de chineál <code>i32</code> agus luach aige
+den chineál <code>List</code>. Mar sin, tá gá le <code>Cons</code> méid spáis atá comhionann le méid
+an <code>i32</code> móide méid <code>List</code>. Chun a dhéanamh amach cé mhéad cuimhne an <code>List</code>
+riachtanais cineáil, breathnaíonn an tiomsaitheoir ar na leaganacha, ag tosú leis an <code>Cons</code>
+athraitheach. Tá luach cineál <code>i32</code> agus luach cineáil ag an leagan <code>Cons</code>
+<code>List</code>, agus leanann an próiseas seo gan teorainn, mar a thaispeántar i bhFíor 15-1.</p>
+<img alt="Liosta CONS gan teorainn" src="img/trpl15-01.svg" class="center" style="leithead: 50%;" />
+<p><span class="caption">Fíor 15-1: ‘Liosta’ gan teorainn ina bhfuil éigríoch
+Leaganacha <code>cons</code></span></p>
+<h4 id="ag-baint-úsáide-as-boxt-chun-cineál-athchúrsach-a-fháil-le-méid-aitheanta"><a class="header" href="#ag-baint-úsáide-as-boxt-chun-cineál-athchúrsach-a-fháil-le-méid-aitheanta">Ag baint úsáide as <code>Box&lt;T&gt;</code> chun Cineál Athchúrsach a Fháil le Méid Aitheanta</a></h4>
+<p>Toisc nach féidir le Rust a dhéanamh amach cé mhéad spáis atá le leithdháileadh le haghaidh athchúrsach
+cineálacha sainithe, tugann an tiomsaitheoir earráid leis an moladh cabhrach seo:</p>
+<!-- manual-regeneration
+after doing automatic regeneration, look at listings/ch15-smart-pointers/listing-15-03/output.txt and copy the relevant line
+-->
+<pre><code class="language-text">help: insert some indirection (e.g., a `Box`, `Rc`, or `&amp;`) to break the cycle
+  |
+2 |     Cons(i32, Box&lt;List&gt;),
+  |               ++++    +
+</code></pre>
+<p>Sa mholadh seo, ciallaíonn “indíreach” sin in ionad luach a stóráil
+go díreach, ba cheart dúinn an struchtúr sonraí a athrú chun an luach a stóráil go hindíreach trí
+ag stóráil pointeoir don luach ina ionad sin.</p>
+<p>Toisc gur pointeoir é <code>Box&lt;T&gt;</code>, bíonn a fhios ag Rust i gcónaí cé mhéad spáis atá i <code>Box&lt;T&gt;</code>
+riachtanais: ní athraíonn méid an phointeora bunaithe ar an méid sonraí atá ann
+ag tagairt do. Ciallaíonn sé seo gur féidir linn <code>Box&lt;T&gt;</code> a chur taobh istigh den leagan <code>Cons</code> ina ionad sin
+de luach <code>List</code> eile go díreach. Díreoidh an <code>Box&lt;T&gt;</code> go dtí an chéad <code>List</code> eile
+luach a bheidh ar an gcarn seachas taobh istigh den leagan <code>Cons</code>.
+Go coincheapúil, tá liosta fós againn, a cruthaíodh le liostaí a bhfuil liostaí eile acu, ach
+tá an cur i bhfeidhm seo níos cosúla anois leis na míreanna a chur in aice lena chéile
+seachas taobh istigh dá chéile.</p>
+<p>Is féidir linn an sainmhíniú ar an <code>List</code> enum i Liostú 15-2 agus an úsáid a athrú
+den <code>List</code> i Liostú 15-3 leis an gcód i Liostú 15-5, a thiomsóidh:</p>
+<Listing number="15-5" file-name="src/main.rs" caption="Definition of `List` that uses `Box<T>` in order to have a known size">
+<pre><pre class="playground"><code class="language-rust">enum List {
+    Cons(i32, Box&lt;List&gt;),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+
+fn main() {
+    let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
+}</code></pre></pre>
+</Listing>
+<p>Tá méid <code>i32</code> de dhíth ar an leagan <code>Cons</code> mar aon leis an spás chun an
+sonraí pointeoir an bhosca. Ní stórálann an leagan <code>Nil</code> aon luachanna, mar sin teastaíonn níos lú spáis uaidh
+ná an leagan <code>Cons</code>. Tá a fhios againn anois go nglacfaidh aon luach <code>List</code> leis an
+méid <code>i32</code> móide méid sonraí pointeoir an bhosca. Trí úsáid a bhaint as bosca, tá
+briste an slabhra gan teorainn, athchúrsach, ionas gur féidir leis an tiomsaitheoir an méid a dhéanamh amach
+ní mór dó luach <code>List</code> a stóráil. Léiríonn Figiúr 15-2 cad é an leagan <code>Cons</code>
+cuma anois.</p>
+<img alt="A finite Cons list" src="img/trpl15-02.svg" class="center" />
+<p><span class="caption">Figure 15-2: A <code>List</code> that is not infinitely sized
+because <code>Cons</code> holds a <code>Box</code></span></p>
+<p>Ní sholáthraíonn boscaí ach an t-indíreach agus an leithdháileadh carn; níl aon acu
+cumais speisialta eile, cosúil leis na cinn a fheicfimid leis an bpointeoir cliste eile
+cineálacha. Níl an forchostas feidhmíochta acu chomh maith ná na cinn speisialta seo
+cumais a thabhú, ionas gur féidir leo a bheith úsáideach i gcásanna cosúil leis an liosta míbhuntáistí a bhfuil an
+is é indirection an t-aon ghné a theastaíonn uainn. Breathnóimid ar níos mó cásanna úsáide do bhoscaí
+i gCaibidil 18, freisin.</p>
+<p>Is pointeoir cliste é an cineál <code>Box&lt;T&gt;</code> toisc go gcuireann sé an trait <code>Deref</code> i bhfeidhm,
+rud a ligeann do luachanna <code>Box&lt;T&gt;</code> a láimhseáil mar thagairtí. Nuair a bhíonn <code>Box&lt;T&gt;</code>
+Téann luach as an raon feidhme, déantar na sonraí carn a bhfuil an bosca ag díriú orthu a ghlanadh
+suas chomh maith mar gheall ar chur i bhfeidhm na tréithe <code>Drop</code>. Beidh an dá thréith seo
+níos tábhachtaí fós maidir leis an bhfeidhmiúlacht a sholáthraíonn an pointeoir cliste eile
+cineálacha a phléfaimid sa chuid eile den chaibidil seo. Déanaimis iniúchadh ar an dá thréith seo
+níos mine.</p>
 
                     </main>
 

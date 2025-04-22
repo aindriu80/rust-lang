@@ -159,7 +159,52 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="smart-pointers"><a class="header" href="#smart-pointers">Smart Pointers</a></h1>
+                        <h1 id="leideanna-cliste"><a class="header" href="#leideanna-cliste">Leideanna Cliste</a></h1>
+<p>Is coincheap ginearálta é <em>pointeoir</em> d’athróg ina bhfuil seoladh i
+cuimhne. Tagraíonn an seoladh seo do, nó “pointí ag,” do roinnt sonraí eile. An chuid is mó
+Is tagairt í an cineál pointeoir coitianta i Rust, ar fhoghlaim tú faoi i
+Caibidil 4. Cuirtear tagairtí in iúl leis an tsiombail <code>&amp;</code> agus faigheann siad an luach ar iasacht
+pointe ar. Níl aon chumais speisialta acu seachas tagairt a dhéanamh dóibh
+sonraí, agus gan aon forchostais.</p>
+<p>Ar an láimh eile, is struchtúir sonraí iad <em>Smart pointers</em> a fheidhmíonn mar a
+pointeoir ach tá meiteashonraí agus cumais bhreise acu freisin. Coincheap na
+níl leideanna cliste uathúil do Rust: tháinig leideanna cliste ó C ++ agus tá siad ann
+i dteangacha eile chomh maith. Tá éagsúlacht leideanna cliste sainithe ag Rust sa
+leabharlann caighdeánach a sholáthraíonn feidhmiúlacht thar an gceann a sholáthraíonn tagairtí.
+Chun an coincheap ginearálta a iniúchadh, féachfaimid ar chúpla sampla éagsúla de
+leideanna cliste, lena n-áirítear cineál pointeoir cliste <em>reference counting</em>. seo
+cuireann pointeoir ar do chumas sonraí úinéirí iolracha a bheith agat trí súil a choinneáil orthu
+líon na n-úinéirí agus, nuair nach bhfuil aon úinéirí fágtha, na sonraí a ghlanadh.</p>
+<p>Tá difríocht bhreise ag meirge, lena choincheap úinéireachta agus iasachtaíochta
+idir thagairtí agus leideanna cliste: cé nach bhfaigheann tagairtí ach sonraí ar iasacht, i
+go leor cásanna, leideanna cliste <em>ow</em> na sonraí a díríonn siad ar.</p>
+<p>Cé nár thugamar glaoch orthu mar sin ag an am, thángamar ar roinnt acu cheana féin
+leideanna cliste sa leabhar seo, ina measc <code>String</code> agus <code>Vec&lt;T&gt;</code> i gCaibidil 8. An dá cheann
+áirítear na cineálacha seo mar threoracha cliste mar go bhfuil roinnt cuimhne acu agus go gceadaíonn siad duit
+a ionramháil. Tá meiteashonraí agus cumais nó ráthaíochtaí breise acu freisin.
+Stringeann <code>String</code>, mar shampla, a chumas mar mheiteashonraí agus tá an breiseán breise aige
+an cumas a áirithiú go mbeidh a chuid sonraí bailí i gcónaí UTF-8.</p>
+<p>De ghnáth cuirtear leideanna cliste i bhfeidhm ag baint úsáide as struchtúir. Murab ionann agus gnáth
+struct, leideanna cliste a chur i bhfeidhm na tréithe <code>Deref</code> agus <code>Drop</code>. An <code>Deref</code>
+Ceadaíonn an trait do shampla den struchtúr pointeoir cliste é féin a iompar mar thagairt
+ionas gur féidir leat do chód a scríobh chun oibriú le tagairtí nó le leideanna cliste.
+Ligeann an tréith <code>Drop</code> duit an cód a rithtear nuair a bhíonn tú a shaincheapadh
+Téann an pointeoir cliste as an raon feidhme. Sa chaibidil seo, pléifimid an dá cheann
+tréithe agus a léiriú cén fáth a bhfuil siad tábhachtach do leideanna cliste.</p>
+<p>Ós rud é gur patrún dearadh ginearálta é an patrún pointeoir cliste a úsáidtear
+go minic i Rust, ní chlúdóidh an chaibidil seo gach pointeoir cliste atá ann cheana féin. go leor
+tá a gcuid leideanna cliste féin ag leabharlanna, agus is féidir leat do chuid féin a scríobh fiú. Déanfaimid
+clúdaíonn siad na leideanna cliste is coitianta sa ghnáthleabharlann:</p>
+<ul>
+<li><code>Bosca &lt;T&gt;</code> chun luachanna a leithdháileadh ar an gcarn</li>
+<li><code>Rc&lt;T&gt;</code>, cineál comhairimh tagartha a chumasaíonn úinéireacht iolrach</li>
+<li><code>Ref&lt;T&gt;</code> agus <code>RefMut&lt;T&gt;</code>, a rochtain trí <code>RefCell&lt;T&gt;</code>, cineál a fhorfheidhmíonn
+na rialacha iasachtaithe ag am rite in ionad am tiomsaithe</li>
+</ul>
+<p>Ina theannta sin, clúdóimid an patrún <em>interior mutability</em> nuair nach féidir é a mhalartú
+Nochtann cineál API chun luach istigh a shóchán. Déanfaimid plé freisin
+<em>reference cycles</em>: conas is féidir leo cuimhne a sceitheadh ​​agus conas iad a chosc.</p>
+<p>Léimís isteach!</p>
 
                     </main>
 
