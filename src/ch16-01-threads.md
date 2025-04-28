@@ -247,7 +247,7 @@ should borrow the values. The modification to Listing 16-3 shown in Listing
 <Listing number="16-5" file-name="src/main.rs" caption="Using the `move` keyword to force a closure to take ownership of the values it uses">
 
 ```rust
-{{#rustdoc_include ../listings/ch16-fearless-concurrency/listing-16-05/src/main.rs}}
+{{#rustdoc_include ../../listings/ch16-fearless-concurrency/listing-16-05/src/main.rs}}
 ```
 
 </Listing>
@@ -260,7 +260,7 @@ closure’s environment, and we could no longer call `drop` on it in the main
 thread. We would get this compiler error instead:
 
 ```console
-{{#include ../listings/ch16-fearless-concurrency/output-only-01-move-drop/output.txt}}
+{{#include ../../listings/ch16-fearless-concurrency/output-only-01-move-drop/output.txt}}
 ```
 
 Rust’s ownership rules have saved us again! We got an error from the code in

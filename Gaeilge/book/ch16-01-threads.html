@@ -159,7 +159,300 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="using-threads-to-run-code-simultaneously"><a class="header" href="#using-threads-to-run-code-simultaneously">Using Threads to Run Code Simultaneously</a></h1>
+                        <h2 id="snáitheanna-a-Úsáid-chun-cód-a-rith-ag-an-am-céanna"><a class="header" href="#snáitheanna-a-Úsáid-chun-cód-a-rith-ag-an-am-céanna">Snáitheanna a Úsáid chun Cód a Rith ag an Am Céanna</a></h2>
+<p>I bhformhór na gcóras oibriúcháin reatha, rithtear cód cláir atá curtha i gcrích i
+<em>phróiseas</em>, agus bainisteoidh an córas oibriúcháin ilphróisis ag an am céanna.
+Laistigh de chlár, is féidir leat codanna neamhspleácha a bheith agat a ritheann ag an am céanna.
+Tugtar <em>snáitheanna</em> ar na gnéithe a ritheann na codanna neamhspleácha seo. Mar
+shampla, d'fhéadfadh ilshnáitheanna a bheith ag freastalaí gréasáin ionas go bhféadfadh sé freagairt do
+níos mó ná iarratas amháin ag an am céanna.</p>
+<p>Is féidir feabhas a chur ar fheidhmíocht tríd an ríomhaireacht i do chlár a roinnt ina ilshnáitheanna chun il
+tascanna a rith ag an am céanna, ach cuireann sé castacht leis freisin.
+Toisc gur féidir le snáitheanna rith ag an am céanna, níl aon ráthaíocht dhúchasach ann faoin
+ord ina rithfidh codanna de do chód ar shnáitheanna éagsúla. Is féidir leis seo fadhbanna a chruthú, amhail:</p>
+<ul>
+<li>Coinníollacha rása, áit a bhfuil snáitheanna ag rochtain sonraí nó acmhainní in ord neamhréireach</li>
+<li>Deadlocks, áit a bhfuil dhá shnáithe ag fanacht lena chéile, rud a chuireann cosc ​​ar an dá shnáithe leanúint ar aghaidh</li>
+<li>Fabhtanna nach dtarlaíonn ach i gcásanna áirithe agus atá deacair a atáirgeadh agus a shocrú
+go hiontaofa</li>
+</ul>
+<p>Déanann Rust iarracht na héifeachtaí diúltacha a bhaineann le snáitheanna a úsáid a mhaolú, ach
+tógann cláreagrú i gcomhthéacs ilsnáithe machnamh cúramach fós agus éilíonn sé
+struchtúr cód atá difriúil ón gceann atá i gcláir a ritheann i snáithe aonair.</p>
+<p>Cuireann teangacha cláreagraithe snáitheanna i bhfeidhm ar chúpla bealach difriúil, agus soláthraíonn go leor
+córais oibriúcháin API ar féidir leis an teanga glaoch air chun snáitheanna nua a chruthú.
+Úsáideann leabharlann chaighdeánach Rust samhail <em>1:1</em> de chur i bhfeidhm snáithe, áit a
+n-úsáideann clár snáithe córais oibriúcháin amháin in aghaidh gach snáithe teanga amháin. Tá
+cliathbhoscaí ann a chuireann samhlacha eile snáithe i bhfeidhm a dhéanann comhbhabhtálacha difriúla leis an
+tsamhail 1:1. (Soláthraíonn córas neamhshioncrónach Rust, a fheicfimid sa chéad chaibidil eile, cur chuige eile maidir le comhthráthacht chomh maith.)</p>
+<h3 id="snáithe-nua-a-chruthú-le-spawn"><a class="header" href="#snáithe-nua-a-chruthú-le-spawn">Snáithe Nua a Chruthú le <code>spawn</code></a></h3>
+<p>Chun snáithe nua a chruthú, glaoimid ar an bhfeidhm <code>thread::spawn</code> agus cuirimid dúnadh (labhair muid faoi dhúnadh i gCaibidil 13) air ina bhfuil an cód is mian linn a rith sa snáithe nua. Priontálann an sampla i Liosta 16-1 téacs ó phríomh-
+shnáithe agus téacs eile ó shnáithe nua:</p>
+<Listing number="16-1" file-name="src/main.rs" caption="Creating a new thread to print one thing while the main thread prints something else">
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+use std::time::Duration;
+
+fn main() {
+    thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {i} from the spawned thread!");
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("hi number {i} from the main thread!");
+        thread::sleep(Duration::from_millis(1));
+    }
+}</code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara nuair a chríochnaíonn príomhshnáithe cláir Rust, go ndúnfar síos na snáitheanna uile a cruthaíodh, cibé acu an bhfuil siad críochnaithe ag rith nó nach bhfuil. D’fhéadfadh an t-aschur ón gclár seo a bheith beagán difriúil gach uair, ach beidh cuma air cosúil leis an méid seo a leanas:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">hi number 1 from the main thread!
+hi number 1 from the spawned thread!
+hi number 2 from the main thread!
+hi number 2 from the spawned thread!
+hi number 3 from the main thread!
+hi number 3 from the spawned thread!
+hi number 4 from the main thread!
+hi number 4 from the spawned thread!
+hi number 5 from the spawned thread!
+</code></pre>
+<p>Cuireann na glaonna chuig <code>thread::sleep</code> iallach ar shnáithe a fhorghníomhú a stopadh ar feadh tréimhse ghearr,
+rud a ligeann do shnáithe difriúil rith. Is dócha go nglacfaidh na snáitheanna
+sealanna, ach níl aon ráthaíocht ann go ndéanfaidh siad amhlaidh: braitheann sé ar an gcaoi a sceidealaíonn do chóras oibriúcháin na snáitheanna. Sa rith seo, priontáladh an príomhshnáithe ar dtús, cé go
+bhfuil an ráiteas priontála ón snáithe sceite le feiceáil ar dtús sa chód. Agus cé gur inis muid don snáithe sceite priontáil go dtí go mbeidh <code>i</code> 9, níor shroich sé ach 5
+sular dhún an príomhshnáithe síos.</p>
+<p>Má ritheann tú an cód seo agus mura bhfeiceann tú ach aschur ón bpríomhshnáithe, nó mura bhfeiceann tú aon
+fhorluí, déan iarracht na huimhreacha sna raonta a mhéadú chun níos mó deiseanna a chruthú
+don chóras oibriúcháin aistriú idir na snáitheanna.</p>
+<h3 id="ag-fanacht-go-gcríochnóidh-gach-snáithe-ag-Úsáid-láimhseálacha-join"><a class="header" href="#ag-fanacht-go-gcríochnóidh-gach-snáithe-ag-Úsáid-láimhseálacha-join">Ag Fanacht go gCríochnóidh Gach Snáithe ag Úsáid Láimhseálacha <code>join</code></a></h3>
+<p>Ní hamháin go stopann an cód i Liostáil 16-1 an snáithe sceite roimh am an chuid is mó den
+am mar gheall ar dheireadh an phríomhshnáithe, ach toisc nach bhfuil aon ráthaíocht ann maidir leis an
+ord ina ritheann snáitheanna, ní féidir linn a ráthú go mbeidh an snáithe sceite
+ag rith ar chor ar bith!</p>
+<p>Is féidir linn an fhadhb a bhaineann leis an snáithe sceite gan a bheith ag rith nó ag críochnú roimh am a réiteach
+trí luach fillte <code>thread::spawn</code> a shábháil in athróg. Is é <code>JoinHandle</code> cineál fillte <code>thread::spawn</code>. Is luach úinéireachta é <code>JoinHandle</code> a fhanfaidh, nuair a
+ghlaoimid ar an modh <code>join</code> air, go gcríochnóidh a shnáithe. Taispeánann Liostáil 16-2
+conas <code>JoinHandle</code> an tsnáithe a chruthaíomar i Liostáil 16-1 a úsáid agus
+glaoch ar <code>join</code> chun a chinntiú go gcríochnaíonn an snáithe sceite sula scoireann <code>main</code>:</p>
+<Listing number="16-2" file-name="src/main.rs" caption="Saving a `JoinHandle` from `thread::spawn` to guarantee the thread is run to completion">
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {i} from the spawned thread!");
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("hi number {i} from the main thread!");
+        thread::sleep(Duration::from_millis(1));
+    }
+
+    handle.join().unwrap();
+}</code></pre></pre>
+</Listing>
+<p>Má ghlaonn tú ar <code>join</code> ar an láimhseáil, cuirtear bac ar an snáithe atá ag rith faoi láthair go dtí go gcríochnaíonn an
+snáithe a léirítear leis an láimhseáil. Má <em>bhacann</em> tú_snáithe,
+cé go
+gcuirtear cosc ​​ar an snáithe obair a dhéanamh nó imeacht. Ós rud é gur chuireamar an glao
+chun <code>join</code> i ndiaidh lúb <code>for</code> an phríomhshnáithe, ba cheart go
+gcuirfí aschur cosúil leis seo ar fáil trí Liosta 16-2 a rith:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">hi number 1 from the main thread!
+hi number 2 from the main thread!
+hi number 1 from the spawned thread!
+hi number 3 from the main thread!
+hi number 2 from the spawned thread!
+hi number 4 from the main thread!
+hi number 3 from the spawned thread!
+hi number 4 from the spawned thread!
+hi number 5 from the spawned thread!
+hi number 6 from the spawned thread!
+hi number 7 from the spawned thread!
+hi number 8 from the spawned thread!
+hi number 9 from the spawned thread!
+</code></pre>
+<p>Leanann an dá shnáithe ar aghaidh ag malartú, ach fanann an príomhshnáithe mar gheall ar an nglao ar <code>handle.join()</code> agus ní chríochnaíonn sé go dtí go mbeidh an snáithe sceite críochnaithe.</p>
+<p>Ach féachfaimid cad a tharlaíonn nuair a bhogaimid <code>handle.join()</code> ina ionad sin roimh an
+lúb <code>for</code> i <code>main</code>, mar seo:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {i} from the spawned thread!");
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    handle.join().unwrap();
+
+    for i in 1..5 {
+        println!("hi number {i} from the main thread!");
+        thread::sleep(Duration::from_millis(1));
+    }
+}</code></pre></pre>
+</Listing>
+<p>Fanfaidh an príomhshnáithe go mbeidh an snáithe sceite críochnaithe agus ansin rithfidh sé a lúb <code>for</code>, mar sin ní bheidh an t-aschur idirnasctha a thuilleadh, mar a thaispeántar anseo:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">hi number 1 from the spawned thread!
+hi number 2 from the spawned thread!
+hi number 3 from the spawned thread!
+hi number 4 from the spawned thread!
+hi number 5 from the spawned thread!
+hi number 6 from the spawned thread!
+hi number 7 from the spawned thread!
+hi number 8 from the spawned thread!
+hi number 9 from the spawned thread!
+hi number 1 from the main thread!
+hi number 2 from the main thread!
+hi number 3 from the main thread!
+hi number 4 from the main thread!
+</code></pre>
+<p>Is féidir le sonraí beaga, amhail an áit a nglaotar ar <code>join</code>, tionchar a imirt ar cibé an ritheann do
+shnáitheanna ag an am céanna nó nach ritheann.</p>
+<h3 id="Úsáid-dúnta-move-le-snáitheanna"><a class="header" href="#Úsáid-dúnta-move-le-snáitheanna">Úsáid Dúnta <code>move</code> le Snáitheanna</a></h3>
+<p>Is minic a úsáidfimid an eochairfhocal <code>move</code> le dúnta a chuirtear chuig <code>thread::spawn</code> mar go nglacfaidh an dúnadh úinéireacht ar na luachanna a úsáideann sé ón
+timpeallacht ansin, rud a aistríonn úinéireacht na luachanna sin ó shnáithe amháin go
+snáithe eile. Sa chuid <a href="ch13-01-closures.html#capturing-references-or-moving-ownership">“Tagairtí a Ghabháil nó Úinéireacht a Bhogadh”</a><!-- ignore
+--> de Chaibidil 13, phléamar <code>move</code> i gcomhthéacs dúnta. Anois,
+díreoidh muid níos mó ar an idirghníomhaíocht idir <code>move</code> agus <code>thread::spawn</code>.</p>
+<p>Tabhair faoi deara i Liostáil 16-1 nach nglacann an dúnadh a chuireann muid chuig <code>thread::spawn</code> aon
+argóintí: nílimid ag úsáid aon sonraí ón bpríomhshnáithe i gcód an tsnáithe
+a cruthaíodh. Chun sonraí ón bpríomhshnáithe a úsáid sa snáithe a cruthaíodh, ní mór do dhúnadh an tsnáithe a cruthaíodh na luachanna atá de dhíth air a ghabháil. Taispeánann liostú 16-3 iarracht veicteoir a chruthú sa phríomhshnáithe agus é a úsáid sa snáithe a cruthaíodh. Mar sin féin, ní oibreoidh sé seo go fóill, mar a fheicfidh tú i gceann nóiméid.</p>
+<Listing number="16-3" file-name="src/main.rs" caption="Attempting to use a vector created by the main thread in another thread">
+<pre><code class="language-rust ignore does_not_compile">use std::thread;
+
+fn main() {
+    let v = vec![1, 2, 3];
+
+    let handle = thread::spawn(|| {
+        println!("Here's a vector: {v:?}");
+    });
+
+    handle.join().unwrap();
+}</code></pre>
+</Listing>
+<p>Úsáideann an dúnadh <code>v</code>, mar sin gabhfaidh sé <code>v</code> agus déanfaidh sé cuid de thimpeallacht an dúnta de. Ós rud é go ritheann <code>thread::spawn</code> an dúnadh seo i snáithe nua, ba cheart go mbeimid in ann rochtain a fháil ar <code>v</code> laistigh den snáithe nua sin. Ach nuair a thiomsóimid an sampla seo, faighimid an earráid seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling threads v0.1.0 (file:///projects/threads)
+error[E0373]: closure may outlive the current function, but it borrows `v`, which is owned by the current function
+ --&gt; src/main.rs:6:32
+  |
+6 |     let handle = thread::spawn(|| {
+  |                                ^^ may outlive borrowed value `v`
+7 |         println!("Here's a vector: {v:?}");
+  |                                     - `v` is borrowed here
+  |
+note: function requires argument type to outlive `'static`
+ --&gt; src/main.rs:6:18
+  |
+6 |       let handle = thread::spawn(|| {
+  |  __________________^
+7 | |         println!("Here's a vector: {v:?}");
+8 | |     });
+  | |______^
+help: to force the closure to take ownership of `v` (and any other referenced variables), use the `move` keyword
+  |
+6 |     let handle = thread::spawn(move || {
+  |                                ++++
+
+For more information about this error, try `rustc --explain E0373`.
+error: could not compile `threads` (bin "threads") due to 1 previous error
+</code></pre>
+<p>Tugann Rust <em>infers</em> le fios conas <code>v</code> a ghabháil, agus toisc nach bhfuil gá ach le tagairt do <code>v</code> ag <code>println!</code>, déanann an dúnadh iarracht <code>v</code> a fháil ar iasacht. Mar sin féin, tá fadhb ann: ní féidir le Rust
+a rá cé chomh fada a rithfidh an snáithe sceite, mar sin níl a fhios aige an mbeidh an tagairt
+do <code>v</code> bailí i gcónaí.</p>
+<p>Soláthraíonn Liostáil 16-4 cás a bhfuil seans níos mó ann go mbeidh tagairt ann do <code>v</code>
+nach mbeidh bailí:</p>
+<Listing number="16-4" file-name="src/main.rs" caption="A thread with a closure that attempts to capture a reference to `v` from a main thread that drops `v`">
+<pre><code class="language-rust ignore does_not_compile">use std::thread;
+
+fn main() {
+    let v = vec![1, 2, 3];
+
+    let handle = thread::spawn(|| {
+        println!("Here's a vector: {v:?}");
+    });
+
+    drop(v); // oh no!
+
+    handle.join().unwrap();
+}</code></pre>
+</Listing>
+<p>Dá mbeadh cead ag Rust an cód seo a rith, tá seans ann go gcuirfí an snáithe sceite sa chúlra láithreach gan é a rith ar chor ar bith. Tá tagairt do <code>v</code> istigh sa snáithe sceite, ach scaoileann an príomhsnáithe <code>v</code> láithreach, ag baint úsáide as an bhfeidhm <code>drop</code> a phléamar i gCaibidil 15. Ansin, nuair a thosaíonn an
+snáithe sceite ag rith, níl <code>v</code> bailí a thuilleadh, mar sin tá tagairt dó
+neamhbhailí freisin. Ó ní hea!</p>
+<p>Chun an earráid tiomsaitheora i Liostáil 16-3 a shocrú, is féidir linn comhairle na teachtaireachta earráide a úsáid:</p>
+<!-- manual-regeneration
+after automatic regeneration, look at listings/ch16-fearless-concurrency/listing-16-03/output.txt and copy the relevant part
+-->
+<pre><code class="language-text">help: to force the closure to take ownership of `v` (and any other referenced variables), use the `move` keyword
+  |
+6 |     let handle = thread::spawn(move || {
+  |                                ++++
+</code></pre>
+<p>Trí an eochairfhocal <code>move</code> a chur leis roimh an dúnadh, cuirimid iallach ar an dúnadh úinéireacht a ghlacadh ar na luachanna atá á n-úsáid aige seachas ligean do Rust a thabhairt i gcrích gur cheart dó na luachanna a fháil ar iasacht. Tiomsófar agus rithfidh an modhnú ar Liostáil 16-3 a thaispeántar i Liostáil
+16-5 mar atá beartaithe againn:</p>
+<Listing number="16-5" file-name="src/main.rs" caption="Using the `move` keyword to force a closure to take ownership of the values it uses">
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+
+fn main() {
+    let v = vec![1, 2, 3];
+
+    let handle = thread::spawn(move || {
+        println!("Here's a vector: {v:?}");
+    });
+
+    handle.join().unwrap();
+}</code></pre></pre>
+</Listing>
+<p>B’fhéidir go mbeadh fonn orainn an rud céanna a thriail chun an cód i Liostáil 16-4 a shocrú áit a raibh an príomhshnáithe ar a dtugtar <code>drop</code> trí dhúnadh <code>move</code> a úsáid. Mar sin féin, ní oibreoidh an socrú seo mar go bhfuil an rud atá Liostáil 16-4 ag iarraidh a dhéanamh dícheadaithe ar chúis
+dhifriúil. Dá gcuirfimis <code>move</code> leis an dúnadh, bhogfaimis <code>v</code> isteach i dtimpeallacht an
+dhúnta, agus ní fhéadfaimis glaoch ar <code>drop</code> air sa phríomhshnáithe a thuilleadh. Gheobhaimis an earráid tiomsaitheora seo ina ionad:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling threads v0.1.0 (file:///projects/threads)
+error[E0382]: use of moved value: `v`
+  --&gt; src/main.rs:10:10
+   |
+4  |     let v = vec![1, 2, 3];
+   |         - move occurs because `v` has type `Vec&lt;i32&gt;`, which does not implement the `Copy` trait
+5  |
+6  |     let handle = thread::spawn(move || {
+   |                                ------- value moved into closure here
+7  |         println!("Here's a vector: {v:?}");
+   |                                     - variable moved due to use in closure
+...
+10 |     drop(v); // oh no!
+   |          ^ value used here after move
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `threads` (bin "threads") due to 1 previous error
+</code></pre>
+<p>Tá rialacha úinéireachta Rust tar éis sinn a shábháil arís! Fuaireamar earráid ón gcód i
+Liostú 16-3 toisc go raibh Rust coimeádach agus nach raibh sé ach ag iasacht <code>v</code> don
+snáithe, rud a chiallaigh go bhféadfadh an príomhshnáithe tagairt an
+tsnáithe a cruthaíodh a chur ar neamhní go teoiriciúil. Trí a rá le Rust úinéireacht <code>v</code> a bhogadh chuig an
+snáithe a cruthaíodh, táimid ag ráthú do Rust nach n-úsáidfidh an príomhshnáithe <code>v</code> a thuilleadh. Má
+athraímid Liostú 16-4 ar an mbealach céanna, táimid ag sárú na
+rialacha úinéireachta nuair a dhéanaimid iarracht <code>v</code> a úsáid sa phríomhshnáithe. Sáraíonn an eochairfhocal <code>move</code>
+réamhshocrú coimeádach Rust maidir le hiasacht; ní ligeann sé dúinn na
+rialacha úinéireachta a shárú.</p>
+<p>Le tuiscint bhunúsach ar shnáitheanna agus ar API an tsnáithe, féachaimis ar a
+is féidir linn a <em>dhéanamh</em> le snáitheanna.</p>
 
                     </main>
 

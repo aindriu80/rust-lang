@@ -19465,11 +19465,921 @@ leideanna cliste, seiceáil amach <a href="../nomicon/index.html">“The Rustono
 eolas.</p>
 <p>Next, beidh muid ag caint faoi concurrency i Rust. Foghlaimeoidh tú fiú faoi chúpla rud nua
 leideanna cliste.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="fearless-concurrency"><a class="header" href="#fearless-concurrency">Fearless Concurrency</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="using-threads-to-run-code-simultaneously"><a class="header" href="#using-threads-to-run-code-simultaneously">Using Threads to Run Code Simultaneously</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="using-message-passing-to-transfer-data-between-threads"><a class="header" href="#using-message-passing-to-transfer-data-between-threads">Using Message Passing to Transfer Data Between Threads</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="shared-state-concurrency"><a class="header" href="#shared-state-concurrency">Shared-State Concurrency</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="extensible-concurrency-with-the-sync-and-send-traits"><a class="header" href="#extensible-concurrency-with-the-sync-and-send-traits">Extensible Concurrency with the Sync and Send Traits</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="comhthráthacht-gan-eagla"><a class="header" href="#comhthráthacht-gan-eagla">Comhthráthacht Gan Eagla</a></h1>
+<p>Is ceann de phríomhspriocanna Rust é láimhseáil cláreagrú comhthráthach go sábháilte agus go héifeachtúil. Tá <em>cláreagrú comhthráthach</em>, áit a n-oibríonn codanna éagsúla de chlár go neamhspleách, agus <em>cláreagrú comhthreomhar</em>, áit a n-oibríonn codanna éagsúla de chlár ag an am céanna, ag éirí níos tábhachtaí de réir mar a bhaineann níos mó
+ríomhairí leas as a bpróiseálaithe iolracha. Go stairiúil,
+bhí cláreagrú sna comhthéacsanna seo deacair agus seans maith go dtarlóidh earráidí: tá súil ag Rust
+sin a athrú.</p>
+<p>Ar dtús, cheap foireann Rust gur dhá dhúshlán ar leithligh a bhí i sábháilteacht cuimhne a chinntiú agus fadhbanna
+comthráthachta a chosc le réiteach le modhanna
+difriúla. Le himeacht ama, fuair an fhoireann amach gur
+sraith chumhachtach uirlisí iad na córais úinéireachta agus cineáil chun cabhrú le fadhbanna
+sábháilteachta cuimhne <em>agus</em> comhthráthachta a bhainistiú! Trí úinéireacht agus seiceáil cineáil a ghiaráil, is earráidí ama tiomsaithe iad go leor earráidí comhthráthachta i Rust seachas earráidí ama rithe. Dá bhrí sin, seachas
+go gcaithfidh tú go leor ama ag iarraidh na himthosca beachta a atáirgeadh
+faoi a dtarlaíonn fabht comhthráthachta ama rithe, diúltóidh cód mícheart
+a thiomsú agus cuirfidh sé earráid i láthair ag míniú na faidhbe. Mar thoradh air sin, is féidir leat do chód a shocrú agus tú ag obair air seachas b'fhéidir tar éis dó a bheith
+seolta chuig táirgeadh. Thugamar <em>fearless</em> ar an ngné seo de Rust. Ligeann comhthráthacht gan eagla duit cód a scríobh atá saor ó
+fhabhtanna beaga agus atá éasca a athfhachtú gan fabhtanna nua a thabhairt isteach.</p>
+<blockquote>
+<p>Nóta: Ar mhaithe le simplíocht, déanfaimid tagairt do go leor de na fadhbanna mar
+<em>comhthreomhar</em> seachas a bheith níos cruinne trí <em>comhthreomhar agus/nó
+comhthreomhar</em> a rá. Dá mba faoi chomhthreomharacht agus/nó comhthreomharacht a bheadh an leabhar seo, bheimis
+níos sainiúla. Don chaibidil seo, cuir <em>comhthreomhar
+agus/nó comhthreomhar</em> ina n-áit go meabhrach aon uair a úsáidimid <em>comhthreomhar</em>.</p>
+</blockquote>
+<p>Bíonn go leor teangacha dogmatach faoi na réitigh a chuireann siad ar fáil chun déileáil le fadhbanna comhthráthacha. Mar shampla, tá feidhmiúlacht galánta ag Erlang le haghaidh comhthráthacht teachtaireachtaí a sheoladh ach níl ann ach bealaí doiléire chun staid a roinnt idir snáitheanna. Is straitéis réasúnta í tacú le fo-thacar de réitigh fhéideartha amháin do theangacha ardleibhéil, toisc go ngeallann teanga ardleibhéil buntáistí a bhaineann le roinnt smachta a thabhairt suas chun teibí a fháil. Mar sin féin, táthar ag súil go soláthróidh teangacha ísealleibhéil an réiteach leis an bhfeidhmíocht is fearr in aon chás ar leith agus go mbeidh níos lú teibí acu thar an gcrua-earraí. Dá bhrí sin, cuireann Rust réimse uirlisí ar fáil chun fadhbanna a shamhaltú ar aon bhealach is oiriúnaí do do chás agus do riachtanais.</p>
+<p>Seo iad na topaicí a chlúdóimid sa chaibidil seo:</p>
+<ul>
+<li>Conas snáitheanna a chruthú chun píosaí éagsúla cóid a rith ag an am céanna</li>
+<li>Comhthráthacht <em>Teachtaireacht-thar-rith</em>, áit a seolann bealaí teachtaireachtaí idir snáitheanna</li>
+<li>Comhthráthacht <em>Stáit-roinnte</em>, áit a bhfuil rochtain ag snáitheanna iolracha ar phíosa áirithe
+sonraí</li>
+<li>Na tréithe <code>Sync</code> agus <code>Send</code>, a leathnaíonn ráthaíochtaí comhthráthachta Rust chuig
+cineálacha sainmhínithe ag an úsáideoir chomh maith le cineálacha a sholáthraíonn an leabharlann chaighdeánach</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="snáitheanna-a-Úsáid-chun-cód-a-rith-ag-an-am-céanna"><a class="header" href="#snáitheanna-a-Úsáid-chun-cód-a-rith-ag-an-am-céanna">Snáitheanna a Úsáid chun Cód a Rith ag an Am Céanna</a></h2>
+<p>I bhformhór na gcóras oibriúcháin reatha, rithtear cód cláir atá curtha i gcrích i
+<em>phróiseas</em>, agus bainisteoidh an córas oibriúcháin ilphróisis ag an am céanna.
+Laistigh de chlár, is féidir leat codanna neamhspleácha a bheith agat a ritheann ag an am céanna.
+Tugtar <em>snáitheanna</em> ar na gnéithe a ritheann na codanna neamhspleácha seo. Mar
+shampla, d'fhéadfadh ilshnáitheanna a bheith ag freastalaí gréasáin ionas go bhféadfadh sé freagairt do
+níos mó ná iarratas amháin ag an am céanna.</p>
+<p>Is féidir feabhas a chur ar fheidhmíocht tríd an ríomhaireacht i do chlár a roinnt ina ilshnáitheanna chun il
+tascanna a rith ag an am céanna, ach cuireann sé castacht leis freisin.
+Toisc gur féidir le snáitheanna rith ag an am céanna, níl aon ráthaíocht dhúchasach ann faoin
+ord ina rithfidh codanna de do chód ar shnáitheanna éagsúla. Is féidir leis seo fadhbanna a chruthú, amhail:</p>
+<ul>
+<li>Coinníollacha rása, áit a bhfuil snáitheanna ag rochtain sonraí nó acmhainní in ord neamhréireach</li>
+<li>Deadlocks, áit a bhfuil dhá shnáithe ag fanacht lena chéile, rud a chuireann cosc ​​ar an dá shnáithe leanúint ar aghaidh</li>
+<li>Fabhtanna nach dtarlaíonn ach i gcásanna áirithe agus atá deacair a atáirgeadh agus a shocrú
+go hiontaofa</li>
+</ul>
+<p>Déanann Rust iarracht na héifeachtaí diúltacha a bhaineann le snáitheanna a úsáid a mhaolú, ach
+tógann cláreagrú i gcomhthéacs ilsnáithe machnamh cúramach fós agus éilíonn sé
+struchtúr cód atá difriúil ón gceann atá i gcláir a ritheann i snáithe aonair.</p>
+<p>Cuireann teangacha cláreagraithe snáitheanna i bhfeidhm ar chúpla bealach difriúil, agus soláthraíonn go leor
+córais oibriúcháin API ar féidir leis an teanga glaoch air chun snáitheanna nua a chruthú.
+Úsáideann leabharlann chaighdeánach Rust samhail <em>1:1</em> de chur i bhfeidhm snáithe, áit a
+n-úsáideann clár snáithe córais oibriúcháin amháin in aghaidh gach snáithe teanga amháin. Tá
+cliathbhoscaí ann a chuireann samhlacha eile snáithe i bhfeidhm a dhéanann comhbhabhtálacha difriúla leis an
+tsamhail 1:1. (Soláthraíonn córas neamhshioncrónach Rust, a fheicfimid sa chéad chaibidil eile, cur chuige eile maidir le comhthráthacht chomh maith.)</p>
+<h3 id="snáithe-nua-a-chruthú-le-spawn"><a class="header" href="#snáithe-nua-a-chruthú-le-spawn">Snáithe Nua a Chruthú le <code>spawn</code></a></h3>
+<p>Chun snáithe nua a chruthú, glaoimid ar an bhfeidhm <code>thread::spawn</code> agus cuirimid dúnadh (labhair muid faoi dhúnadh i gCaibidil 13) air ina bhfuil an cód is mian linn a rith sa snáithe nua. Priontálann an sampla i Liosta 16-1 téacs ó phríomh-
+shnáithe agus téacs eile ó shnáithe nua:</p>
+<Listing number="16-1" file-name="src/main.rs" caption="Creating a new thread to print one thing while the main thread prints something else">
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+use std::time::Duration;
+
+fn main() {
+    thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {i} from the spawned thread!");
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("hi number {i} from the main thread!");
+        thread::sleep(Duration::from_millis(1));
+    }
+}</code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara nuair a chríochnaíonn príomhshnáithe cláir Rust, go ndúnfar síos na snáitheanna uile a cruthaíodh, cibé acu an bhfuil siad críochnaithe ag rith nó nach bhfuil. D’fhéadfadh an t-aschur ón gclár seo a bheith beagán difriúil gach uair, ach beidh cuma air cosúil leis an méid seo a leanas:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">hi number 1 from the main thread!
+hi number 1 from the spawned thread!
+hi number 2 from the main thread!
+hi number 2 from the spawned thread!
+hi number 3 from the main thread!
+hi number 3 from the spawned thread!
+hi number 4 from the main thread!
+hi number 4 from the spawned thread!
+hi number 5 from the spawned thread!
+</code></pre>
+<p>Cuireann na glaonna chuig <code>thread::sleep</code> iallach ar shnáithe a fhorghníomhú a stopadh ar feadh tréimhse ghearr,
+rud a ligeann do shnáithe difriúil rith. Is dócha go nglacfaidh na snáitheanna
+sealanna, ach níl aon ráthaíocht ann go ndéanfaidh siad amhlaidh: braitheann sé ar an gcaoi a sceidealaíonn do chóras oibriúcháin na snáitheanna. Sa rith seo, priontáladh an príomhshnáithe ar dtús, cé go
+bhfuil an ráiteas priontála ón snáithe sceite le feiceáil ar dtús sa chód. Agus cé gur inis muid don snáithe sceite priontáil go dtí go mbeidh <code>i</code> 9, níor shroich sé ach 5
+sular dhún an príomhshnáithe síos.</p>
+<p>Má ritheann tú an cód seo agus mura bhfeiceann tú ach aschur ón bpríomhshnáithe, nó mura bhfeiceann tú aon
+fhorluí, déan iarracht na huimhreacha sna raonta a mhéadú chun níos mó deiseanna a chruthú
+don chóras oibriúcháin aistriú idir na snáitheanna.</p>
+<h3 id="ag-fanacht-go-gcríochnóidh-gach-snáithe-ag-Úsáid-láimhseálacha-join"><a class="header" href="#ag-fanacht-go-gcríochnóidh-gach-snáithe-ag-Úsáid-láimhseálacha-join">Ag Fanacht go gCríochnóidh Gach Snáithe ag Úsáid Láimhseálacha <code>join</code></a></h3>
+<p>Ní hamháin go stopann an cód i Liostáil 16-1 an snáithe sceite roimh am an chuid is mó den
+am mar gheall ar dheireadh an phríomhshnáithe, ach toisc nach bhfuil aon ráthaíocht ann maidir leis an
+ord ina ritheann snáitheanna, ní féidir linn a ráthú go mbeidh an snáithe sceite
+ag rith ar chor ar bith!</p>
+<p>Is féidir linn an fhadhb a bhaineann leis an snáithe sceite gan a bheith ag rith nó ag críochnú roimh am a réiteach
+trí luach fillte <code>thread::spawn</code> a shábháil in athróg. Is é <code>JoinHandle</code> cineál fillte <code>thread::spawn</code>. Is luach úinéireachta é <code>JoinHandle</code> a fhanfaidh, nuair a
+ghlaoimid ar an modh <code>join</code> air, go gcríochnóidh a shnáithe. Taispeánann Liostáil 16-2
+conas <code>JoinHandle</code> an tsnáithe a chruthaíomar i Liostáil 16-1 a úsáid agus
+glaoch ar <code>join</code> chun a chinntiú go gcríochnaíonn an snáithe sceite sula scoireann <code>main</code>:</p>
+<Listing number="16-2" file-name="src/main.rs" caption="Saving a `JoinHandle` from `thread::spawn` to guarantee the thread is run to completion">
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {i} from the spawned thread!");
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("hi number {i} from the main thread!");
+        thread::sleep(Duration::from_millis(1));
+    }
+
+    handle.join().unwrap();
+}</code></pre></pre>
+</Listing>
+<p>Má ghlaonn tú ar <code>join</code> ar an láimhseáil, cuirtear bac ar an snáithe atá ag rith faoi láthair go dtí go gcríochnaíonn an
+snáithe a léirítear leis an láimhseáil. Má <em>bhacann</em> tú_snáithe,
+cé go
+gcuirtear cosc ​​ar an snáithe obair a dhéanamh nó imeacht. Ós rud é gur chuireamar an glao
+chun <code>join</code> i ndiaidh lúb <code>for</code> an phríomhshnáithe, ba cheart go
+gcuirfí aschur cosúil leis seo ar fáil trí Liosta 16-2 a rith:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">hi number 1 from the main thread!
+hi number 2 from the main thread!
+hi number 1 from the spawned thread!
+hi number 3 from the main thread!
+hi number 2 from the spawned thread!
+hi number 4 from the main thread!
+hi number 3 from the spawned thread!
+hi number 4 from the spawned thread!
+hi number 5 from the spawned thread!
+hi number 6 from the spawned thread!
+hi number 7 from the spawned thread!
+hi number 8 from the spawned thread!
+hi number 9 from the spawned thread!
+</code></pre>
+<p>Leanann an dá shnáithe ar aghaidh ag malartú, ach fanann an príomhshnáithe mar gheall ar an nglao ar <code>handle.join()</code> agus ní chríochnaíonn sé go dtí go mbeidh an snáithe sceite críochnaithe.</p>
+<p>Ach féachfaimid cad a tharlaíonn nuair a bhogaimid <code>handle.join()</code> ina ionad sin roimh an
+lúb <code>for</code> i <code>main</code>, mar seo:</p>
+<Listing file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {i} from the spawned thread!");
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    handle.join().unwrap();
+
+    for i in 1..5 {
+        println!("hi number {i} from the main thread!");
+        thread::sleep(Duration::from_millis(1));
+    }
+}</code></pre></pre>
+</Listing>
+<p>Fanfaidh an príomhshnáithe go mbeidh an snáithe sceite críochnaithe agus ansin rithfidh sé a lúb <code>for</code>, mar sin ní bheidh an t-aschur idirnasctha a thuilleadh, mar a thaispeántar anseo:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">hi number 1 from the spawned thread!
+hi number 2 from the spawned thread!
+hi number 3 from the spawned thread!
+hi number 4 from the spawned thread!
+hi number 5 from the spawned thread!
+hi number 6 from the spawned thread!
+hi number 7 from the spawned thread!
+hi number 8 from the spawned thread!
+hi number 9 from the spawned thread!
+hi number 1 from the main thread!
+hi number 2 from the main thread!
+hi number 3 from the main thread!
+hi number 4 from the main thread!
+</code></pre>
+<p>Is féidir le sonraí beaga, amhail an áit a nglaotar ar <code>join</code>, tionchar a imirt ar cibé an ritheann do
+shnáitheanna ag an am céanna nó nach ritheann.</p>
+<h3 id="Úsáid-dúnta-move-le-snáitheanna"><a class="header" href="#Úsáid-dúnta-move-le-snáitheanna">Úsáid Dúnta <code>move</code> le Snáitheanna</a></h3>
+<p>Is minic a úsáidfimid an eochairfhocal <code>move</code> le dúnta a chuirtear chuig <code>thread::spawn</code> mar go nglacfaidh an dúnadh úinéireacht ar na luachanna a úsáideann sé ón
+timpeallacht ansin, rud a aistríonn úinéireacht na luachanna sin ó shnáithe amháin go
+snáithe eile. Sa chuid <a href="ch13-01-closures.html#capturing-references-or-moving-ownership">“Tagairtí a Ghabháil nó Úinéireacht a Bhogadh”</a><!-- ignore
+--> de Chaibidil 13, phléamar <code>move</code> i gcomhthéacs dúnta. Anois,
+díreoidh muid níos mó ar an idirghníomhaíocht idir <code>move</code> agus <code>thread::spawn</code>.</p>
+<p>Tabhair faoi deara i Liostáil 16-1 nach nglacann an dúnadh a chuireann muid chuig <code>thread::spawn</code> aon
+argóintí: nílimid ag úsáid aon sonraí ón bpríomhshnáithe i gcód an tsnáithe
+a cruthaíodh. Chun sonraí ón bpríomhshnáithe a úsáid sa snáithe a cruthaíodh, ní mór do dhúnadh an tsnáithe a cruthaíodh na luachanna atá de dhíth air a ghabháil. Taispeánann liostú 16-3 iarracht veicteoir a chruthú sa phríomhshnáithe agus é a úsáid sa snáithe a cruthaíodh. Mar sin féin, ní oibreoidh sé seo go fóill, mar a fheicfidh tú i gceann nóiméid.</p>
+<Listing number="16-3" file-name="src/main.rs" caption="Attempting to use a vector created by the main thread in another thread">
+<pre><code class="language-rust ignore does_not_compile">use std::thread;
+
+fn main() {
+    let v = vec![1, 2, 3];
+
+    let handle = thread::spawn(|| {
+        println!("Here's a vector: {v:?}");
+    });
+
+    handle.join().unwrap();
+}</code></pre>
+</Listing>
+<p>Úsáideann an dúnadh <code>v</code>, mar sin gabhfaidh sé <code>v</code> agus déanfaidh sé cuid de thimpeallacht an dúnta de. Ós rud é go ritheann <code>thread::spawn</code> an dúnadh seo i snáithe nua, ba cheart go mbeimid in ann rochtain a fháil ar <code>v</code> laistigh den snáithe nua sin. Ach nuair a thiomsóimid an sampla seo, faighimid an earráid seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling threads v0.1.0 (file:///projects/threads)
+error[E0373]: closure may outlive the current function, but it borrows `v`, which is owned by the current function
+ --&gt; src/main.rs:6:32
+  |
+6 |     let handle = thread::spawn(|| {
+  |                                ^^ may outlive borrowed value `v`
+7 |         println!("Here's a vector: {v:?}");
+  |                                     - `v` is borrowed here
+  |
+note: function requires argument type to outlive `'static`
+ --&gt; src/main.rs:6:18
+  |
+6 |       let handle = thread::spawn(|| {
+  |  __________________^
+7 | |         println!("Here's a vector: {v:?}");
+8 | |     });
+  | |______^
+help: to force the closure to take ownership of `v` (and any other referenced variables), use the `move` keyword
+  |
+6 |     let handle = thread::spawn(move || {
+  |                                ++++
+
+For more information about this error, try `rustc --explain E0373`.
+error: could not compile `threads` (bin "threads") due to 1 previous error
+</code></pre>
+<p>Tugann Rust <em>infers</em> le fios conas <code>v</code> a ghabháil, agus toisc nach bhfuil gá ach le tagairt do <code>v</code> ag <code>println!</code>, déanann an dúnadh iarracht <code>v</code> a fháil ar iasacht. Mar sin féin, tá fadhb ann: ní féidir le Rust
+a rá cé chomh fada a rithfidh an snáithe sceite, mar sin níl a fhios aige an mbeidh an tagairt
+do <code>v</code> bailí i gcónaí.</p>
+<p>Soláthraíonn Liostáil 16-4 cás a bhfuil seans níos mó ann go mbeidh tagairt ann do <code>v</code>
+nach mbeidh bailí:</p>
+<Listing number="16-4" file-name="src/main.rs" caption="A thread with a closure that attempts to capture a reference to `v` from a main thread that drops `v`">
+<pre><code class="language-rust ignore does_not_compile">use std::thread;
+
+fn main() {
+    let v = vec![1, 2, 3];
+
+    let handle = thread::spawn(|| {
+        println!("Here's a vector: {v:?}");
+    });
+
+    drop(v); // oh no!
+
+    handle.join().unwrap();
+}</code></pre>
+</Listing>
+<p>Dá mbeadh cead ag Rust an cód seo a rith, tá seans ann go gcuirfí an snáithe sceite sa chúlra láithreach gan é a rith ar chor ar bith. Tá tagairt do <code>v</code> istigh sa snáithe sceite, ach scaoileann an príomhsnáithe <code>v</code> láithreach, ag baint úsáide as an bhfeidhm <code>drop</code> a phléamar i gCaibidil 15. Ansin, nuair a thosaíonn an
+snáithe sceite ag rith, níl <code>v</code> bailí a thuilleadh, mar sin tá tagairt dó
+neamhbhailí freisin. Ó ní hea!</p>
+<p>Chun an earráid tiomsaitheora i Liostáil 16-3 a shocrú, is féidir linn comhairle na teachtaireachta earráide a úsáid:</p>
+<!-- manual-regeneration
+after automatic regeneration, look at listings/ch16-fearless-concurrency/listing-16-03/output.txt and copy the relevant part
+-->
+<pre><code class="language-text">help: to force the closure to take ownership of `v` (and any other referenced variables), use the `move` keyword
+  |
+6 |     let handle = thread::spawn(move || {
+  |                                ++++
+</code></pre>
+<p>Trí an eochairfhocal <code>move</code> a chur leis roimh an dúnadh, cuirimid iallach ar an dúnadh úinéireacht a ghlacadh ar na luachanna atá á n-úsáid aige seachas ligean do Rust a thabhairt i gcrích gur cheart dó na luachanna a fháil ar iasacht. Tiomsófar agus rithfidh an modhnú ar Liostáil 16-3 a thaispeántar i Liostáil
+16-5 mar atá beartaithe againn:</p>
+<Listing number="16-5" file-name="src/main.rs" caption="Using the `move` keyword to force a closure to take ownership of the values it uses">
+<pre><pre class="playground"><code class="language-rust">use std::thread;
+
+fn main() {
+    let v = vec![1, 2, 3];
+
+    let handle = thread::spawn(move || {
+        println!("Here's a vector: {v:?}");
+    });
+
+    handle.join().unwrap();
+}</code></pre></pre>
+</Listing>
+<p>B’fhéidir go mbeadh fonn orainn an rud céanna a thriail chun an cód i Liostáil 16-4 a shocrú áit a raibh an príomhshnáithe ar a dtugtar <code>drop</code> trí dhúnadh <code>move</code> a úsáid. Mar sin féin, ní oibreoidh an socrú seo mar go bhfuil an rud atá Liostáil 16-4 ag iarraidh a dhéanamh dícheadaithe ar chúis
+dhifriúil. Dá gcuirfimis <code>move</code> leis an dúnadh, bhogfaimis <code>v</code> isteach i dtimpeallacht an
+dhúnta, agus ní fhéadfaimis glaoch ar <code>drop</code> air sa phríomhshnáithe a thuilleadh. Gheobhaimis an earráid tiomsaitheora seo ina ionad:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling threads v0.1.0 (file:///projects/threads)
+error[E0382]: use of moved value: `v`
+  --&gt; src/main.rs:10:10
+   |
+4  |     let v = vec![1, 2, 3];
+   |         - move occurs because `v` has type `Vec&lt;i32&gt;`, which does not implement the `Copy` trait
+5  |
+6  |     let handle = thread::spawn(move || {
+   |                                ------- value moved into closure here
+7  |         println!("Here's a vector: {v:?}");
+   |                                     - variable moved due to use in closure
+...
+10 |     drop(v); // oh no!
+   |          ^ value used here after move
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `threads` (bin "threads") due to 1 previous error
+</code></pre>
+<p>Tá rialacha úinéireachta Rust tar éis sinn a shábháil arís! Fuaireamar earráid ón gcód i
+Liostú 16-3 toisc go raibh Rust coimeádach agus nach raibh sé ach ag iasacht <code>v</code> don
+snáithe, rud a chiallaigh go bhféadfadh an príomhshnáithe tagairt an
+tsnáithe a cruthaíodh a chur ar neamhní go teoiriciúil. Trí a rá le Rust úinéireacht <code>v</code> a bhogadh chuig an
+snáithe a cruthaíodh, táimid ag ráthú do Rust nach n-úsáidfidh an príomhshnáithe <code>v</code> a thuilleadh. Má
+athraímid Liostú 16-4 ar an mbealach céanna, táimid ag sárú na
+rialacha úinéireachta nuair a dhéanaimid iarracht <code>v</code> a úsáid sa phríomhshnáithe. Sáraíonn an eochairfhocal <code>move</code>
+réamhshocrú coimeádach Rust maidir le hiasacht; ní ligeann sé dúinn na
+rialacha úinéireachta a shárú.</p>
+<p>Le tuiscint bhunúsach ar shnáitheanna agus ar API an tsnáithe, féachaimis ar a
+is féidir linn a <em>dhéanamh</em> le snáitheanna.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="Úsáid-a-bhaint-as-tarchur-teachtaireachtaí-chun-sonraí-a-aistriú-idir-snáitheanna"><a class="header" href="#Úsáid-a-bhaint-as-tarchur-teachtaireachtaí-chun-sonraí-a-aistriú-idir-snáitheanna">Úsáid a bhaint as Tarchur Teachtaireachtaí chun Sonraí a Aistriú idir Snáitheanna</a></h2>
+<p>Cur chuige atá ag éirí níos coitianta chun comhthráthacht shábháilte a chinntiú ná <em>tarchur_teachtaireachta</em>, áit a ndéanann snáitheanna nó gníomhaithe cumarsáid trí theachtaireachtaí ina bhfuil sonraí a sheoladh chuig a chéile. Seo an smaoineamh i mana ó <a href="https://golang.org/doc/effective_go.html#concurrency">dhoiciméadacht teanga Go</a>:
+“Ná déan cumarsáid trí chuimhne a roinnt; ina ionad sin, roinn cuimhne trí chumarsáid.”</p>
+<p>Chun comhthráthacht seolta teachtaireachtaí a bhaint amach, soláthraíonn leabharlann chaighdeánach Rust
+cur i bhfeidhm de <em>chainéil</em>. Is coincheap clársceidealaithe ginearálta é cainéal trína
+seoltar sonraí ó shnáithe amháin go snáithe eile.</p>
+<p>Is féidir leat cainéal i gclársceidealú a shamhlú mar chainéal treorach uisce, amhail sruthán nó abhainn. Má chuireann tú rud éigin cosúil le lacha rubair
+isteach in abhainn, rachaidh sé síos an abhainn go dtí deireadh an uiscebhealaigh.</p>
+<p>Tá dhá leath ag cainéal: tarchuradóir agus glacadóir. Is é leath an tarchuradóra
+an suíomh suas an abhainn ina gcuireann tú lachain rubair san abhainn, agus is é
+leath an ghlacadóra an áit a gcríochnaíonn an lacha rubair síos an abhainn. Glaonn cuid amháin de do
+chód modhanna ar an tarchuradóir leis na sonraí is mian leat a sheoladh, agus
+seiceálann cuid eile an taobh glacadóra le haghaidh teachtaireachtaí atá ag teacht isteach. Deirtear go bhfuil cainéal
+<em>dúnta</em> má scaoiltear leath an tarchuradóra nó an ghlacadóra.</p>
+<p>Anseo, oibreoimid suas go dtí clár a bhfuil snáithe amháin ann chun luachanna a ghiniúint agus
+iad a sheoladh síos cainéal, agus snáithe eile a gheobhaidh na luachanna agus
+a phriontálfaidh amach iad. Seolfaimid luachanna simplí idir snáitheanna ag baint úsáide as cainéal
+chun an ghné a léiriú. Nuair a bheidh tú eolach ar an teicníc, d'fhéadfá
+cainéil a úsáid le haghaidh aon snáitheanna a gcaithfidh cumarsáid a dhéanamh eatarthu, mar shampla
+córas comhrá nó córas ina ndéanann go leor snáitheanna codanna de ríomh
+agus na codanna a sheoladh chuig snáithe amháin a chomhiomlánaíonn na torthaí.</p>
+<p>Ar dtús, i Liostáil 16-6, cruthóimid cainéal ach ní dhéanaimid aon rud leis. Tabhair faoi deara nach ndéanfar é seo a thiomsú go fóill mar ní féidir le Rust a rá cén cineál luachanna is mian linn a sheoladh thar an gcainéal.</p>
+<p><span class="filename">Filename: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">use std::sync::mpsc;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+}</code></pre>
+<p><span class="caption">Listing 16-6: Creating a channel and assigning the two
+halves to <code>tx</code> and <code>rx</code></span></p>
+<p>Cruthaímid cainéal nua ag baint úsáide as an bhfeidhm <code>mpsc::channel</code>; seasann <code>mpsc</code> do
+<em>multiple producer, single consumer</em>. Go hachomair, ciallaíonn an chaoi a gcuireann leabharlann chaighdeánach Rust
+cainéil i bhfeidhm gur féidir le cainéal il-chríocha <em>seolta</em> a bheith aige a
+tháirgeann luachanna ach gan ach críoch <em>faighte</em> amháin a ídíonn na luachanna sin. Samhlaigh
+il-shruthanna ag sileadh le chéile in aon abhainn mhór amháin: críochnóidh gach rud a sheoltar síos aon cheann de na
+sruthanna in aon abhainn amháin ag an deireadh. Tosaímid le
+táirgeoir
+amháin faoi láthair, ach cuirfimid il-tháirgeoirí leis nuair a bheidh an sampla seo
+ag obair againn.</p>
+<p>Tugann an fheidhm <code>mpsc::channel</code> tuple ar ais, agus is é an chéad eilimint de an
+chríoch seolta—an tarchuradóir—agus is é an dara heilimint an críoch glactha—an
+glacadóir. Úsáidtear na giorrúcháin <code>tx</code> agus <code>rx</code> go traidisiúnta i go leor réimsí
+do <em>transmitter</em> agus <em>receiver</em> faoi seach, mar sin ainmnímid ár n-athróga mar sin
+chun gach críoch a léiriú. Táimid ag úsáid ráiteas <code>let</code> le patrún a scriosann na tuplaí; pléifimid úsáid patrún i ráitis <code>let</code> agus dístruchtúrú i gCaibidil 19. Faoi láthair, bíodh a fhios agat gur cur chuige áisiúil é ráiteas <code>let</code> a úsáid ar an mbealach seo chun píosaí an tupla a eastóscadh a fhilleann <code>mpsc::channel</code>.</p>
+<p>Bogfaimid an taobh tarchuir isteach i snáithe sceite agus lig dúinn teaghrán amháin a sheoladh ionas go mbeidh an snáithe sceite ag cumarsáid leis an bpríomhshnáithe, mar a thaispeántar i
+Liostú 16-7. Tá sé seo cosúil le lacha rubair a chur san abhainn suas an abhainn nó
+teachtaireacht comhrá a sheoladh ó shnáithe amháin go snáithe eile.</p>
+<Listing number="16-7" file-name="src/main.rs" caption="Moving `tx` to a spawned thread and sending “hi”">
+<pre><pre class="playground"><code class="language-rust">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+}</code></pre></pre>
+</Listing>
+<p>Arís, táimid ag úsáid <code>thread::spawn</code> chun snáithe nua a chruthú agus ansin ag úsáid <code>move</code>
+chun <code>tx</code> a bhogadh isteach sa dúnadh ionas go mbeidh <code>tx</code> ag an snáithe sceite. Caithfidh an snáithe sceite
+an tarchuradóir a bheith aige chun teachtaireachtaí a sheoladh tríd an
+chainéal. Tá modh <code>send</code> ag an tarchuradóir a ghlacann an luach is mian linn a
+sheoladh. Tugann an modh <code>send</code> cineál <code>Result&lt;T, E&gt;</code> ar ais, mar sin má tá an glacadóir
+scaoilte cheana féin agus mura bhfuil áit ar bith ann chun luach a sheoladh, cuirfidh an oibríocht seolta
+earráid ar ais. Sa sampla seo, táimid ag glaoch ar <code>unwrap</code> chun scaoll a chur i gcás
+earráide. Ach in fheidhmchlár fíor, láimhseálfaimis é i gceart: fill ar
+Chaibidil 9 chun athbhreithniú a dhéanamh ar straitéisí maidir le láimhseáil earráide i gceart.</p>
+<p>I Liostáil 16-8, gheobhaimid an luach ón nglacadóir sa phríomhshnáithe. Tá sé seo
+cosúil leis an lacha rubair a aisghabháil ón uisce ag deireadh na habhann nó
+teachtaireacht comhrá a fháil.</p>
+<Listing number="16-8" file-name="src/main.rs" caption="Receiving the value “hi” in the main thread and printing it">
+<pre><pre class="playground"><code class="language-rust">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {received}");
+}</code></pre></pre>
+</Listing>
+<p>Tá dhá mhodh úsáideacha ag an nglacadóir: <code>recv</code> agus <code>try_recv</code>. Táimid ag baint úsáide as <code>recv</code>,
+giorrúchán do <em>receive</em>, a chuirfidh bac ar fhorghníomhú an phríomhshnáithe agus a fhanfaidh
+go dtí go seolfar luach síos an cainéal. Nuair a sheolfar luach, cuirfidh <code>recv</code>
+ar ais é i <code>Result&lt;T, E&gt;</code>. Nuair a dhúnann an tarchuradóir, cuirfidh <code>recv</code>
+earráid ar ais chun comhartha nach mbeidh aon luachanna eile ag teacht.</p>
+<p>Ní chuireann an modh <code>try_recv</code> bac, ach ina ionad sin cuirfidh sé <code>Result&lt;T, E&gt;</code> ar ais
+láithreach: luach <code>Ok</code> ina bhfuil teachtaireacht má tá ceann ar fáil agus luach <code>Err</code>
+mura bhfuil aon teachtaireachtaí ann an uair seo. Tá úsáid <code>try_recv</code> úsáideach
+má tá obair eile le déanamh ag an snáithe seo agus muid ag fanacht le teachtaireachtaí: d'fhéadfaimis
+lúb a scríobh
+a ghlaonn ar <code>try_recv</code> ó am go ham, a láimhseálann teachtaireacht má tá ceann ar fáil,
+agus a dhéanann obair eile ar feadh tamaill bhig go dtí go ndéantar seiceáil
+arís.</p>
+<p>D'úsáideamar <code>recv</code> sa sampla seo ar mhaithe le simplíocht; níl aon obair eile againn don phríomhshnáithe le déanamh seachas fanacht le teachtaireachtaí, mar sin is cuí an príomhshnáithe a bhlocáil.</p>
+<p>Nuair a ritheann muid an cód i Liosta 16-8, feicfimid an luach priontáilte ón bpríomhshnáithe:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">Got: hi
+</code></pre>
+<p>Foirfe!</p>
+<h3 id="cainéil-agus-aistriú-Úinéireachta"><a class="header" href="#cainéil-agus-aistriú-Úinéireachta">Cainéil agus Aistriú Úinéireachta</a></h3>
+<p>Tá ról ríthábhachtach ag na rialacha úinéireachta i seoladh teachtaireachtaí mar go gcabhraíonn siad leat
+cód sábháilte, comhuaineach a scríobh. Is é an buntáiste a bhaineann le smaoineamh ar úinéireacht ar fud do chláir Rust ná earráidí a chosc i gcláreagrú comhuaineach. Déanaimis
+turgnamh chun a thaispeáint conas a oibríonn bealaí agus úinéireacht le chéile chun
+fadhbanna a chosc: déanfaimid iarracht luach <code>val</code> a úsáid sa snáithe sceite <em>tar éis</em> dúinn
+é a sheoladh síos an cainéal. Bain triail as an gcód i Liostáil 16-9 a thiomsú chun a fheiceáil cén fáth
+nach gceadaítear an cód seo:</p>
+<Listing number="16-9" file-name="src/main.rs" caption="Attempting to use `val` after we’ve sent it down the channel">
+<pre><code class="language-rust ignore does_not_compile">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+        println!("val is {val}");
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {received}");
+}</code></pre>
+</Listing>
+<p>Anseo, déanaimid iarracht <code>val</code> a phriontáil tar éis dúinn é a sheoladh síos an cainéal trí <code>tx.send</code>.
+Bheadh ​​sé ina dhroch-smaoineamh é seo a cheadú: nuair a bheidh an luach seolta chuig snáithe eile, d'fhéadfadh an snáithe sin é a mhodhnú nó a ligean ar lár sula ndéanaimid iarracht an luach a úsáid
+arís. D'fhéadfadh sé go mbeadh earráidí nó
+torthaí gan choinne mar thoradh ar mhodhnuithe an snáithe eile mar gheall ar shonraí neamhréireach nó neamhbheith ann. Mar sin féin, tugann Rust
+earráid dúinn má dhéanaimid iarracht an cód i Liostáil 16-9 a thiomsú:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling message-passing v0.1.0 (file:///projects/message-passing)
+error[E0382]: borrow of moved value: `val`
+  --&gt; src/main.rs:10:26
+   |
+8  |         let val = String::from("hi");
+   |             --- move occurs because `val` has type `String`, which does not implement the `Copy` trait
+9  |         tx.send(val).unwrap();
+   |                 --- value moved here
+10 |         println!("val is {val}");
+   |                          ^^^^^ value borrowed here after move
+   |
+   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `message-passing` (bin "message-passing") due to 1 previous error
+</code></pre>
+<p>Tá earráid ama tiomsaithe mar thoradh ar ár mbotún comhthráthachta. Glacann an fheidhm <code>send</code> úinéireacht ar a paraiméadar, agus nuair a bhogtar an luach, glacann an glacadóir úinéireacht air. Cuireann sé seo cosc ​​orainn an luach a úsáid arís de thaisme tar éis é a sheoladh; seiceálann an córas úinéireachta go bhfuil gach rud ceart go leor.</p>
+<h3 id="illuachanna-a-sheoladh-agus-an-glacadóir-a-fheiceáil-ag-fanacht"><a class="header" href="#illuachanna-a-sheoladh-agus-an-glacadóir-a-fheiceáil-ag-fanacht">Illuachanna a Sheoladh agus an Glacadóir a Fheiceáil ag Fanacht</a></h3>
+<p>Tiomsaíodh agus rith an cód i Liostáil 16-8, ach níor léirigh sé go soiléir dúinn go raibh dhá shnáithe ar leith ag caint lena chéile thar an gcainéal. I Liostáil 16-10 rinneamar roinnt modhnuithe a chruthóidh go bhfuil an cód i Liostáil 16-8 ag rith ag an am céanna: seolfaidh an snáithe sceite teachtaireachtaí iolracha anois agus sosfaidh sé ar feadh soicind idir gach teachtaireacht.</p>
+<Listing number="16-10" file-name="src/main.rs" caption="Sending multiple messages and pausing between each">
+<pre><code class="language-rust noplayground">use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {received}");
+    }
+}</code></pre>
+</Listing>
+<p>An uair seo, tá veicteoir teaghrán ag an snáithe sceite ar mhaith linn a sheoladh chuig an bpríomhshnáithe. Déanaimid athrá orthu, ag seoladh gach ceann ina aonar, agus sos a chur idir gach ceann trí ghlaoch ar an bhfeidhm <code>thread::sleep</code> le luach <code>Duration</code> de
+1 soicind.</p>
+<p>Sa phríomhshnáithe, nílimid ag glaoch ar an bhfeidhm <code>recv</code> go sainráite a thuilleadh:
+ina áit sin, táimid ag déileáil le <code>rx</code> mar athrá. Maidir le gach luach a fhaightear, táimid á
+phriontáil. Nuair a dhúnfar an cainéal, críochnóidh an athrá.</p>
+<p>Nuair a bhíonn an cód i Liosta 16-10 á rith, ba cheart duit an t-aschur seo a leanas a fheiceáil
+le sos 1 soicind idir gach líne:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">Got: hi
+Got: from
+Got: the
+Got: thread
+</code></pre>
+<p>Ós rud é nach bhfuil aon chód againn a chuireann sos nó moill ar an lúb <code>for</code> sa
+phríomhshnáithe, is féidir linn a rá go bhfuil an príomhshnáithe ag fanacht le luachanna a fháil ón
+snáithe a cruthaíodh.</p>
+<h3 id="il-tháirgeoirí-a-chruthú-tríd-an-tarchuradóir-a-chlónáil"><a class="header" href="#il-tháirgeoirí-a-chruthú-tríd-an-tarchuradóir-a-chlónáil">Il-Tháirgeoirí a Chruthú tríd an Tarchuradóir a Chlónáil</a></h3>
+<p>Níos luaithe luaigh muid gur acrainm é <code>mpsc</code> do <em>il-tháirgeoir,
+aon tomhaltóir</em>. Cuirimis <code>mpsc</code> in úsáid agus leathnaímis an cód i Liostáil 16-10
+chun il-shnáitheanna a chruthú a sheolann luachanna chuig an nglacadóir céanna. Is féidir linn é sin a dhéanamh
+trí an tarchuradóir a chlónáil, mar a thaispeántar i Liostáil 16-11:</p>
+<Listing number="16-11" file-name="src/main.rs" caption="Sending multiple messages from multiple producers">
+<pre><code class="language-rust noplayground"><span class="boring">use std::sync::mpsc;
+</span><span class="boring">use std::thread;
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    // --snip--
+
+    let (tx, rx) = mpsc::channel();
+
+    let tx1 = tx.clone();
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx1.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("more"),
+            String::from("messages"),
+            String::from("for"),
+            String::from("you"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {received}");
+    }
+
+    // --snip--
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>An uair seo, sula gcruthaímid an chéad snáithe sceite, glaoimid ar <code>clone</code> ar an
+tarchuradóir. Tabharfaidh sé seo tarchuradóir nua dúinn is féidir linn a chur ar aghaidh chuig an gcéad
+snáithe sceite. Cuirimid an tarchuradóir bunaidh ar aghaidh chuig an dara snáithe sceite.
+Tugann sé seo dhá shnáithe dúinn, agus gach ceann acu ag seoladh teachtaireachtaí difriúla chuig an nglacadóir amháin.</p>
+<p>Nuair a ritheann tú an cód, ba chóir go mbeadh cuma mar seo ar d’aschur:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">Got: hi
+Got: more
+Got: from
+Got: messages
+Got: for
+Got: the
+Got: thread
+Got: you
+</code></pre>
+<p>B’fhéidir go bhfeicfeá na luachanna in ord difriúil, ag brath ar do chóras. Seo é
+an rud a fhágann go bhfuil comhthráthacht suimiúil agus deacair araon. Má dhéanann tú turgnamh le
+<code>thread::sleep</code>, ag tabhairt luachanna éagsúla dó sna snáitheanna éagsúla, beidh gach rith
+níos neamhchinntitheach agus cruthófar aschur difriúil gach uair.</p>
+<p>Anois agus muid tar éis breathnú ar an gcaoi a n-oibríonn bealaí, féachaimis ar mhodh difriúil
+comthráthachta.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="comhthráthacht-comhroinnte"><a class="header" href="#comhthráthacht-comhroinnte">Comhthráthacht Comhroinnte</a></h2>
+<p>Is bealach breá é teachtaireachtaí a sheoladh chun comhthráthacht a láimhseáil, ach ní hé an t-aon cheann amháin é. Modh eile a bheadh ​​ann ná go mbeadh rochtain ag ilshnáitheanna ar na sonraí comhroinnte céanna. Smaoinigh ar an gcuid seo den mana ó dhoiciméadú teanga Go
+arís: "ná déan cumarsáid trí chuimhne a roinnt."</p>
+<p>Cén chuma a bheadh ​​ar chumarsáid trí chuimhne a roinnt? Ina theannta sin, cén fáth a
+dtabharfadh díograiseoirí teachtaireachtaí rabhadh gan comhroinnt cuimhne a úsáid?</p>
+<p>Ar bhealach, tá bealaí in aon teanga ríomhchlárúcháin cosúil le húinéireacht aonair,
+mar nuair a aistríonn tú luach síos cainéal, níor cheart duit an luach sin a úsáid a thuilleadh. Tá comhthráthacht chuimhne comhroinnte cosúil le húinéireacht iolrach: is féidir le ilshnáitheanna
+rochtain a fháil ar an suíomh cuimhne céanna ag an am céanna. Mar a chonaic tú i gCaibidil 15,
+áit ar chuir pointeoirí cliste úinéireacht iolrach ar fáil, is féidir le húinéireacht iolrach
+castacht a chur leis toisc go gcaithfear na húinéirí éagsúla seo a bhainistiú. Cuidíonn córas cineáil Rust
+agus rialacha úinéireachta go mór leis an mbainistíocht seo a fháil i gceart. Mar shampla, féachaimis ar mhútéacsanna, ceann de na bunghnéithe comhthráthachta is coitianta
+le haghaidh cuimhne comhroinnte.</p>
+<h3 id="Úsáid-mutexanna-chun-rochtain-ar-shonraí-a-cheadú-ó-shnáithe-amháin-ag-an-am"><a class="header" href="#Úsáid-mutexanna-chun-rochtain-ar-shonraí-a-cheadú-ó-shnáithe-amháin-ag-an-am">Úsáid Mutexanna chun Rochtain ar Shonraí a Cheadú ó Shnáithe Amháin ag an Am</a></h3>
+<p>Is giorrúchán é <em>Mutex</em> do <em>eisiamh frithpháirteach</em>, mar atá, ní cheadaíonn mutex ach do
+shnáithe amháin rochtain a fháil ar shonraí áirithe ag aon am ar leith. Chun rochtain a fháil ar na sonraí i
+mutex, ní mór do shnáithe a chur in iúl ar dtús go bhfuil rochtain uaidh trí iarraidh <em>glas</em> an
+mutex a fháil. Is struchtúr sonraí é an glas atá mar chuid den mutex a
+choinníonn súil ar cé a bhfuil rochtain eisiach aige ar na sonraí faoi láthair. Dá bhrí sin, déantar cur síos ar an
+mutex mar <em>chosaint</em> na sonraí atá aige tríd an gcóras glasála.</p>
+<p>Tá cáil ar Mutexanna as a bheith deacair a úsáid mar caithfidh tú
+dhá riail a mheabhrú:</p>
+<ul>
+<li>Ní mór duit iarracht a dhéanamh an glas a fháil sula n-úsáideann tú na sonraí.</li>
+<li>Nuair a bheidh tú críochnaithe leis na sonraí a chosnaíonn an mutex, ní mór duit na sonraí a dhíghlasáil
+ionas gur féidir le snáitheanna eile an glas a fháil.</li>
+</ul>
+<p>Mar mheafar fíorshaoil ​​do mutex, samhlaigh plé painéil ag
+comhdháil le micreafón amháin. Sula bhféadann painéalaí labhairt, caithfidh siad a iarraidh nó comhartha a thabhairt gur mian leo an micreafón a úsáid. Nuair a fhaigheann siad an micreafón, is féidir leo labhairt chomh fada agus is mian leo agus ansin an micreafón a thabhairt don chéad phainéalaí eile a iarrann labhairt. Má dhéanann painéalaí dearmad an micreafón a thabhairt dóibh nuair a bhíonn siad críochnaithe leis, ní bheidh aon duine eile in ann labhairt. Mura n-oibríonn bainistíocht an mhicreafóin chomhroinnte, ní oibreoidh an painéal mar a bhí beartaithe!</p>
+<p>Is féidir go mbeadh sé thar a bheith deacair bainistíocht mutex a dhéanamh i gceart, agus sin an fáth go bhfuil an oiread sin daoine díograiseach faoi chainéil. Mar sin féin, a bhuíochas le córas cineáil agus rialacha úinéireachta Rust, ní féidir leat dul i ngleic le glasáil agus díghlasáil.</p>
+<h4 id="api-mutext"><a class="header" href="#api-mutext">API <code>Mutex&lt;T&gt;</code></a></h4>
+<p>Mar shampla de conas mutex a úsáid, déanaimis tosú trí mutex a úsáid i gcomhthéacs aon-snáithe, mar a thaispeántar i Liostáil 16-12:</p>
+<Listing number="16-12" file-name="src/main.rs" caption="Exploring the API of `Mutex<T>` in a single-threaded context for simplicity">
+<pre><pre class="playground"><code class="language-rust">use std::sync::Mutex;
+
+fn main() {
+    let m = Mutex::new(5);
+
+    {
+        let mut num = m.lock().unwrap();
+        *num = 6;
+    }
+
+    println!("m = {m:?}");
+}</code></pre></pre>
+</Listing>
+<p>Mar is amhlaidh le go leor cineálacha, cruthaímid <code>Mutex&lt;T&gt;</code> ag baint úsáide as an bhfeidhm ghaolmhar <code>new</code>.
+Chun rochtain a fháil ar na sonraí taobh istigh den mutex, úsáidimid an modh <code>lock</code> chun an
+glas a fháil. Cuirfidh an glao seo bac ar an snáithe reatha ionas nach féidir leis aon obair a dhéanamh go dtí
+go mbeidh sé inár seal an glas a bheith againn.</p>
+<p>Theipfeadh ar an nglao ar <code>lock</code> dá mbeadh scaoll ar snáithe eile a bhfuil an glas aige. Sa
+chás sin, ní bheadh ​​​​aon duine in ann an glas a fháil riamh, mar sin roghnaigh muid <code>unwrap</code> agus an snáithe seo a bheith i scaoll má bhímid sa chás sin.</p>
+<p>Tar éis dúinn an glas a fháil, is féidir linn an luach fillte, ar a dtugtar <code>num</code> sa
+chás seo, a láimhseáil mar thagairt inathraithe do na sonraí taobh istigh. Cinntíonn an córas cineáil
+go bhfaighimid glas sula n-úsáidimid an luach i <code>m</code>. Is é <code>Mutex&lt;i32&gt;</code> cineál <code>m</code>, ní <code>i32</code>, mar sin <em>ní mór</em> dúinn glaoch ar <code>lock</code> chun go mbeimid in ann an luach <code>i32</code> a úsáid. Ní féidir linn dearmad a dhéanamh; ní ligfidh an córas cineáil dúinn rochtain a fháil ar an <code>i32</code> istigh
+ar shlí eile.</p>
+<p>Mar a d'fhéadfá a cheapadh, is pointeoir cliste é <code>Mutex&lt;T&gt;</code>. Níos cruinne, tugann an glao
+chun <code>glasáil</code> <em>ar ais</em> pointeoir cliste ar a dtugtar <code>MutexGuard</code>, fillte i
+<code>LockResult</code> a láimhseáil muid leis an nglao chun <code>unwrap</code>. Cuireann an pointeoir cliste <code>MutexGuard</code> <code>Deref</code> i bhfeidhm chun pointeáil ar ár sonraí istigh; tá cur i bhfeidhm <code>Drop</code> ag an bpointeoir cliste freisin
+a scaoileann an glas go huathoibríoch nuair a théann
+<code>MutexGuard</code> lasmuigh den raon feidhme, rud a tharlaíonn ag deireadh an raon feidhme istigh. Mar thoradh air sin, níl an baol ann go ndéanaimid dearmad an glas a scaoileadh agus bac a chur ar an mutex
+ó bheith á úsáid ag snáitheanna eile, toisc go dtarlaíonn an scaoileadh glas
+go huathoibríoch.</p>
+<p>Tar éis an glas a scaoileadh, is féidir linn an luach mutex a phriontáil agus a fheiceáil gur éirigh linn an <code>i32</code> istigh a athrú go 6.</p>
+<h4 id="mutext-a-roinnt-idir-snáitheanna-iolracha"><a class="header" href="#mutext-a-roinnt-idir-snáitheanna-iolracha"><code>Mutex&lt;T&gt;</code> a roinnt idir snáitheanna iolracha</a></h4>
+<p>Anois, déanaimis iarracht luach a roinnt idir snáitheanna iolracha ag baint úsáide as <code>Mutex&lt;T&gt;</code>.
+Déanfaimid 10 snáithe a chasadh suas agus méadóimid luach cuntair faoi 1, ionas
+go dtéann an cuntar ó 0 go 10. Beidh earráid tiomsaitheora sa chéad sampla eile i Liosta 16-13, agus úsáidfimid an earráid sin chun níos mó a fhoghlaim faoi úsáid <code>Mutex&lt;T&gt;</code> agus conas a chabhraíonn Rust linn é a úsáid i gceart.</p>
+<Listing number="16-13" file-name="src/main.rs" caption="Ten threads each increment a counter guarded by a `Mutex<T>`">
+<pre><code class="language-rust ignore does_not_compile">use std::sync::Mutex;
+use std::thread;
+
+fn main() {
+    let counter = Mutex::new(0);
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
+}</code></pre>
+</Listing>
+<p>Cruthaímid athróg <code>counter</code> chun <code>i32</code> a choinneáil taobh istigh de <code>Mutex&lt;T&gt;</code>, mar a rinneamar i Liostáil 16-12. Ansin, cruthaímid 10 snáithe trí athrá a dhéanamh thar raon uimhreacha. Úsáidimid <code>thread::spawn</code> agus tugann muid an dúnadh céanna do na snáitheanna go léir: ceann a bhogann an t-counter isteach sa snáithe, a fhaigheann glas ar an <code>Mutex&lt;T&gt;</code> trí ghlaoch ar an modh <code>lock</code>, agus ansin cuireann sé 1 leis an luach sa mutex. Nuair a chríochnaíonn snáithe a dhúnadh, rachaidh <code>num</code> as raon feidhme agus scaoilfidh sé an
+glas ionas gur féidir le snáithe eile é a fháil.</p>
+<p>Sa phríomhshnáithe, bailímid na láimhseálacha join go léir. Ansin, mar a rinneamar i Liostáil 16-2, glaoimid <code>join</code> ar gach láimhseáil chun a chinntiú go gcríochnaíonn na snáitheanna go léir. Ag an bpointe sin, gheobhaidh an príomhshnáithe an glas agus priontálfaidh sé toradh an chláir seo.</p>
+<p>Thugamar le fios nach ndéanfadh an sampla seo a thiomsú. Anois, déanaimis a fháil amach cén fáth!</p>
+<pre><code class="language-console">$ cargo run
+   Compiling shared-state v0.1.0 (file:///projects/shared-state)
+error[E0382]: borrow of moved value: `counter`
+  --&gt; src/main.rs:21:29
+   |
+5  |     let counter = Mutex::new(0);
+   |         ------- move occurs because `counter` has type `Mutex&lt;i32&gt;`, which does not implement the `Copy` trait
+...
+8  |     for _ in 0..10 {
+   |     -------------- inside of this loop
+9  |         let handle = thread::spawn(move || {
+   |                                    ------- value moved into closure here, in previous iteration of loop
+...
+21 |     println!("Result: {}", *counter.lock().unwrap());
+   |                             ^^^^^^^ value borrowed here after move
+   |
+help: consider moving the expression out of the loop so it is only moved once
+   |
+8  ~     let mut value = counter.lock();
+9  ~     for _ in 0..10 {
+10 |         let handle = thread::spawn(move || {
+11 ~             let mut num = value.unwrap();
+   |
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `shared-state` (bin "shared-state") due to 1 previous error
+</code></pre>
+<p>Deir an teachtaireacht earráide gur aistríodh luach an <code>counter</code> san athrá roimhe seo den lúb. Tá Rust ag insint dúinn nach féidir linn úinéireacht <code>counter</code> a bhogadh isteach i snáitheanna iolracha. Déanaimis an earráid tiomsaitheora a shocrú le modh ilúinéireachta a phléamar i gCaibidil 15.</p>
+<h4 id="ilúinéireacht-le-snáitheanna-iolracha"><a class="header" href="#ilúinéireacht-le-snáitheanna-iolracha">Ilúinéireacht le Snáitheanna Iolracha</a></h4>
+<p>I gCaibidil 15, thugamar luach ilúinéirí trí úsáid a bhaint as an pointeoir cliste <code>Rc&lt;T&gt;</code> chun luach comhaireamh tagartha a chruthú. Déanaimis an rud céanna anseo agus feicfimid cad a tharlaíonn. Fillfimid an <code>Mutex&lt;T&gt;</code> i <code>Rc&lt;T&gt;</code> i Liostáil 16-14 agus clónálfaimid an <code>Rc&lt;T&gt;</code> sula mbogfaimid úinéireacht chuig an snáithe.</p>
+<Listing number="16-14" file-name="src/main.rs" caption="Attempting to use `Rc<T>` to allow multiple threads to own the `Mutex<T>`">
+<pre><code class="language-rust ignore does_not_compile">use std::rc::Rc;
+use std::sync::Mutex;
+use std::thread;
+
+fn main() {
+    let counter = Rc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Rc::clone(&amp;counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
+}</code></pre>
+</Listing>
+<p>Arís eile, déanaimid tiomsú agus faighimid... earráidí difriúla! Tá an tiomsaitheoir ag múineadh go leor dúinn.</p>
+<pre><code class="language-console">$ cargo run
+   Compiling shared-state v0.1.0 (file:///projects/shared-state)
+error[E0277]: `Rc&lt;Mutex&lt;i32&gt;&gt;` cannot be sent between threads safely
+   --&gt; src/main.rs:11:36
+    |
+11  |           let handle = thread::spawn(move || {
+    |                        ------------- ^------
+    |                        |             |
+    |  ______________________|_____________within this `{closure@src/main.rs:11:36: 11:43}`
+    | |                      |
+    | |                      required by a bound introduced by this call
+12  | |             let mut num = counter.lock().unwrap();
+13  | |
+14  | |             *num += 1;
+15  | |         });
+    | |_________^ `Rc&lt;Mutex&lt;i32&gt;&gt;` cannot be sent between threads safely
+    |
+    = help: within `{closure@src/main.rs:11:36: 11:43}`, the trait `Send` is not implemented for `Rc&lt;Mutex&lt;i32&gt;&gt;`, which is required by `{closure@src/main.rs:11:36: 11:43}: Send`
+note: required because it's used within this closure
+   --&gt; src/main.rs:11:36
+    |
+11  |         let handle = thread::spawn(move || {
+    |                                    ^^^^^^^
+note: required by a bound in `spawn`
+   --&gt; file:///home/.rustup/toolchains/1.82/lib/rustlib/src/rust/library/std/src/thread/mod.rs:675:8
+    |
+672 | pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt;
+    |        ----- required by a bound in this function
+...
+675 |     F: Send + 'static,
+    |        ^^^^ required by this bound in `spawn`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `shared-state` (bin "shared-state") due to 1 previous error
+</code></pre>
+<p>Ó, tá an teachtaireacht earráide sin an-fhoclach! Seo an chuid thábhachtach le díriú air:
+<code>`Rc&lt;Mutex&lt;i32&gt;&gt;` cannot be sent between threads safely </code>. Tá an tiomsaitheoir ag
+insint dúinn an chúis freisin: <code>the trait `Send` is not implemented for `Rc&lt;Mutex&lt;i32&gt;&gt;`</code>. Labhróimid faoi <code>Send</code> sa chéad chuid eile: is ceann de
+na tréithe é a chinntíonn go bhfuil na cineálacha a úsáidimid le snáitheanna ceaptha lena n-úsáid i
+gcásanna comhthráthacha.</p>
+<p>Ar an drochuair, níl <code>Rc&lt;T&gt;</code> sábháilte a roinnt trasna snáitheanna. Nuair a bhainistíonn <code>Rc&lt;T&gt;</code>
+an comhaireamh tagartha, cuireann sé leis an gcomhaireamh do gach glao chuig <code>clone</code> agus
+baineann sé ón gcomhaireamh nuair a scaoiltear gach clón. Ach ní úsáideann sé aon
+bhunphrionsabail chomhthráthacha chun a chinntiú nach féidir le snáithe eile
+cur isteach ar athruithe ar an gcomhaireamh. D’fhéadfadh sé seo a bheith ina chúis le comhaireamh mícheart—fabhtanna caolchúiseacha a
+d’fhéadfadh sceitheanna cuimhne nó luach a chailleadh sula mbeidh muid críochnaithe
+leis. Is cineál atá díreach cosúil le <code>Rc&lt;T&gt;</code> atá de dhíth orainn ach ceann a dhéanann athruithe
+ar an gcomhaireamh tagartha ar bhealach atá sábháilte ó thaobh snáithe de.</p>
+<h4 id="comhaireamh-tagartha-adamhach-le-arct"><a class="header" href="#comhaireamh-tagartha-adamhach-le-arct">Comhaireamh Tagartha Adamhach le <code>Arc&lt;T&gt;</code></a></h4>
+<p>Ar ámharaí an tsaoil, is cineál cosúil le <code>Rc&lt;T&gt;</code> é <code>Arc&lt;T&gt;</code> atá sábháilte le húsáid i
+gcásanna comhthráthacha. Seasann an <em>a</em> do <em>atomic</em>, rud a chiallaíonn gur cineál <em>adamhach
+comhairimh</em> tagartha é. Is cineál breise comhthráthachta
+bunaidh iad adamhach nach gclúdóimid go mion anseo: féach ar an doiciméadú
+leabharlainne caighdeánach le haghaidh <a href="../std/sync/atomic/index.html"><code>std::sync::atomic</code></a><!-- neamhaird --> le haghaidh tuilleadh
+sonraí. Ag an bpointe seo, níl le déanamh agat ach a fhios a bheith agat go n-oibríonn adamhach cosúil le cineálacha
+bunaidh ach go bhfuil siad sábháilte a roinnt trasna snáitheanna.</p>
+<p>B’fhéidir go mbeadh iontas ort ansin cén fáth nach bhfuil gach cineál primitive adamhach agus cén fáth nach gcuirtear cineálacha caighdeánacha leabharlainne i bhfeidhm chun <code>Arc&lt;T&gt;</code> a úsáid de réir réamhshocraithe. Is é an chúis atá leis sin ná go dtagann pionós feidhmíochta le sábháilteacht snáithe nach mian leat a íoc ach nuair a
+bhíonn gá agat leis i ndáiríre. Má tá tú ag déanamh oibríochtaí ar luachanna laistigh de
+shnáithe amháin, is féidir le do chód rith níos tapúla mura gá dó na
+ráthaíochtaí a sholáthraíonn adamhach a fhorfheidhmiú.</p>
+<p>Fillfimid ar ár sampla: Tá an API céanna ag <code>Arc&lt;T&gt;</code> agus <code>Rc&lt;T&gt;</code>, mar sin socraímid
+ár gclár tríd an líne <code>use</code>, an glao go <code>new</code>, agus an glao go
+<code>clone</code> a athrú. Tiomsóidh agus rithfidh an cód i Liosta 16-15 sa deireadh:</p>
+<Listing number="16-15" file-name="src/main.rs" caption="Using an `Arc<T>` to wrap the `Mutex<T>` to be able to share ownership across multiple threads">
+<pre><pre class="playground"><code class="language-rust">use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Arc::clone(&amp;counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
+}</code></pre></pre>
+</Listing>
+<p>Priontálfaidh an cód seo an méid seo a leanas:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">Result: 10
+</code></pre>
+<p>Rinneamar é! Chomhaireamhamar ó 0 go 10, rud nach mbeadh an-suntasach b'fhéidir, ach mhúin sé go leor dúinn faoi <code>Mutex&lt;T&gt;</code> agus sábháilteacht snáitheanna. D'fhéadfá struchtúr an chláir seo a úsáid freisin chun oibríochtaí níos casta a dhéanamh ná díreach cuntar a mhéadú. Ag baint úsáide as an straitéis seo, is féidir leat ríomh a roinnt ina chodanna neamhspleácha, na codanna sin a roinnt thar shnáitheanna, agus ansin <code>Mutex&lt;T&gt;</code> a úsáid chun go ndéanfaidh gach
+snáithe an toradh deiridh a nuashonrú lena chuid.</p>
+<p>Tabhair faoi deara, má tá tú ag déanamh oibríochtaí uimhriúla simplí, go bhfuil cineálacha níos simplí ann
+ná cineálacha <code>Mutex&lt;T&gt;</code> arna soláthar ag an modúl <a href="../std/sync/atomic/index.html"><code>std::sync::atomic</code> den
+leabharlann chaighdeánach</a><!-- ignore -->. Soláthraíonn na cineálacha seo rochtain shábháilte, chomhuaineach,
+adamhach ar chineálacha primitive. Roghnaíomar <code>Mutex&lt;T&gt;</code> a úsáid le cineál primitive
+don sampla seo ionas go bhféadfaimis díriú ar an gcaoi a n-oibríonn <code>Mutex&lt;T&gt;</code>.</p>
+<h3 id="cosúlachtaí-idir-refcelltrct-agus-mutextarct"><a class="header" href="#cosúlachtaí-idir-refcelltrct-agus-mutextarct">Cosúlachtaí idir <code>RefCell&lt;T&gt;</code>/<code>Rc&lt;T&gt;</code> agus <code>Mutex&lt;T&gt;</code>/<code>Arc&lt;T&gt;</code></a></h3>
+<p>B’fhéidir gur thug tú faoi deara nach féidir an <code>counter</code> a athrú ach go bhféadfaimis tagairt inathraithe a fháil don luach atá istigh ann; ciallaíonn sé seo go soláthraíonn <code>Mutex&lt;T&gt;</code> inathraitheacht inmheánach, mar a dhéanann an teaghlach <code>Cell</code>. Ar an gcaoi chéanna a d’úsáideamar <code>RefCell&lt;T&gt;</code> i
+gCaibidil 15 chun ligean dúinn ábhar a athrú laistigh de <code>Rc&lt;T&gt;</code>, úsáidimid <code>Mutex&lt;T&gt;</code> chun ábhar a athrú laistigh de <code>Arc&lt;T&gt;</code>.</p>
+<p>Sonra eile le tabhairt faoi deara ná nach féidir le Rust tú a chosaint ó gach cineál earráide loighce
+nuair a úsáideann tú <code>Mutex&lt;T&gt;</code>. Cuimhnigh i gCaibidil 15 gur tháinig an baol timthriallta tagartha a chruthú le húsáid <code>Rc&lt;T&gt;</code>, áit a dtagraíonn dhá luach <code>Rc&lt;T&gt;</code> dá chéile, rud a fhágann sceitheanna cuimhne. Ar an gcaoi chéanna, tá an baol ann go gcruthófar <em>deadlocks</em> le <code>Mutex&lt;T&gt;</code>. Tarlaíonn siad seo nuair a bhíonn ar oibríocht dhá acmhainn a ghlasáil
+agus nuair a bhíonn ceann de na glais faighte ag dhá shnáithe, rud a fhágann go bhfanann siad
+le chéile go deo. Más spéis leat deadlocks, déan iarracht clár Rust a chruthú
+a bhfuil deadlock ann; ansin déan taighde ar straitéisí maolaithe deadlock do
+mutexes in aon teanga agus déan iarracht iad a chur i bhfeidhm i Rust. Cuireann
+an doiciméadú caighdeánach leabharlainne API do <code>Mutex&lt;T&gt;</code> agus <code>MutexGuard</code>
+eolas úsáideach ar fáil.</p>
+<p>Cuirfimid clabhsúr ar an gcaibidil seo trí labhairt faoi na tréithe <code>Send</code> agus <code>Sync</code> agus
+conas is féidir linn iad a úsáid le cineálacha saincheaptha.</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="comhthráthacht-inleathnaithe-leis-na-tréithe-sync-agus-send"><a class="header" href="#comhthráthacht-inleathnaithe-leis-na-tréithe-sync-agus-send">Comhthráthacht Inleathnaithe leis na Tréithe <code>Sync</code> agus <code>Send</code></a></h2>
+<p>Is suimiúil go bhfuil <em>an-bheagán</em> gnéithe comhthráthachta ag an teanga Rust. Tá beagnach
+gach
+gné comhthráthachta a phléamar go dtí seo sa chaibidil seo
+mar chuid den leabharlann chaighdeánach, ní den teanga. Níl do roghanna maidir le láimhseáil
+comthráthacht teoranta don teanga ná don leabharlann chaighdeánach; is féidir leat
+do ghnéithe comhthráthachta féin a scríobh nó iad siúd a scríobh daoine eile a úsáid.</p>
+<p>Mar sin féin, tá dhá choincheap comhthráthachta leabaithe sa teanga: na
+tréithe <code>std::marker</code> <code>Sync</code> agus <code>Send</code>.</p>
+<h3 id="ceadú-aistriú-Úinéireachta-idir-snáitheanna-le-send"><a class="header" href="#ceadú-aistriú-Úinéireachta-idir-snáitheanna-le-send">Ceadú Aistriú Úinéireachta Idir Snáitheanna le <code>Send</code></a></h3>
+<p>Léiríonn an tréith marcóra <code>Send</code> gur féidir úinéireacht luachanna den chineál
+a chuireann <code>Send</code> i bhfeidhm a aistriú idir snáitheanna. Is beagnach gach cineál Rust é <code>Send</code>, ach tá roinnt eisceachtaí ann, lena n-áirítear <code>Rc&lt;T&gt;</code>: ní féidir é seo a bheith
+<code>Send</code> mar má chlónálann tú luach <code>Rc&lt;T&gt;</code> agus má dhéanann tú iarracht úinéireacht an chlóin a aistriú
+go snáithe eile, d'fhéadfadh an dá shnáithe an comhaireamh tagartha a nuashonrú
+ag an am céanna. Ar an gcúis seo, cuirtear <code>Rc&lt;T&gt;</code> i bhfeidhm lena úsáid i
+gcásanna aon-snáithe nach mian leat an pionós feidhmíochta sábháilte snáithe a íoc.</p>
+<p>Dá bhrí sin, cinntíonn córas cineálacha agus teorainneacha tréithe Rust nach féidir leat
+luach <code>Rc&lt;T&gt;</code> a sheoladh de thaisme trasna snáitheanna go neamhshábháilte. Nuair a rinneamar iarracht
+é seo a dhéanamh i Liostáil 16-14, fuair muid an earráid <code>the trait Send is not implemented for Rc&lt;Mutex&lt;i32&gt;&gt;</code>. Nuair a d'athraíomar go <code>Arc&lt;T&gt;</code>, arb é <code>Send</code> é, tiomsaíodh an cód.</p>
+<p>Aon chineál atá comhdhéanta go hiomlán de chineálacha <code>Send</code>, marcáiltear go huathoibríoch mar <code>Send</code> chomh maith. Is <code>Send</code> beagnach gach cineál primitive, seachas pointeoirí amha, a phléifimid i gCaibidil 20.</p>
+<h3 id="ceadú-rochtain-ó-il-shnáitheanna-le-sync"><a class="header" href="#ceadú-rochtain-ó-il-shnáitheanna-le-sync">Ceadú Rochtain ó Il-Shnáitheanna le <code>Sync</code></a></h3>
+<p>Léiríonn an tréith marcóra <code>Sync</code> go bhfuil sé sábháilte don chineál a chuireann <code>Sync</code> i bhfeidhm tagairt a dhéanamh dó ó il-shnáitheanna. I bhfocail eile, is <code>Sync</code> aon chineál <code>T</code> má tá <code>&amp;T</code> (tagairt neamh-inathraithe do <code>T</code>) ina <code>Send</code>, rud a chiallaíonn gur féidir an tagairt a sheoladh go sábháilte chuig snáithe eile. Cosúil le <code>Send</code>, is <code>Sync</code> cineálacha primitive, agus is <code>Sync</code> cineálacha atá comhdhéanta go hiomlán de chineálacha atá ina <code>Sync</code> freisin.</p>
+<p>Ní <code>Sync</code> an pointeoir cliste <code>Rc&lt;T&gt;</code> ar na cúiseanna céanna nach
+<code>Send</code> é. Ní <code>Sync</code> an cineál <code>RefCell&lt;T&gt;</code> (a labhair muid faoi i gCaibidil 15) agus an
+teaghlach de chineálacha gaolmhara <code>Cell&lt;T&gt;</code>. Níl cur i bhfeidhm iasachta
+ag seiceáil go ndéanann <code>RefCell&lt;T&gt;</code> ag am rith sábháilte ó thaobh snáithe de. Is é <code>Sync</code> an pointeoir cliste
+<code>Mutex&lt;T&gt;</code> agus is féidir é a úsáid chun rochtain a roinnt le snáitheanna
+il mar a chonaic tú sa chuid <a href="ch16-03-shared-state.html#sharing-a-mutext-between-multiple-threads">"<code>Mutex&lt;T&gt;</code> a roinnt idir snáitheanna iomadúla"</a><!-- ignore -->.</p>
+<h3 id="tá-send-agus-sync-a-chur-i-bhfeidhm-de-láimh-neamhshábháilte"><a class="header" href="#tá-send-agus-sync-a-chur-i-bhfeidhm-de-láimh-neamhshábháilte">Tá <code>Send</code> agus <code>Sync</code> a Chur i bhFeidhm de Láimh Neamhshábháilte</a></h3>
+<p>Toisc go bhfuil cineálacha atá comhdhéanta de thréithe <code>Send</code> agus <code>Sync</code> go huathoibríoch
+freisin <code>Send</code> agus <code>Sync</code>, ní gá dúinn na tréithe sin a chur i bhfeidhm de láimh. Mar
+thréithe marcóra, níl aon mhodhanna acu fiú le cur i bhfeidhm. Tá siad
+úsáideach chun neamhathraitheach a bhaineann le comhthráthacht a fhorfheidhmiú.</p>
+<p>Bíonn cód Rust neamhshábháilte á chur i bhfeidhm i gceist le cur i bhfeidhm na dtréithe seo de láimh.</p>
+<p>Labhróimid faoi chód Rust neamhshábháilte a úsáid i gCaibidil 20; faoi ​​láthair, is é an fhaisnéis thábhachtach ná go n-éilíonn tógáil cineálacha comhthráthacha nua nach bhfuil comhdhéanta de chodanna <code>Send</code> agus
+<code>Sync</code> machnamh cúramach chun na ráthaíochtaí sábháilteachta a choinneáil. Tá tuilleadh eolais faoi na ráthaíochtaí seo agus conas iad a choinneáil sa <a href="../nomicon/index.html">“The
+Rustonomicon”</a>.</p>
+<h2 id="achoimre-15"><a class="header" href="#achoimre-15">Achoimre</a></h2>
+<p>Ní hé seo an uair dheireanach a fheicfidh tú comhthráthacht sa leabhar seo: díríonn an chéad chaibidil eile ar fad ar chláreagrú neamhshioncrónach, agus úsáidfidh an tionscadal i gCaibidil 21 na
+coincheapa sa chaibidil seo i gcás níos réadúla ná na samplaí níos lú
+a phléitear anseo.</p>
+<p>Mar a luadh cheana, toisc nach bhfuil mórán den chaoi a láimhseálann Rust comhthráthacht mar chuid den teanga, cuirtear go leor réitigh chomhthráthachta i bhfeidhm mar chliathbhoscaí.
+Forbraíonn siad seo níos tapúla ná an leabharlann chaighdeánach, mar sin bí cinnte cuardach a dhéanamh ar líne le haghaidh na gcliathbhoscaí reatha, úrscothacha le húsáid i gcásanna il-shnáithithe.</p>
+<p>Soláthraíonn leabharlann chaighdeánach Rust bealaí le haghaidh teachtaireachtaí a rith agus cineálacha pointeora cliste, amhail <code>Mutex&lt;T&gt;</code> agus <code>Arc&lt;T&gt;</code>, atá sábháilte le húsáid i gcomhthéacsanna comhthráthacha. Cinntíonn an córas cineálacha agus an seiceálaí iasachta nach mbeidh rásaí sonraí ná tagairtí neamhbhailí sa chód a úsáideann na réitigh seo.
+Nuair a gheobhaidh tú do chód le tiomsú, is féidir leat a bheith cinnte go rithfidh sé go sona sásta ar ilshnáitheanna gan na cineálacha fabhtanna atá deacair a rianú atá coitianta i dteangacha eile. Ní coincheap le bheith eaglach roimhe a thuilleadh é cláir chomhthráthacha:
+téigh ar aghaidh agus déan do chláir chomhthráthacha, gan eagla!</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="async-and-await"><a class="header" href="#async-and-await">Async and Await</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="futures-and-the-async-syntax"><a class="header" href="#futures-and-the-async-syntax">Futures and the Async Syntax</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="concurrency-with-async"><a class="header" href="#concurrency-with-async">Concurrency With Async</a></h1>

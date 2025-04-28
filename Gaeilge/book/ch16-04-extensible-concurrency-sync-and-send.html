@@ -159,7 +159,52 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="extensible-concurrency-with-the-sync-and-send-traits"><a class="header" href="#extensible-concurrency-with-the-sync-and-send-traits">Extensible Concurrency with the Sync and Send Traits</a></h1>
+                        <h2 id="comhthráthacht-inleathnaithe-leis-na-tréithe-sync-agus-send"><a class="header" href="#comhthráthacht-inleathnaithe-leis-na-tréithe-sync-agus-send">Comhthráthacht Inleathnaithe leis na Tréithe <code>Sync</code> agus <code>Send</code></a></h2>
+<p>Is suimiúil go bhfuil <em>an-bheagán</em> gnéithe comhthráthachta ag an teanga Rust. Tá beagnach
+gach
+gné comhthráthachta a phléamar go dtí seo sa chaibidil seo
+mar chuid den leabharlann chaighdeánach, ní den teanga. Níl do roghanna maidir le láimhseáil
+comthráthacht teoranta don teanga ná don leabharlann chaighdeánach; is féidir leat
+do ghnéithe comhthráthachta féin a scríobh nó iad siúd a scríobh daoine eile a úsáid.</p>
+<p>Mar sin féin, tá dhá choincheap comhthráthachta leabaithe sa teanga: na
+tréithe <code>std::marker</code> <code>Sync</code> agus <code>Send</code>.</p>
+<h3 id="ceadú-aistriú-Úinéireachta-idir-snáitheanna-le-send"><a class="header" href="#ceadú-aistriú-Úinéireachta-idir-snáitheanna-le-send">Ceadú Aistriú Úinéireachta Idir Snáitheanna le <code>Send</code></a></h3>
+<p>Léiríonn an tréith marcóra <code>Send</code> gur féidir úinéireacht luachanna den chineál
+a chuireann <code>Send</code> i bhfeidhm a aistriú idir snáitheanna. Is beagnach gach cineál Rust é <code>Send</code>, ach tá roinnt eisceachtaí ann, lena n-áirítear <code>Rc&lt;T&gt;</code>: ní féidir é seo a bheith
+<code>Send</code> mar má chlónálann tú luach <code>Rc&lt;T&gt;</code> agus má dhéanann tú iarracht úinéireacht an chlóin a aistriú
+go snáithe eile, d'fhéadfadh an dá shnáithe an comhaireamh tagartha a nuashonrú
+ag an am céanna. Ar an gcúis seo, cuirtear <code>Rc&lt;T&gt;</code> i bhfeidhm lena úsáid i
+gcásanna aon-snáithe nach mian leat an pionós feidhmíochta sábháilte snáithe a íoc.</p>
+<p>Dá bhrí sin, cinntíonn córas cineálacha agus teorainneacha tréithe Rust nach féidir leat
+luach <code>Rc&lt;T&gt;</code> a sheoladh de thaisme trasna snáitheanna go neamhshábháilte. Nuair a rinneamar iarracht
+é seo a dhéanamh i Liostáil 16-14, fuair muid an earráid <code>the trait Send is not implemented for Rc&lt;Mutex&lt;i32&gt;&gt;</code>. Nuair a d'athraíomar go <code>Arc&lt;T&gt;</code>, arb é <code>Send</code> é, tiomsaíodh an cód.</p>
+<p>Aon chineál atá comhdhéanta go hiomlán de chineálacha <code>Send</code>, marcáiltear go huathoibríoch mar <code>Send</code> chomh maith. Is <code>Send</code> beagnach gach cineál primitive, seachas pointeoirí amha, a phléifimid i gCaibidil 20.</p>
+<h3 id="ceadú-rochtain-ó-il-shnáitheanna-le-sync"><a class="header" href="#ceadú-rochtain-ó-il-shnáitheanna-le-sync">Ceadú Rochtain ó Il-Shnáitheanna le <code>Sync</code></a></h3>
+<p>Léiríonn an tréith marcóra <code>Sync</code> go bhfuil sé sábháilte don chineál a chuireann <code>Sync</code> i bhfeidhm tagairt a dhéanamh dó ó il-shnáitheanna. I bhfocail eile, is <code>Sync</code> aon chineál <code>T</code> má tá <code>&amp;T</code> (tagairt neamh-inathraithe do <code>T</code>) ina <code>Send</code>, rud a chiallaíonn gur féidir an tagairt a sheoladh go sábháilte chuig snáithe eile. Cosúil le <code>Send</code>, is <code>Sync</code> cineálacha primitive, agus is <code>Sync</code> cineálacha atá comhdhéanta go hiomlán de chineálacha atá ina <code>Sync</code> freisin.</p>
+<p>Ní <code>Sync</code> an pointeoir cliste <code>Rc&lt;T&gt;</code> ar na cúiseanna céanna nach
+<code>Send</code> é. Ní <code>Sync</code> an cineál <code>RefCell&lt;T&gt;</code> (a labhair muid faoi i gCaibidil 15) agus an
+teaghlach de chineálacha gaolmhara <code>Cell&lt;T&gt;</code>. Níl cur i bhfeidhm iasachta
+ag seiceáil go ndéanann <code>RefCell&lt;T&gt;</code> ag am rith sábháilte ó thaobh snáithe de. Is é <code>Sync</code> an pointeoir cliste
+<code>Mutex&lt;T&gt;</code> agus is féidir é a úsáid chun rochtain a roinnt le snáitheanna
+il mar a chonaic tú sa chuid <a href="ch16-03-shared-state.html#sharing-a-mutext-between-multiple-threads">"<code>Mutex&lt;T&gt;</code> a roinnt idir snáitheanna iomadúla"</a><!-- ignore -->.</p>
+<h3 id="tá-send-agus-sync-a-chur-i-bhfeidhm-de-láimh-neamhshábháilte"><a class="header" href="#tá-send-agus-sync-a-chur-i-bhfeidhm-de-láimh-neamhshábháilte">Tá <code>Send</code> agus <code>Sync</code> a Chur i bhFeidhm de Láimh Neamhshábháilte</a></h3>
+<p>Toisc go bhfuil cineálacha atá comhdhéanta de thréithe <code>Send</code> agus <code>Sync</code> go huathoibríoch
+freisin <code>Send</code> agus <code>Sync</code>, ní gá dúinn na tréithe sin a chur i bhfeidhm de láimh. Mar
+thréithe marcóra, níl aon mhodhanna acu fiú le cur i bhfeidhm. Tá siad
+úsáideach chun neamhathraitheach a bhaineann le comhthráthacht a fhorfheidhmiú.</p>
+<p>Bíonn cód Rust neamhshábháilte á chur i bhfeidhm i gceist le cur i bhfeidhm na dtréithe seo de láimh.</p>
+<p>Labhróimid faoi chód Rust neamhshábháilte a úsáid i gCaibidil 20; faoi ​​láthair, is é an fhaisnéis thábhachtach ná go n-éilíonn tógáil cineálacha comhthráthacha nua nach bhfuil comhdhéanta de chodanna <code>Send</code> agus
+<code>Sync</code> machnamh cúramach chun na ráthaíochtaí sábháilteachta a choinneáil. Tá tuilleadh eolais faoi na ráthaíochtaí seo agus conas iad a choinneáil sa <a href="../nomicon/index.html">“The
+Rustonomicon”</a>.</p>
+<h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
+<p>Ní hé seo an uair dheireanach a fheicfidh tú comhthráthacht sa leabhar seo: díríonn an chéad chaibidil eile ar fad ar chláreagrú neamhshioncrónach, agus úsáidfidh an tionscadal i gCaibidil 21 na
+coincheapa sa chaibidil seo i gcás níos réadúla ná na samplaí níos lú
+a phléitear anseo.</p>
+<p>Mar a luadh cheana, toisc nach bhfuil mórán den chaoi a láimhseálann Rust comhthráthacht mar chuid den teanga, cuirtear go leor réitigh chomhthráthachta i bhfeidhm mar chliathbhoscaí.
+Forbraíonn siad seo níos tapúla ná an leabharlann chaighdeánach, mar sin bí cinnte cuardach a dhéanamh ar líne le haghaidh na gcliathbhoscaí reatha, úrscothacha le húsáid i gcásanna il-shnáithithe.</p>
+<p>Soláthraíonn leabharlann chaighdeánach Rust bealaí le haghaidh teachtaireachtaí a rith agus cineálacha pointeora cliste, amhail <code>Mutex&lt;T&gt;</code> agus <code>Arc&lt;T&gt;</code>, atá sábháilte le húsáid i gcomhthéacsanna comhthráthacha. Cinntíonn an córas cineálacha agus an seiceálaí iasachta nach mbeidh rásaí sonraí ná tagairtí neamhbhailí sa chód a úsáideann na réitigh seo.
+Nuair a gheobhaidh tú do chód le tiomsú, is féidir leat a bheith cinnte go rithfidh sé go sona sásta ar ilshnáitheanna gan na cineálacha fabhtanna atá deacair a rianú atá coitianta i dteangacha eile. Ní coincheap le bheith eaglach roimhe a thuilleadh é cláir chomhthráthacha:
+téigh ar aghaidh agus déan do chláir chomhthráthacha, gan eagla!</p>
 
                     </main>
 

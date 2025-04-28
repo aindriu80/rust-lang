@@ -159,7 +159,283 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="using-message-passing-to-transfer-data-between-threads"><a class="header" href="#using-message-passing-to-transfer-data-between-threads">Using Message Passing to Transfer Data Between Threads</a></h1>
+                        <h2 id="Úsáid-a-bhaint-as-tarchur-teachtaireachtaí-chun-sonraí-a-aistriú-idir-snáitheanna"><a class="header" href="#Úsáid-a-bhaint-as-tarchur-teachtaireachtaí-chun-sonraí-a-aistriú-idir-snáitheanna">Úsáid a bhaint as Tarchur Teachtaireachtaí chun Sonraí a Aistriú idir Snáitheanna</a></h2>
+<p>Cur chuige atá ag éirí níos coitianta chun comhthráthacht shábháilte a chinntiú ná <em>tarchur_teachtaireachta</em>, áit a ndéanann snáitheanna nó gníomhaithe cumarsáid trí theachtaireachtaí ina bhfuil sonraí a sheoladh chuig a chéile. Seo an smaoineamh i mana ó <a href="https://golang.org/doc/effective_go.html#concurrency">dhoiciméadacht teanga Go</a>:
+“Ná déan cumarsáid trí chuimhne a roinnt; ina ionad sin, roinn cuimhne trí chumarsáid.”</p>
+<p>Chun comhthráthacht seolta teachtaireachtaí a bhaint amach, soláthraíonn leabharlann chaighdeánach Rust
+cur i bhfeidhm de <em>chainéil</em>. Is coincheap clársceidealaithe ginearálta é cainéal trína
+seoltar sonraí ó shnáithe amháin go snáithe eile.</p>
+<p>Is féidir leat cainéal i gclársceidealú a shamhlú mar chainéal treorach uisce, amhail sruthán nó abhainn. Má chuireann tú rud éigin cosúil le lacha rubair
+isteach in abhainn, rachaidh sé síos an abhainn go dtí deireadh an uiscebhealaigh.</p>
+<p>Tá dhá leath ag cainéal: tarchuradóir agus glacadóir. Is é leath an tarchuradóra
+an suíomh suas an abhainn ina gcuireann tú lachain rubair san abhainn, agus is é
+leath an ghlacadóra an áit a gcríochnaíonn an lacha rubair síos an abhainn. Glaonn cuid amháin de do
+chód modhanna ar an tarchuradóir leis na sonraí is mian leat a sheoladh, agus
+seiceálann cuid eile an taobh glacadóra le haghaidh teachtaireachtaí atá ag teacht isteach. Deirtear go bhfuil cainéal
+<em>dúnta</em> má scaoiltear leath an tarchuradóra nó an ghlacadóra.</p>
+<p>Anseo, oibreoimid suas go dtí clár a bhfuil snáithe amháin ann chun luachanna a ghiniúint agus
+iad a sheoladh síos cainéal, agus snáithe eile a gheobhaidh na luachanna agus
+a phriontálfaidh amach iad. Seolfaimid luachanna simplí idir snáitheanna ag baint úsáide as cainéal
+chun an ghné a léiriú. Nuair a bheidh tú eolach ar an teicníc, d'fhéadfá
+cainéil a úsáid le haghaidh aon snáitheanna a gcaithfidh cumarsáid a dhéanamh eatarthu, mar shampla
+córas comhrá nó córas ina ndéanann go leor snáitheanna codanna de ríomh
+agus na codanna a sheoladh chuig snáithe amháin a chomhiomlánaíonn na torthaí.</p>
+<p>Ar dtús, i Liostáil 16-6, cruthóimid cainéal ach ní dhéanaimid aon rud leis. Tabhair faoi deara nach ndéanfar é seo a thiomsú go fóill mar ní féidir le Rust a rá cén cineál luachanna is mian linn a sheoladh thar an gcainéal.</p>
+<p><span class="filename">Filename: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">use std::sync::mpsc;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+}</code></pre>
+<p><span class="caption">Listing 16-6: Creating a channel and assigning the two
+halves to <code>tx</code> and <code>rx</code></span></p>
+<p>Cruthaímid cainéal nua ag baint úsáide as an bhfeidhm <code>mpsc::channel</code>; seasann <code>mpsc</code> do
+<em>multiple producer, single consumer</em>. Go hachomair, ciallaíonn an chaoi a gcuireann leabharlann chaighdeánach Rust
+cainéil i bhfeidhm gur féidir le cainéal il-chríocha <em>seolta</em> a bheith aige a
+tháirgeann luachanna ach gan ach críoch <em>faighte</em> amháin a ídíonn na luachanna sin. Samhlaigh
+il-shruthanna ag sileadh le chéile in aon abhainn mhór amháin: críochnóidh gach rud a sheoltar síos aon cheann de na
+sruthanna in aon abhainn amháin ag an deireadh. Tosaímid le
+táirgeoir
+amháin faoi láthair, ach cuirfimid il-tháirgeoirí leis nuair a bheidh an sampla seo
+ag obair againn.</p>
+<p>Tugann an fheidhm <code>mpsc::channel</code> tuple ar ais, agus is é an chéad eilimint de an
+chríoch seolta—an tarchuradóir—agus is é an dara heilimint an críoch glactha—an
+glacadóir. Úsáidtear na giorrúcháin <code>tx</code> agus <code>rx</code> go traidisiúnta i go leor réimsí
+do <em>transmitter</em> agus <em>receiver</em> faoi seach, mar sin ainmnímid ár n-athróga mar sin
+chun gach críoch a léiriú. Táimid ag úsáid ráiteas <code>let</code> le patrún a scriosann na tuplaí; pléifimid úsáid patrún i ráitis <code>let</code> agus dístruchtúrú i gCaibidil 19. Faoi láthair, bíodh a fhios agat gur cur chuige áisiúil é ráiteas <code>let</code> a úsáid ar an mbealach seo chun píosaí an tupla a eastóscadh a fhilleann <code>mpsc::channel</code>.</p>
+<p>Bogfaimid an taobh tarchuir isteach i snáithe sceite agus lig dúinn teaghrán amháin a sheoladh ionas go mbeidh an snáithe sceite ag cumarsáid leis an bpríomhshnáithe, mar a thaispeántar i
+Liostú 16-7. Tá sé seo cosúil le lacha rubair a chur san abhainn suas an abhainn nó
+teachtaireacht comhrá a sheoladh ó shnáithe amháin go snáithe eile.</p>
+<Listing number="16-7" file-name="src/main.rs" caption="Moving `tx` to a spawned thread and sending “hi”">
+<pre><pre class="playground"><code class="language-rust">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+}</code></pre></pre>
+</Listing>
+<p>Arís, táimid ag úsáid <code>thread::spawn</code> chun snáithe nua a chruthú agus ansin ag úsáid <code>move</code>
+chun <code>tx</code> a bhogadh isteach sa dúnadh ionas go mbeidh <code>tx</code> ag an snáithe sceite. Caithfidh an snáithe sceite
+an tarchuradóir a bheith aige chun teachtaireachtaí a sheoladh tríd an
+chainéal. Tá modh <code>send</code> ag an tarchuradóir a ghlacann an luach is mian linn a
+sheoladh. Tugann an modh <code>send</code> cineál <code>Result&lt;T, E&gt;</code> ar ais, mar sin má tá an glacadóir
+scaoilte cheana féin agus mura bhfuil áit ar bith ann chun luach a sheoladh, cuirfidh an oibríocht seolta
+earráid ar ais. Sa sampla seo, táimid ag glaoch ar <code>unwrap</code> chun scaoll a chur i gcás
+earráide. Ach in fheidhmchlár fíor, láimhseálfaimis é i gceart: fill ar
+Chaibidil 9 chun athbhreithniú a dhéanamh ar straitéisí maidir le láimhseáil earráide i gceart.</p>
+<p>I Liostáil 16-8, gheobhaimid an luach ón nglacadóir sa phríomhshnáithe. Tá sé seo
+cosúil leis an lacha rubair a aisghabháil ón uisce ag deireadh na habhann nó
+teachtaireacht comhrá a fháil.</p>
+<Listing number="16-8" file-name="src/main.rs" caption="Receiving the value “hi” in the main thread and printing it">
+<pre><pre class="playground"><code class="language-rust">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {received}");
+}</code></pre></pre>
+</Listing>
+<p>Tá dhá mhodh úsáideacha ag an nglacadóir: <code>recv</code> agus <code>try_recv</code>. Táimid ag baint úsáide as <code>recv</code>,
+giorrúchán do <em>receive</em>, a chuirfidh bac ar fhorghníomhú an phríomhshnáithe agus a fhanfaidh
+go dtí go seolfar luach síos an cainéal. Nuair a sheolfar luach, cuirfidh <code>recv</code>
+ar ais é i <code>Result&lt;T, E&gt;</code>. Nuair a dhúnann an tarchuradóir, cuirfidh <code>recv</code>
+earráid ar ais chun comhartha nach mbeidh aon luachanna eile ag teacht.</p>
+<p>Ní chuireann an modh <code>try_recv</code> bac, ach ina ionad sin cuirfidh sé <code>Result&lt;T, E&gt;</code> ar ais
+láithreach: luach <code>Ok</code> ina bhfuil teachtaireacht má tá ceann ar fáil agus luach <code>Err</code>
+mura bhfuil aon teachtaireachtaí ann an uair seo. Tá úsáid <code>try_recv</code> úsáideach
+má tá obair eile le déanamh ag an snáithe seo agus muid ag fanacht le teachtaireachtaí: d'fhéadfaimis
+lúb a scríobh
+a ghlaonn ar <code>try_recv</code> ó am go ham, a láimhseálann teachtaireacht má tá ceann ar fáil,
+agus a dhéanann obair eile ar feadh tamaill bhig go dtí go ndéantar seiceáil
+arís.</p>
+<p>D'úsáideamar <code>recv</code> sa sampla seo ar mhaithe le simplíocht; níl aon obair eile againn don phríomhshnáithe le déanamh seachas fanacht le teachtaireachtaí, mar sin is cuí an príomhshnáithe a bhlocáil.</p>
+<p>Nuair a ritheann muid an cód i Liosta 16-8, feicfimid an luach priontáilte ón bpríomhshnáithe:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">Got: hi
+</code></pre>
+<p>Foirfe!</p>
+<h3 id="cainéil-agus-aistriú-Úinéireachta"><a class="header" href="#cainéil-agus-aistriú-Úinéireachta">Cainéil agus Aistriú Úinéireachta</a></h3>
+<p>Tá ról ríthábhachtach ag na rialacha úinéireachta i seoladh teachtaireachtaí mar go gcabhraíonn siad leat
+cód sábháilte, comhuaineach a scríobh. Is é an buntáiste a bhaineann le smaoineamh ar úinéireacht ar fud do chláir Rust ná earráidí a chosc i gcláreagrú comhuaineach. Déanaimis
+turgnamh chun a thaispeáint conas a oibríonn bealaí agus úinéireacht le chéile chun
+fadhbanna a chosc: déanfaimid iarracht luach <code>val</code> a úsáid sa snáithe sceite <em>tar éis</em> dúinn
+é a sheoladh síos an cainéal. Bain triail as an gcód i Liostáil 16-9 a thiomsú chun a fheiceáil cén fáth
+nach gceadaítear an cód seo:</p>
+<Listing number="16-9" file-name="src/main.rs" caption="Attempting to use `val` after we’ve sent it down the channel">
+<pre><code class="language-rust ignore does_not_compile">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+        println!("val is {val}");
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {received}");
+}</code></pre>
+</Listing>
+<p>Anseo, déanaimid iarracht <code>val</code> a phriontáil tar éis dúinn é a sheoladh síos an cainéal trí <code>tx.send</code>.
+Bheadh ​​sé ina dhroch-smaoineamh é seo a cheadú: nuair a bheidh an luach seolta chuig snáithe eile, d'fhéadfadh an snáithe sin é a mhodhnú nó a ligean ar lár sula ndéanaimid iarracht an luach a úsáid
+arís. D'fhéadfadh sé go mbeadh earráidí nó
+torthaí gan choinne mar thoradh ar mhodhnuithe an snáithe eile mar gheall ar shonraí neamhréireach nó neamhbheith ann. Mar sin féin, tugann Rust
+earráid dúinn má dhéanaimid iarracht an cód i Liostáil 16-9 a thiomsú:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling message-passing v0.1.0 (file:///projects/message-passing)
+error[E0382]: borrow of moved value: `val`
+  --&gt; src/main.rs:10:26
+   |
+8  |         let val = String::from("hi");
+   |             --- move occurs because `val` has type `String`, which does not implement the `Copy` trait
+9  |         tx.send(val).unwrap();
+   |                 --- value moved here
+10 |         println!("val is {val}");
+   |                          ^^^^^ value borrowed here after move
+   |
+   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `message-passing` (bin "message-passing") due to 1 previous error
+</code></pre>
+<p>Tá earráid ama tiomsaithe mar thoradh ar ár mbotún comhthráthachta. Glacann an fheidhm <code>send</code> úinéireacht ar a paraiméadar, agus nuair a bhogtar an luach, glacann an glacadóir úinéireacht air. Cuireann sé seo cosc ​​orainn an luach a úsáid arís de thaisme tar éis é a sheoladh; seiceálann an córas úinéireachta go bhfuil gach rud ceart go leor.</p>
+<h3 id="illuachanna-a-sheoladh-agus-an-glacadóir-a-fheiceáil-ag-fanacht"><a class="header" href="#illuachanna-a-sheoladh-agus-an-glacadóir-a-fheiceáil-ag-fanacht">Illuachanna a Sheoladh agus an Glacadóir a Fheiceáil ag Fanacht</a></h3>
+<p>Tiomsaíodh agus rith an cód i Liostáil 16-8, ach níor léirigh sé go soiléir dúinn go raibh dhá shnáithe ar leith ag caint lena chéile thar an gcainéal. I Liostáil 16-10 rinneamar roinnt modhnuithe a chruthóidh go bhfuil an cód i Liostáil 16-8 ag rith ag an am céanna: seolfaidh an snáithe sceite teachtaireachtaí iolracha anois agus sosfaidh sé ar feadh soicind idir gach teachtaireacht.</p>
+<Listing number="16-10" file-name="src/main.rs" caption="Sending multiple messages and pausing between each">
+<pre><code class="language-rust noplayground">use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {received}");
+    }
+}</code></pre>
+</Listing>
+<p>An uair seo, tá veicteoir teaghrán ag an snáithe sceite ar mhaith linn a sheoladh chuig an bpríomhshnáithe. Déanaimid athrá orthu, ag seoladh gach ceann ina aonar, agus sos a chur idir gach ceann trí ghlaoch ar an bhfeidhm <code>thread::sleep</code> le luach <code>Duration</code> de
+1 soicind.</p>
+<p>Sa phríomhshnáithe, nílimid ag glaoch ar an bhfeidhm <code>recv</code> go sainráite a thuilleadh:
+ina áit sin, táimid ag déileáil le <code>rx</code> mar athrá. Maidir le gach luach a fhaightear, táimid á
+phriontáil. Nuair a dhúnfar an cainéal, críochnóidh an athrá.</p>
+<p>Nuair a bhíonn an cód i Liosta 16-10 á rith, ba cheart duit an t-aschur seo a leanas a fheiceáil
+le sos 1 soicind idir gach líne:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">Got: hi
+Got: from
+Got: the
+Got: thread
+</code></pre>
+<p>Ós rud é nach bhfuil aon chód againn a chuireann sos nó moill ar an lúb <code>for</code> sa
+phríomhshnáithe, is féidir linn a rá go bhfuil an príomhshnáithe ag fanacht le luachanna a fháil ón
+snáithe a cruthaíodh.</p>
+<h3 id="il-tháirgeoirí-a-chruthú-tríd-an-tarchuradóir-a-chlónáil"><a class="header" href="#il-tháirgeoirí-a-chruthú-tríd-an-tarchuradóir-a-chlónáil">Il-Tháirgeoirí a Chruthú tríd an Tarchuradóir a Chlónáil</a></h3>
+<p>Níos luaithe luaigh muid gur acrainm é <code>mpsc</code> do <em>il-tháirgeoir,
+aon tomhaltóir</em>. Cuirimis <code>mpsc</code> in úsáid agus leathnaímis an cód i Liostáil 16-10
+chun il-shnáitheanna a chruthú a sheolann luachanna chuig an nglacadóir céanna. Is féidir linn é sin a dhéanamh
+trí an tarchuradóir a chlónáil, mar a thaispeántar i Liostáil 16-11:</p>
+<Listing number="16-11" file-name="src/main.rs" caption="Sending multiple messages from multiple producers">
+<pre><code class="language-rust noplayground"><span class="boring">use std::sync::mpsc;
+</span><span class="boring">use std::thread;
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    // --snip--
+
+    let (tx, rx) = mpsc::channel();
+
+    let tx1 = tx.clone();
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx1.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("more"),
+            String::from("messages"),
+            String::from("for"),
+            String::from("you"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {received}");
+    }
+
+    // --snip--
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>An uair seo, sula gcruthaímid an chéad snáithe sceite, glaoimid ar <code>clone</code> ar an
+tarchuradóir. Tabharfaidh sé seo tarchuradóir nua dúinn is féidir linn a chur ar aghaidh chuig an gcéad
+snáithe sceite. Cuirimid an tarchuradóir bunaidh ar aghaidh chuig an dara snáithe sceite.
+Tugann sé seo dhá shnáithe dúinn, agus gach ceann acu ag seoladh teachtaireachtaí difriúla chuig an nglacadóir amháin.</p>
+<p>Nuair a ritheann tú an cód, ba chóir go mbeadh cuma mar seo ar d’aschur:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">Got: hi
+Got: more
+Got: from
+Got: messages
+Got: for
+Got: the
+Got: thread
+Got: you
+</code></pre>
+<p>B’fhéidir go bhfeicfeá na luachanna in ord difriúil, ag brath ar do chóras. Seo é
+an rud a fhágann go bhfuil comhthráthacht suimiúil agus deacair araon. Má dhéanann tú turgnamh le
+<code>thread::sleep</code>, ag tabhairt luachanna éagsúla dó sna snáitheanna éagsúla, beidh gach rith
+níos neamhchinntitheach agus cruthófar aschur difriúil gach uair.</p>
+<p>Anois agus muid tar éis breathnú ar an gcaoi a n-oibríonn bealaí, féachaimis ar mhodh difriúil
+comthráthachta.</p>
 
                     </main>
 
