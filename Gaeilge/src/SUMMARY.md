@@ -107,7 +107,7 @@
   - [`RefCell<T>` agus an Patrún Inmheánach Mutability](ch15-05-interior-mutability.md)
   - [Is féidir le Timthriallta Tagartha Cuimhne a sceitheadh](ch15-06-reference-cycles.md)
 
-- [Coinneachar Eagla](ch16-00-concurrency.md)
+- [Comhthráthacht Gan Eagla](ch16-00-concurrency.md)
     - [Úsáid Snáitheanna chun Cód a Rith ag an am céanna](ch16-01-threads.md)
     - [Ag Bain úsáid as Teachtaireacht chun Sonraí a Aistriú Idir Snáitheanna](ch16-02-message-passing.md)
     - [Comhairgeadra Comh-Stáit](ch16-03-shared-state.md)

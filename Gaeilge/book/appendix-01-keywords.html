@@ -159,7 +159,108 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="a---keywords"><a class="header" href="#a---keywords">A - Keywords</a></h1>
+                        <h2 id="aguisín-a-eochairfhocail"><a class="header" href="#aguisín-a-eochairfhocail">Aguisín A: Eochairfhocail</a></h2>
+<p>Tá eochairfhocail sa liosta seo a leanas atá curtha in áirithe le haghaidh úsáide reatha nó úsáide amach anseo ag an teanga Rust. Dá bhrí sin, ní féidir iad a úsáid mar aitheantóirí (seachas
+mar aitheantóirí amha mar a phléifimid sa chuid “[Aitheantóirí Amha][aitheantóirí-amh]<!-- neamhaird a dhéanamh -->”). Is ainmneacha
+feidhmeanna, athróg, paraiméadair, réimsí struchtúr, modúl, cliathbhoscaí, tairiseacha,
+macra, luachanna statach, tréithe, cineálacha, tréithe, nó saolréanna iad aitheantóirí.</p>
+<h3 id="eochairfhocail-atá-in-Úsáid-faoi-láthair"><a class="header" href="#eochairfhocail-atá-in-Úsáid-faoi-láthair">Eochairfhocail atá in Úsáid faoi Láthair</a></h3>
+<p>Seo a leanas liosta d'eochairfhocail atá in úsáid faoi láthair, agus a bhfeidhmiúlacht
+cur síos orthu.</p>
+<ul>
+<li><code>as</code> - réitigh phrimitiúla a dhéanamh, an tréith shonrach ina bhfuil mír a dhí-athbhriú, nó míreanna a athainmniú i ráitis <code>use</code></li>
+<li><code>async</code> - <code>Future</code> a thabhairt ar ais in ionad an snáithe reatha a bhlocáil</li>
+<li><code>await</code> - forghníomhú a chur ar fionraí go dtí go mbeidh toradh <code>Future</code> réidh</li>
+<li><code>break</code> - lúb a scoir láithreach</li>
+<li><code>const</code> - míreanna tairiseacha nó pointeoirí amha tairiseacha a shainiú</li>
+<li><code>continue</code> - leanúint ar aghaidh go dtí an chéad athrá lúb eile</li>
+<li><code>crate</code> - i gcosán modúil, tagraíonn sé don fhréamh cliathbhosca</li>
+<li><code>dyn</code> - seolta dinimiciúil chuig réad tréithe</li>
+<li><code>else</code> - cúltaca do <code>if</code> agus <code>if let</code> tógálacha sreabhadh rialaithe</li>
+<li><code>enum</code> - áireamh a shainiú</li>
+<li><code>extern</code> - feidhm nó athróg sheachtrach a nascadh</li>
+<li><code>false</code> - Litriúil bréagach Booleanach</li>
+<li><code>fn</code> - feidhm nó an cineál pointeora feidhme a shainiú</li>
+<li><code>for</code> - lúb a chur thar mhíreanna ó athrá, tréith a chur i bhfeidhm, nó saolré níos airde a shonrú</li>
+<li><code>if</code> - brainse bunaithe ar toradh ar shliocht coinníollach</li>
+<li><code>impl</code> - feidhmiúlacht dhúchasach nó tréith a chur i bhfeidhm</li>
+<li><code>in</code> - cuid de chomhréir lúb <code>for</code></li>
+<li><code>let</code> - athróg a cheangal</li>
+<li><code>loop</code> - lúbadh gan choinníoll</li>
+<li><code>match</code> - luach a mheaitseáil le patrúin</li>
+<li><code>mod</code> - modúl a shainiú</li>
+<li><code>move</code> - dúnadh a dhéanamh chun úinéireacht a ghlacadh ar a ghabhálacha go léir</li>
+<li><code>mut</code> - inathraitheacht a léiriú i dtagairtí, pointeoirí amha, nó ceangail patrún</li>
+<li><code>pub</code> - infheictheacht phoiblí a léiriú i réimsí struchtúr, bloic <code>impl</code>, nó modúil</li>
+<li><code>ref</code> - ceangal trí thagairt</li>
+<li><code>return</code> - filleadh ó fheidhm</li>
+<li><code>Self</code> - leasainm cineáil don chineál atá á shainiú nó á chur i bhfeidhm againn</li>
+<li><code>self</code> - ábhar modha nó modúl reatha</li>
+<li><code>static</code> - athróg dhomhanda nó saolré a mhaireann ar feadh fhorghníomhú iomlán an chláir</li>
+<li><code>struct</code> - struchtúr a shainiú</li>
+<li><code>super</code> - modúl tuismitheora an mhodúil reatha</li>
+<li><code>trait</code> - tréith a shainiú</li>
+<li><code>true</code> - fíor-litriúil Booleanach</li>
+<li><code>type</code> - leasainm cineáil nó gaolmhar a shainiú cineál</li>
+<li><code>aontas</code> - sainmhínigh <a href="https://doc.rust-lang.org/stable/reference/items/unions.html">aontas</a><!-- neamhaird a dhéanamh -->; ní eochairfhocal é ach nuair a úsáidtear é i ndearbhú aontas</li>
+<li><code>neamhsábháilte</code> - cuir cód, feidhmeanna, tréithe nó cur i bhfeidhm neamhshábháilte in iúl</li>
+<li><code>úsáid</code> - tabhair siombailí isteach sa raon feidhme; sonraigh gabhálacha beachta le haghaidh teorainneacha cineálacha agus saoil</li>
+<li><code>cá háit</code> - cuir clásail in iúl a chuireann srian ar chineál</li>
+<li><code>cé go</code> - lúb bunaithe go coinníollach ar thoradh na habairte</li>
+</ul>
+<!--[union]: ../reference/items/unions.html --> 
+<h3 id="eochairfhocail-atá-curtha-in-áirithe-le-húsáid-sa-todhchaí"><a class="header" href="#eochairfhocail-atá-curtha-in-áirithe-le-húsáid-sa-todhchaí">Eochairfhocail atá curtha in áirithe le húsáid sa todhchaí</a></h3>
+<p>Níl aon fheidhmiúlacht ag na heochairfhocail seo a leanas go fóill ach tá siad curtha in áirithe ag
+Rust le húsáid amach anseo.</p>
+<ul>
+<li><code>abstract</code></li>
+<li><code>become</code></li>
+<li><code>box</code></li>
+<li><code>do</code></li>
+<li><code>final</code></li>
+<li><code>gen</code></li>
+<li><code>macro</code></li>
+<li><code>override</code></li>
+<li><code>priv</code></li>
+<li><code>try</code></li>
+<li><code>typeof</code></li>
+<li><code>unsized</code></li>
+<li><code>virtual</code></li>
+<li><code>yield</code></li>
+</ul>
+<h3 id="aitheantóirí-amha"><a class="header" href="#aitheantóirí-amha">Aitheantóirí Amha</a></h3>
+<p>Is iad <em>Raw Identifiers</em> an comhréir a ligeann duit eochairfhocail a úsáid i gcás nach mbeadh siad ceadaithe de ghnáth. Úsáideann tú aitheantóir amh trí réimír <code>r#</code> a chur le heochairfhocal.</p>
+<p>Mar shampla, is eochairfhocal é <code>match</code>. Má dhéanann tú iarracht an fheidhm seo a leanas a thiomsú
+a úsáideann <code>match</code> mar ainm:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">fn match(needle: &amp;str, haystack: &amp;str) -&gt; bool {
+    haystack.contains(needle)
+}</code></pre>
+<p>gheobhaidh tú an earráid seo:</p>
+<pre><code class="language-text">error: expected identifier, found keyword `match`
+ --&gt; src/main.rs:4:4
+  |
+4 | fn match(needle: &amp;str, haystack: &amp;str) -&gt; bool {
+  |    ^^^^^ expected identifier, found keyword
+</code></pre>
+<p>Léiríonn an earráid nach féidir leat an eochairfhocal <code>match</code> a úsáid mar aitheantóir feidhme. Chun <code>match</code> a úsáid mar ainm feidhme, ní mór duit comhréir amh an aitheantóra a úsáid, mar seo:</p>
+<p><span class="filename">Ainm comhaid: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn r#match(needle: &amp;str, haystack: &amp;str) -&gt; bool {
+    haystack.contains(needle)
+}
+
+fn main() {
+    assert!(r#match("foo", "foobar"));
+}</code></pre></pre>
+<p>Tiomsóidh an cód seo gan aon earráidí. Tabhair faoi deara an réimír <code>r#</code> ar ainm na feidhme ina sainmhíniú chomh maith leis an áit a nglaotar ar an bhfeidhm i <code>main</code>.</p>
+<p>Ligeann aitheantóirí amha duit aon fhocal a roghnaíonn tú a úsáid mar aitheantóir, fiú má
+thiteann an focal sin mar eochairfhocal forchoimeádta. Tugann sé seo níos mó saoirse dúinn ainmneacha aitheantóirí a roghnú, chomh maith le ligeann sé dúinn comhtháthú le cláir atá scríofa i
+dteanga nach eochairfhocail iad na focail seo. Ina theannta sin, ligeann aitheantóirí amha duit leabharlanna atá scríofa in eagrán Rust difriúil a úsáid ná mar a úsáideann do chliathán.
+Mar shampla, ní eochairfhocal é <code>try</code> san eagrán 2015 ach tá sé sna heagráin 2018, 2021,
+agus 2024. Má bhraitheann tú ar leabharlann atá scríofa ag baint úsáide as eagrán 2015
+agus a bhfuil feidhm <code>try</code> aici, beidh ort comhréir an aitheantóra amh,
+<code>r#try</code> sa chás seo, a úsáid chun an fheidhm sin a ghlaoch ó do chód eagrán 2018. Féach
+<a href="appendix-05-editions.html">Aguisín E</a><!-- neamhaird a dhéanamh --> le haghaidh tuilleadh eolais faoi eagráin.</p>
 
                     </main>
 
