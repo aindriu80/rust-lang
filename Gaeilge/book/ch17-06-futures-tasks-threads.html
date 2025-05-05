@@ -159,7 +159,170 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="futures-tasks-and-threads"><a class="header" href="#futures-tasks-and-threads">Futures, Tasks, and Threads</a></h1>
+                        <h2 id="ag-cur-gach-rud-le-chéile-todhchaí-tascanna-agus-snáitheanna"><a class="header" href="#ag-cur-gach-rud-le-chéile-todhchaí-tascanna-agus-snáitheanna">Ag Cur Gach Rud le Chéile: Todhchaí, Tascanna, agus Snáitheanna</a></h2>
+<p>Mar a chonaiceamar i <a href="http://localhost:3000/ch16-00-concurrency.html">Caibidil 16</a><!-- neamhaird -->, cuireann snáitheanna cur chuige amháin ar fáil maidir le
+comhthráthacht. Chonaiceamar cur chuige eile sa chaibidil seo: úsáid a bhaint as neamhshioncrónach le
+todhchaí agus sruthanna. Más mian leat a fháil amach cathain is ceart modh a roghnú thar an gceann eile,
+is é an freagra: braitheann sé! Agus i go leor cásanna, ní snáitheanna <em>nó</em> neamhshioncrónach an rogha ach snáitheanna <em>agus</em> neamhshioncrónach.</p>
+<p>Tá samhlacha comhthráthachta bunaithe ar shnáitheanna á soláthar ag go leor córas oibriúcháin le
+blianta fada anois, agus tacaíonn go leor teangacha ríomhchlárúcháin leo dá bharr. Mar sin féin,
+níl na samhlacha seo gan a gcomhbhabhtálacha. Ar go leor córas oibriúcháin,
+úsáideann siad go leor cuimhne do gach snáithe, agus tagann roinnt forchostais leo le haghaidh
+tosú agus múchadh. Ní rogha iad snáitheanna ach amháin nuair a thacaíonn do
+chóras oibriúcháin agus do chrua-earraí leo. Murab ionann agus ríomhairí deisce agus soghluaiste príomhshrutha, níl aon chóras oibriúcháin ag roinnt córas leabaithe ar chor ar bith, mar sin níl aon snáitheanna acu ach an oiread.</p>
+<p>Soláthraíonn an tsamhail asyncrónach sraith chomhbhabhtálacha dhifriúil - agus comhlántach sa deireadh. Sa tsamhail asyncrónach, ní theastaíonn a snáitheanna féin ó oibríochtaí comhthráthacha. Ina áit sin, is féidir leo rith ar thascanna, mar a d'úsáideamar <code>trpl::spawn_task</code> chun
+obair a thosú ó fheidhm shioncrónach sa chuid sruthanna. Tá tasc
+cosúil le snáithe, ach in ionad é a bhainistiú ag an gcóras oibriúcháin, déantar é a
+bhainistiú ag cód leibhéal na leabharlainne: an t-am rith.</p>
+<p>Sa chuid roimhe seo, chonaiceamar gur féidir linn sruth a thógáil trí chainéal asyncrónach
+a úsáid agus tasc asyncrónach a sceitheadh ​​​​a d'fhéadfaimis glaoch air ó chód sioncrónach. Is féidir linn
+an rud céanna a dhéanamh le snáithe. I Liostáil 17-40, d'úsáideamar
+<code>trpl::spawn_task</code> agus <code>trpl::sleep</code>. I Liosta 17-41, cuirimid na hAPIanna <code>thread::spawn</code> agus <code>thread::sleep</code> ón leabharlann chaighdeánach san fheidhm <code>get_intervals</code> ina n-áit.</p>
+<Listing number="17-41" caption="Using the `std::thread` APIs instead of the async `trpl` APIs for the `get_intervals` function" file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::{pin::pin, thread, time::Duration};
+</span><span class="boring">
+</span><span class="boring">use trpl::{ReceiverStream, Stream, StreamExt};
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span><span class="boring">        let messages = get_messages().timeout(Duration::from_millis(200));
+</span><span class="boring">        let intervals = get_intervals()
+</span><span class="boring">            .map(|count| format!("Interval #{count}"))
+</span><span class="boring">            .throttle(Duration::from_millis(500))
+</span><span class="boring">            .timeout(Duration::from_secs(10));
+</span><span class="boring">        let merged = messages.merge(intervals).take(20);
+</span><span class="boring">        let mut stream = pin!(merged);
+</span><span class="boring">
+</span><span class="boring">        while let Some(result) = stream.next().await {
+</span><span class="boring">            match result {
+</span><span class="boring">                Ok(item) =&gt; println!("{item}"),
+</span><span class="boring">                Err(reason) =&gt; eprintln!("Problem: {reason:?}"),
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    });
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn get_messages() -&gt; impl Stream&lt;Item = String&gt; {
+</span><span class="boring">    let (tx, rx) = trpl::channel();
+</span><span class="boring">
+</span><span class="boring">    trpl::spawn_task(async move {
+</span><span class="boring">        let messages = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"];
+</span><span class="boring">
+</span><span class="boring">        for (index, message) in messages.into_iter().enumerate() {
+</span><span class="boring">            let time_to_sleep = if index % 2 == 0 { 100 } else { 300 };
+</span><span class="boring">            trpl::sleep(Duration::from_millis(time_to_sleep)).await;
+</span><span class="boring">
+</span><span class="boring">            if let Err(send_error) = tx.send(format!("Message: '{message}'")) {
+</span><span class="boring">                eprintln!("Cannot send message '{message}': {send_error}");
+</span><span class="boring">                break;
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    ReceiverStream::new(rx)
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn get_intervals() -&gt; impl Stream&lt;Item = u32&gt; {
+    let (tx, rx) = trpl::channel();
+
+    // This is *not* `trpl::spawn` but `std::thread::spawn`!
+    thread::spawn(move || {
+        let mut count = 0;
+        loop {
+            // Likewise, this is *not* `trpl::sleep` but `std::thread::sleep`!
+            thread::sleep(Duration::from_millis(1));
+            count += 1;
+
+            if let Err(send_error) = tx.send(count) {
+                eprintln!("Could not send interval {count}: {send_error}");
+                break;
+            };
+        }
+    });
+
+    ReceiverStream::new(rx)
+}</code></pre></pre>
+</Listing>
+<p>Má ritheann tú an cód seo, tá an t-aschur mar an gcéanna le haschur Liosta 17-40. Agus
+tabhair faoi deara cé chomh beag is atá na hathruithe anseo ó pheirspictíocht an chóid ghlaoigh. Ina theannta sin, cé gur ghin ceann dár bhfeidhmeanna tasc neamhshioncrónach ar an am rith agus
+gur ghin an ceann eile snáithe OS, níor chuir na difríochtaí isteach ar na sruthanna a lean as.</p>
+<p>In ainneoin a gcosúlachtaí, iompraíonn an dá chur chuige seo go han-difriúil,
+cé go mb’fhéidir go mbeadh sé deacair orainn é a thomhas sa sampla an-simplí seo. D’fhéadfaimis
+na milliúin tascanna neamhshioncrónacha a ghiniúint ar aon ríomhaire pearsanta nua-aimseartha. Dá ndéanfaimis iarracht
+é sin a dhéanamh le snáitheanna, rithfeadh an chuimhne asainn go litriúil!</p>
+<p>Mar sin féin, tá cúis ann go bhfuil na APIanna seo chomh cosúil sin. Feidhmíonn snáitheanna mar theorainn
+do shraitheanna d’oibríochtaí sioncrónacha; is féidir comhthráthacht a bheith ann <em>idir</em> snáitheanna.
+Feidhmíonn tascanna mar theorainn do shraitheanna d’oibríochtaí <em>neamhshioncrónacha</em>; is féidir comhthráthacht a bheith ann
+idir_ agus <em>laistigh</em> de thascanna, toisc gur féidir le tasc aistriú idir
+todhchaí ina chorp. Ar deireadh, is iad todhchaíochtaí an t-aonad comhthráthachta is mine de chuid Rust, agus féadfaidh gach todhchaí crann de thodhchaí eile a léiriú. Bainistíonn an t-am rithe—go sonrach, a fhorghníomhaitheoir—tascanna, agus bainistíonn tascanna todhchaíochtaí. Sa chomhthéacs sin, tá tascanna cosúil le snáitheanna éadroma, bainistithe ag am rithe le
+cumas breise a thagann ó bheith á mbainistiú ag am rithe seachas ag an
+gcóras oibriúcháin.</p>
+<p>Ní chiallaíonn sé seo go bhfuil tascanna neamhshioncrónacha i gcónaí níos fearr ná snáitheanna (nó a mhalairt). Is samhail ríomhchlárúcháin níos simplí é comhthráthacht le snáitheanna ar bhealaí áirithe
+ná comhthráthacht le <code>async</code>. Is féidir gur neart nó laige é sin. Tá snáitheanna
+rud beag "tine agus dearmad"; níl aon choibhéis dhúchasach acu le todhchaí, mar sin ritheann siad go dtí go mbeidh siad críochnaithe gan cur isteach orthu ach amháin ag an
+gcóras oibriúcháin féin. Is é sin le rá, níl aon tacaíocht ionsuite acu do <em>comthráthacht intratask</em> ar an mbealach a dhéanann todhchaíochtaí. Níl aon mheicníochtaí ag snáitheanna i Rust le haghaidh
+cealaithe ach an oiread—ábhar nár phléamar go sonrach sa chaibidil seo ach a
+tugtar le fios leis an bhfíric gur glanadh a staid i gceart aon uair a chríochnaíomar todhchaí.</p>
+<p>Déanann na teorainneacha seo níos deacra snáitheanna a chumadh ná todhchaí freisin. Tá sé i bhfad
+níos deacra, mar shampla, snáitheanna a úsáid chun cúntóirí a thógáil ar nós na
+modhanna <code>timeout</code> agus <code>throttle</code> a thógamar níos luaithe sa chaibidil seo. Ciallaíonn an fhíric go bhfuil
+struchtúir sonraí níos saibhre i dtodhchaí gur féidir iad a chumadh le chéile níos
+nádúrtha, mar a chonaiceamar.</p>
+<p>Tugann tascanna, mar sin, <em>smacht</em> breise_ dúinn ar thodhchaí, rud a ligeann dúinn a roghnú
+cá háit agus conas iad a ghrúpáil. Agus is cosúil go n-oibríonn snáitheanna agus tascanna go minic
+go han-mhaith le chéile, toisc gur féidir tascanna (ar a laghad i roinnt amanna reatha) a bhogadh
+idir snáitheanna. Déanta na fírinne, faoin gcochall, tá an t-am reatha atá
+á úsáid againn—lena n-áirítear na feidhmeanna <code>spawn_blocking</code> agus <code>spawn_task</code>—ilshnáitheáilte
+de réir réamhshocraithe! Úsáideann go leor rith-amanna cur chuige ar a dtugtar <em>goid oibre</em> chun
+tascanna a bhogadh go trédhearcach idir snáitheanna, bunaithe ar an gcaoi a bhfuil na snáitheanna
+á n-úsáid faoi láthair, chun feidhmíocht fhoriomlán an chórais a fheabhsú. Éilíonn an
+cur chuige sin snáitheanna <em>agus</em> tascanna i ndáiríre, agus dá bhrí sin todhchaí.</p>
+<p>Nuair atá tú ag smaoineamh ar an modh le húsáid cathain, smaoinigh ar na rialacha seo:</p>
+<ul>
+<li>Más <em>an-chomhthreomhar</em> an obair, amhail próiseáil a dhéanamh ar ghrúpa sonraí ina bhféadfar gach cuid a phróiseáil ar leithligh, is rogha níos fearr iad snáitheanna.</li>
+<li>Más <em>an-chomhthráthach</em> an obair, amhail láimhseáil teachtaireachtaí ó ghrúpa foinsí éagsúla a d'fhéadfadh teacht isteach ag eatraimh éagsúla nó rátaí éagsúla,
+is rogha níos fearr é neamhshioncrónach.</li>
+</ul>
+<p>Agus má theastaíonn comhthreomharacht agus comhthráthacht uait, ní gá duit rogha a dhéanamh
+idir snáitheanna agus neamhshioncrónach. Is féidir leat iad a úsáid le chéile go saor, ag ligean do gach duine
+an ról is fearr a imirt. Mar shampla, taispeánann Liostáil 17-42 sampla sách coitianta
+den chineál seo meascáin i gcód Rust an tsaoil réadaigh.</p>
+<Listing number="17-42" caption="Sending messages with blocking code in a thread and awaiting the messages in an async block" file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // for mdbook test
+</span><span class="boring">
+</span>use std::{thread, time::Duration};
+
+fn main() {
+    let (tx, mut rx) = trpl::channel();
+
+    thread::spawn(move || {
+        for i in 1..11 {
+            tx.send(i).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    trpl::run(async {
+        while let Some(message) = rx.recv().await {
+            println!("{message}");
+        }
+    });
+}</code></pre></pre>
+</Listing>
+<p>Tosaímid trí chainéal neamhshioncrónach a chruthú, agus ansin sceithimid snáithe a ghlacann úinéireacht ar thaobh an tseoltóra den chainéal. Laistigh den snáithe, seolaimid na huimhreacha 1 go 10, ag codladh ar feadh soicind idir gach ceann. Ar deireadh, rithimid todhchaí a cruthaíodh le bloc neamhshioncrónach a ritheadh ​​chuig <code>trpl::run</code> díreach mar atá déanta againn ar fud na caibidle. Sa todhchaí sin, fanfaimid leis na teachtaireachtaí sin, díreach mar atá sna samplaí eile de sheoladh teachtaireachtaí a chonaiceamar.</p>
+<p>Chun filleadh ar an gcás a d’oscail muid an chaibidil leis, samhlaigh sraith tascanna ionchódaithe físe a rith ag baint úsáide as snáithe tiomnaithe (toisc go bhfuil ionchódú físe
+ceangailte le ríomhaireacht) ach ag cur in iúl don Chomhéadan Úsáideora go ndéantar na hoibríochtaí sin le cainéal neamhshioncrónach. Tá samplaí gan áireamh de na cineálacha teaglaim seo i gcásanna úsáide fíorshaoil.</p>
+<h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
+<p>Ní hé seo an uair dheireanach a fheicfidh tú comhthráthacht sa leabhar seo. Cuirfidh an tionscadal i
+<a href="ch21-00-final-project-a-web-server.html">Caibidil 21</a> na coincheapa seo i bhfeidhm i gcás níos réadúla
+ná na samplaí níos simplí a phléitear anseo agus déanfaidh sé comparáid níos dírí idir réiteach fadhbanna agus snáitheáil i gcoinne tascanna.</p>
+<p>Is cuma cén cur chuige seo a roghnaíonn tú, tugann Rust na huirlisí duit a theastaíonn uait chun cód sábháilte, tapa, comhuaineach a scríobh
+—bíodh sé le haghaidh freastalaí gréasáin ard-tréchur nó córas oibriúcháin leabaithe.</p>
+<p>Ansin, labhróimid faoi bhealaí idiomatacha chun fadhbanna a shamhaltú agus réitigh a struchtúrú
+de réir mar a fhásann do chláir Rust. Ina theannta sin, pléifimid conas a bhaineann idiomacha Rust
+leis na cinn a d'fhéadfá a bheith eolach orthu ó chláreagrú dírithe ar réada.</p>
 
                     </main>
 

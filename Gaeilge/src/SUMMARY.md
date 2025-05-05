@@ -113,7 +113,7 @@
     - [Comhairgeadra Comh-Stáit](ch16-03-shared-state.md)
     - [Comhairgeadra Leathnaithe leis na Tréithe `Sync` agus `Send`](ch16-04-extensible-concurrency-sync-and-send.md)
 
-- [Async agus Fan](ch17-00-async-await.md)
+- [Bunúsacha na Clársceidealaithe Asincrónaí: Asincrónach, Fanacht, Todhchaí, agus Sruthanna](ch17-00-async-await.md)
     - [Futures agus an Comhréir Async](ch17-01-futures-and-syntax.md)
     - [Comhairgeadra Le Async](ch17-02-concurrency-with-async.md)
     - [Ag Obair Le hAon Líon Todhchaíochtaí](ch17-03-more-futures.md)

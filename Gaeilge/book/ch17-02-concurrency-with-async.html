@@ -159,7 +159,469 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="concurrency-with-async"><a class="header" href="#concurrency-with-async">Concurrency With Async</a></h1>
+                        <h2 id="comhthráthacht-a-chur-i-bhfeidhm-le-has-shioncrónach"><a class="header" href="#comhthráthacht-a-chur-i-bhfeidhm-le-has-shioncrónach">Comhthráthacht a Chur i bhFeidhm le hAs-Shioncrónach</a></h2>
+<!-- Seancheannteidil. Ná bain iad nó d'fhéadfadh naisc briseadh. -->
+<p><a id="concurrency-with-async"></a></p>
+<p>Sa chuid seo, cuirfimid as-shioncrónach i bhfeidhm ar chuid de na dúshláin chomhthráthachta céanna
+a ndearnamar aghaidh orthu le snáitheanna i gcaibidil 16. Ós rud é gur labhair muid cheana féin faoi go leor de na
+príomhsmaointe ansin, díreoimid sa chuid seo ar an difríocht idir
+snáitheanna agus todhchaí.</p>
+<p>I go leor cásanna, tá na APIanna le haghaidh oibriú le comhthráthacht ag baint úsáide as as-shioncrónach an-
+chosúil leo siúd le haghaidh snáitheanna a úsáid. I gcásanna eile, bíonn siad sách
+difriúil. Fiú nuair a bhíonn cuma_chosúil_ ar na APIanna idir snáitheanna agus as-shioncrónach, is minic a bhíonn iompar difriúil acu - agus bíonn tréithe feidhmíochta éagsúla acu beagnach i gcónaí.</p>
+<!-- Seancheannteidil. Ná bain iad nó d'fhéadfadh naisc briseadh. -->
+<p><a id="counting"></a></p>
+<h3 id="tasc-nua-a-chruthú-le-spawn_task"><a class="header" href="#tasc-nua-a-chruthú-le-spawn_task">Tasc Nua a Chruthú le <code>spawn_task</code></a></h3>
+<p>Ba é an chéad oibríocht a ndearnamar i ngleic léi i <a href="ch16-01-threads.html#creating-a-new-thread-with-spawn">Snáithe Nua a Chruthú le
+Spawn</a><!-- ignore --> ná comhaireamh suas ar dhá shnáithe ar leith.
+Déanaimis an rud céanna ag baint úsáide as async. Soláthraíonn an cliath <code>trpl</code> feidhm <code>spawn_task</code>
+atá an-chosúil leis an API <code>thread::spawn</code>, agus feidhm <code>sleep</code>
+atá ina leagan async den API <code>thread::sleep</code>. Is féidir linn iad seo a úsáid le chéile
+chun an sampla comhairimh a chur i bhfeidhm, mar a thaispeántar i Liostáil 17-6.</p>
+<Listing number="17-6" caption="Creating a new task to print one thing while the main task prints something else" file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span>use std::time::Duration;
+
+fn main() {
+    trpl::run(async {
+        trpl::spawn_task(async {
+            for i in 1..10 {
+                println!("hi number {i} from the first task!");
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        });
+
+        for i in 1..5 {
+            println!("hi number {i} from the second task!");
+            trpl::sleep(Duration::from_millis(500)).await;
+        }
+    });
+}</code></pre></pre>
+</Listing>
+<p>Mar phointe tosaigh, shocraíomar ár bhfeidhm <code>main</code> le <code>trpl::run</code> ionas gur féidir lenár bhfeidhm barrleibhéil a bheith neamhshioncrónach.</p>
+<blockquote>
+<p>Nóta: Ón bpointe seo ar aghaidh sa chaibidil, beidh an cód fillte céanna seo san áireamh i ngach sampla le <code>trpl::run</code> i <code>main</code>, mar sin is minic a scipeálfaimid é
+díreach mar a dhéanaimid le <code>main</code>. Ná déan dearmad é a chur san áireamh i do chód!</p>
+</blockquote>
+<p>Ansin scríobhaimid dhá lúb laistigh den bhloc sin, agus glao <code>trpl::sleep</code> i ngach ceann acu,
+a fhanann leathshoicind (500 milleasoicind) sula seoltar an chéad
+teachtaireacht eile. Cuirimid lúb amháin i gcorp <code>trpl::spawn_task</code> agus an ceann eile i
+lúb <code>for</code> barrleibhéil. Cuirimid <code>await</code> leis freisin tar éis na nglaonna <code>sleep</code>.</p>
+<p>Iompraíonn an cód seo ar bhealach cosúil leis an gcur i bhfeidhm bunaithe ar shnáitheanna—lena n-áirítear an
+fíric go bhféadfadh tú na teachtaireachtaí a fheiceáil in ord difriúil i do
+chríochfort féin nuair a ritheann tú é:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">hi number 1 from the second task!
+hi number 1 from the first task!
+hi number 2 from the first task!
+hi number 2 from the second task!
+hi number 3 from the first task!
+hi number 3 from the second task!
+hi number 4 from the first task!
+hi number 4 from the second task!
+hi number 5 from the first task!
+</code></pre>
+<p>Stopann an leagan seo a luaithe a chríochnaíonn an lúb <code>for</code> i gcorp an phríomhbhloic async, toisc go ndúnfar an tasc a ghintear le <code>spawn_task</code> nuair a chríochnaíonn an fheidhm <code>main</code>. Más mian leat go rithfidh sé an bealach ar fad go dtí go mbeidh an tasc críochnaithe, beidh ort láimhseáil join a úsáid chun fanacht go gcríochnófar an chéad tasc. Le
+snáitheanna, d'úsáideamar an modh <code>join</code> chun "bac" a chur air go dtí go mbeadh an snáithe críochnaithe ag rith.
+I Liosta 17-7, is féidir linn <code>await</code> a úsáid chun an rud céanna a dhéanamh, toisc gur todhchaí é an láimhseáil tasc féin. Is <code>Result</code> a chineál <code>Output</code>, mar sin díphacáilimid é freisin
+tar éis fanacht leis.</p>
+<Listing number="17-7" caption="Using `await` with a join handle to run a task to completion" file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span>        let handle = trpl::spawn_task(async {
+            for i in 1..10 {
+                println!("hi number {i} from the first task!");
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        });
+
+        for i in 1..5 {
+            println!("hi number {i} from the second task!");
+            trpl::sleep(Duration::from_millis(500)).await;
+        }
+
+        handle.await.unwrap();
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Ritheann an leagan nuashonraithe seo go dtí go gcríochnaíonn <em>an dá</em> lúb.</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">hi number 1 from the second task!
+hi number 1 from the first task!
+hi number 2 from the first task!
+hi number 2 from the second task!
+hi number 3 from the first task!
+hi number 3 from the second task!
+hi number 4 from the first task!
+hi number 4 from the second task!
+hi number 5 from the first task!
+hi number 6 from the first task!
+hi number 7 from the first task!
+hi number 8 from the first task!
+hi number 9 from the first task!
+</code></pre>
+<p>Go dtí seo, is cosúil go dtugann async agus snáitheanna na torthaí bunúsacha céanna dúinn, ach le comhréir dhifriúil: ag baint úsáide as <code>await</code> in ionad glaoch ar <code>join</code> ar an láimhseáil join, agus ag fanacht leis na glaonna <code>sleep</code>.</p>
+<p>Is é an difríocht is mó ná nach raibh orainn snáithe córais oibriúcháin eile a chruthú chun seo a dhéanamh. Déanta na fírinne, ní gá dúinn fiú tasc a chruthú anseo. Toisc go
+mbíonn bloic async ag tiomsú chuig todhchaí gan ainm, is féidir linn gach lúb a chur i mbloc async agus an t-am rith a chur orthu araon go dtí go mbeidh siad críochnaithe ag baint úsáide as an bhfeidhm <code>trpl::join</code>.</p>
+<p>Sa chuid <a href="ch16-01-threads.html#waiting-for-all-threads-to-finish-using-join-handles">Ag fanacht le gach snáithe a chríochnú ag baint úsáide as Láimhseálacha <code>join</code></a><!-- ignore -->, thaispeánamar conas an modh <code>join</code> a úsáid ar an gcineál <code>JoinHandle</code> a fhilleann nuair a ghlaonn tú ar <code>std::thread::spawn</code>. Tá an fheidhm <code>trpl::join</code> cosúil, ach le haghaidh todhchaí. Nuair a thugann tú dhá thodhchaí dó,
+táirgeann sé todhchaí nua aonair a bhfuil a aschur ina tuple ina bhfuil aschur
+gach todhchaí a chuir tú isteach a luaithe a bheidh siad <em>an dá</em> gcríochnaithe. Dá bhrí sin, i Liosta 17-8,
+úsáidimid <code>trpl::join</code> chun fanacht go mbeidh <code>fut1</code> agus <code>fut2</code> críochnaithe. <em>Ní</em> fhanfaimid
+le <code>fut1</code> agus <code>fut2</code> ach ina ionad sin leis an todhchaí nua a tháirgeann <code>trpl::join</code>. Déanaimid neamhaird den
+aschur, mar níl ann ach tuple ina bhfuil dhá luach aonaid.</p>
+<Listing number="17-8" caption="Using `trpl::join` to await two anonymous futures" file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span>        let fut1 = async {
+            for i in 1..10 {
+                println!("hi number {i} from the first task!");
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let fut2 = async {
+            for i in 1..5 {
+                println!("hi number {i} from the second task!");
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        trpl::join(fut1, fut2).await;
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Nuair a ritheann muid é seo, feicimid an dá thodhchaí ag rith go dtí an críoch:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">hi number 1 from the first task!
+hi number 1 from the second task!
+hi number 2 from the first task!
+hi number 2 from the second task!
+hi number 3 from the first task!
+hi number 3 from the second task!
+hi number 4 from the first task!
+hi number 4 from the second task!
+hi number 5 from the first task!
+hi number 6 from the first task!
+hi number 7 from the first task!
+hi number 8 from the first task!
+hi number 9 from the first task!
+</code></pre>
+<p>Anois, feicfidh tú an t-ord céanna gach uair, rud atá an-difriúil ón méid a chonaiceamar le snáitheanna. Tá sé sin amhlaidh toisc go bhfuil an fheidhm <code>trpl::join</code> <em>fair</em>,
+rud a chiallaíonn go seiceálann sí gach todhchaí chomh minic céanna, ag malartú eatarthu, agus nach ligeann sí do cheann amháin dul chun tosaigh riamh má tá an ceann eile réidh. Le snáitheanna, cinneann an córas oibriúcháin cén snáithe atá le seiceáil agus cé chomh fada is ceart dó rith. Le async Rust, cinneann an
+am rith cén tasc atá le seiceáil. (Go praiticiúil, bíonn na sonraí casta
+toisc go bhféadfadh am rith async snáitheanna córais oibriúcháin a úsáid faoin gcochall mar
+chuid den chaoi a mbainistíonn sé comhthráthacht, mar sin is féidir go mbeadh níos mó oibre ann cothroime a ráthú
+do am rith - ach is féidir fós!) Ní gá d'amanna rith cothroime a ráthú
+d'aon oibríocht ar leith, agus is minic a thairgeann siad APIanna éagsúla chun ligean duit
+a roghnú cibé acu is mian leat cothroime nó nach ea.</p>
+<p>Bain triail as cuid de na hathruithe seo ar fanacht leis na todhchaí agus féach cad a dhéanann siad:</p>
+<ul>
+<li>Bain an bloc async as timpeall ar cheachtar lúb nó an dá cheann. - Fan le gach bloc neamhshioncrónach díreach tar éis é a shainiú.</li>
+<li>Fill an chéad lúb amháin i mbloc neamhshioncrónach, agus fan leis an todhchaí a eascraíonn as tar éis chorp an dara lúb.</li>
+</ul>
+<p>Mar dhúshlán breise, féach an féidir leat a dhéanamh amach cad a bheidh an t-aschur i
+ngach cás <em>sula</em> ritheann tú an cód!</p>
+<h3 id="ag-comhaireamh-suas-ar-dhá-thasc-ag-Úsáid-aistriú-teachtaireachtaí"><a class="header" href="#ag-comhaireamh-suas-ar-dhá-thasc-ag-Úsáid-aistriú-teachtaireachtaí">Ag Comhaireamh Suas ar Dhá Thasc ag Úsáid Aistriú Teachtaireachtaí</a></h3>
+<p>Beidh roinnt sonraí idir todhchaíochtaí eolach freisin: úsáidfimid teachtaireachtaí aistriú
+arís, ach an uair seo le leaganacha neamhshioncrónacha de na cineálacha agus na feidhmeanna. Glacfaimid
+cosán beagán difriúil ná mar a rinneamar i <a href="ch16-02-message-passing.html">Ag Úsáid Aistriú Teachtaireachtaí chun Sonraí a Aistriú
+Idir Snáitheanna</a><!-- neamhaird --> chun cuid de na
+príomhdhifríochtaí idir comhthráthacht bunaithe ar shnáitheanna agus todhchaíochtaí bunaithe a léiriú. I
+Liostú 17-9, tosóimid le bloc neamhshioncrónach amháin—<em>gan</em> tasc ar leithligh a chruthú mar a chruthaíomar snáithe ar leithligh.</p>
+<Listing number="17-9" caption="Creating an async channel and assigning the two halves to `tx` and `rx`" file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span>        let (tx, mut rx) = trpl::channel();
+
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+
+        let received = rx.recv().await.unwrap();
+        println!("Got: {received}");
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Anseo, úsáidimid <code>trpl::channel</code>, leagan neamhshioncrónach den API il-tháirgeora, aon-tomhaltóra a d'úsáideamar le snáitheanna siar i gCaibidil 16. Níl ach beagán difríochta idir an leagan neamhshioncrónach den API agus an leagan snáithe-bhunaithe: úsáideann sé <code>rx</code> glacadóir inathraithe seachas glacadóir dochloíte, agus cruthaíonn a mhodh <code>recv</code> todhchaí a gcaithfimid fanacht leis seachas an luach a tháirgeadh go díreach. Anois
+is féidir linn teachtaireachtaí a sheoladh ón seoltóir chuig an nglacadóir. Tabhair faoi deara nach gá dúinn
+snáithe ar leithligh nó fiú tasc a chruthú; níl le déanamh againn ach fanacht leis an nglao <code>rx.recv</code>.</p>
+<p>Blocálann an modh sioncrónach <code>Receiver::recv</code> i <code>std::mpsc::channel</code> go dtí
+go bhfaigheann sé teachtaireacht. Ní dhéanann an modh <code>trpl::Receiver::recv</code>, toisc go bhfuil sé neamhshioncrónach. In ionad blocáil, tugann sé an rialú ar ais don am rith go dtí go
+bhfaightear teachtaireacht nó go ndúnann taobh seolta an chainéil. I gcodarsnacht leis sin, ní fhanfaimid leis an nglao <code>send</code>, mar ní chuireann sé bac air. Ní gá dó, mar níl teorainn leis an gcainéal a bhfuilimid á sheoladh isteach ann.</p>
+<blockquote>
+<p>Nóta: Ós rud é go ritheann an cód async seo go léir i mbloc async i nglao <code>trpl::run</code>
+, is féidir le gach rud laistigh de bhlocáil a sheachaint. Mar sin féin, cuirfidh an cód <em>lasmuigh</em> de
+bac ar an bhfeidhm <code>run</code> atá ag filleadh. Sin pointe iomlán na feidhme
+<code>trpl::run</code>: ligeann sé duit <em>a roghnú</em> cá háit le blocáil ar shraith áirithe de chód async,
+agus dá bhrí sin cá háit le haistriú idir cód sioncrónaithe agus async. I bhformhór na rith-amanna async,
+tugtar <code>block_on</code> ar <code>run</code> ar an gcúis seo go díreach.</p>
+</blockquote>
+<p>Tabhair faoi deara dhá rud faoin sampla seo. Ar dtús, tiocfaidh an teachtaireacht láithreach.</p>
+<p>Ar an dara dul síos, cé go n-úsáidimid todhchaí anseo, níl aon chomhthráthacht ann fós. Tarlaíonn gach rud
+sa liostú in ord, díreach mar a dhéanfadh sé mura mbeadh aon todhchaí
+i gceist.</p>
+<p>Déanaimis aghaidh ar an gcéad chuid trí shraith teachtaireachtaí a sheoladh agus codladh eatarthu, mar a thaispeántar i Liostáil 17-10.</p>
+<!-- We cannot test this one because it never stops! -->
+<Listing number="17-10" caption="Sending and receiving multiple messages over the async channel and sleeping with an `await` between each message" file-name="src/main.rs">
+<pre><code class="language-rust ignore"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span>        let (tx, mut rx) = trpl::channel();
+
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("future"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            trpl::sleep(Duration::from_millis(500)).await;
+        }
+
+        while let Some(value) = rx.recv().await {
+            println!("received '{value}'");
+        }
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Chomh maith leis na teachtaireachtaí a sheoladh, ní mór dúinn iad a fháil. Sa chás seo,
+toisc go bhfuil a fhios againn cé mhéad teachtaireacht atá ag teacht isteach, d'fhéadfaimis é sin a dhéanamh de láimh trí
+ghlaoch ar <code>rx.recv().await</code> ceithre huaire. Sa saol réadúil, áfach, de ghnáth beidh muid ag fanacht ar líon <em>anaithnid</em> teachtaireachtaí, mar sin ní mór dúinn fanacht
+go dtí go gcinnfimid nach bhfuil a thuilleadh teachtaireachtaí ann.</p>
+<p>I Liosta 16-10, d'úsáideamar lúb <code>for</code> chun na míreanna go léir a fuarthas ó
+chainéal sioncrónach a phróiseáil. Níl bealach ag Rust fós chun lúb <code>for</code> a scríobh thar shraith
+<em>asinchrónach</em> míreanna, áfach, mar sin ní mór dúinn lúb nach bhfacamar roimhe seo a úsáid: an lúb coinníollach <code>while let</code>. Seo an leagan lúb den
+thógáil <code>if let</code> a chonaiceamar siar sa chuid <a href="ch06-03-if-let.html">Sreabhadh Rialaithe Gonta le <code>if let</code> agus <code>let else</code></a><!-- neamhaird a dhéanamh -->. Leanfaidh an lúb ag feidhmiú chomh fada agus a leanann an patrún a shonraítear de bheith ag teacht leis an luach.</p>
+<p>Ginfidh an glao <code>rx.recv</code> todhchaí, agus fanfaimid air. Cuirfidh an t-am rith sos ar an todhchaí go dtí go mbeidh sé réidh. Nuair a thiocfaidh teachtaireacht, réiteoidh an todhchaí go
+<code>Some(message)</code> an oiread uaireanta agus a thagann teachtaireacht. Nuair a dhúnann an cainéal,
+beag beann ar cibé an bhfuil <em>aon</em> teachtaireachtaí tagtha, réiteoidh an todhchaí go <code>None</code> ina ionad sin chun a léiriú nach bhfuil aon luachanna eile ann agus dá bhrí sin ba chóir dúinn
+stop a chur leis an vótaíocht—is é sin, stop a chur leis an bhfanacht.</p>
+<p>Tarraingíonn an lúb <code>while let</code> seo go léir le chéile. Más é <code>Some(message)</code> toradh an ghlao ar
+<code>rx.recv().await</code>, faighimid rochtain ar an teachtaireacht agus is féidir linn
+í a úsáid i gcorp an lúibe, díreach mar a d'fhéadfaimis le <code>if let</code>. Más é
+<code>None</code> an toradh, críochnaíonn an lúb. Gach uair a chríochnaíonn an lúb, buaileann sé an pointe fanachta
+arís, mar sin cuireann an t-am rith sos air arís go dtí go dtagann teachtaireacht eile.</p>
+<p>Seolann agus faigheann an cód na teachtaireachtaí go léir go rathúil anois. Ar an drochuair,
+tá cúpla fadhb ann fós. Ar an gcéad dul síos, ní thagann na teachtaireachtaí
+ag eatraimh leathshoicind. Tagann siad go léir ag an am céanna, 2 (2,000 milleasoicind) tar éis
+dúinn an clár a thosú. Ar an dara dul síos, ní scoireann an clár seo riamh! Ina áit sin,
+fanann sé go deo le haghaidh teachtaireachtaí nua. Beidh ort é a dhúnadh síos ag baint úsáide as <span
+class="keystroke">ctrl-c</span>.</p>
+<p>Tosaímis trí scrúdú a dhéanamh ar an gcúis a dtagann na teachtaireachtaí isteach go léir ag an am céanna tar éis an
+mhoill iomláin, seachas teacht isteach le moilleanna idir gach ceann. Laistigh de bhloc neamhshioncrónach ar leith,
+is é an t-ord ina bhfeictear eochairfhocail <code>await</code> sa chód an t-ord ina ndéantar iad a fhorghníomhú nuair a ritheann an clár.</p>
+<p>Níl ach bloc neamhshioncrónach amháin i Liosta 17-10, mar sin ritheann gach rud ann
+go líneach. Níl aon chomhthráthacht ann fós. Tarlaíonn na glaonna <code>tx.send</code> go léir,
+idircheangailte leis na glaonna <code>trpl::sleep</code> go léir agus a gcuid pointí await
+gaolmhara. Ansin amháin a théann an lúb <code>while let</code> trí aon cheann de na pointí <code>await</code>
+ar na glaonna <code>recv</code>.</p>
+<p>Chun an t-iompar atá uainn a fháil, áit a dtarlaíonn an mhoill codlata idir gach teachtaireacht,
+ní mór dúinn na hoibríochtaí <code>tx</code> agus <code>rx</code> a chur ina mbloic neamhshioncrónacha féin, mar a thaispeántar
+i Liosta 17-11. Ansin is féidir leis an rith-am gach ceann acu a fhorghníomhú ar leithligh ag baint úsáide as
+<code>trpl::join</code>, díreach mar atá sa sampla comhairimh. Arís eile, fanfaimid ar thoradh
+glaoch ar <code>trpl::join</code>, ní ar na todhchaí aonair. Dá bhfanfaimis ar na
+todhchaí aonair in ord, chríochnóimis ar ais i sreabhadh seicheamhach - díreach an rud atáimid ag iarraidh <em>gan</em> a dhéanamh.</p>
+<!-- We cannot test this one because it never stops! -->
+<Listing number="17-11" caption="Separating `send` and `recv` into their own `async` blocks and awaiting the futures for those blocks" file-name="src/main.rs">
+<pre><code class="language-rust ignore"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span><span class="boring">        let (tx, mut rx) = trpl::channel();
+</span><span class="boring">
+</span>        let tx_fut = async {
+            let vals = vec![
+                String::from("hi"),
+                String::from("from"),
+                String::from("the"),
+                String::from("future"),
+            ];
+
+            for val in vals {
+                tx.send(val).unwrap();
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let rx_fut = async {
+            while let Some(value) = rx.recv().await {
+                println!("received '{value}'");
+            }
+        };
+
+        trpl::join(tx_fut, rx_fut).await;
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Leis an gcód nuashonraithe i Liosta 17-11, priontáiltear na teachtaireachtaí ag eatraimh 500 milleasoicind, seachas iad go léir ar luas lasrach tar éis 2 shoicind.</p>
+<p>Ní scoireann an clár riamh, áfach, mar gheall ar an gcaoi a n-idirghníomhaíonn lúb <code>while let</code> le <code>trpl::join</code>:</p>
+<ul>
+<li>
+<p>Ní chríochnaíonn an todhchaí a fhilleann ó <code>trpl::join</code> ach amháin nuair a bhíonn <em>both</em> futures a tugadh dó críochnaithe.</p>
+</li>
+<li>
+<p>Críochnaíonn an todhchaí <code>tx</code> nuair a chríochnaíonn sé ina chodladh tar éis an teachtaireacht dheireanach a sheoladh i <code>vals</code>.</p>
+</li>
+<li>
+<p>Ní chríochnóidh an todhchaí <code>rx</code> go dtí go gcríochnóidh lúb <code>while let</code>.</p>
+</li>
+<li>
+<p>Ní chríochnóidh lúb <code>while let</code> go dtí go dtáirgtear <code>None</code> ag fanacht le <code>rx.recv</code>.</p>
+</li>
+<li>
+<p>Ní fhilleann fanacht le <code>rx.recv</code> <code>None</code> ach amháin nuair a bheidh ceann eile an chainéil dúnta.</p>
+</li>
+<li>
+<p>Ní dhúnfaidh an cainéal ach amháin má ghlaonn muid <code>rx.close</code> nó nuair a scaoiltear taobh an tseoltóra,
+<code>tx</code>.</p>
+</li>
+<li>
+<p>Ní ghlaonn muid ar <code>rx.close</code> áit ar bith, agus ní scaoilfear <code>tx</code> go dtí go mbeidh an bloc neamhshioncrónach is forimeallaí a chuirtear ar aghaidh chuig <code>trpl::run</code> críochnaithe.</p>
+</li>
+<li>
+<p>Ní féidir leis an mbloc críochnú mar go bhfuil sé blocáilte nuair a bheidh <code>trpl::join</code> críochnaithe, rud a thugann ar ais go barr an liosta seo sinn.</p>
+</li>
+</ul>
+<p>D’fhéadfaimis <code>rx</code> a dhúnadh de láimh trí ghlaoch ar <code>rx.close</code> áit éigin, ach níl mórán ciall leis sin. Dá stopfaí tar éis líon treallach teachtaireachtaí a láimhseáil,
+dhéanfadh sé sin an clár a dhúnadh síos, ach d’fhéadfaimis teachtaireachtaí a chailleadh. Teastaíonn bealach eile uainn
+chun a chinntiú go scaoilfear <code>tx</code> <em>roimh</em> dheireadh na feidhme.</p>
+<p>Faoi láthair, ní fhaigheann an bloc neamhshioncrónach ina seolaimid na teachtaireachtaí ach <code>tx</code> ar iasacht mar
+nach bhfuil úinéireacht ag teastáil chun teachtaireacht a sheoladh, ach dá bhféadfaimis <code>tx</code> a bhogadh isteach sa
+bhloc neamhshioncrónach sin, scaoilfí é nuair a bheidh an bloc sin críochnaithe. Sa chuid Caibidil 13
+<a href="ch13-01-closures.html#capturing-references-or-moving-ownership">Tagairtí a Ghabháil nó Úinéireacht a Bhogadh</a><!-- neamhaird a dhéanamh -->, d'fhoghlaim tú
+conas an eochairfhocal <code>move</code> a úsáid le dúnadh, agus, mar a pléadh sa
+chuid Caibidil 16 <a href="ch16-01-threads.html#using-move-closures-with-threads">Dúnadh <code>move</code> a Úsáid le Snáitheanna</a><!-- neamhaird a dhéanamh
+-->, is minic a bhíonn orainn sonraí a bhogadh isteach i ndúnadh agus muid ag obair le snáitheanna.</p>
+<p>Baineann an dinimic bhunúsach chéanna le bloic async, mar sin oibríonn an eochairfhocal <code>move</code> le
+bloic async díreach mar a dhéanann sé le dúnadh.</p>
+<p>I Liosta 17-12, athraímid an bloc a úsáidtear chun teachtaireachtaí a sheoladh ó <code>async</code> go
+<code>async move</code>. Nuair a ritheann muid an <em>leagan</em> seo den chód, múchtar é go galánta
+tar éis an teachtaireacht dheireanach a sheoladh agus a fháil.</p>
+<Listing number="17-12" caption="A  revision of the code from Listing 17-11 that correctly shuts down when complete" file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span>        let (tx, mut rx) = trpl::channel();
+
+        let tx_fut = async move {
+            let vals = vec![
+                String::from("hi"),
+                String::from("from"),
+                String::from("the"),
+                String::from("future"),
+            ];
+
+            for val in vals {
+                tx.send(val).unwrap();
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let rx_fut = async {
+            while let Some(value) = rx.recv().await {
+                println!("received '{value}'");
+            }
+        };
+
+        trpl::join(tx_fut, rx_fut).await;
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Is cainéal il-tháirgeoirí é an cainéal neamhshioncrónach seo freisin, mar sin is féidir linn glaoch ar <code>clone</code> ar <code>tx</code> más mian linn teachtaireachtaí a sheoladh ó thodhchaí iolracha, mar a thaispeántar i Liostáil 17-13.</p>
+<Listing number="17-13" caption="Using multiple producers with async blocks" file-name="src/main.rs">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span>        let (tx, mut rx) = trpl::channel();
+
+        let tx1 = tx.clone();
+        let tx1_fut = async move {
+            let vals = vec![
+                String::from("hi"),
+                String::from("from"),
+                String::from("the"),
+                String::from("future"),
+            ];
+
+            for val in vals {
+                tx1.send(val).unwrap();
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let rx_fut = async {
+            while let Some(value) = rx.recv().await {
+                println!("received '{value}'");
+            }
+        };
+
+        let tx_fut = async move {
+            let vals = vec![
+                String::from("more"),
+                String::from("messages"),
+                String::from("for"),
+                String::from("you"),
+            ];
+
+            for val in vals {
+                tx.send(val).unwrap();
+                trpl::sleep(Duration::from_millis(1500)).await;
+            }
+        };
+
+        trpl::join3(tx1_fut, tx_fut, rx_fut).await;
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Ar dtús, clónálaimid <code>tx</code>, ag cruthú <code>tx1</code> lasmuigh den chéad bhloc asyncrónach. Bogaimid <code>tx1</code> isteach sa bhloc sin díreach mar a rinneamar roimhe seo le <code>tx</code>. Ansin, níos déanaí, bogaimid an <code>tx</code> bunaidh isteach i mbloc asyncrónach <em>new</em>, áit a seolaimid níos mó teachtaireachtaí ar
+mhoill beagán níos moille. Tarlaíonn sé go gcuirimid an bloc asyncrónach nua seo i ndiaidh an bhloic asyncrónaigh
+chun teachtaireachtaí a fháil, ach d'fhéadfadh sé dul roimhe chomh maith céanna. Is é an eochair
+an t-ord ina bhfuiltear ag fanacht leis na todhchaí, ní an áit ina gcruthaítear iad.</p>
+<p>Ní mór don dá bhloc asyncrónach chun teachtaireachtaí a sheoladh a bheith ina mblocanna <code>bogadh async</code> ionas
+go gcaillfear <code>tx</code> agus <code>tx1</code> araon nuair a chríochnaíonn na bloic sin. Seachas sin, críochnóimid ar ais san lúb gan teorainn céanna inar thosaíomar. Ar deireadh, athraímid ó <code>trpl::join</code> go <code>trpl::join3</code> chun an todhchaí bhreise a láimhseáil.</p>
+<p>Anois feicimid na teachtaireachtaí go léir ó na todhchaí seolta araon, agus toisc go n-úsáideann na todhchaí seolta moilleanna beagán difriúla tar éis seolta, faightear na teachtaireachtaí ag na eatraimh éagsúla sin freisin.</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">received 'hi'
+received 'more'
+received 'from'
+received 'the'
+received 'messages'
+received 'future'
+received 'for'
+received 'you'
+</code></pre>
+<p>Is tús maith é seo, ach níl ann ach dornán todhchaí: dhá cheann le <code>join</code>, nó trí cinn le <code>join3</code>. Feicfimid conas a d'fhéadfaimis oibriú le níos mó todhchaí.</p>
 
                     </main>
 
