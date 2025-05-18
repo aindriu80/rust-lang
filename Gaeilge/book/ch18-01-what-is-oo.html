@@ -159,7 +159,129 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="characteristics-of-object-oriented-languages"><a class="header" href="#characteristics-of-object-oriented-languages">Characteristics of Object-Oriented Languages</a></h1>
+                        <h2 id="saintréithe-teangacha-dírithe-ar-réada"><a class="header" href="#saintréithe-teangacha-dírithe-ar-réada">Saintréithe Teangacha Dírithe ar Réada</a></h2>
+<p>Níl aon chomhthuiscint sa phobal ríomhchlárúcháin faoi na gnéithe a chaithfidh a bheith ag
+teanga le go measfaí gur teanga dhírithe ar réada í. Tá tionchar ag go leor
+paraidímí ríomhchlárúcháin ar meirg, lena n-áirítear OOP; mar shampla, rinneamar iniúchadh ar na gnéithe
+a tháinig ó ríomhchlárú feidhmiúil i gCaibidil 13. Is féidir a rá go bhfuil tréithe coitianta áirithe ag teangacha OOP, eadhon réada, ionchapslú, agus
+oidhreacht. Féachfaimid ar a bhfuil i gceist le gach ceann de na tréithe sin agus an
+tacaíonn
+Rust leis.</p>
+<h3 id="tá-sonraí-agus-iompar-i-réada"><a class="header" href="#tá-sonraí-agus-iompar-i-réada">Tá Sonraí agus Iompar i Réada</a></h3>
+<p>Is catalóg de phatrúin dearaidh dírithe ar réada é an leabhar <em>Design Patterns: Elements of Reusable Object-Oriented Software</em> le
+Erich Gamma, Richard Helm, Ralph Johnson, agus John Vlissides (Addison-Wesley
+Professional, 1994), ar a dtugtar <em>The Gang of Four</em> go comhráiteach. Sainmhíníonn sé OOP ar an mbealach seo:</p>
+<blockquote>
+<p>Tá cláir dhírithe ar réada déanta suas de réada. Pacálann <em>object</em> sonraí agus na nósanna imeachta a oibríonn ar na sonraí sin araon. De ghnáth, tugtar <em>methods</em> nó <em>operations</em> ar na nósanna imeachta.</p>
+</blockquote>
+<p>Ag baint úsáide as an sainmhíniú seo, tá Rust dírithe ar réada: bíonn sonraí ag struchtúir agus enums,
+agus soláthraíonn bloic <code>impl</code> modhanna ar struchtúir agus enums. Cé nach dtugtar <em>réada</em> ar struchtúir agus
+enums le modhanna, soláthraíonn siad an
+fheidhmiúlacht chéanna, de réir sainmhíniú Gang of Four ar réada.</p>
+<h3 id="capsúlú-a-cheileann-sonraí-cur-i-bhfeidhm"><a class="header" href="#capsúlú-a-cheileann-sonraí-cur-i-bhfeidhm">Capsúlú a Cheileann Sonraí Cur i bhFeidhm</a></h3>
+<p>Gné eile a bhaineann go coitianta le OOP ná an coincheap <em>capsúlú</em>,
+rud a chiallaíonn nach bhfuil sonraí cur i bhfeidhm réada inrochtana ag
+cód a úsáideann an réada sin. Dá bhrí sin, is é an t-aon bhealach chun idirghníomhú le réad ná
+trína API poiblí; níor cheart go mbeadh cód a úsáideann an réada in ann teacht isteach in
+inmheánaigh an réada agus sonraí nó iompar a athrú go díreach. Cuireann sé seo ar chumas an
+chláraitheora inmheánacha réada a athrú agus a athfhachtóireacht gan a bheith orthu
+an cód a úsáideann an réad a athrú.</p>
+<p>Phléamar conas an ionchapslú a rialú i gCaibidil 7: is féidir linn an eochairfhocal <code>pub</code> a úsáid chun a chinneadh cé na modúil, na cineálacha, na feidhmeanna agus na modhanna inár gcód
+ba chóir a bheith poiblí, agus de réir réamhshocraithe bíonn gach rud eile príobháideach. Mar shampla, is féidir linn
+struchtúr <code>AveragedCollection</code> a shainiú ina bhfuil réimse ina bhfuil veicteoir
+de luachanna <code>i32</code>. Is féidir leis an struchtúr réimse a bheith aige freisin ina bhfuil meán na
+luachanna sa veicteoir, rud a chiallaíonn nach gá an meán a ríomh
+ar éileamh aon uair a bhíonn sé de dhíth ar aon duine. I bhfocail eile, déanfaidh <code>AveragedCollection</code>
+an meán ríofa a thaisceadh dúinn. Tá sainmhíniú an
+struchtúir <code>AveragedCollection</code> i Liostáil 18-1:</p>
+<Listing number="18-1" file-name="src/lib.rs" caption="An `AveragedCollection` struct that maintains a list of integers and the average of the items in the collection">
+<pre><code class="language-rust noplayground">pub struct AveragedCollection {
+    list: Vec&lt;i32&gt;,
+    average: f64,
+}</code></pre>
+</Listing>
+<p>Tá an struchtúr marcáilte mar <code>pub</code> ionas gur féidir le cód eile é a úsáid, ach fanann na réimsí laistigh den struchtúr príobháideach. Tá sé seo tábhachtach sa chás seo mar ba mhaith linn a chinntiú go ndéantar an meán a nuashonrú freisin aon uair a chuirtear luach leis an liosta nó a bhaintear den liosta. Déanaimid é seo trí mhodhanna <code>add</code>, <code>remove</code>, agus <code>average</code> a chur i bhfeidhm ar an struchtúr, mar a thaispeántar i Liostáil 18-2:</p>
+<Listing number="18-2" file-name="src/lib.rs" caption="Implementations of the public methods `add`, `remove`, and `average` on `AveragedCollection`">
+<pre><code class="language-rust noplayground"><span class="boring">pub struct AveragedCollection {
+</span><span class="boring">    list: Vec&lt;i32&gt;,
+</span><span class="boring">    average: f64,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl AveragedCollection {
+    pub fn add(&amp;mut self, value: i32) {
+        self.list.push(value);
+        self.update_average();
+    }
+
+    pub fn remove(&amp;mut self) -&gt; Option&lt;i32&gt; {
+        let result = self.list.pop();
+        match result {
+            Some(value) =&gt; {
+                self.update_average();
+                Some(value)
+            }
+            None =&gt; None,
+        }
+    }
+
+    pub fn average(&amp;self) -&gt; f64 {
+        self.average
+    }
+
+    fn update_average(&amp;mut self) {
+        let total: i32 = self.list.iter().sum();
+        self.average = total as f64 / self.list.len() as f64;
+    }
+}</code></pre>
+</Listing>
+<p>Is iad na modhanna poiblí <code>add</code>, <code>remove</code>, agus <code>average</code> na bealaí amháin chun rochtain a fháil ar shonraí nó iad a mhodhnú i gcás de <code>AveragedCollection</code>. Nuair a chuirtear mír le <code>list</code> ag baint úsáide as an modh <code>add</code> nó a bhaintear í ag baint úsáide as an modh <code>remove</code>, glaonn cur i bhfeidhm gach ceann acu ar an modh príobháideach <code>update_average</code> a láimhseálann
+nuashonrú an réimse <code>average</code> chomh maith.</p>
+<p>Fágaimid na réimsí <code>list</code> agus <code>average</code> príobháideach ionas nach bhfuil aon bhealach ann do chód seachtrach míreanna a chur leis an réimse <code>list</code> nó a bhaint de go díreach; ar shlí eile, d'fhéadfadh an réimse <code>meán</code> a bheith as sioncrón nuair a athraíonn an <code>liosta</code>. Tugann an modh <code>meán</code> an luach ar ais sa réimse <code>meán</code>, rud a ligeann don chód seachtrach an <code>meán</code> a léamh ach gan é a mhodhnú.</p>
+<p>Toisc gur chuireamar sonraí cur i bhfeidhm an struchtúir <code>AveragedCollection</code> i bhfolach, is féidir linn gnéithe, amhail an struchtúr sonraí, a athrú go héasca sa todhchaí. Mar shampla, d'fhéadfaimis <code>HashSet&lt;i32&gt;</code> a úsáid in ionad
+<code>Vec&lt;i32&gt;</code> don réimse <code>liosta</code>. Chomh fada agus a fhanann sínithe na modhanna poiblí <code>add</code>,
+<code>remove</code>, agus <code>meán</code> mar a chéile, ní bheadh ​​​​gá le cód a úsáideann
+<code>AveragedCollection</code> a athrú chun é a thiomsú. Dá ndéanfaimis <code>list</code> a phoibliú ina ionad sin, ní bheadh ​​sé seo amhlaidh go riachtanach: tá modhanna difriúla ag <code>HashSet&lt;i32&gt;</code> agus <code>Vec&lt;i32&gt;</code> chun míreanna a chur leis agus a bhaint, mar sin is dócha go mbeadh ar an gcód seachtrach
+athrú dá mbeadh sé ag modhnú <code>list</code> go díreach.</p>
+<p>Más gné riachtanach é an t-ionchapslú chun go measfaí teanga a bheith
+dírithe ar réada, comhlíonann Rust an riachtanas sin. Cuireann an rogha <code>pub</code> nó
+gan a úsáid le haghaidh codanna éagsúla den chód ar chumas sonraí cur i bhfeidhm a ionchapslú.</p>
+<h3 id="oidhreacht-mar-chóras-cineál-agus-mar-chomhroinnt-cód"><a class="header" href="#oidhreacht-mar-chóras-cineál-agus-mar-chomhroinnt-cód">Oidhreacht mar Chóras Cineál agus mar Chomhroinnt Cód</a></h3>
+<p>Is meicníocht í <em>Oidhreacht</em> trína bhféadann réad eilimintí a oidhreacht ó
+shainmhíniú réada eile, agus ar an gcaoi sin sonraí agus iompar an réada tuismitheora a fháil
+gan ort iad a shainmhíniú arís.</p>
+<p>Mura gcaithfidh oidhreacht a bheith ag teanga le bheith ina teanga dhírithe ar réada, ansin
+ní teanga í Rust. Níl aon bhealach ann struchtúr a shainiú a oidhreachtaíonn réimsí agus cur i bhfeidhm modhanna an
+struchtúir tuismitheora gan macra a úsáid.</p>
+<p>Mar sin féin, má tá tú cleachtaithe le hoidhreacht a bheith i do bhosca uirlisí cláir, is féidir leat
+réitigh eile i Rust a úsáid, ag brath ar do chúis le teacht ar
+oidhreacht sa chéad áit.</p>
+<p>Roghnófá oidhreacht ar dhá phríomhchúis. Ceann amháin ná athúsáid cód:
+is féidir leat iompar ar leith a chur i bhfeidhm do chineál amháin, agus cuireann oidhreacht ar do chumas
+an cur i bhfeidhm sin a athúsáid do chineál difriúil. Is féidir leat é seo a dhéanamh ar bhealach teoranta i gcód Rust ag baint úsáide as cur i bhfeidhm modhanna tréithe réamhshocraithe, a chonaic tú i
+Liostáil 10-14 nuair a chuireamar cur i bhfeidhm réamhshocraithe den mhodh <code>summarize</code> leis an tréith <code>Summary</code>. Bheadh ​​an modh <code>summarize</code> ar fáil ar aon chineál a chuireann an tréith <code>Summary</code> i bhfeidhm gan aon chód breise. Tá sé seo
+cosúil le rang tuismitheora a bhfuil cur i bhfeidhm modha aige agus rang linbh oidhreachta a bhfuil cur i bhfeidhm an mhodha aige freisin. Is féidir linn
+cur i bhfeidhm réamhshocraithe an mhodha <code>summarize</code> a shárú freisin nuair a
+chuirimid an tréith <code>Summary</code> i bhfeidhm, atá cosúil le rang linbh a sháraíonn
+cur i bhfeidhm modha a oidhreachtaíodh ó rang tuismitheora.</p>
+<p>Baineann an chúis eile le hoidhreacht a úsáid leis an gcóras cineáil: chun
+cineál linbh a chumasú a úsáid sna háiteanna céanna leis an gcineál tuismitheora. Tugtar <em>polamorfacht</em> air seo freisin, rud a chiallaíonn gur féidir leat ilréad a chur in ionad
+a chéile ag am rith má roinneann siad tréithe áirithe.</p>
+<blockquote>
+<h3 id="polamorfacht"><a class="header" href="#polamorfacht">Polamorfacht</a></h3>
+<p>Do go leor daoine, is comhchiallach le hoidhreacht an focal polamorfacht. Ach is
+coincheap níos ginearálta é i ndáiríre a thagraíonn do chód ar féidir leis oibriú le sonraí
+de chineálacha éagsúla. Maidir le hoidhreacht, is fo-aicmí iad na cineálacha sin de ghnáth.</p>
+<p>Ina áit sin, úsáideann Rust cineálacha chun teibí a dhéanamh thar chineálacha éagsúla féideartha agus
+teorainneacha tréithe chun srianta a fhorchur ar a gcaithfidh na cineálacha sin a sholáthar. Tugtar <em>polamorfacht pharaiméadrach teoranta</em> air seo uaireanta.</p>
+</blockquote>
+<p>Tá oidhreacht imithe as fabhar le déanaí mar réiteach dearaidh ríomhchlárúcháin
+i go leor teangacha ríomhchlárúcháin toisc go mbíonn baol ann go minic go roinnfear níos mó cóid
+ná mar is gá. Níor cheart go roinnfeadh fo-aicmí tréithe uile a
+ranga tuismitheora i gcónaí ach déanfaidh siad amhlaidh le hoidhreacht. Is féidir leis seo dearadh cláir a dhéanamh
+níos lú solúbtha. Tugann sé seo isteach an fhéidearthacht freisin modhanna a ghlaoch ar
+fho-aicmí nach bhfuil ciall leo nó a chruthaíonn earráidí toisc nach mbaineann na modhanna
+leis an bhfo-aicme. Ina theannta sin, ní cheadóidh roinnt teangacha ach oidhreacht aonair (rud a chiallaíonn nach féidir le fo-aicme ach oidhreacht a fháil ó aon aicme amháin), rud a chuireann srian breise ar sholúbthacht dhearadh cláir.</p>
+<p>Ar na cúiseanna seo, glacann Rust cur chuige difriúil maidir le húsáid a bhaint as réada tréithe in ionad oidhreachta. Féachfaimid ar an gcaoi a gcuireann réada tréithe polamorfacht ar chumas i Rust.</p>
 
                     </main>
 

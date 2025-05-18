@@ -159,7 +159,275 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="using-trait-objects-that-allow-for-values-of-different-types"><a class="header" href="#using-trait-objects-that-allow-for-values-of-different-types">Using Trait Objects That Allow for Values of Different Types</a></h1>
+                        <h2 id="Úsáid-réada-tréithe-a-cheadaíonn-luachanna-de-chineálacha-Éagsúla"><a class="header" href="#Úsáid-réada-tréithe-a-cheadaíonn-luachanna-de-chineálacha-Éagsúla">Úsáid Réada Tréithe a Cheadaíonn Luachanna de Chineálacha Éagsúla</a></h2>
+<p>I gCaibidil 8, luaigh muid gur teorannú amháin a bhaineann le veicteoirí ná gur féidir leo
+eilimintí de chineál amháin a stóráil. Chruthaíomar réiteach sealadach i Liosta 8-9 inar
+shainíomar enum <code>SpreadsheetCell</code> a raibh malairtí ann chun slánuimhreacha, snámháin,
+agus téacs a shealbhú. Chiallaigh sé seo go bhféadfaimis cineálacha éagsúla sonraí a stóráil i ngach cill agus
+veicteoir a bheith againn fós a léirigh sraith cealla. Is réiteach breá maith é seo
+nuair is sraith sheasta cineálacha iad ár míreanna inmhalartaithe a bhfuil aithne againn orthu
+nuair a chuirtear ár gcód le chéile.</p>
+<p>Mar sin féin, uaireanta ba mhaith linn go mbeadh ár n-úsáideoir leabharlainne in ann an tsraith
+cineálacha atá bailí i gcás ar leith a leathnú. Chun a thaispeáint conas a d'fhéadfaimis é seo a bhaint amach,
+cruthaímid uirlis chomhéadain úsáideora grafach (GUI) samplach a dhéanann athrá
+trí liosta míreanna, ag glaoch modh <code>draw</code> ar gach ceann acu chun é a tharraingt chuig an
+scáileán - teicníc choitianta d'uirlisí GUI. Cruthóimid cliathbhosca leabharlainne ar a dtugtar
+<code>gui</code> ina bhfuil struchtúr leabharlainne GUI. D’fhéadfadh go mbeadh cineálacha áirithe sa chliathán seo le húsáid ag daoine, amhail ‘Cnaipe’ nó ‘RéimseText’. Ina theannta sin,
+beidh úsáideoirí ‘gui’ ag iarraidh a gcineálacha féin a chruthú ar féidir iad a tharraingt: mar
+shampla, d’fhéadfadh ríomhchláraitheoir amháin ‘Íomhá’ a chur leis agus d’fhéadfadh duine eile ‘BoscaRoghnaithe’ a chur leis.</p>
+<p>Ní chuirfimid leabharlann GUI lánfheidhmiúil i bhfeidhm don sampla seo ach taispeánfaimid
+conas a d’oirfeadh na píosaí le chéile. Tráth scríofa na leabharlainne, ní féidir linn
+na cineálacha go léir a d’fhéadfadh ríomhchláraitheoirí eile a chruthú a bheith ar eolas againn agus a shainiú. Ach tá a fhios againn
+go gcaithfidh ‘gui’ súil a choinneáil ar go leor luachanna de chineálacha éagsúla, agus go gcaithfidh sé modh ‘tarraingthe’ a ghlaoch ar gach ceann de na luachanna seo atá clóscríofa go difriúil. Ní gá dó a fhios a bheith aige go díreach cad a tharlóidh nuair a ghlaonn muid ar an modh ‘tarraingthe’,
+ach go mbeidh an modh sin ar fáil dúinn don luach le glaoch air.</p>
+<p>Chun seo a dhéanamh i dteanga le hoidhreacht, d’fhéadfaimis rang darb ainm
+‘Comhpháirt’ a shainiú a bhfuil modh darb ainm ‘tarraingthe’ air. Gheobhadh na ranganna eile, amhail
+<code>Button</code>, <code>Image</code>, agus <code>SelectBox</code>, oidhreacht ó <code>Component</code> agus dá bhrí sin
+oidhreacht an modh <code>draw</code>. D’fhéadfaidís gach ceann acu an modh <code>draw</code> a shárú chun a n-iompar saincheaptha a shainiú, ach d’fhéadfadh an creatlach na cineálacha go léir a láimhseáil amhail is dá mba chásanna <code>Component</code> iad agus glaoch ar <code>draw</code> orthu. Ach toisc nach bhfuil oidhreacht ag Rust, teastaíonn bealach eile uainn chun an leabharlann <code>gui</code> a struchtúrú chun
+ligean d’úsáideoirí í a leathnú le cineálacha nua.</p>
+<h3 id="tréith-a-shainiú-le-haghaidh-iompraíochta-coitianta"><a class="header" href="#tréith-a-shainiú-le-haghaidh-iompraíochta-coitianta">Tréith a Shainiú le haghaidh Iompraíochta Coitianta</a></h3>
+<p>Chun an t-iompar is mian linn a bheith ag <code>gui</code> a chur i bhfeidhm, sainmhínímid tréith darb ainm
+<code>Draw</code> a mbeidh modh amháin darb ainm <code>draw</code> aige. Ansin is féidir linn veicteoir a shainiú a
+ghlacann <em>trait object</em>. Díríonn réad tréithe ar chás de chineál
+a chuireann ár dtréith shonraithe i bhfeidhm agus tábla a úsáidtear chun modhanna tréithe a chuardach ar
+an gcineál sin ag am rite. Cruthaímid réad tréithe trí chineál éigin pointeora a shonrú, amhail tagairt <code>&amp;</code> nó pointeoir cliste <code>Box&lt;T&gt;</code>, ansin an eochairfhocal <code>dyn</code>, agus ansin an tréith ábhartha a shonrú. (Pléifimid faoin gcúis
+a gcaithfidh réada tréithe pointeoir a úsáid i gCaibidil 20 sa chuid [“Cineálacha Méide Dinimiciúla agus an Tréith ‘Méide’.”][dinimiciúil-mhéide]<!-- neamhaird a dhéanamh -->) Is féidir linn
+réada tréithe a úsáid in ionad cineáil ghinearálta nó coincréite. Pé áit a n-úsáidimid
+réad tréithe, cinnteoidh córas cineáil Rust ag am tiomsaithe go gcuirfidh aon luach
+a úsáidtear sa chomhthéacs sin tréith an réada tréithe i bhfeidhm. Dá bhrí sin, ní gá dúinn na cineálacha féideartha go léir a bheith ar eolas againn ag am tiomsaithe.</p>
+<p>Luaigh muid, i Rust, nach nglaoimid ar struchtúir agus ar enums
+“réada” chun iad a idirdhealú ó réada teangacha eile. I struchtúr nó
+enum, déantar na sonraí sna réimsí struchtúr agus an t-iompar i mbloic <code>impl</code> a
+scaradh, ach i dteangacha eile, is minic a lipéadaítear an sonraí agus an t-iompar a chuirtear le chéile i gcoincheap amháin mar réad. Mar sin féin, tá réada tréithe níos cosúla
+le réada i dteangacha eile sa mhéid is go gcomhcheanglaíonn siad sonraí agus iompar.
+Ach tá réada tréithe difriúil ó réada traidisiúnta sa mhéid is nach féidir linn sonraí a chur le
+réad tréithe. Níl réada tréithe chomh húsáideach le réada i dteangacha
+eile: is é a gcuspóir sonrach ná ligean do bhaint amach trasna
+iompar
+coitianta.</p>
+<p>Léiríonn Liostáil 18-3 conas tréith darb ainm <code>Draw</code> a shainiú le modh amháin darb ainm
+<code>draw</code>:</p>
+<Listing number="18-3" file-name="src/lib.rs" caption="Definition of the `Draw` trait">
+<pre><code class="language-rust noplayground">pub trait Draw {
+    fn draw(&amp;self);
+}</code></pre>
+</Listing>
+<p>Ba chóir go mbeadh an comhréir seo eolach ónár bplé ar conas tréithe a shainiú i gCaibidil 10. Ansin tagann roinnt comhréir nua: Sainmhíníonn Liostáil 18-4 struchtúr darb ainm <code>Screen</code> a bhfuil veicteoir darb ainm <code>components</code> ann. Is de chineál <code>Box&lt;dyn Draw&gt;</code> an ​​veicteoir seo, arb é réad tréithe é; is ionadaí é d'aon chineál laistigh de <code>Box</code> a chuireann an tréith <code>Draw</code> i bhfeidhm.</p>
+<Listing number="18-4" file-name="src/lib.rs" caption="Definition of the `Screen` struct with a `components` field holding a vector of trait objects that implement the `Draw` trait">
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Draw {
+</span><span class="boring">    fn draw(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct Screen {
+    pub components: Vec&lt;Box&lt;dyn Draw&gt;&gt;,
+}</code></pre>
+</Listing>
+<p>Ar an struchtúr <code>Screen</code>, sainmhínímid modh darb ainm <code>run</code> a ghlaofaidh ar an modh <code>draw</code> ar gach ceann dá <code>components</code>, mar a thaispeántar i Liostáil 18-5:</p>
+<Listing number="18-5" file-name="src/lib.rs" caption="A `run` method on `Screen` that calls the `draw` method on each component">
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Draw {
+</span><span class="boring">    fn draw(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Screen {
+</span><span class="boring">    pub components: Vec&lt;Box&lt;dyn Draw&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Screen {
+    pub fn run(&amp;self) {
+        for component in self.components.iter() {
+            component.draw();
+        }
+    }
+}</code></pre>
+</Listing>
+<p>Oibríonn sé seo ar bhealach difriúil ó struchtúr a shainiú a úsáideann paraiméadar cineál cineálach le teorainneacha tréithe. Ní féidir paraiméadar cineál cineálach a chur in ionad ach cineál coincréite amháin ag an am, ach ceadaíonn réada tréithe do chineálacha coincréite iolracha a líonadh isteach don réad tréithe ag am rite. Mar shampla, d'fhéadfaimis an struchtúr <code>Screen</code> a shainiú ag baint úsáide as cineál cineálach agus teorainn tréithe mar atá i Liostáil 18-6:</p>
+<Listing number="18-6" file-name="src/lib.rs" caption="An alternate implementation of the `Screen` struct and its `run` method using generics and trait bounds">
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Draw {
+</span><span class="boring">    fn draw(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct Screen&lt;T: Draw&gt; {
+    pub components: Vec&lt;T&gt;,
+}
+
+impl&lt;T&gt; Screen&lt;T&gt;
+where
+    T: Draw,
+{
+    pub fn run(&amp;self) {
+        for component in self.components.iter() {
+            component.draw();
+        }
+    }
+}</code></pre>
+</Listing>
+<p>Cuireann sé seo srian orainn go dtí sampla <code>Screen</code> ina bhfuil liosta comhpháirteanna den chineál <code>Button</code> nó den chineál <code>TextField</code>. Más rud é nach mbeidh ach bailiúcháin aonchineálacha agat, is fearr cineálacha agus teorainneacha tréithe a úsáid mar go ndéanfar na
+sainmhínithe a mhonamorfú ag am tiomsaithe chun na cineálacha coincréiteacha a úsáid.</p>
+<p>Ar an láimh eile, leis an modh a úsáideann réada tréithe, is féidir le sampla amháin <code>Screen</code> <code>Vec&lt;T&gt;</code> a shealbhú ina bhfuil <code>Box&lt;Button&gt;</code> chomh maith le
+<code>Box&lt;TextField&gt;</code>. Féachfaimid ar an gcaoi a n-oibríonn sé seo, agus ansin labhróimid faoi na
+impleachtaí feidhmíochta ag an am rith.</p>
+<h3 id="an-tréith-a-chur-i-bhfeidhm"><a class="header" href="#an-tréith-a-chur-i-bhfeidhm">An Tréith a Chur i bhFeidhm</a></h3>
+<p>Anois cuirfimid roinnt cineálacha leis a chuireann an tréith <code>Draw</code> i bhfeidhm. Soláthróimid an cineál
+<code>Button</code>. Arís, tá cur i bhfeidhm leabharlann GUI lasmuigh de raon feidhme
+an leabhair seo, mar sin ní bheidh aon chur i bhfeidhm úsáideach ag an modh <code>draw</code> ina
+chorp. Chun a shamhlú cén chuma a bheadh ​​ar an gcur i bhfeidhm, d'fhéadfadh réimsí le haghaidh <code>width</code>, <code>height</code>, agus <code>label</code> a bheith i struchtúr <code>Button</code>, mar a thaispeántar i Liostáil 18-7:</p>
+<Listing number="18-7" file-name="src/lib.rs" caption="A `Button` struct that implements the `Draw` trait">
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Draw {
+</span><span class="boring">    fn draw(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Screen {
+</span><span class="boring">    pub components: Vec&lt;Box&lt;dyn Draw&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Screen {
+</span><span class="boring">    pub fn run(&amp;self) {
+</span><span class="boring">        for component in self.components.iter() {
+</span><span class="boring">            component.draw();
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct Button {
+    pub width: u32,
+    pub height: u32,
+    pub label: String,
+}
+
+impl Draw for Button {
+    fn draw(&amp;self) {
+        // code to actually draw a button
+    }
+}</code></pre>
+</Listing>
+<p>Beidh na réimsí <code>width</code>, <code>height</code>, agus <code>label</code> ar <code>Button</code> difriúil ó na
+réimsí ar chomhpháirteanna eile; mar shampla, d'fhéadfadh na
+réimsí céanna sin móide réimse <code>placeholder</code> a bheith ag cineál <code>TextField</code>. Cuirfidh gach ceann de na cineálacha ar mhaith linn a tharraingt ar
+an scáileán an tréith <code>Draw</code> i bhfeidhm ach úsáidfidh siad cód difriúil sa
+mhodh <code>draw</code> chun a shainiú conas an cineál sin a tharraingt, mar atá ag <code>Button</code> anseo
+(gan an cód GUI iarbhír, mar a luadh). D'fhéadfadh bloc breise <code>impl</code> a bheith ag an gcineál <code>Button</code>, mar shampla, ina bhfuil modhanna a bhaineann leis an méid
+a tharlaíonn nuair a chliceálann úsáideoir an cnaipe. Ní bheidh feidhm ag na cineálacha modhanna seo maidir le
+cineálacha cosúil le <code>TextField</code>.</p>
+<p>Má chinneann duine atá ag baint úsáide as ár leabharlann struchtúr <code>SelectBox</code> a chur i bhfeidhm a bhfuil
+réimsí <code>width</code>, <code>height</code>, agus <code>options</code> ann, cuirfidh siad an tréith <code>Draw</code> i bhfeidhm ar an
+chineál
+<code>SelectBox</code> chomh maith, mar a thaispeántar i Liostáil 18-8:</p>
+<Listing number="18-8" file-name="src/main.rs" caption="Another crate using `gui` and implementing the `Draw` trait on a `SelectBox` struct">
+<pre><code class="language-rust ignore">use gui::Draw;
+
+struct SelectBox {
+    width: u32,
+    height: u32,
+    options: Vec&lt;String&gt;,
+}
+
+impl Draw for SelectBox {
+    fn draw(&amp;self) {
+        // code to actually draw a select box
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
+</Listing>
+<p>Is féidir le húsáideoir ár leabharlainne a bhfeidhm <code>main</code> a scríobh anois chun sampla <code>Screen</code> a chruthú. Leis an sampla <code>Screen</code>, is féidir leo <code>SelectBox</code> agus <code>Button</code> a chur leis trí gach ceann acu a chur i <code>Box&lt;T&gt;</code> chun réad tréithe a bheith ann. Ansin is féidir leo glaoch ar an modh <code>run</code> ar an sampla <code>Screen</code>, a ghlaoidh <code>draw</code> ar gach ceann de na comhpháirteanna. Taispeánann Liostáil 18-9 an cur i bhfeidhm seo:</p>
+<Listing number="18-9" file-name="src/main.rs" caption="Using trait objects to store values of different types that implement the same trait">
+<pre><code class="language-rust ignore"><span class="boring">use gui::Draw;
+</span><span class="boring">
+</span><span class="boring">struct SelectBox {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">    options: Vec&lt;String&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Draw for SelectBox {
+</span><span class="boring">    fn draw(&amp;self) {
+</span><span class="boring">        // code to actually draw a select box
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>use gui::{Button, Screen};
+
+fn main() {
+    let screen = Screen {
+        components: vec![
+            Box::new(SelectBox {
+                width: 75,
+                height: 10,
+                options: vec![
+                    String::from("Yes"),
+                    String::from("Maybe"),
+                    String::from("No"),
+                ],
+            }),
+            Box::new(Button {
+                width: 50,
+                height: 10,
+                label: String::from("OK"),
+            }),
+        ],
+    };
+
+    screen.run();
+}</code></pre>
+</Listing>
+<p>Nuair a scríobhamar an leabharlann, ní raibh a fhios againn go bhféadfadh duine éigin an cineál <code>SelectBox</code> a chur leis, ach bhí ár gcur i bhfeidhm <code>Screen</code> in ann oibriú ar an
+gcineál nua agus é a tharraingt toisc go gcuireann <code>SelectBox</code> an tréith <code>Draw</code> i bhfeidhm, rud a chiallaíonn go gcuireann sé an modh <code>draw</code> i bhfeidhm.</p>
+<p>Tá an coincheap seo - a bheith ag plé leis na teachtaireachtaí a bhfreagraíonn luach dóibh amháin - cosúil le cineál coincréiteach an luacha - cosúil le coincheap clóscríofa <em>duck</em> i dteangacha clóscríofa go dinimiciúil: má shiúlann sé cosúil le lacha agus má dhéanann sé gáire
+cosúil le lacha, ansin caithfidh sé a bheith ina lacha! I gcur i bhfeidhm <code>run</code> ar <code>Screen</code> i Liosta 18-5, ní gá do <code>run</code> a bheith ar an eolas faoi chineál coincréiteach gach
+comhpháirte. Ní dhéanann sé seiceáil an sampla de <code>Button</code>
+nó de <code>SelectBox</code> atá i gcomhpháirt, glaonn sé ar an modh <code>draw</code> ar an gcomhpháirt. Trí <code>Box&lt;dyn Draw&gt;</code> a shonrú mar chineál na luachanna sa veicteoir <code>components</code>, tá <code>Screen</code> sainmhínithe againn chun luachanna a theastaíonn uainn ar féidir linn an modh <code>draw</code> a ghlaoch orthu.</p>
+<p>Is é an buntáiste a bhaineann le húsáid réada tréithe agus córas cineáil Rust chun cód a scríobh
+cosúil le cód ag baint úsáide as clóscríobh lachan ná nach gá dúinn a sheiceáil riamh an gcuireann luach modh áirithe i bhfeidhm ag am rite ná a bheith buartha faoi earráidí a fháil
+mura gcuireann luach modh i bhfeidhm ach go nglaoimid air ar aon nós. Ní thiomsóidh Rust
+ár gcód mura gcuireann na luachanna na tréithe a theastaíonn ó na réada tréithe i bhfeidhm.</p>
+<p>Mar shampla, taispeánann Liostáil 18-10 cad a tharlaíonn má dhéanaimid iarracht <code>Screen</code> a chruthú
+le <code>String</code> mar chomhpháirt:</p>
+<Listing number="18-10" file-name="src/main.rs" caption="Attempting to use a type that doesn’t implement the trait object’s trait">
+<pre><code class="language-rust ignore does_not_compile">use gui::Screen;
+
+fn main() {
+    let screen = Screen {
+        components: vec![Box::new(String::from("Hi"))],
+    };
+
+    screen.run();
+}</code></pre>
+</Listing>
+<p>Gheobhaimid an earráid seo mar nach gcuireann <code>String</code> an tréith <code>Draw</code> i bhfeidhm:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling gui v0.1.0 (file:///projects/gui)
+error[E0277]: the trait bound `String: Draw` is not satisfied
+ --&gt; src/main.rs:5:26
+  |
+5 |         components: vec![Box::new(String::from("Hi"))],
+  |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Draw` is not implemented for `String`
+  |
+  = help: the trait `Draw` is implemented for `Button`
+  = note: required for the cast from `Box&lt;String&gt;` to `Box&lt;dyn Draw&gt;`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `gui` (bin "gui") due to 1 previous error
+</code></pre>
+<p>Cuireann an earráid seo in iúl dúinn go bhfuil rud éigin á chur ar aghaidh againn chuig <code>Screen</code> nach raibh sé i gceist againn a chur ar aghaidh agus mar sin ba chóir dúinn cineál difriúil a chur ar aghaidh nó ba chóir dúinn <code>Draw</code> a chur i bhfeidhm ar <code>String</code> ionas go mbeidh <code>Screen</code> in ann glaoch ar <code>draw</code> air.</p>
+<h3 id="trait-objects-perform-dynamic-dispatch"><a class="header" href="#trait-objects-perform-dynamic-dispatch">Trait Objects Perform Dynamic Dispatch</a></h3>
+<p>Meabhraigh sa chuid <a href="ch10-01-syntax.html#performance-of-code-using-generics">“Performance of Code Using
+Generics”</a><!-- ignore --> i gCaibidil
+10 ár bplé ar an bpróiseas monamórfúcháin a dhéantar ar ghinearálacha ag an
+comhdaitheoir: gineann an comhdaitheoir cur i bhfeidhm neamhghinearálacha feidhmeanna agus
+modhanna do gach cineál coincréite a úsáidimid in ionad paraiméadar cineáil ghinearálta.
+Tá an cód a eascraíonn as monamórfúchán ag déanamh <em>static dispatch</em>, is é sin
+nuair a bhíonn a fhios ag an comhdaitheoir cén modh atá á ghlaoch agat ag am an chomdaithe. Tá sé seo
+i gcodarsnacht le <em>dynamic dispatch</em>, is é sin nuair nach féidir leis an comhdaitheoir a rá ag am an chomdaithe
+cé acu modh atá á ghlaoch agat. I gcásanna seolta dinimiciúla, astaíonn an tiomsaitheoir
+cód a chinnfidh ag am rith cén modh atá le glaoch.</p>
+<p>Nuair a úsáidimid réada tréithe, ní mór do Rust seolta dinimiciúil a úsáid. Níl a fhios ag an tiomsaitheoir
+na cineálacha go léir a d'fhéadfaí a úsáid leis an gcód atá ag úsáid réada tréithe,
+mar sin níl a fhios aige cén modh atá curtha i bhfeidhm ar cén cineál atá le glaoch. Ina áit sin, ag
+am rith, úsáideann Rust na pointeoirí taobh istigh den réad tréithe chun a fháil amach cén modh atá le
+ghlao. Tabhaíonn an cuardach seo costas rith-ama nach dtarlaíonn le seolta
+statach. Cuireann seolta dinimiciúil cosc ​​​​ar an tiomsaitheoir freisin cód modh a ionchló, rud a chuireann cosc ​​​​ar roinnt optamuithe, agus tá roinnt rialacha ag Rust faoi cá háit ar féidir agus nach féidir leat seolta dinimiciúil a úsáid, ar a dtugtar <a href="https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility"><em>dyn compatibility</em></a>. Mar sin féin, fuair muid solúbthacht bhreise sa chód
+a scríobhamar i Liostáil 18-5 agus a raibh muid in ann tacú leis i Liostáil 18-9, mar sin is
+trábhlóid le breithniú é.</p>
 
                     </main>
 

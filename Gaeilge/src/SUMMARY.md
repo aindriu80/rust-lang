@@ -121,7 +121,7 @@
     - [Tochailt ar na Tréithe le haghaidh Async](ch17-05-traits-for-async.md)
     - [Todhchaí, Tascanna, agus Snáitheanna](ch17-06-futures-tasks-threads.md)
 
-- [Gnéithe Ríomhchláraithe atá Dírithe ar Réada de Mheirge](ch18-00-oop.md)
+- [Gnéithe Ríomhchláraithe atá Dírithe ar Réada de Rust](ch18-00-oop.md)
     - [Saintréithe na dTeangacha atá Dírithe ar Oibiachtaí](ch18-01-what-is-oo.md)
     - [Ag Úsáid Cuspóirí Tréith a Ligeann Luachanna de Chineálacha Éagsúla](ch18-02-trait-objects.md)
     - [Patrún Dearaidh atá Dírithe ar Oibiachtaí a Chur i bhFeidhm](ch18-03-oo-design-patterns.md)

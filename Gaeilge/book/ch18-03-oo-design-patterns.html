@@ -159,7 +159,725 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="implementing-an-object-oriented-design-pattern"><a class="header" href="#implementing-an-object-oriented-design-pattern">Implementing an Object-Oriented Design Pattern</a></h1>
+                        <h2 id="patrún-dearaidh-dírithe-ar-réada-a-chur-i-bhfeidhm"><a class="header" href="#patrún-dearaidh-dírithe-ar-réada-a-chur-i-bhfeidhm">Patrún Dearaidh Dírithe ar Réada a Chur i bhFeidhm</a></h2>
+<p>Is patrún dearaidh dírithe ar réada é an <em>patrún stáit</em>. Is é croílár an
+phatrúin ná go sainmhínímid sraith stát a d'fhéadfadh a bheith ag luach go hinmheánach. Léirítear na
+stáit le sraith de <em>réada stáit</em>, agus athraíonn iompar an luacha
+bunaithe ar a staid. Oibreoimid trí shampla de struchtúr
+post bhlag a bhfuil réimse ann chun a staid a choinneáil, a bheidh ina réad stáit
+ón tsraith "dréacht", "athbhreithniú", nó "foilsithe".</p>
+<p>Roinneann na réada stáit feidhmiúlacht: i Rust, ar ndóigh, úsáidimid struchtúir agus
+tréithe seachas réada agus oidhreacht. Tá gach réad stáit freagrach
+as a iompar féin agus as rialú cathain ba chóir dó athrú go stát
+eile. Níl a fhios ag an luach a shealbhaíonn réad stáit aon rud faoi iompar difriúil na stát ná cathain is ceart aistriú idir stáit.</p>
+<p>Is é an buntáiste a bhaineann le patrún an stáit a úsáid ná, nuair a athraíonn
+riachtanais ghnó an chláir, nach mbeidh orainn cód an
+luacha ina bhfuil an stát ná an cód a úsáideann an luach a athrú. Ní bheidh orainn ach an cód a nuashonrú taobh istigh de cheann de na réada stáit chun a rialacha a athrú nó b'fhéidir
+níos mó réada stáit a chur leis.</p>
+<p>Ar dtús, cuirfimid patrún an stáit i bhfeidhm ar bhealach níos traidisiúnta
+atá dírithe ar réada, ansin úsáidfimid cur chuige atá beagán níos nádúrtha i
+Rust. Déanaimis iniúchadh ar shreabhadh oibre post blag a chur i bhfeidhm de réir a chéile ag baint úsáide as an
+patrún stáit.</p>
+<p>Beidh an fheidhmiúlacht dheireanach mar seo a leanas:</p>
+<ol>
+<li>Tosaíonn post blag mar dhréacht folamh.</li>
+<li>Nuair a bheidh an dréacht déanta, iarrtar athbhreithniú ar an bpost.</li>
+<li>Nuair a cheadaítear an post, foilsítear é.</li>
+<li>Ní thugann ach poist bhlag foilsithe ábhar ar ais le priontáil, mar sin ní féidir poist neamhcheadaithe a fhoilsiú de thaisme.</li>
+</ol>
+<p>Níor cheart go mbeadh aon éifeacht ag aon athruithe eile a dhéantar ar phost. Mar shampla, má dhéanaimid iarracht dréachtphost blag a cheadú sula n-iarraimid athbhreithniú, ba chóir go bhfanfadh an post ina dhréacht neamhfhoilsithe.</p>
+<p>Léiríonn Liostáil 18-11 an sreabhadh oibre seo i bhfoirm cóid: seo sampla úsáide den
+API a chuirfimid i bhfeidhm i gcliathbhosca leabharlainne darb ainm <code>blog</code>. Ní thiomsófar é seo fós
+toisc nach bhfuil an cliathbhosca <code>blog</code> curtha i bhfeidhm againn.</p>
+<Listing number="18-11" file-name="src/main.rs" caption="Code that demonstrates the desired behavior we want our `blog` crate to have">
+<pre><code class="language-rust ignore does_not_compile">use blog::Post;
+
+fn main() {
+    let mut post = Post::new();
+
+    post.add_text("I ate a salad for lunch today");
+    assert_eq!("", post.content());
+
+    post.request_review();
+    assert_eq!("", post.content());
+
+    post.approve();
+    assert_eq!("I ate a salad for lunch today", post.content());
+}</code></pre>
+</Listing>
+<p>Ba mhaith linn ligean don úsáideoir dréachtphost nua blag a chruthú le <code>Post::new</code>. Ba mhaith linn ligean do théacs a chur leis an bpost blag. Má dhéanaimid iarracht ábhar an phoist a fháil láithreach, roimh cheadú, níor cheart dúinn aon téacs a fháil mar go bhfuil an post fós ina dhréacht. Chuireamar <code>assert_eq!</code> leis an gcód chun críocha taispeána. Bheadh ​​tástáil aonaid den scoth chuige seo ná a dhearbhú go dtugann dréachtphost blag teaghrán folamh ar ais ón modh <code>content</code>, ach nílimid chun tástálacha a scríobh don sampla seo.</p>
+<p>Ansin, ba mhaith linn iarratas ar athbhreithniú ar an bpost a chumasú, agus ba mhaith linn go dtabharfadh <code>content</code> teaghrán folamh ar ais agus muid ag fanacht leis an athbhreithniú. Nuair a fhaigheann an post ceadú, ba chóir é a fhoilsiú, rud a chiallaíonn go dtabharfar téacs an phoist ar ais nuair a ghlaoitear ar <code>content</code>.</p>
+<p>Tabhair faoi deara gurb é an t-aon chineál a bhfuilimid ag idirghníomhú leis ón gcliathbhosca ná an cineál <code>Post</code>. Úsáidfidh an cineál seo an patrún stáit agus coinneoidh sé luach a bheidh ar cheann de thrí réad stáit a léiríonn na stáit éagsúla a d'fhéadfadh post a bheith
+i ndréacht, ag fanacht le hathbhreithniú, nó foilsithe. Déanfar athrú ó stát amháin go stát eile
+a bhainistiú go hinmheánach laistigh den chineál <code>Post</code>. Athraíonn na stáit mar
+fhreagra ar na modhanna a ghlaonn úsáideoirí ár leabharlainne ar an gcás <code>Post</code>,
+ach ní gá dóibh na hathruithe stáit a bhainistiú go díreach. Chomh maith leis sin, ní féidir le húsáideoirí
+botún a dhéanamh leis na stáit, mar shampla post a fhoilsiú sula ndéantar athbhreithniú air.</p>
+<h3 id="sainmhíniú-post-agus-cás-nua-a-chruthú-sa-stádas-dréachta"><a class="header" href="#sainmhíniú-post-agus-cás-nua-a-chruthú-sa-stádas-dréachta">Sainmhíniú <code>Post</code> agus Cás Nua a Chruthú sa Stádas Dréachta</a></h3>
+<p>Tosaímis ar chur i bhfeidhm na leabharlainne! Tá a fhios againn go bhfuil
+struchtúr <code>Post</code> poiblí de dhíth orainn a bhfuil roinnt ábhair ann, mar sin tosóimid leis an
+sainmhíniú ar an struchtúr agus feidhm phoiblí <code>nua</code> ghaolmhar chun cás de <code>Post</code> a chruthú, mar a thaispeántar i Liostáil 18-12. Déanfaimid tréith phríobháideach <code>State</code> freisin a shaineoidh an t-iompar a chaithfidh gach réad stáit le haghaidh <code>Post</code> a bheith aige.</p>
+<p>Ansin coinneoidh <code>Post</code> réad tréithe de <code>Box&lt;dyn State&gt;</code> taobh istigh de <code>Option&lt;T&gt;</code> i réimse príobháideach darb ainm <code>state</code> chun an réad stáit a choinneáil. Feicfidh tú cén fáth go bhfuil an
+<code>Option&lt;T&gt;</code> riachtanach i gceann tamaill.</p>
+<Listing number="18-12" file-name="src/lib.rs" caption="Definition of a `Post` struct and a `new` function that creates a new `Post` instance, a `State` trait, and a `Draft` struct">
+<pre><code class="language-rust noplayground">pub struct Post {
+    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+    content: String,
+}
+
+impl Post {
+    pub fn new() -&gt; Post {
+        Post {
+            state: Some(Box::new(Draft {})),
+            content: String::new(),
+        }
+    }
+}
+
+trait State {}
+
+struct Draft {}
+
+impl State for Draft {}</code></pre>
+</Listing>
+<p>Sainmhíníonn an tréith <code>State</code> an t-iompar a roinneann stáit éagsúla poist. Is iad na réada stáit <code>Draft</code>, <code>PendingReview</code>, agus <code>Published</code>, agus cuirfidh siad go léir an tréith <code>State</code> i bhfeidhm. Faoi láthair, níl aon mhodhanna ag an tréith, agus
+tosaímid tríd an stát <code>Draft</code> amháin a shainiú mar is é sin an stát inar mian linn
+go dtosódh post.</p>
+<p>Nuair a chruthaímid <code>Post</code> nua, socraímid a réimse <code>state</code> go luach <code>Some</code> a
+shealbhaíonn <code>Box</code>. Pointíonn an <code>Box</code> seo chuig sampla nua den struchtúr <code>Draft</code>.
+Cinntíonn sé seo aon uair a chruthaímid sampla nua de <code>Post</code>, go dtosóidh sé mar
+dhréacht. Toisc go bhfuil réimse <code>state</code> an <code>Post</code> príobháideach, níl aon bhealach ann
+<code>Post</code> a chruthú in aon stát eile! Sa fheidhm <code>Post::new</code>, socraímid an réimse
+<code>content</code> go <code>String</code> nua, folamh.</p>
+<h3 id="stóráil-téacs-Ábhar-an-phoist"><a class="header" href="#stóráil-téacs-Ábhar-an-phoist">Stóráil Téacs Ábhar an Phoist</a></h3>
+<p>Chonaiceamar i Liostáil 18-11 gur mhaith linn a bheith in ann glaoch ar mhodh darb ainm <code>add_text</code> agus <code>&amp;str</code> a chur air a chuirtear leis ansin mar ábhar téacs an
+phoist bhlag. Cuirimid é seo i bhfeidhm mar mhodh, seachas an réimse <code>content</code> a nochtadh mar <code>pub</code>, ionas gur féidir linn modh a chur i bhfeidhm níos déanaí a rialóidh conas a
+léitear sonraí an réimse <code>content</code>. Tá an modh <code>add_text</code> sách
+simplí, mar sin cuirimis an cur i bhfeidhm i Liostáil 18-13 leis an mbloc <code>impl Post</code>:</p>
+<Listing number="18-13" file-name="src/lib.rs" caption="Implementing the `add_text` method to add text to a post’s `content`">
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn add_text(&amp;mut self, text: &amp;str) {
+        self.content.push_str(text);
+    }
+}
+<span class="boring">
+</span><span class="boring">trait State {}
+</span><span class="boring">
+</span><span class="boring">struct Draft {}
+</span><span class="boring">
+</span><span class="boring">impl State for Draft {}</span></code></pre>
+</Listing>
+<p>Glacann an modh <code>add_text</code> tagairt inathraithe do <code>self</code>, mar go bhfuilimid ag athrú an tsampla <code>Post</code> a bhfuilimid ag glaoch <code>add_text</code> air. Ansin glaoimid <code>push_str</code> ar an <code>String</code> i <code>content</code> agus cuirimid an argóint <code>text</code> ar aghaidh chun é a chur leis
+an <code>content</code> sábháilte. Ní bhraitheann an t-iompar seo ar an staid ina bhfuil an post,
+mar sin níl sé mar chuid den phatrún staide. Ní idirghníomhaíonn an modh <code>add_text</code>
+leis an réimse <code>state</code> ar chor ar bith, ach is cuid den iompar é ar mhaith linn
+tacaíocht a thabhairt dó.</p>
+<h3 id="a-chinntiú-go-bhfuil-Ábhar-dréachta-poist-folamh"><a class="header" href="#a-chinntiú-go-bhfuil-Ábhar-dréachta-poist-folamh">A Chinntiú go bhfuil Ábhar Dréachta-Poist Folamh</a></h3>
+<p>Fiú tar éis dúinn <code>add_text</code> a ghlaoch agus roinnt ábhair a chur lenár bpost, ba mhaith linn fós go dtabharfadh an modh <code>content</code> slisne teaghráin folamh ar ais mar go bhfuil an post
+fós i staid an dréachta, mar a thaispeántar ar líne 7 de Liostáil 18-11. Faoi láthair, déanaimis an modh <code>ábhar</code> a chur i bhfeidhm leis an rud is simplí a chomhlíonfaidh an riachtanas seo: slisne teaghráin folamh a thabhairt ar ais i gcónaí. Athróimid é seo níos déanaí nuair a chuirfimid an cumas i bhfeidhm staid poist a athrú ionas gur féidir é a fhoilsiú.
+Go dtí seo, ní féidir le poist a bheith ach i staid dréachta, mar sin ba chóir go mbeadh ábhar an phoist folamh i gcónaí. Taispeánann Liostáil 18-14 an cur i bhfeidhm áitchoinneálaí seo:</p>
+<Listing number="18-14" file-name="src/lib.rs" caption="Adding a placeholder implementation for the `content` method on `Post` that always returns an empty string slice">
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn content(&amp;self) -&gt; &amp;str {
+        ""
+    }
+}
+<span class="boring">
+</span><span class="boring">trait State {}
+</span><span class="boring">
+</span><span class="boring">struct Draft {}
+</span><span class="boring">
+</span><span class="boring">impl State for Draft {}</span></code></pre>
+</Listing>
+<p>Leis an modh <code>ábhar</code> breise seo, oibríonn gach rud i Liostáil 18-11 suas go dtí líne 7 mar a bhí beartaithe.</p>
+<h3 id="athraíonn-athbhreithniú-ar-an-bpost-a-stádas"><a class="header" href="#athraíonn-athbhreithniú-ar-an-bpost-a-stádas">Athraíonn Athbhreithniú ar an bPost a Stádas</a></h3>
+<p>Ansin, ní mór dúinn feidhmiúlacht a chur leis chun athbhreithniú ar phost a iarraidh, agus ba cheart go n-athródh sé a staid ó <code>Draft</code> go <code>PendingReview</code>. Taispeánann Liostáil 18-15 an cód seo:</p>
+<Listing number="18-15" file-name="src/lib.rs" caption="Implementing `request_review` methods on `Post` and the `State` trait">
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn content(&amp;self) -&gt; &amp;str {
+</span><span class="boring">        ""
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn request_review(&amp;mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.request_review())
+        }
+    }
+}
+
+trait State {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+}
+
+struct Draft {}
+
+impl State for Draft {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        Box::new(PendingReview {})
+    }
+}
+
+struct PendingReview {}
+
+impl State for PendingReview {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        self
+    }
+}</code></pre>
+</Listing>
+<p>Tugaimid modh poiblí darb ainm <code>request_review</code> do <code>Post</code> a ghlacfaidh tagairt inathraithe
+do <code>self</code>. Ansin glaoimid ar mhodh inmheánach <code>request_review</code> ar an
+stádas reatha de <code>Post</code>, agus ídíonn an dara modh <code>request_review</code> seo an
+stádas reatha agus tugann sé staid nua ar ais.</p>
+<p>Cuirimid an modh <code>request_review</code> leis an tréith <code>State</code>; beidh ar gach cineál a
+chuireann an tréith i bhfeidhm an modh <code>request_review</code> a chur i bhfeidhm anois.
+Tabhair faoi deara, seachas <code>self</code>, <code>&amp;self</code>, nó <code>&amp;mut self</code> a bheith mar an chéad
+pharaiméadar den mhodh, go bhfuil <code>self: Box&lt;Self&gt;</code> againn. Ciallaíonn an comhréir seo nach bhfuil an
+modh bailí ach amháin nuair a ghlaotar air ar <code>Box</code> ina bhfuil an cineál. Glacann an comhréir seo
+úinéireacht ar <code>Box&lt;Self&gt;</code>, ag cur an tseanstaid ar neamhní ionas gur féidir luach stádais an
+<code>Post</code> a athrú go staid nua.</p>
+<p>Chun an seanstádas a ídiú, ní mór don mhodh <code>request_review</code> úinéireacht
+a ghlacadh ar an luach stádais. Seo an áit a dtagann an <code>Option</code> sa réimse <code>state</code> de <code>Post</code> isteach: glaoimid ar an modh <code>take</code> chun an luach <code>Some</code> a bhaint as an réimse <code>state</code> agus <code>None</code> a fhágáil ina áit, mar ní ligeann Rust dúinn réimsí neamhlíonta a bheith againn i struchtúir. Ligeann sé seo dúinn an luach <code>state</code> a bhogadh amach as
+<code>Post</code> seachas é a fháil ar iasacht. Ansin socróimid luach <code>state</code> an phoist mar
+thoradh na hoibríochta seo.</p>
+<p>Ní mór dúinn <code>state</code> a shocrú go <code>None</code> go sealadach seachas é a shocrú go díreach
+le cód cosúil le <code>self.state = self.state.request_review();</code> chun úinéireacht a fháil ar
+luach an <code>state</code>. Cinntíonn sé seo nach féidir le <code>Post</code> an seanluach <code>state</code> a úsáid tar éis
+dúinn é a chlaochlú go stát nua.</p>
+<p>Tugann an modh <code>request_review</code> ar <code>Draft</code> sampla nua, boscaithe de struchtúr nua <code>PendingReview</code> ar ais, a léiríonn an stát nuair a bhíonn post ag fanacht le
+hathbhreithniú. Cuireann an struchtúr <code>PendingReview</code> an modh <code>request_review</code> i bhfeidhm freisin
+ach ní dhéanann sé aon chlaochluithe. Ina áit sin, filleann sé é féin, mar nuair a
+iarraimid athbhreithniú ar phost atá cheana féin sa stát <code>PendingReview</code>, ba chóir dó fanacht
+sa stát <code>PendingReview</code>.</p>
+<p>Anois is féidir linn tosú ag feiceáil buntáistí an phatrúin stáit: tá an
+modh <code>request_review</code> ar <code>Post</code> mar an gcéanna is cuma cén luach <code>state</code> atá air. Tá gach
+stádas freagrach as a rialacha féin.</p>
+<p>Fágfaimid an modh <code>content</code> ar <code>Post</code> mar atá, ag filleadh slisne teaghráin folamh. Is féidir linn <code>Post</code> a bheith againn anois sa stát <code>PendingReview</code> chomh maith leis an
+stádas <code>Draft</code>, ach ba mhaith linn an t-iompar céanna sa stát <code>PendingReview</code>.
+Oibríonn Liostáil 18-11 anois suas go dtí líne 10!</p>
+<!-- Seancheannteidil. Ná bain iad nó d'fhéadfadh naisc briseadh. -->
+<p><a id="adding-the-approve-method-that-changes-the-behavior-of-content"></a></p>
+<h3 id="ag-cur-approve-leis-chun-iompar-content-a-athrú"><a class="header" href="#ag-cur-approve-leis-chun-iompar-content-a-athrú">Ag cur <code>approve</code> leis chun Iompar <code>content</code> a Athrú</a></h3>
+<p>Beidh an modh <code>approve</code> cosúil leis an modh <code>request_review</code>: socróidh sé <code>state</code> go dtí an luach a deir an staid reatha ba chóir a bheith aige nuair a cheadaítear an staid sin, mar a thaispeántar i Liostáil 18-16:</p>
+<Listing number="18-16" file-name="src/lib.rs" caption="Implementing the `approve` method on `Post` and the `State` trait">
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn content(&amp;self) -&gt; &amp;str {
+</span><span class="boring">        ""
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn request_review(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.request_review())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn approve(&amp;mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.approve())
+        }
+    }
+}
+
+trait State {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+}
+
+struct Draft {}
+
+impl State for Draft {
+    // --snip--
+<span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(PendingReview {})
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        self
+    }
+}
+
+struct PendingReview {}
+
+impl State for PendingReview {
+    // --snip--
+<span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        Box::new(Published {})
+    }
+}
+
+struct Published {}
+
+impl State for Published {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        self
+    }
+
+    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        self
+    }
+}</code></pre>
+</Listing>
+<p>Cuirimid an modh <code>approve</code> leis an tréith <code>State</code> agus cuirimid struchtúr nua leis a chuireann <code>State</code> i bhfeidhm, an staid <code>Published</code>.</p>
+<p>Cosúil leis an gcaoi a n-oibríonn <code>request_review</code> ar <code>PendingReview</code>, má ghlaonn muid ar an modh <code>approve</code> ar <code>Draft</code>, ní bheidh aon éifeacht aige mar go dtabharfaidh <code>approve</code> <code>self</code> ar ais. Nuair a ghlaonn muid ar <code>approve</code> ar <code>PendingReview</code>, tugann sé sampla nua, boscaithe, den struchtúr <code>Published</code> ar ais. Cuireann an struchtúr <code>Published</code> an tréith <code>State</code> i bhfeidhm, agus i gcás an mhodha <code>request_review</code> agus an mhodha <code>approve</code> araon, tugann sé é féin ar ais, mar ba chóir don phost fanacht sa staid <code>Published</code> sna cásanna sin.</p>
+<p>Anois ní mór dúinn an modh <code>content</code> a nuashonrú ar <code>Post</code>. Ba mhaith linn go mbeadh an luach a thugtar ar ais ó <code>content</code> ag brath ar staid reatha an <code>Post</code>, mar sin beidh an <code>Post</code> toscaire chuig modh <code>content</code> atá sainmhínithe ar a <code>state</code>,
+mar a thaispeántar i Liostáil 18-17:</p>
+<Listing number="18-17" file-name="src/lib.rs" caption="Updating the `content` method on `Post` to delegate to a `content` method on `State`">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn content(&amp;self) -&gt; &amp;str {
+        self.state.as_ref().unwrap().content(self)
+    }
+    // --snip--
+<span class="boring">
+</span><span class="boring">    pub fn request_review(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.request_review())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn approve(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.approve())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span>}
+<span class="boring">
+</span><span class="boring">trait State {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Draft {}
+</span><span class="boring">
+</span><span class="boring">impl State for Draft {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(PendingReview {})
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct PendingReview {}
+</span><span class="boring">
+</span><span class="boring">impl State for PendingReview {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(Published {})
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Published {}
+</span><span class="boring">
+</span><span class="boring">impl State for Published {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Ós rud é gurb é an sprioc na rialacha seo go léir a choinneáil laistigh de na struchtúir a chuireann <code>State</code> i bhfeidhm, glaoimid modh <code>content</code> ar an luach i <code>state</code> agus cuirimid an sampla <code>post</code> (is é sin, <code>self</code>) ar aghaidh mar argóint. Ansin, cuirimid an luach ar ais a
+fhilleann trí úsáid a bhaint as an modh <code>content</code> ar an luach <code>state</code>.</p>
+<p>Tugaimid an modh <code>as_ref</code> ar an <code>Option</code> mar ba mhaith linn tagairt don
+luach laistigh den <code>Option</code> seachas úinéireacht an luacha. Ós rud é gur <code>Option&lt;Box&lt;dyn State&gt;&gt;</code> é <code>state</code>, nuair a ghlaonn muid ar <code>as_ref</code>, cuirtear <code>Option&lt;&amp;Box&lt;dyn State&gt;&gt;</code> ar ais. Mura nglaonn muid ar <code>as_ref</code>, gheobhaimis earráid mar
+ní féidir linn <code>state</code> a bhogadh amach as an <code>&amp;self</code> iasachta den pharaiméadar feidhme.</p>
+<p>Ansin glaoimid ar an modh <code>unwrap</code>, rud nach mbeidh scaoll orainn choíche, mar tá a fhios againn go gcinntíonn na modhanna ar <code>Post</code> go mbeidh luach <code>Some</code> i <code>state</code> i gcónaí nuair a bheidh na modhanna sin déanta. Seo ceann de na cásanna a phléamar sa
+chuid <a href="ch09-03-to-panic-or-not-to-panic.html#cases-in-which-you-have-more-information-than-the-compiler">“Cásanna ina bhfuil Tuilleadh Eolais Agat Ná an
+Tiomsaitheoir”</a><!-- ignore --> de Chaibidil 9 nuair a
+bhfuil a fhios againn nach féidir luach <code>None</code> a bheith ann choíche, cé nach bhfuil an tiomsaitheoir in ann
+é sin a thuiscint.</p>
+<p>Ag an bpointe seo, nuair a ghlaonn muid ar <code>content</code> ar an <code>&amp;Box&lt;dyn State&gt;</code>, beidh éifeacht ag deref coercion ar an <code>&amp;</code> agus ar an <code>Box</code> agus mar sin glaofar ar an modh <code>content</code> sa deireadh ar an gcineál a chuireann an tréith <code>State</code> i bhfeidhm. Ciallaíonn sé sin go gcaithfimid <code>ábhar</code> a chur leis an sainmhíniú tréithe <code>State</code>, agus sin an áit a gcuirfimid an loighic maidir leis an ábhar atá le tabhairt ar ais ag brath ar an stát atá againn, mar a thaispeántar i Liostáil 18-18:</p>
+<Listing number="18-18" file-name="src/lib.rs" caption="Adding the `content` method to the `State` trait">
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Post {
+</span><span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn content(&amp;self) -&gt; &amp;str {
+</span><span class="boring">        self.state.as_ref().unwrap().content(self)
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn request_review(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.request_review())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn approve(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.approve())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>trait State {
+    // --snip--
+<span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+</span><span class="boring">
+</span>    fn content&lt;'a&gt;(&amp;self, post: &amp;'a Post) -&gt; &amp;'a str {
+        ""
+    }
+}
+
+// --snip--
+<span class="boring">
+</span><span class="boring">struct Draft {}
+</span><span class="boring">
+</span><span class="boring">impl State for Draft {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(PendingReview {})
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct PendingReview {}
+</span><span class="boring">
+</span><span class="boring">impl State for PendingReview {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(Published {})
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>struct Published {}
+
+impl State for Published {
+    // --snip--
+<span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    fn content&lt;'a&gt;(&amp;self, post: &amp;'a Post) -&gt; &amp;'a str {
+        &amp;post.content
+    }
+}</code></pre>
+</Listing>
+<p>Cuirimid cur i bhfeidhm réamhshocraithe leis don mhodh <code>content</code> a thugann slisne teaghrán folamh ar ais. Ciallaíonn sé sin nach gá dúinn <code>content</code> a chur i bhfeidhm ar na struchtúir <code>Draft</code> agus <code>PendingReview</code>. Sáróidh an struchtúr <code>Published</code> an modh <code>content</code> agus cuirfidh sé an luach i <code>post.content</code> ar ais.</p>
+<p>Tabhair faoi deara go bhfuil nótaí saoil ag teastáil uainn ar an modh seo, mar a phléamar i
+gCaibidil 10. Táimid ag glacadh tagairt do <code>post</code> mar argóint agus ag filleadh tagairt do chuid den <code>post</code> sin, mar sin tá saolré an tagartha a tugadh ar ais gaolmhar le saolré an argóint <code>post</code>.</p>
+<p>Agus táimid críochnaithe—oibríonn Liosta 18-11 anois! Tá an patrún stáit curtha i bhfeidhm againn le rialacha shreabhadh oibre an phoist bhlag. Tá an loighic a bhaineann leis na
+rialacha ina gcónaí sna réada stáit seachas a bheith scaipthe ar fud <code>Post</code>.</p>
+<blockquote>
+<h4 id="cén-fáth-nach-bhfuil-enum-ann"><a class="header" href="#cén-fáth-nach-bhfuil-enum-ann">Cén Fáth Nach bhfuil Enum ann?</a></h4>
+<p>B’fhéidir go raibh tú ag smaoineamh cén fáth nár úsáid muid <code>enum</code> leis na stáit phoist éagsúla
+mar athróga. Is réiteach féideartha é sin cinnte, bain triail as
+agus déan comparáid idir na torthaí deiridh chun a fheiceáil cé acu is fearr leat! Míbhuntáiste amháin a bhaineann le
+enum a úsáid ná go mbeidh gá le
+abairt <code>match</code> nó a leithéid i ngach áit a sheiceálann luach an enum chun gach athróg féideartha a láimhseáil. D’fhéadfadh sé seo a bheith níos athchleachtach ná an réiteach tréith réada seo.</p>
+</blockquote>
+<h3 id="comhbhabhtálacha-an-phatrúin-stáit"><a class="header" href="#comhbhabhtálacha-an-phatrúin-stáit">Comhbhabhtálacha an Phatrúin Stáit</a></h3>
+<p>Tá sé léirithe againn go bhfuil Rust in ann an patrún stáit atá dírithe ar réada a chur i bhfeidhm chun na cineálacha éagsúla iompair ba chóir a bheith ag post i
+ngach stát a chuimsiú. Níl aon rud ar eolas ag na modhanna ar <code>Post</code> faoi na hiompraíochtaí éagsúla. An
+tslí ar eagraíomar an cód, ní mór dúinn breathnú in aon áit amháin chun na
+bealaí éagsúla a fháil amach inar féidir le post foilsithe iompar: cur i bhfeidhm an tréith <code>State</code>
+ar an struchtúr <code>Published</code>.</p>
+<p>Dá mbeadh orainn cur i bhfeidhm malartach a chruthú nach n-úsáidfeadh an patrún stáit, d'fhéadfaimis nathanna <code>match</code> a úsáid sna modhanna ar <code>Post</code> nó fiú sa chód <code>main</code> a sheiceálann staid an phoist agus a athraíonn iompar sna háiteanna sin. Chiallódh sé sin go mbeadh orainn breathnú i roinnt áiteanna chun
+tuigbheáil a dhéanamh ar na himpleachtaí go léir a bhaineann le post a bheith sa staid fhoilsithe! Ní dhéanfadh sé seo ach méadú dá mhéad staid a chuirfimis leis: bheadh ​​​​lámh eile ag teastáil ó gach ceann de na nathanna <code>match</code> sin.</p>
+<p>Leis an patrún stáit, níl nathanna <code>match</code> ag teastáil ó na modhanna <code>Post</code> agus na háiteanna ina n-úsáidimid <code>Post</code>, agus chun staid nua a chur leis, ní bheadh ​​​​ort ach
+struchtúr nua a chur leis agus na modhanna tréithe a chur i bhfeidhm ar an struchtúr sin.</p>
+<p>Is furasta an cur i bhfeidhm a úsáideann an patrún stáit a leathnú chun níos mó
+feidhmiúlachta a chur leis. Chun simplíocht an chóid a chothabháil a úsáideann an
+patrún stáit a fheiceáil, bain triail as cúpla ceann de na moltaí seo:</p>
+<ul>
+<li>Cuir modh <code>reject</code> leis a athraíonn staid an phoist ó 'Ag Feitheamh Athbhreithnithe' ar ais
+go <code>Draft</code>.</li>
+<li>Éilítear dhá ghlao chun <code>approve</code> a dhéanamh sula bhféadfar an stát a athrú go <code>Published</code>.</li>
+<li>Ceadaítear d'úsáideoirí ábhar téacs a chur leis ach amháin nuair atá post i stát <code>Draft</code>.
+Leid: bíodh an réad stáit freagrach as a bhféadfadh athrú a dhéanamh faoin
+ábhar ach ní bheidh sé freagrach as an <code>Post</code> a mhodhnú.</li>
+</ul>
+<p>Míbhuntáiste amháin a bhaineann leis an bpatrún stáit ná, toisc go gcuireann na stáit na
+haistrithe idir stáit i bhfeidhm, go bhfuil cuid de na stáit cúpláilte lena chéile. Dá
+mbeadh
+stát eile á chur againn idir <code>PendingReview</code> agus <code>Published</code>, amhail <code>Scheduled</code>,
+bheadh ​​orainn an cód i <code>PendingReview</code> a athrú chun aistriú go
+<code>Scheduled</code> ina ionad. Bheadh ​​​​sé níos lú oibre mura mbeadh ar <code>PendingReview</code>
+athrú le stát nua a chur leis, ach chiallódh sé sin aistriú go
+patrún dearaidh eile.</p>
+<p>Míbhuntáiste eile is ea gur dhúblaíomar roinnt loighce. Chun cuid den
+dúbláil a dhíchur, d'fhéadfaimis iarracht a dhéanamh cur i bhfeidhm réamhshocraithe a dhéanamh do na modhanna
+<code>request_review</code> agus <code>approve</code> ar an tréith <code>State</code> a thugann <code>self</code> ar ais;
+mar sin féin, ní bheadh ​​sé seo comhoiriúnach le dyn, mar níl a fhios ag an tréith cad
+a bheidh sa <code>self</code> coincréiteach go díreach. Ba mhaith linn a bheith in ann <code>State</code> a úsáid mar
+réad tréithe, mar sin ní mór dúinn a mhodhanna a bheith comhoiriúnach le dyn.</p>
+<p>I measc dúbláil eile tá cur i bhfeidhm comhchosúla na modhanna <code>request_review</code>
+agus <code>approve</code> ar <code>Post</code>. Déanann an dá mhodh tarmligean chuig cur i bhfeidhm
+an mhodha chéanna ar an luach sa réimse <code>state</code> de <code>Option::take</code> agus socraíonn siad an luach
+nua den réimse <code>state</code> don toradh. Dá mbeadh go leor modhanna againn ar <code>Post</code>
+a lean an patrún seo, d'fhéadfaimis smaoineamh ar mhacra a shainiú chun an
+athrá a dhíchur (féach an chuid <a href="ch20-05-macros.html#macros">“Macros”</a><!-- ignore --> i gCaibidil 20).</p>
+<p>Trí an patrún stáit a chur i bhfeidhm díreach mar atá sé sainmhínithe do theangacha réada-dhírithe, nílimid ag baint an leasa is mó as láidreachtaí Rust agus a d'fhéadfaimis.
+Féachaimid ar roinnt athruithe is féidir linn a dhéanamh ar an gcliathbhosca <code>blog</code> a fhéadann stáit neamhbhailí agus aistrithe a dhéanamh ina n-earráidí ag am tiomsaithe.</p>
+<h4 id="ionchódú-stáit-agus-iompair-mar-chineálacha"><a class="header" href="#ionchódú-stáit-agus-iompair-mar-chineálacha">Ionchódú Stáit agus Iompair mar Chineálacha</a></h4>
+<p>Taispeánfaimid duit conas athmhachnamh a dhéanamh ar an bpatrún stáit chun sraith dhifriúil de
+chomhréitigh a fháil. In ionad na stáit agus na haistrithe a chuimsiú go hiomlán ionas nach mbeidh aon eolas ag an gcód seachtrach orthu, déanfaimid na stáit a ionchódú i gcineálacha
+difriúla. Dá bhrí sin, cuirfidh córas seiceála cineáil Rust cosc ​​ar iarrachtaí chun
+poist dréachta a úsáid i gcás nach gceadaítear ach poist fhoilsithe trí earráid tiomsaitheora a eisiúint.</p>
+<p>Breithnímis an chéad chuid de <code>main</code> i Liostáil 18-11:</p>
+<Listing file-name="src/main.rs">
+<pre><code class="language-rust ignore"><span class="boring">use blog::Post;
+</span><span class="boring">
+</span>fn main() {
+    let mut post = Post::new();
+
+    post.add_text("I ate a salad for lunch today");
+    assert_eq!("", post.content());
+<span class="boring">
+</span><span class="boring">    post.request_review();
+</span><span class="boring">    assert_eq!("", post.content());
+</span><span class="boring">
+</span><span class="boring">    post.approve();
+</span><span class="boring">    assert_eq!("I ate a salad for lunch today", post.content());
+</span>}</code></pre>
+</Listing>
+<p>Cuirimid ar ár gcumas fós poist nua a chruthú i riocht dréachta ag baint úsáide as <code>Post::new</code>
+agus an cumas téacs a chur le hábhar an phoist. Ach in ionad modh <code>content</code> a bheith againn ar phost dréachta a thugann teaghrán folamh ar ais, déanfaimid amhlaidh nach mbeidh an modh <code>content</code> ar chor ar bith ag poist dréachta. Ar an mbealach sin, má dhéanaimid iarracht ábhar phost dréachta a fháil, gheobhaidh muid earráid tiomsaitheora ag insint dúinn nach bhfuil an modh ann. Mar thoradh air sin, beidh sé dodhéanta dúinn ábhar an phoist dréachta a thaispeáint de thaisme i dtáirgeadh, mar ní thiomsóidh an cód sin fiú.
+Léiríonn liostú 18-19 sainmhíniú struchtúr <code>Post</code> agus struchtúr <code>DraftPost</code>,
+chomh maith le modhanna ar gach ceann acu:</p>
+<Listing number="18-19" file-name="src/lib.rs" caption="A `Post` with a `content` method and `DraftPost` without a `content` method">
+<pre><code class="language-rust noplayground">pub struct Post {
+    content: String,
+}
+
+pub struct DraftPost {
+    content: String,
+}
+
+impl Post {
+    pub fn new() -&gt; DraftPost {
+        DraftPost {
+            content: String::new(),
+        }
+    }
+
+    pub fn content(&amp;self) -&gt; &amp;str {
+        &amp;self.content
+    }
+}
+
+impl DraftPost {
+    pub fn add_text(&amp;mut self, text: &amp;str) {
+        self.content.push_str(text);
+    }
+}</code></pre>
+</Listing>
+<p>Tá réimse príobháideach <code>content</code> ag an struchtúr <code>Post</code> agus <code>DraftPost</code> araon a
+stórálann téacs an phoist bhlag. Níl an réimse <code>state</code> ag na struchtúir a thuilleadh mar
+táimid ag bogadh ionchódú an stáit go dtí cineálacha na struchtúr. Léireoidh an struchtúr <code>Post</code> post foilsithe, agus tá modh <code>content</code> aige
+a thugann an <code>content</code> ar ais.</p>
+<p>Tá feidhm <code>Post::new</code> againn fós, ach in ionad sampla de
+<code>Post</code> a thabhairt ar ais, tugann sé sampla de <code>DraftPost</code> ar ais. Ós rud é go bhfuil <code>content</code> príobháideach
+agus nach bhfuil aon fheidhmeanna ann a thugann <code>Post</code> ar ais, ní féidir sampla de <code>Post</code> a chruthú faoi láthair.</p>
+<p>Tá modh <code>add_text</code> ag an struchtúr <code>DraftPost</code>, mar sin is féidir linn téacs a chur le
+<code>content</code> mar a bhí roimhe, ach tabhair faoi deara nach bhfuil modh <code>content</code> sainmhínithe ag <code>DraftPost</code>! Mar sin, cinntíonn an clár anois go dtosaíonn gach post mar dhréachtphoist, agus nach bhfuil a n-ábhar ar fáil le taispeáint i ndréachtphoist. Mar thoradh ar aon iarracht na srianta seo a sheachaint, beidh earráid tiomsaitheora ann.</p>
+<h4 id="aistrithe-a-chur-i-bhfeidhm-mar-chlaochluithe-i-gcineálacha-Éagsúla"><a class="header" href="#aistrithe-a-chur-i-bhfeidhm-mar-chlaochluithe-i-gcineálacha-Éagsúla">Aistrithe a Chur i bhFeidhm mar Chlaochluithe i gCineálacha Éagsúla</a></h4>
+<p>Mar sin, conas a fhaighimid post foilsithe? Ba mhaith linn an riail a fhorfheidhmiú go gcaithfear dréachtphost a athbhreithniú agus a cheadú sula bhféadfar é a fhoilsiú. Níor cheart go mbeadh aon ábhar le feiceáil i bpost atá sa stát
+athbhreithniú ar feitheamh. Cuirfimid na srianta seo i bhfeidhm trí struchtúr eile, <code>PendingReviewPost</code>, a chur leis, an modh <code>request_review</code> a shainiú ar <code>DraftPost</code> chun <code>PendingReviewPost</code> a thabhairt ar ais, agus modh <code>approve</code> a shainiú ar <code>PendingReviewPost</code> chun <code>Post</code> a thabhairt ar ais, mar a thaispeántar i Liostáil 18-20:</p>
+<Listing number="18-20" file-name="src/lib.rs" caption="A `PendingReviewPost` that gets created by calling `request_review` on `DraftPost` and an `approve` method that turns a `PendingReviewPost` into a published `Post`">
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct DraftPost {
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Post {
+</span><span class="boring">    pub fn new() -&gt; DraftPost {
+</span><span class="boring">        DraftPost {
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn content(&amp;self) -&gt; &amp;str {
+</span><span class="boring">        &amp;self.content
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl DraftPost {
+    // --snip--
+<span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn request_review(self) -&gt; PendingReviewPost {
+        PendingReviewPost {
+            content: self.content,
+        }
+    }
+}
+
+pub struct PendingReviewPost {
+    content: String,
+}
+
+impl PendingReviewPost {
+    pub fn approve(self) -&gt; Post {
+        Post {
+            content: self.content,
+        }
+    }
+}</code></pre>
+</Listing>
+<p>Glacann na modhanna <code>request_review</code> agus <code>approve</code> úinéireacht ar <code>self</code>, agus ar an gcaoi sin
+gáíonn siad na samplaí <code>DraftPost</code> agus <code>PendingReviewPost</code> agus claochlaíonn siad
+iad ina <code>PendingReviewPost</code> agus ina <code>Post</code> foilsithe, faoi seach. Ar an mbealach seo,
+ní bheidh aon samplaí <code>DraftPost</code> fágtha againn tar éis dúinn <code>request_review</code> a ghlaoch orthu, agus mar sin de. Níl modh <code>content</code> sainmhínithe ar struchtúr <code>PendingReviewPost</code>, mar sin bíonn earráid tiomsaithe mar thoradh ar iarracht a ábhar a léamh,
+mar atá le <code>DraftPost</code>. Ós rud é gurb é an t-aon bhealach chun sampla <code>Post</code> foilsithe a fháil a bhfuil modh <code>content</code> sainmhínithe ann ná glaoch ar an modh <code>approve</code> ar <code>PendingReviewPost</code>, agus gurb é an t-aon bhealach chun <code>PendingReviewPost</code> a fháil ná glaoch ar an modh <code>request_review</code> ar <code>DraftPost</code>,
+tá sreabhadh oibre an phoist bhlag ionchódaithe againn anois isteach sa chóras cineáil.</p>
+<p>Ach ní mór dúinn roinnt athruithe beaga a dhéanamh ar <code>main</code> freisin. Tugann na modhanna <code>request_review</code> agus <code>approve</code> cásanna nua ar ais seachas an struchtúr a nglaotar orthu a mhodhnú, mar sin ní mór dúinn níos mó sannadh scáthaithe <code>let post =</code> a chur leis chun na cásanna a tugadh ar ais a shábháil. Ní féidir linn na dearbhuithe faoi ábhar an dréachta agus
+ábhar na bpost athbhreithnithe atá ar feitheamh a bheith ina dteaghráin fholmha ach an oiread, agus níl siad de dhíth orainn ach an oiread: ní féidir linn
+cód a thiomsú a dhéanann iarracht ábhar na bpost sna stáit sin a úsáid a thuilleadh.
+Taispeántar an cód nuashonraithe i <code>main</code> i Liostáil 18-21:</p>
+<Listing number="18-21" file-name="src/main.rs" caption="Modifications to `main` to use the new implementation of the blog post workflow">
+<pre><code class="language-rust ignore">use blog::Post;
+
+fn main() {
+    let mut post = Post::new();
+
+    post.add_text("I ate a salad for lunch today");
+
+    let post = post.request_review();
+
+    let post = post.approve();
+
+    assert_eq!("I ate a salad for lunch today", post.content());
+}</code></pre>
+</Listing>
+<p>Ciallaíonn na hathruithe a bhí orainn a dhéanamh ar <code>main</code> chun <code>post</code> a athshannadh nach leanann an
+cur i bhfeidhm seo an patrún stáit atá dírithe ar réada a thuilleadh:
+níl na claochluithe idir na stáit curtha i bhfeidhm go hiomlán a thuilleadh
+laistigh den chur i bhfeidhm <code>Post</code>. Mar sin féin, is é an buntáiste atá againn ná go bhfuil stáit neamhbhailí
+dodhéanta anois mar gheall ar an gcóras cineáil agus an tseiceáil cineáil a tharlaíonn ag
+am an tiomsaithe! Cinntíonn sé seo go bhfaighfear fabhtanna áirithe, amhail taispeáint ábhar
+post neamhfhoilsithe, sula sroicheann siad an táirgeadh.</p>
+<p>Bain triail as na tascanna a mholtar ag tús an ailt seo ar an gcliathbhosca <code>blog</code> mar atá
+sé tar éis Liostáil 18-21 chun a fheiceáil cad a cheapann tú faoi dhearadh an leagan seo
+den chód. Tabhair faoi deara go bhféadfadh cuid de na tascanna a bheith críochnaithe cheana féin sa
+dhearadh seo.</p>
+<p>Tá feicthe againn, cé go bhfuil Rust in ann patrúin dearaidh atá dírithe ar réada a chur i bhfeidhm, go bhfuil patrúin eile, amhail ionchódú stáit isteach sa chóras cineáil,
+ar fáil i Rust freisin. Tá comhbhabhtálacha éagsúla ag na patrúin seo. Cé go mb’fhéidir go bhfuil tú an-eolach ar phatrúin atá dírithe ar réada, is féidir le hathmhachnamh a dhéanamh ar an
+fhadhb chun leas a bhaint as gnéithe Rust buntáistí a sholáthar, amhail
+cosc a chur ar roinnt fabhtanna ag am tiomsaithe. Ní bheidh patrúin atá dírithe ar réada i gcónaí
+an réiteach is fearr i Rust mar gheall ar ghnéithe áirithe, cosúil le húinéireacht, nach
+bhfuil ag teangacha atá dírithe ar réada.</p>
+<h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
+<p>Is cuma an gceapann tú gur teanga réada-dhírithe í Rust nó nach gceapann tar éis duit an chaibidil seo a léamh, tá a fhios agat anois gur féidir leat tréithe réada a úsáid chun roinnt gnéithe réada-dhírithe a fháil i Rust. Is féidir le seoladh dinimiciúil roinnt solúbthachta a thabhairt do do chód mar mhalairt ar fheidhmíocht rith-ama. Is féidir leat an tsolúbthacht seo a úsáid chun patrúin réada-dhírithe a chur i bhfeidhm a chabhróidh le hinchothabháil do chóid. Tá gnéithe eile ag Rust freisin, cosúil le húinéireacht, nach bhfuil ag teangacha réada-dhírithe. Ní bheidh patrún réada-dhírithe i gcónaí ar an mbealach is fearr chun leas a bhaint as láidreachtaí Rust, ach is rogha atá ar fáil é.</p>
+<p>Ansin, féachfaimid ar phatrúin, arb iad gnéithe eile de chuid Rust iad a chuireann go leor solúbthachta ar fáil. Táimid tar éis breathnú orthu go hachomair ar fud an leabhair ach ní fhaca muid a gcumas iomlán fós. A ligean ar aghaidh linn!</p>
 
                     </main>
 
