@@ -159,7 +159,568 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="pattern-syntax"><a class="header" href="#pattern-syntax">Pattern Syntax</a></h1>
+                        <h2 id="comhréir-patrúin"><a class="header" href="#comhréir-patrúin">Comhréir Patrúin</a></h2>
+<p>Sa chuid seo, bailímid an comhréir go léir atá bailí i bpatrúin agus pléimid cén fáth agus cathain a d'fhéadfá gach ceann acu a úsáid.</p>
+<h3 id="meaitseáil-litreacha"><a class="header" href="#meaitseáil-litreacha">Meaitseáil Litreacha</a></h3>
+<p>Mar a chonaic tú i gCaibidil 6, is féidir leat patrúin a mheaitseáil le litreacha go díreach. Tugann an cód seo a leanas roinnt samplaí:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 1;
+
+    match x {
+        1 =&gt; println!("one"),
+        2 =&gt; println!("two"),
+        3 =&gt; println!("three"),
+        _ =&gt; println!("anything"),
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>Priontálann an cód seo <code>aon</code> mar go bhfuil an luach in <code>x</code> 1. Tá an comhréir seo úsáideach
+nuair is mian leat go ndéanfadh do chód gníomh má fhaigheann sé luach coincréite ar leith.</p>
+<h3 id="athróga-ainmnithe-a-mheaitseáil"><a class="header" href="#athróga-ainmnithe-a-mheaitseáil">Athróga Ainmnithe a Mheaitseáil</a></h3>
+<p>Is patrúin dhochloíte iad athróga ainmnithe a mheaitseálann aon luach, agus tá siad úsáidte againn
+go minic sa leabhar. Mar sin féin, bíonn deacracht ann nuair a úsáideann tú athróga ainmnithe in nathanna <code>match</code>, <code>if let</code>, nó <code>while let</code>. Toisc go dtosaíonn gach ceann de na cineálacha seo raon feidhme nua, cuirfidh athróga a dhearbhaítear mar chuid de phatrún
+laistigh den abairt scáth ar na cinn leis an ainm céanna lasmuigh, mar atá
+an cás le gach athróg. I Liosta 19-11, dearbhaímid athróg darb ainm
+<code>x</code> leis an luach <code>Some(5)</code> agus athróg <code>y</code> leis an luach <code>10</code>. Ansin
+cruthaímid abairt <code>match</code> ar an luach <code>x</code>. Féach ar na patrúin sa mheaitseáil
+arms agus <code>println!</code> ag an deireadh, agus déan iarracht a dhéanamh amach cad a phriontálfaidh an cód
+sula ritheann tú an cód seo nó sula léann tú tuilleadh.</p>
+<Listing number="19-11" file-name="src/main.rs" caption="A `match` expression with an arm that introduces a new variable which shadows an existing variable `y`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) =&gt; println!("Got 50"),
+        Some(y) =&gt; println!("Matched, y = {y}"),
+        _ =&gt; println!("Default case, x = {x:?}"),
+    }
+
+    println!("at the end: x = {x:?}, y = {y}");
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Déanaimis iniúchadh ar a tharlaíonn nuair a ritheann an abairt <code>match</code>. Ní mheaitseálann an patrún
+sa chéad lámh mheaitseála an luach sainithe de <code>x</code>, mar sin leanann an cód
+ar aghaidh.</p>
+<p>Tugann an patrún sa dara lámh mheaitseála isteach athróg nua darb ainm <code>y</code> a
+mheaitseálfaidh aon luach laistigh de luach <code>Some</code>. Ós rud é go bhfuilimid i raon feidhme nua laistigh
+den abairt <code>match</code>, is athróg nua <code>y</code> í seo, ní an <code>y</code> a dhearbhaíomar ag an
+tús leis an luach 10. Meaitseálfaidh an ceangal nua <code>y</code> seo aon luach
+laistigh de <code>Some</code>, arb é atá againn in <code>x</code>. Dá bhrí sin, ceanglaíonn an <code>y</code> nua seo le
+luach inmheánach an <code>Some</code> in <code>x</code>. Is é an luach sin <code>5</code>, mar sin forghníomhaítear agus priontálann an abairt don
+lámh sin <code>Matched, y = 5</code>.</p>
+<p>Dá mba luach <code>None</code> a bhí i <code>x</code> in ionad <code>Some(5)</code>, ní bheadh ​​na patrúin sna chéad
+dhá lámh meaitseáilte, mar sin bheadh ​​an luach meaitseáilte leis an
+fo-score. Níor thugamar isteach an athróg <code>x</code> i bpatrún na láimhe
+fo-score, mar sin is é an <code>x</code> sa slonn an <code>x</code> seachtrach nach bhfuil
+scátháilte. Sa chás hipitéiseach seo, phriontálfadh an <code>match</code> an cás <code>Default</code>, x = None`.</p>
+<p>Nuair a bheidh an slonn <code>match</code> déanta, críochnaíonn a raon feidhme, agus mar sin críochnaíonn raon feidhme
+an <code>y</code> istigh. Táirgeann an <code>println!</code> deireanach <code>at the end: x = Some(5), y = 10</code>.</p>
+<p>Chun slonn <code>match</code> a chruthú a dhéanann comparáid idir luachanna an <code>x</code> sheachtraigh agus
+<code>y</code>, seachas athróg nua a thabhairt isteach a scáthaíonn an athróg <code>y</code> atá ann cheana féin, bheadh ​​orainn coinníollach garda meaitseála a úsáid ina ionad. Labhróimid faoi ghardaí meaitseála níos déanaí sa chuid <a href="#extra-conditionals-with-match-guards">“Coinníollach Breise le Gardaí
+Meaitseála”</a><!-- ignore -->.</p>
+<h3 id="patrúin-ilghnéitheacha"><a class="header" href="#patrúin-ilghnéitheacha">Patrúin Ilghnéitheacha</a></h3>
+<p>Is féidir leat patrúin iolracha a mheaitseáil ag baint úsáide as an gcomhréir <code>|</code>, arb é an t-oibreoir patrún <em>nó</em> é. Mar shampla, sa chód seo a leanas, déanaimid luach <code>x</code> a mheaitseáil i gcoinne
+na n-arm meaitseála, agus tá rogha <em>nó</em> ag an gcéad cheann acu, rud a chiallaíonn má mheaitseálann luach
+<code>x</code> ceachtar de na luachanna sa arm sin, rithfidh cód na láimhe sin:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 1;
+
+    match x {
+        1 | 2 =&gt; println!("one or two"),
+        3 =&gt; println!("three"),
+        _ =&gt; println!("anything"),
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>Priontálann an cód seo <code>ceann amháin nó dhó</code>.</p>
+<h3 id="raonta-luachanna-a-mheaitseáil-le-"><a class="header" href="#raonta-luachanna-a-mheaitseáil-le-">Raonta Luachanna a Mheaitseáil le <code>..=</code></a></h3>
+<p>Ligeann comhréir <code>..=</code> dúinn raon luachanna cuimsitheacha a mheaitseáil. Sa
+chód seo a leanas, nuair a mheaitseálann patrún aon cheann de na luachanna laistigh den raon tugtha, déanfaidh an lámh sin a fhorghníomhú:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 5;
+
+    match x {
+        1..=5 =&gt; println!("one through five"),
+        _ =&gt; println!("something else"),
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>Más ionann <code>x</code> agus <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>, nó <code>5</code>, beidh an chéad lámh comhoiriúnach. Tá an comhréir seo níos áisiúla do luachanna meaitseála iolracha ná an t-oibreoir <code>|</code> a úsáid chun an
+smaoineamh céanna a chur in iúl; dá n-úsáidfimis <code>|</code> bheadh ​​orainn <code>1 | 2 | 3 | 4 | 5</code> a shonrú.</p>
+<p>Tá sé i bhfad níos giorra raon a shonrú, go háirithe más mian linn, abair, aon uimhir idir 1 agus 1,000 a mheaitseáil!</p>
+<p>Seiceálann an tiomsaitheoir nach bhfuil an raon folamh ag am an tiomsaithe, agus toisc gurb iad na
+cineálacha amháin ar féidir le Rust a rá an bhfuil raon folamh nó nach bhfuil ná <code>char</code> agus
+luachanna uimhriúla, ní cheadaítear raonta ach le luachanna uimhriúla nó <code>char</code>.</p>
+<p>Seo sampla ag baint úsáide as raonta de luachanna <code>char</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 'c';
+
+    match x {
+        'a'..='j' =&gt; println!("early ASCII letter"),
+        'k'..='z' =&gt; println!("late ASCII letter"),
+        _ =&gt; println!("something else"),
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>Is féidir le Rust a rá go bhfuil <code>'c'</code> laistigh de raon an chéad phatrúin agus priontáileann sé <code>early ASCII letter</code>.</p>
+<h3 id="dístruchtúrú-chun-luachanna-a-bhriseadh-óna-chéile"><a class="header" href="#dístruchtúrú-chun-luachanna-a-bhriseadh-óna-chéile">Dístruchtúrú chun Luachanna a Bhriseadh óna chéile</a></h3>
+<p>Is féidir linn patrúin a úsáid freisin chun struchtúir, enums, agus tuples a dhístruchtúrú chun
+codanna éagsúla de na luachanna seo a úsáid. Siúlaimis trí gach luach.</p>
+<h4 id="struchtúir-a-bhriseadh-óna-chéile"><a class="header" href="#struchtúir-a-bhriseadh-óna-chéile">Struchtúir a Bhriseadh óna chéile</a></h4>
+<p>Taispeánann Liostáil 19-12 struchtúr <code>Point</code> le dhá réimse, <code>x</code> agus <code>y</code>, ar féidir linn
+a bhriseadh óna chéile ag baint úsáide as patrún le ráiteas <code>let</code>.</p>
+<Listing number="19-12" file-name="src/main.rs" caption="Destructuring a struct’s fields into separate variables">
+<pre><pre class="playground"><code class="language-rust">struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    let Point { x: a, y: b } = p;
+    assert_eq!(0, a);
+    assert_eq!(7, b);
+}</code></pre></pre>
+</Listing>
+<p>Cruthaíonn an cód seo na hathróga <code>a</code> agus <code>b</code> a mheaitseálann luachanna na réimsí <code>x</code>
+agus <code>y</code> den struchtúr <code>p</code>. Taispeánann an sampla seo nach gá go mbeadh ainmneacha na n-athróg sa phatrún ag teacht le hainmneacha réimsí an struchtúir.
+Mar sin féin, is gnách ainmneacha na n-athróg a mheaitseáil le hainmneacha na réimsí chun go mbeidh sé
+éasca cuimhneamh cé na hathróga a tháinig ó réimsí éagsúla. Mar gheall ar an
+úsáid choitianta seo, agus toisc go bhfuil go leor dúblála i scríobh <code>let Point { x: x, y: y } = p;</code>, tá giorrúchán ag Rust do phatrúin a mheaitseálann réimsí struchtúir:
+ní gá duit ach ainm an réimse struchtúir a liostáil, agus beidh na hainmneacha céanna ar na hathróga a cruthaíodh
+ón bpatrún. Iompraíonn Liostáil 19-13 ar an mbealach céanna
+leis an gcód i Liostáil 19-12, ach is iad na hathróga a cruthaíodh sa phatrún <code>let</code> ná <code>x</code> agus <code>y</code> in ionad <code>a</code> agus <code>b</code>.</p>
+<Listing number="19-13" file-name="src/main.rs" caption="Destructuring struct fields using struct field shorthand">
+<pre><pre class="playground"><code class="language-rust">struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    let Point { x, y } = p;
+    assert_eq!(0, x);
+    assert_eq!(7, y);
+}</code></pre></pre>
+</Listing>
+<p>Cruthaíonn an cód seo na hathróga <code>x</code> agus <code>y</code> a mheaitseálann na réimsí <code>x</code> agus <code>y</code> den athróg <code>p</code>. Is é an toradh ná go bhfuil na
+luachanna ón struchtúr <code>p</code> sna hathróga <code>x</code> agus <code>y</code>.</p>
+<p>Is féidir linn dístruchtúrú a dhéanamh le luachanna liteartha mar chuid den phatrún struchtúir
+seachas athróga a chruthú do na réimsí go léir. Trí sin a dhéanamh, is féidir linn
+cuid de na réimsí a thástáil le haghaidh luachanna áirithe agus athróga á gcruthú againn chun
+na réimsí eile a dhístruchtúrú.</p>
+<p>I Liosta 19-14, tá léiriú <code>match</code> againn a scarann ​​luachanna <code>Point</code>
+i dtrí chás: pointí atá suite go díreach ar ais <code>x</code> (rud atá fíor nuair a
+<code>y = 0</code>), ar ais <code>y</code> (<code>x = 0</code>), nó ceachtar acu.</p>
+<Listing number="19-14" file-name="src/main.rs" caption="Destructuring and matching literal values in one pattern">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct Point {
+</span><span class="boring">    x: i32,
+</span><span class="boring">    y: i32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    match p {
+        Point { x, y: 0 } =&gt; println!("On the x axis at {x}"),
+        Point { x: 0, y } =&gt; println!("On the y axis at {y}"),
+        Point { x, y } =&gt; {
+            println!("On neither axis: ({x}, {y})");
+        }
+    }
+}</code></pre></pre>
+</Listing>
+<p>Déanfaidh an chéad lámh aon phointe atá suite ar an ais <code>x</code> a mheaitseáil trí shonrú go bhfuil an réimse <code>y</code> ag teacht leis má tá a luach ag teacht leis an liteartha <code>0</code>. Cruthaíonn an patrún athróg <code>x</code> fós is féidir linn a úsáid sa chód don lámh seo.</p>
+<p>Ar an gcaoi chéanna, déanann an dara lámh aon phointe ar an ais <code>y</code> a mheaitseáil trí shonrú go bhfuil an réimse <code>x</code> ag teacht leis má tá a luach <code>0</code> agus cruthaíonn sí athróg <code>y</code> do luach an réimse <code>y</code>. Ní shonraíonn an tríú lámh aon liteartha, mar sin déanann sí aon <code>Point</code> eile a mheaitseáil agus cruthaíonn sí athróga do na réimsí <code>x</code> agus <code>y</code> araon.</p>
+<p>Sa sampla seo, déanann an luach <code>p</code> an dara lámh a mheaitseáil de bhua <code>x</code> ina bhfuil 0, mar sin priontálfaidh an cód seo <code>On the y axis at 7</code>.</p>
+<p>Cuimhnigh go stopann abairt <code>match</code> seiceáil arm a luaithe a aimsítear an
+chéad phatrún meaitseála, mar sin cé go bhfuil <code>Point { x: 0, y: 0}</code> ar an ais <code>x</code>
+agus an ais <code>y</code>, ní phriontálfadh an cód seo ach  <code>On the x axis at 0</code>.</p>
+<h4 id="dístruchtúrú-Áinimí"><a class="header" href="#dístruchtúrú-Áinimí">Dístruchtúrú Áinimí</a></h4>
+<p>Tá dístruchtúrú déanta againn ar áinimí sa leabhar seo (mar shampla, Liostáil 6-5 i gCaibidil 6),
+ach níor phléamar go sainráite fós go gcomhfhreagraíonn an patrún chun áinim a dhístruchtúrú
+don chaoi a sainmhínítear na sonraí atá stóráilte laistigh den áinim. Mar
+shampla, i Liostáil 19-15 úsáidimid an t-áinim <code>Message</code> ó Liostáil 6-2 agus scríobhaimid
+<code>match</code> le patrúin a dhístruchtúróidh gach luach inmheánach.</p>
+<Listing number="19-15" file-name="src/main.rs" caption="Destructuring enum variants that hold different kinds of values">
+<pre><pre class="playground"><code class="language-rust">enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+fn main() {
+    let msg = Message::ChangeColor(0, 160, 255);
+
+    match msg {
+        Message::Quit =&gt; {
+            println!("The Quit variant has no data to destructure.");
+        }
+        Message::Move { x, y } =&gt; {
+            println!("Move in the x direction {x} and in the y direction {y}");
+        }
+        Message::Write(text) =&gt; {
+            println!("Text message: {text}");
+        }
+        Message::ChangeColor(r, g, b) =&gt; {
+            println!("Change the color to red {r}, green {g}, and blue {b}");
+        }
+    }
+}</code></pre></pre>
+</Listing>
+<p>Priontálfaidh an cód seo <code>Change the color to red 0, green 160, and blue 255</code>. Bain triail as
+luach <code>msg</code> a athrú chun an cód ó na hairm eile a fheiceáil.</p>
+<p>I gcás malairtí enum gan aon sonraí, cosúil le <code>Message::Quit</code>, ní féidir linn an luach a dhístruchtúrú
+tuilleadh. Ní féidir linn meaitseáil ach ar an luach liteartha <code>Message::Quit</code>,
+agus níl aon athróga sa phatrún sin.</p>
+<p>I gcás malairtí enum cosúil le struchtúr, mar shampla <code>Message::Move</code>, is féidir linn patrún a úsáid
+cosúil leis an patrún a shonraímid chun struchtúir a mheaitseáil. Tar éis ainm an athraithe, cuirimid
+lúibíní casta agus ansin liostaímid na réimsí le hathróga ionas go mbrisfimid óna chéile
+na píosaí le húsáid sa chód don lámh seo. Anseo úsáidimid an fhoirm ghiorraithe mar
+a rinneamar i Liostáil 19-13.</p>
+<p>I gcás malairtí enum cosúil le tuplaí, cosúil le <code>Message::Write</code> a bhfuil tupla le heilimint amháin ann agus <code>Message::ChangeColor</code> a bhfuil tupla le trí eilimint ann, tá an
+patrún cosúil leis an patrún a shonraímid chun tuplaí a mheaitseáil. Caithfidh líon na
+n-athróg sa phatrún a bheith ag teacht le líon na n-eilimintí sa malairt atá á
+mheaitseáil againn.</p>
+<h4 id="struchtúir-agus-enumaí-neadaithe-a-scriosadh"><a class="header" href="#struchtúir-agus-enumaí-neadaithe-a-scriosadh">Struchtúir agus Enumaí Neadaithe a Scriosadh</a></h4>
+<p>Go dtí seo, bhí ár samplaí go léir ag meaitseáil struchtúir nó enumaí leibhéal amháin domhain,
+ach is féidir meaitseáil a dhéanamh ar mhíreanna neadaithe freisin! Mar shampla, is féidir linn an
+cód i Liostáil 19-15 a athfhachtóireacht chun tacú le dathanna RGB agus HSV sa teachtaireacht <code>ChangeColor</code>, mar a thaispeántar i Liostáil 19-16.</p>
+<Listing number="19-16" caption="Matching on nested enums">
+<pre><pre class="playground"><code class="language-rust">enum Color {
+    Rgb(i32, i32, i32),
+    Hsv(i32, i32, i32),
+}
+
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(Color),
+}
+
+fn main() {
+    let msg = Message::ChangeColor(Color::Hsv(0, 160, 255));
+
+    match msg {
+        Message::ChangeColor(Color::Rgb(r, g, b)) =&gt; {
+            println!("Change color to red {r}, green {g}, and blue {b}");
+        }
+        Message::ChangeColor(Color::Hsv(h, s, v)) =&gt; {
+            println!("Change color to hue {h}, saturation {s}, value {v}");
+        }
+        _ =&gt; (),
+    }
+}</code></pre></pre>
+</Listing>
+<p>Meaitseálann patrún na chéad láimhe san abairt <code>match</code> malairt enum <code>Message::ChangeColor</code> ina bhfuil malairt <code>Color::Rgb</code>; ansin
+ceanglaíonn an patrún leis na trí luach istigh <code>i32</code>. Meaitseálann patrún an dara
+láimh malairt enum <code>Message::ChangeColor</code> freisin, ach meaitseálann an enum istigh <code>Color::Hsv</code> ina ionad. Is féidir linn na coinníollacha casta seo a shonrú in aon abairt amháin
+<code>match</code>, cé go bhfuil dhá enum i gceist.</p>
+<h4 id="struchtúir-agus-tuplaí-a-scriosadh"><a class="header" href="#struchtúir-agus-tuplaí-a-scriosadh">Struchtúir agus Tuplaí a Scriosadh</a></h4>
+<p>Is féidir linn patrúin dístruchtúrtha a mheascadh, a mheaitseáil agus a neadú ar bhealaí níos casta fós.
+Léiríonn an sampla seo a leanas dístruchtúrú casta ina neadaímid struchtúir agus
+tuplaí laistigh de thupla agus na luachanna primitive go léir a dhístruchtúrú amach:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    struct Point {
+</span><span class="boring">        x: i32,
+</span><span class="boring">        y: i32,
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    let ((feet, inches), Point { x, y }) = ((3, 10), Point { x: 3, y: -10 });
+<span class="boring">}</span></code></pre></pre>
+<p>This code lets us break complex types into their component parts so we can use
+the values we’re interested in separately.</p>
+<p>Destructuring with patterns is a convenient way to use pieces of values, such
+as the value from each field in a struct, separately from each other.</p>
+<h3 id="ignoring-values-in-a-pattern"><a class="header" href="#ignoring-values-in-a-pattern">Ignoring Values in a Pattern</a></h3>
+<p>You’ve seen that it’s sometimes useful to ignore values in a pattern, such as
+in the last arm of a <code>match</code>, to get a catchall that doesn’t actually do
+anything but does account for all remaining possible values. There are a few
+ways to ignore entire values or parts of values in a pattern: using the <code>_</code>
+pattern (which you’ve seen), using the <code>_</code> pattern within another pattern,
+using a name that starts with an underscore, or using <code>..</code> to ignore remaining
+parts of a value. Let’s explore how and why to use each of these patterns.</p>
+<h4 id="ignoring-an-entire-value-with-_"><a class="header" href="#ignoring-an-entire-value-with-_">Ignoring an Entire Value with <code>_</code></a></h4>
+<p>We’ve used the underscore as a wildcard pattern that will match any value but
+not bind to the value. This is especially useful as the last arm in a <code>match</code>
+expression, but we can also use it in any pattern, including function
+parameters, as shown in Listing 19-17.</p>
+<Listing number="19-17" file-name="src/main.rs" caption="Using `_` in a function signature">
+<pre><pre class="playground"><code class="language-rust">fn foo(_: i32, y: i32) {
+    println!("This code only uses the y parameter: {y}");
+}
+
+fn main() {
+    foo(3, 4);
+}</code></pre></pre>
+</Listing>
+<p>Déanfaidh an cód seo neamhaird iomlán ar an luach <code>3</code> a ritheadh ​​mar an chéad argóint,
+agus priontáilfidh sé <code>This code only uses the y parameter: 4</code>.</p>
+<p>I bhformhór na gcásanna nuair nach bhfuil paraiméadar feidhme áirithe ag teastáil uait a thuilleadh,
+d'athrófá an síniú ionas nach n-áireofar an paraiméadar neamhúsáidte ann. Is féidir neamhaird a dhéanamh ar
+pharaiméadar feidhme a bheith úsáideach go háirithe i gcásanna nuair, mar shampla,
+atá tú ag cur tréith i bhfeidhm nuair a bhíonn síniú cineáil áirithe ag teastáil uait ach nach bhfuil ceann de na paraiméadair ag teastáil ó
+chorp na feidhme i do chur i bhfeidhm. Seachnaíonn tú ansin rabhadh tiomsaitheora a fháil faoi pharaiméadair feidhme neamhúsáidte, mar a dhéanfá
+dá n-úsáidfeá ainm ina ionad.</p>
+<h4 id="neamhaird-a-dhéanamh-ar-chodanna-de-luach-le-_-neadaithe"><a class="header" href="#neamhaird-a-dhéanamh-ar-chodanna-de-luach-le-_-neadaithe">Neamhaird a dhéanamh ar Chodanna de Luach le <code>_</code> Neadaithe</a></h4>
+<p>Is féidir linn <code>_</code> a úsáid laistigh de phatrún eile chun neamhaird a dhéanamh ar chuid de luach amháin,
+mar shampla, nuair is mian linn tástáil a dhéanamh ar chuid de luach amháin ach nach bhfuil aon úsáid againn as na
+codanna eile sa chód comhfhreagrach is mian linn a rith. Taispeánann liostú 19-18 an cód
+atá freagrach as luach socraithe a bhainistiú. Is iad na ceanglais ghnó ná nach gceadaítear don úsáideoir saincheapadh atá ann cheana féin ar shocrú a athscríobh ach gur féidir leis an socrú a dhíshocrú agus luach a thabhairt dó mura bhfuil sé socraithe faoi láthair.</p>
+<Listing number="19-18" caption=" Using an underscore within patterns that match `Some` variants when we don’t need to use the value inside the `Some`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut setting_value = Some(5);
+    let new_setting_value = Some(10);
+
+    match (setting_value, new_setting_value) {
+        (Some(_), Some(_)) =&gt; {
+            println!("Can't overwrite an existing customized value");
+        }
+        _ =&gt; {
+            setting_value = new_setting_value;
+        }
+    }
+
+    println!("setting is {setting_value:?}");
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Priontálfaidh an cód seo <code>Can't overwrite an existing customized value</code> agus ansin
+<code>setting is Some(5)</code> Sa chéad lámh mheaitseála, ní gá dúinn meaitseáil a dhéanamh ar na luachanna laistigh de cheachtar den dá chineál <code>Some</code> ná iad a úsáid, ach ní mór dúinn tástáil a dhéanamh don chás
+nuair is iad <code>setting_value</code> agus <code>new_setting_value</code> an cineál <code>Some</code>. Sa
+chás sin, priontálaimid an chúis gan <code>setting_value</code> a athrú, agus ní
+athraítear é.</p>
+<p>I ngach cás eile (más rud é go bhfuil <code>setting_value</code> nó <code>new_setting_value</code>
+<code>None</code>) arna léiriú ag an bpatrún <code>_</code> sa dara lámh, ba mhaith linn ligean do
+<code>new_setting_value</code> a bheith ina <code>setting_value</code>.</p>
+<p>Is féidir linn fo-línte a úsáid in áiteanna éagsúla laistigh de phatrún amháin chun neamhaird a dhéanamh ar
+luachanna ar leith. Taispeánann liostú 19-19 sampla de neamhaird a dhéanamh ar an dara agus an
+ceathrú luach i dtuple de chúig mhír.</p>
+<Listing number="19-19" caption="Ignoring multiple parts of a tuple">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, _, third, _, fifth) =&gt; {
+            println!("Some numbers: {first}, {third}, {fifth}")
+        }
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Priontálfaidh an cód seo <code>Some numbers: 2, 8, 32</code>, agus déanfar neamhaird de na luachanna 4 agus 16.</p>
+<h4 id="neamhaird-a-thabhairt-dathróg-neamhúsáidte-trína-hainm-a-thosú-le-_"><a class="header" href="#neamhaird-a-thabhairt-dathróg-neamhúsáidte-trína-hainm-a-thosú-le-_">Neamhaird a Thabhairt d'Athróg Neamhúsáidte trína hainm a thosú le <code>_</code></a></h4>
+<p>Má chruthaíonn tú athróg ach mura n-úsáideann tú í in áit ar bith, eiseoidh Rust rabhadh de ghnáth toisc go bhféadfadh fabht a bheith in athróg neamhúsáidte. Mar sin féin, uaireanta bíonn sé
+úsáideach a bheith in ann athróg nach n-úsáidfidh tú fós a chruthú, amhail nuair a bhíonn tú ag
+fréamhshamáiriú nó ag tosú tionscadail. Sa chás seo, is féidir leat a rá le Rust
+gan rabhadh a thabhairt duit faoin athróg neamhúsáidte trí ainm na hathróige a thosú
+le fo-líne. I Liosta 19-20, cruthaímid dhá athróg neamhúsáidte, ach nuair a
+thiomsaíonn muid an cód seo, níor cheart dúinn ach rabhadh a fháil faoi cheann acu.</p>
+<Listing number="19-20" file-name="src/main.rs" caption="Starting a variable name with an underscore to avoid getting unused variable warnings">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let _x = 5;
+    let y = 10;
+}</code></pre></pre>
+</Listing>
+<p>Anseo faighimid rabhadh faoi gan an athróg <code>y</code> a úsáid, ach ní fhaighimid rabhadh faoi gan <code>_x</code> a úsáid.</p>
+<p>Tabhair faoi deara go bhfuil difríocht bheag idir <code>_</code> amháin a úsáid agus ainm a úsáid a thosaíonn le fo-líne. Ceanglaíonn an comhréir <code>_x</code> an luach leis an
+athróg fós, ach ní cheanglaíonn <code>_</code> ar chor ar bith. Chun cás a thaispeáint ina bhfuil an
+idirdhealú seo tábhachtach, cuirfidh Liostáil 19-21 earráid ar fáil dúinn.</p>
+<Listing number="19-21" caption="An unused variable starting with an underscore still binds the value, which might take ownership of the value">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s = Some(String::from("Hello!"));
+
+    if let Some(_s) = s {
+        println!("found a string");
+    }
+
+    println!("{s:?}");
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Gheobhaimid earráid mar go mbogfar an luach <code>s</code> isteach i <code>_s</code> fós,
+rud a chuireann cosc ​​orainn <code>s</code> a úsáid arís. Mar sin féin, ní cheanglaíonn úsáid an fho-línte leis féin leis an luach riamh. Tiomsófar Liostáil 19-22 gan aon earráidí
+toisc nach mbogtar <code>s</code> isteach i <code>_</code>.</p>
+<Listing number="19-22" caption="Using an underscore does not bind the value">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s = Some(String::from("Hello!"));
+
+    if let Some(_) = s {
+        println!("found a string");
+    }
+
+    println!("{s:?}");
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Oibríonn an cód seo go breá mar ní cheanglaímid <code>s</code> le haon rud riamh; ní bhogtar é.</p>
+<h4 id="neamhaird-a-dhéanamh-ar-na-codanna-atá-fágtha-de-luach-le-"><a class="header" href="#neamhaird-a-dhéanamh-ar-na-codanna-atá-fágtha-de-luach-le-">Neamhaird a dhéanamh ar na Codanna atá fágtha de Luach le <code>..</code></a></h4>
+<p>Le luachanna a bhfuil go leor codanna iontu, is féidir linn comhréir <code>..</code> a úsáid chun codanna sonracha a úsáid agus neamhaird a dhéanamh den chuid eile, ag seachaint an ghá le fo-línte a liostáil do gach luach
+a ndéantar neamhaird de. Déanann an patrún <code>..</code> neamhaird d'aon chodanna de luach nach bhfuil
+meaitseáilte go sainráite againn sa chuid eile den phatrún. I Liostáil 19-23, tá struchtúr
+<code>Point</code> againn a choinníonn comhordanáid i spás tríthoiseach. Sa
+sloinnt <code>match</code>, ba mhaith linn oibriú ar an gcomhordanáid <code>x</code> amháin agus neamhaird a dhéanamh ar na luachanna sna réimsí <code>y</code> agus <code>z</code>.</p>
+<Listing number="19-23" caption="Ignoring all fields of a `Point` except for `x` by using `..`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    struct Point {
+        x: i32,
+        y: i32,
+        z: i32,
+    }
+
+    let origin = Point { x: 0, y: 0, z: 0 };
+
+    match origin {
+        Point { x, .. } =&gt; println!("x is {x}"),
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Liostaímid an luach <code>x</code> agus ansin ní chuireann muid ach an patrún <code>..</code> san áireamh. Tá sé seo níos tapúla ná <code>y: _</code> agus <code>z: _</code> a liostáil, go háirithe nuair a bhíonn muid ag obair le
+struchtúir a bhfuil a lán réimsí iontu i gcásanna nach bhfuil ach réimse amháin nó dhó ábhartha.</p>
+<p>Leathnóidh an comhréir <code>..</code> go dtí an oiread luachanna agus is gá. Taispeánann liostú 19-24
+conas <code>..</code> a úsáid le tuple.</p>
+<Listing number="19-24" file-name="src/main.rs" caption="Matching only the first and last values in a tuple and ignoring all other values">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, .., last) =&gt; {
+            println!("Some numbers: {first}, {last}");
+        }
+    }
+}</code></pre></pre>
+</Listing>
+<p>Sa chód seo, déantar an chéad luach agus an luach deireanach a mheaitseáil le <code>first</code> agus <code>last</code>. Déanfaidh an <code>..</code> meaitseáil agus neamhaird a dhéanamh ar gach rud sa lár.</p>
+<p>Mar sin féin, ní mór úsáid <code>..</code> a bheith neamhbhríoch. Mura bhfuil sé soiléir cé na luachanna atá beartaithe le haghaidh meaitseáil agus cé acu ba chóir neamhaird a dhéanamh orthu, tabharfaidh Rust earráid dúinn.
+Léiríonn liostú 19-25 sampla d'úsáid <code>..</code> go débhríoch, mar sin ní
+thiomsóidh sé.</p>
+<Listing number="19-25" file-name="src/main.rs" caption="An attempt to use `..` in an ambiguous way">
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (.., second, ..) =&gt; {
+            println!("Some numbers: {second}")
+        },
+    }
+}</code></pre>
+</Listing>
+<p>Nuair a dhéanaimid an sampla seo a thiomsú, faighimid an earráid seo:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+error: `..` can only be used once per tuple pattern
+ --&gt; src/main.rs:5:22
+  |
+5 |         (.., second, ..) =&gt; {
+  |          --          ^^ can only be used once per tuple pattern
+  |          |
+  |          previously used here
+
+error: could not compile `patterns` (bin "patterns") due to 1 previous error
+</code></pre>
+<p>Tá sé dodhéanta do Rust a chinneadh cé mhéad luach sa tuple le neamhaird a dhéanamh orthu
+sula ndéantar luach a mheaitseáil le <code>second</code> agus ansin cé mhéad luach eile le
+neamhaird a dhéanamh orthu ina dhiaidh sin. D’fhéadfadh an cód seo a chiallaíonn gur mian linn neamhaird a dhéanamh de <code>2</code>, <code>second</code> a cheangal le <code>4</code>, agus ansin neamhaird a dhéanamh de <code>8</code>, <code>16</code>, agus <code>32</code>; nó gur mian linn neamhaird a dhéanamh de
+<code>2</code> agus <code>4</code>, <code>second</code> a cheangal le <code>8</code>, agus ansin neamhaird a dhéanamh de <code>16</code> agus <code>32</code>; agus mar sin de.
+Ní chiallaíonn an t-ainm athróg <code>second</code> aon rud speisialta do Rust, mar sin faighimid
+earráid tiomsaitheora toisc go bhfuil sé débhríoch <code>..</code> a úsáid in dhá áit mar seo.</p>
+<h3 id="coinníollacha-breise-le-gardaí-meaitseála"><a class="header" href="#coinníollacha-breise-le-gardaí-meaitseála">Coinníollacha Breise le Gardaí Meaitseála</a></h3>
+<p>Is coinníoll breise <code>má</code> é <em>garda meaitseála</em>, a shonraítear tar éis an phatrúin i
+lámh <code>match</code>, a chaithfidh a bheith oiriúnach freisin chun go roghnófar an lámh sin. Tá gardaí meaitseála
+úsáideach chun smaointe níos casta a chur in iúl ná mar a cheadaíonn patrún ina aonar. Níl siad ar fáil ach amháin i léirithe <code>match</code>, ní i léirithe <code>if let</code> nó <code>while let</code>.</p>
+<p>Is féidir leis an gcoinníoll athróga a cruthaíodh sa phatrún a úsáid. Taispeánann Liostáil 19-26 <code>match</code> ina bhfuil an patrún <code>Some(x)</code> ag an gcéad lámh agus ina bhfuil garda meaitseála <code>if x % 2 == 0</code> aici freisin (a bheidh fíor má tá an uimhir cothrom).</p>
+<Listing number="19-26" caption="Adding a match guard to a pattern">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let num = Some(4);
+
+    match num {
+        Some(x) if x % 2 == 0 =&gt; println!("The number {x} is even"),
+        Some(x) =&gt; println!("The number {x} is odd"),
+        None =&gt; (),
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Priontálfaidh an sampla seo <code>The number 4 is even</code>. Nuair a dhéantar comparáid idir <code>num</code> agus an
+patrún sa chéad lámh, meaitseálann sé, mar go meaitseálann <code>Some(4)</code> <code>Some(x)</code>. Ansin
+seiceálann an garda meaitseála an bhfuil an chuid eile de roinnt <code>x</code> ar 2 cothrom le
+0, agus toisc go bhfuil, roghnaítear an chéad lámh.</p>
+<p>Dá mba rud é go raibh <code>num</code> ina <code>Some(5)</code> ina ionad, bheadh ​​an garda meaitseála sa chéad lámh
+bréagach mar go bhfuil an chuid eile de 5 roinnte ar 2 cothrom le 1, nach
+comhionann le 0. Ansin rachadh an meirge go dtí an dara lámh, a mheaitseálfadh mar nach bhfuil garda meaitseála ag an
+dara lámh agus dá bhrí sin meaitseálann sé aon athraitheach <code>Some</code>.</p>
+<p>Níl aon bhealach ann an coinníoll <code>if x % 2 == 0</code> a chur in iúl laistigh de phatrún, mar sin
+tugann an garda meaitseála an cumas dúinn an loighic seo a chur in iúl. Is é an míbhuntáiste a bhaineann leis an
+léiritheacht bhreise seo ná nach ndéanann an tiomsaitheoir iarracht seiceáil le haghaidh
+uileghabhálachta nuair a bhíonn léirithe garda meaitseála i gceist.</p>
+<p>I Liostáil 19-11, luaigh muid go bhféadfaimis gardaí meaitseála a úsáid chun ár
+fhadhb scáthú patrún a réiteach. Cuimhnigh gur chruthaíomar athróg nua laistigh den
+phatrún san abairt <code>match</code> in ionad an athróg lasmuigh den
+<code>match</code> a úsáid. Chiallaigh an athróg nua sin nach bhféadfaimis tástáil a dhéanamh i gcoinne luach na
+hathróige seachtraí. Taispeánann Liostáil 19-27 conas is féidir linn gardaí meaitseála a úsáid chun an
+fhadhb seo a réiteach.</p>
+<Listing number="19-28" caption="Combining multiple patterns with a match guard">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 4;
+    let y = false;
+
+    match x {
+        4 | 5 | 6 if y =&gt; println!("yes"),
+        _ =&gt; println!("no"),
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Deir an coinníoll meaitseála nach n-oireann an lámh ach amháin má tá luach <code>x</code> cothrom le <code>4</code>, <code>5</code>, nó <code>6</code> <em>agus</em> má tá <code>y</code> fíor. Nuair a ritheann an cód seo, oibríonn patrún na chéad láimhe mar go bhfuil <code>x</code> cothrom le <code>4</code>, ach tá an garda meaitseála <code>if y</code> bréagach, mar sin ní roghnaítear an chéad lámh. Bogann an cód ar aghaidh go dtí an dara lámh,
+a mheaitseálann, agus priontáileann an clár seo <code>no</code>. Is é an chúis atá leis ná go mbaineann an coinníoll <code>if</code> leis an patrún iomlán <code>4 | 5 | 6</code>, ní hamháin leis an luach deireanach
+<code>6</code>. I bhfocail eile, iompraíonn tosaíocht garda meaitseála i ndáil le patrún mar seo:</p>
+<pre><code class="language-text">(4 | 5 | 6) if y =&gt; ...
+</code></pre>
+<p>seachas seo:</p>
+<pre><code class="language-text">4 | 5 | (6 if y) =&gt; ...
+</code></pre>
+<p>Tar éis an cód a rith, is léir an t-iompar tosaíochta: dá gcuirfí an garda meaitseála i bhfeidhm ar an luach deiridh sa liosta luachanna a shonraítear ag baint úsáide as an oibreoir <code>|</code> amháin, bheadh ​​an lámh meaitseáilte agus bheadh ​​an clár tar éis <code>yes</code> a phriontáil.</p>
+<h3 id="ceangail-"><a class="header" href="#ceangail-">Ceangail <code>@</code></a></h3>
+<p>Ligeann an t-oibreoir <em>ag</em> <code>@</code> dúinn athróg a chruthú a choinníonn luach ag an am céanna
+agus muid ag tástáil an luacha sin le haghaidh meaitseáil patrún. I Liostáil 19-29, ba mhaith linn
+tástáil a dhéanamh go bhfuil réimse <code>Message::Hello</code> <code>id</code> laistigh den raon <code>3..=7</code>. Ba mhaith linn freisin
+an luach a cheangal leis an athróg <code>id_variable</code> ionas gur féidir linn é a úsáid sa
+chód a bhaineann leis an lámh. D'fhéadfaimis an t-athróg seo a ainmniú <code>id</code>, mar an gcéanna leis an
+réimse, ach don sampla seo úsáidfimid ainm difriúil.</p>
+<Listing number="19-29" caption="Using `@` to bind to a value in a pattern while also testing it">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum Message {
+        Hello { id: i32 },
+    }
+
+    let msg = Message::Hello { id: 5 };
+
+    match msg {
+        Message::Hello {
+            id: id_variable @ 3..=7,
+        } =&gt; println!("Found an id in range: {id_variable}"),
+        Message::Hello { id: 10..=12 } =&gt; {
+            println!("Found an id in another range")
+        }
+        Message::Hello { id } =&gt; println!("Found some other id: {id}"),
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Priontálfaidh an sampla seo <code>Found an id in range: 5</code>. Trí <code>id_variable @</code> a shonrú roimh an raon <code>3..=7</code>, táimid ag gabháil cibé luach a mheaitseálann an raon
+agus ag tástáil freisin an raibh an luach ag teacht leis an bpatrún raoin.</p>
+<p>Sa dara lámh, áit nach bhfuil ach raon sonraithe sa phatrún, níl aon athróg sa chód
+a bhaineann leis an lámh ina bhfuil luach iarbhír
+an réimse <code>id</code>. D’fhéadfadh luach an réimse <code>id</code> a bheith 10, 11, nó 12, ach
+níl a fhios ag an gcód a théann leis an bpatrún sin cé acu é. Níl an cód patrún
+in ann an luach ón réimse <code>id</code> a úsáid, mar nach bhfuil an luach
+<code>id</code> sábháilte againn in athróg.</p>
+<p>Sa lámh dheireanach, áit ar shonraigh muid athróg gan raon, tá an luach againn ar fáil le húsáid i gcód na láimhe in athróg darb ainm <code>id</code>. Is é an
+cúis ná gur úsáid muid comhréir giorraithe an réimse struchtúr. Ach níor
+chuireamar aon tástáil i bhfeidhm ar an luach sa réimse <code>id</code> sa bhrainse seo, mar a rinneamar leis an
+dhá bhrainse tosaigh: bheadh ​​aon luach ag teacht leis an bpatrún seo.</p>
+<p>Trí <code>@</code> a úsáid, is féidir linn luach a thástáil agus é a shábháil in athróg laistigh d'aon phatrún amháin.</p>
+<h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
+<p>Tá patrúin Rust an-úsáideach chun idirdhealú a dhéanamh idir cineálacha éagsúla
+sonraí. Nuair a úsáidtear iad i léirithe <code>match</code>, cinntíonn Rust go gclúdaíonn do phatrúin gach
+luach is féidir, nó ní thiomsóidh do chlár. Déanann patrúin i ráitis <code>let</code> agus
+paraiméadair feidhme na coincheapa sin níos úsáidí, rud a chuireann ar chumas
+luachanna a athstruchtúrú i gcodanna níos lú ag an am céanna le hathróga a shannadh. Is féidir linn patrúin shimplí nó chasta a chruthú chun freastal ar ár riachtanais.</p>
+<p>Ansin, don dara caibidil dheireanach den leabhar, féachfaimid ar roinnt gnéithe ardleibhéil de ghnéithe éagsúla Rust.</p>
 
                     </main>
 

@@ -159,7 +159,210 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="all-the-places-patterns-can-be-used"><a class="header" href="#all-the-places-patterns-can-be-used">All the Places Patterns Can Be Used</a></h1>
+                        <h2 id="na-hÁiteanna-uile-ar-féidir-patrúin-a-Úsáid"><a class="header" href="#na-hÁiteanna-uile-ar-féidir-patrúin-a-Úsáid">Na hÁiteanna Uile ar Féidir Patrúin a Úsáid</a></h2>
+<p>Tagann patrúin aníos i roinnt áiteanna i Rust, agus tá tú ag baint úsáide astu go minic
+gan a bheith ar an eolas faoi! Pléann an chuid seo na háiteanna uile ina bhfuil patrúin
+bailí.</p>
+<h3 id="lámha-match"><a class="header" href="#lámha-match">Lámha <code>match</code></a></h3>
+<p>Mar a pléadh i gCaibidil 6, úsáidimid patrúin in airm nathanna <code>match</code>.
+Go foirmiúil, sainmhínítear nathanna <code>match</code> mar an eochairfhocal <code>match</code>, luach le
+meaitseáil air, agus lámh mheaitseála amháin nó níos mó ina bhfuil patrún agus
+léiriú le rith má chomhlíonann an luach patrún na láimhe sin, mar seo:</p>
+<pre><code class="language-text">match VALUE {
+    PATTERN =&gt; EXPRESSION,
+    PATTERN =&gt; EXPRESSION,
+    PATTERN =&gt; EXPRESSION,
+}
+</code></pre>
+<p>Mar shampla, seo an abairt <code>match</code> ó Liosta 6-5 a mheaitseálann ar luach <code>Option&lt;i32&gt;</code> san athróg <code>x</code>:</p>
+<pre><code class="language-rust ignore">match x {
+    None =&gt; None,
+    Some(i) =&gt; Some(i + 1),
+}</code></pre>
+<p>Is iad na patrúin sa léiriú <code>match</code> seo ná <code>None</code> agus <code>Some(i)</code> ar thaobh na
+clé de gach saighead.</p>
+<p>Riachtanas amháin do léirithe <code>match</code> ná go gcaithfidh siad a bheith <em>uileghabhálach</em> sa
+mhéid is go gcaithfear gach féidearthacht don luach sa léiriú <code>match</code> a chur san áireamh. Bealach amháin chun a chinntiú go bhfuil gach féidearthacht clúdaithe agat ná patrún
+gabhálach a bheith agat don lámh dheireanach: mar shampla, ní féidir le hainm athróg a mheaitseálann aon
+luach teip riamh agus dá bhrí sin clúdaíonn sé gach cás atá fágtha.</p>
+<p>Mheaitseálfaidh an patrún áirithe <code>_</code> aon rud, ach ní cheanglaíonn sé le
+athróg riamh, mar sin is minic a úsáidtear é sa lámh mheaitseála dheireanach. Is féidir leis an patrún <code>_</code> a bheith
+úsáideach nuair is mian leat neamhaird a dhéanamh d'aon luach nach bhfuil sonraithe, mar shampla. Clúdóimid an patrún <code>_</code> níos mine sa chuid [“Neamhaird a thabhairt ar Luachanna i
+Patrún”][neamhaird-luachanna-i-patrún]<!-- neamhaird --> níos déanaí sa
+chaibidil seo.</p>
+<h3 id="léirithe-coinníollacha-if-let"><a class="header" href="#léirithe-coinníollacha-if-let">Léirithe Coinníollacha <code>if let</code></a></h3>
+<p>I gCaibidil 6 phléamar conas léirithe <code>if let</code> a úsáid go príomha mar bhealach níos giorra
+chun coibhéis <code>match</code> a scríobh nach n-oireann ach do chás amháin.
+De rogha air sin, is féidir le <code>if let</code> <code>else</code> comhfhreagrach a bheith aige ina bhfuil cód le rith mura
+n-oireann an patrún sa <code>if let</code>.</p>
+<p>Léiríonn Liostáil 19-1 gur féidir léirithe <code>if let</code>, <code>else if</code>, agus <code>else if let</code> a mheascadh agus a mheaitseáil freisin. Tugann sé sin níos mó solúbthachta dúinn ná
+léiriú <code>match</code> ina bhféadfaimid luach amháin a chur in iúl le comparáid a dhéanamh leis na
+patrúin. Chomh maith leis sin, ní éilíonn Rust go mbeadh baint ag na coinníollacha i sraith de ghéaga <code>if let</code>, <code>else if</code>, <code>else if let</code> lena chéile.</p>
+<p>Cinneann an cód i Liostáil 19-1 cén dath atá le cur ar do chúlra bunaithe ar
+shraith seiceálacha le haghaidh roinnt coinníollacha. Don sampla seo, chruthaíomar athróga le luachanna crua-chódaithe a d'fhéadfadh clár fíor a fháil ó ionchur úsáideora.</p>
+<Listing number="19-1" file-name="src/main.rs" caption="Mixing `if let`, `else if`, `else if let`, and `else`">
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let favorite_color: Option&lt;&amp;str&gt; = None;
+    let is_tuesday = false;
+    let age: Result&lt;u8, _&gt; = "34".parse();
+
+    if let Some(color) = favorite_color {
+        println!("Using your favorite color, {color}, as the background");
+    } else if is_tuesday {
+        println!("Tuesday is green day!");
+    } else if let Ok(age) = age {
+        if age &gt; 30 {
+            println!("Using purple as the background color");
+        } else {
+            println!("Using orange as the background color");
+        }
+    } else {
+        println!("Using blue as the background color");
+    }
+}</code></pre></pre>
+</Listing>
+<p>Má shonraíonn an t-úsáideoir dath is fearr leis, úsáidtear an dath sin mar chúlra.
+Mura sonraítear aon dath is fearr leis agus gur Dé Máirt atá ann inniu, is glas an dath cúlra. Seachas sin, má shonraíonn an t-úsáideoir a n-aois mar shreang agus gur féidir linn é a pharsáil mar uimhir go rathúil, is corcra nó oráiste an dath ag brath ar luach na huimhreach. Mura bhfuil feidhm ag aon cheann de na coinníollacha seo, is gorm an dath cúlra.</p>
+<p>Ligeann an struchtúr coinníollach seo dúinn tacú le riachtanais chasta. Leis na luachanna crua-chódaithe atá againn anseo, priontálfaidh an sampla seo <code>Using purple as the  background color</code>.</p>
+<p>Is féidir leat a fheiceáil gur féidir le <code>if let</code> athróga nua a thabhairt isteach freisin a scáthaíonn athróga atá ann cheana féin ar an mbealach céanna a fhéadann <code>match</code> arms: tugann an líne <code>if let Ok(age) = age</code> athróg nua <code>age</code> isteach ina bhfuil an luach taobh istigh den athraitheach <code>Ok</code>,
+ag scáthú an athróg <code>age</code> atá ann cheana féin. Ciallaíonn sé seo go gcaithfimid an coinníoll <code>if age &gt; 30</code> a chur laistigh den bhloc sin: ní féidir linn an dá choinníoll seo a chomhcheangal i <code>if let Ok(age) = age &amp;&amp; age &gt; 30</code>. Níl an <code>age</code> nua ar mhaith linn a chur i gcomparáid le 30 bailí go dtí go dtosaíonn an raon feidhme nua leis an lúibín chatach.</p>
+<p>Is é an míbhuntáiste a bhaineann le húsáid nathanna <code>if let</code> ná nach ndéanann an tiomsaitheoir seiceáil
+le haghaidh uileghabhálachta, ach le nathanna <code>match</code> déanann sé. Dá mba rud é go bhfágfaimis an
+bloc <code>else</code> deireanach ar lár agus dá bhrí sin go gcaillfimis láimhseáil roinnt cásanna, ní chuirfeadh an tiomsaitheoir foláireamh orainn faoin bhfadhb loighce féideartha.</p>
+<h3 id="lúba-coinníollach-while-let"><a class="header" href="#lúba-coinníollach-while-let">Lúba Coinníollach <code>while let</code></a></h3>
+<p>Cosúil le <code>if let</code> i dtógáil, ceadaíonn an lúb coinníollach <code>while let</code> do lúb
+<code>while</code> rith chomh fada agus a leanann patrún ag meaitseáil. Chonaiceamar lúb
+<code>while let</code> den chéad uair i gCaibidil 17, áit ar úsáideadh é chun leanúint ar aghaidh ag lúbadh chomh fada agus a tháirg sruth luachanna nua. Ar an gcaoi chéanna, i Liostáil 19-2 taispeánaimid lúb <code>while let</code> a fhanann ar theachtaireachtaí a sheoltar idir snáitheanna, ach sa chás seo seiceálann sé <code>Result</code> in ionad <code>Option</code>.</p>
+<Listing number="19-2" caption="Using a `while let` loop to print values for as long as `rx.recv()` returns `Ok`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let (tx, rx) = std::sync::mpsc::channel();
+    std::thread::spawn(move || {
+        for val in [1, 2, 3] {
+            tx.send(val).unwrap();
+        }
+    });
+
+    while let Ok(value) = rx.recv() {
+        println!("{value}");
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Priontálann an sampla seo 1, 2, agus 3. Nuair a chonaiceamar <code>recv</code> siar i gCaibidil 16, dhíphacáileamar an earráid go díreach, nó idirghníomhaíomar léi mar athrá ag baint úsáide as lúb <code>for</code>. Mar a léiríonn Liostáil 19-2, áfach, is féidir linn <code>while let</code> a úsáid freisin, mar go dtugann an
+modh <code>recv</code> <code>Ok</code> ar ais chomh fada agus a bhíonn an seoltóir ag táirgeadh teachtaireachtaí, agus ansin
+gineann sé <code>Err</code> nuair a dhícheanglaíonn taobh an tseoltóra.</p>
+<h3 id="lúba-for"><a class="header" href="#lúba-for">Lúba <code>for</code></a></h3>
+<p>I lúb <code>for</code>, is patrún é an luach a leanann an eochairfhocal <code>for</code> go díreach. Mar shampla, i <code>for x in y</code> is é an <code>x</code> an patrún. Léiríonn Liostáil 19-3
+conas patrún a úsáid i lúb <code>for</code> chun tuple a dhístruchtúrú, nó a bhriseadh óna chéile, mar chuid den lúb <code>for</code>.</p>
+<Listing number="19-3" caption="Using a pattern in a `for` loop to destructure a tuple">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v = vec!['a', 'b', 'c'];
+
+    for (index, value) in v.iter().enumerate() {
+        println!("{value} is at index {index}");
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Priontálfaidh an cód i Liosta 19-3 an méid seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.52s
+     Running `target/debug/patterns`
+a is at index 0
+b is at index 1
+c is at index 2
+</code></pre>
+<p>Déanaimid oiriúnú ar athráiteoir ag baint úsáide as an modh <code>enumerate</code> ionas go dtáirgeann sé luach agus
+an t-innéacs don luach sin, curtha i dtuple. Is é an chéad luach a tháirgtear ná an
+tuple <code>(0, 'a')</code>. Nuair a mheaitseáiltear an luach seo leis an bpatrún <code>(index, value)</code>,
+beidh <code>index</code> ina <code>0</code> agus beidh <code>value</code> ina <code>'a'</code>, ag priontáil an chéad líne den
+aschur.</p>
+<h3 id="ráitis-let"><a class="header" href="#ráitis-let">Ráitis <code>let</code></a></h3>
+<p>Roimh an gcaibidil seo, ní raibh pléite againn ach go sainráite ar úsáid patrún le
+<code>match</code> agus <code>if let</code>, ach i ndáiríre, úsáideadh patrúin in áiteanna eile chomh maith,
+lena n-áirítear i ráitis <code>let</code>. Mar shampla, smaoinigh ar an sannadh athróg simplí seo le <code>let</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let x = 5;
+<span class="boring">}</span></code></pre></pre>
+<p>Gach uair a d'úsáid tú ráiteas <code>let</code> mar seo, bhí tú ag úsáid patrúin, cé nach mbeadh a fhios agat é b'fhéidir! Ar bhealach níos foirmiúla, breathnaíonn ráiteas <code>let</code> mar seo:</p>
+<pre><code class="language-text">let PATTERN = EXPRESSION;
+</code></pre>
+<p>I ráitis cosúil le <code>let x = 5;</code> le hainm athróg sa sliotán <code>PATTERN</code>, níl san
+ainm athróg ach foirm thar a bheith simplí de phatrún. Déanann Rust comparáid idir an abairt agus an patrún agus sannadh aon ainmneacha a aimsíonn sé. Mar sin, sa
+shampla <code>let x = 5;</code>, is patrún é <code>x</code> a chiallaíonn "ceangail an rud a mheaitseálann anseo leis an
+athróg <code>x</code>." Toisc gurb é an t-ainm <code>x</code> an patrún iomlán, ciallaíonn an patrún seo
+go héifeachtach "ceangail gach rud leis an athróg <code>x</code>, cibé luach é."</p>
+<p>Chun gné meaitseála patrún <code>let</code> a fheiceáil níos soiléire, smaoinigh ar Liostáil
+19-4, a úsáideann patrún le <code>let</code> chun tuple a dhístruchtúrú.</p>
+<Listing number="19-4" caption="Using a pattern to destructure a tuple and create three variables at once">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let (x, y, z) = (1, 2, 3);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Anseo, déanaimid tupla a mheaitseáil le patrún. Déanann Rust comparáid idir an luach <code>(1, 2, 3)</code> agus an patrún <code>(x, y, z)</code> agus feiceann sé go bhfuil an luach ag teacht leis an patrún, mar sin ceanglaíonn Rust <code>1</code> le <code>x</code>, <code>2</code> le <code>y</code>, agus <code>3</code> le <code>z</code>. Is féidir leat smaoineamh ar an patrún tupla seo
+mar phatrún ina bhfuil trí phatrún athróg aonair neadaithe ann.</p>
+<p>Mura bhfuil líon na n-eilimintí sa phatrún ag teacht le líon na n-eilimintí
+sa tupla, ní bheidh an cineál foriomlán ag teacht leis agus gheobhaidh muid earráid tiomsaitheora. Mar
+shampla, taispeánann Liostáil 19-5 iarracht tupla le trí
+eilimint a dhístruchtúrú ina dhá athróg, rud nach n-oibreoidh.</p>
+<Listing number="19-5" caption="Incorrectly constructing a pattern whose variables don’t match the number of elements in the tuple">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let (x, y) = (1, 2, 3);
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Má dhéantar iarracht an cód seo a thiomsú, tagann an cineál earráide seo chun cinn:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:2:9
+  |
+2 |     let (x, y) = (1, 2, 3);
+  |         ^^^^^^   --------- this expression has type `({integer}, {integer}, {integer})`
+  |         |
+  |         expected a tuple with 3 elements, found one with 2 elements
+  |
+  = note: expected tuple `({integer}, {integer}, {integer})`
+             found tuple `(_, _)`
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `patterns` (bin "patterns") due to 1 previous error
+</code></pre>
+<p>Chun an earráid a shocrú, d'fhéadfaimis neamhaird a dhéanamh de cheann amháin nó níos mó de na luachanna sa tuple ag baint úsáide as
+<code>_</code> nó <code>..</code>, mar a fheicfidh tú sa chuid [“Neamhaird a dhéanamh de Luachanna i
+Patrún”][neamhaird-luachanna-i-patrún]<!-- neamhaird a dhéanamh -->. Más é an fhadhb
+go bhfuil an iomarca athróg againn sa phatrún, is é an réiteach ná na
+cineálacha a mheaitseáil trí athróga a bhaint ionas go mbeidh líon na n-athróg cothrom le líon
+na n-eilimintí sa tuple.</p>
+<h3 id="paraiméadair-fheidhme"><a class="header" href="#paraiméadair-fheidhme">Paraiméadair Fheidhme</a></h3>
+<p>Is féidir le paraiméadair feidhme a bheith ina bpatrúin freisin. Ba chóir go mbeadh an cód i Liosta 19-6, a
+dhearbhaíonn feidhm darb ainm <code>foo</code> a ghlacann paraiméadar amháin darb ainm <code>x</code> den chineál
+<code>i32</code>, eolach anois.</p>
+<Listing number="19-6" caption="A function signature uses patterns in the parameters">
+<pre><pre class="playground"><code class="language-rust">fn foo(x: i32) {
+    // code goes here
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Is patrún é an chuid <code>x</code>! Mar a rinneamar le <code>let</code>, d’fhéadfaimis tuple in argóintí feidhme a mheaitseáil leis an patrún. Roinntear na luachanna i tuple agus muid á chur ar aghaidh chuig feidhm trí 19-7 a liostáil.</p>
+<Listing number="19-7" file-name="src/main.rs" caption="A function with parameters that destructure a tuple">
+<pre><pre class="playground"><code class="language-rust">fn print_coordinates(&amp;(x, y): &amp;(i32, i32)) {
+    println!("Current location: ({x}, {y})");
+}
+
+fn main() {
+    let point = (3, 5);
+    print_coordinates(&amp;point);
+}</code></pre></pre>
+</Listing>
+<p>Priontálann an cód seo <code>Current location: (3, 5)</code>. Meaitseálann na luachanna <code>&amp;(3, 5)</code> an patrún <code>&amp;(x, y)</code>, mar sin is é <code>x</code> an luach <code>3</code> agus is é <code>y</code> an luach <code>5</code>.</p>
+<p>Is féidir linn patrúin a úsáid i liostaí paraiméadair dúnta ar an mbealach céanna agus atá i
+liostaí paraiméadair feidhme, toisc go bhfuil dúnta cosúil le feidhmeanna, mar a
+phléitear i gCaibidil 13.</p>
+<p>Ag an bpointe seo, tá roinnt bealaí feicthe agat chun patrúin a úsáid, ach ní
+oibríonn patrúin mar an gcéanna i ngach áit is féidir linn iad a úsáid. I roinnt áiteanna, ní mór na patrúin a bheith
+dochloíte; i gcúinsí eile, is féidir iad a bhréagnú. Pléifimid
+an dá choincheap seo ina dhiaidh seo.</p>
 
                     </main>
 

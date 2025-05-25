@@ -159,7 +159,98 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="refutability-whether-a-pattern-might-fail-to-match"><a class="header" href="#refutability-whether-a-pattern-might-fail-to-match">Refutability: Whether a Pattern Might Fail to Match</a></h1>
+                        <h2 id="inbhréagnú-an-bhféadfadh-patrún-teip-a-mheaitseáil"><a class="header" href="#inbhréagnú-an-bhféadfadh-patrún-teip-a-mheaitseáil">Inbhréagnú: An bhféadfadh Patrún Teip a Mheaitseáil</a></h2>
+<p>Tagann patrúin i ndá fhoirm: inbhréagnaithe agus neamh-inbhréagnaithe. Is <em>neamh-inbhréagnaithe</em> patrúin a mheaitseálfaidh
+le haghaidh aon luach féideartha a rithtear. Sampla amháin is ea <code>x</code> sa
+ráiteas <code>let x = 5;</code> mar go meaitseálann <code>x</code> aon rud agus dá bhrí sin ní féidir leis teip
+a mheaitseáil. Is <em>neamh-inbhréagnaithe</em> patrúin nach féidir leo meaitseáil le haghaidh luach féideartha éigin. Sampla amháin is ea <code>Some(x)</code> sa abairt <code>if let Some(x) = a_value</code> mar mura bhfuil an luach san athróg <code>a_value</code> ach <code>None</code> seachas
+<code>Some</code>, ní bheidh an patrún <code>Some(x)</code> comhoiriúnach.</p>
+<p>Ní féidir le paraiméadair feidhme, ráitis <code>let</code>, agus lúba <code>for</code> ach patrúin neamh-inbhréagnaithe a ghlacadh, mar ní féidir leis an gclár aon rud bríoch a dhéanamh nuair nach
+mbeidh luachanna ag teacht le chéile. Glacann na habairtí <code>if let</code> agus <code>while let</code> agus an ráiteas
+<code>let</code>-<code>else</code> le patrúin inbhréagnaithe agus neamh-inbhréagnaithe, ach tugann an
+comhléadaitheoir rabhadh i gcoinne patrúin neamh-inbhréagnaithe toisc go bhfuil siad de réir sainmhínithe
+beartaithe chun déileáil le teip fhéideartha: tá feidhmiúlacht coinníollach ina
+chumas feidhmiú ar bhealach difriúil ag brath ar rath nó teip.</p>
+<p>Go ginearálta, níor cheart go mbeadh ort a bheith buartha faoin idirdhealú idir patrúin inbhréagnaithe
+agus neamh-inbhréagnaithe; áfach, ní mór duit a bheith eolach ar choincheap
+na hinbhréagnaitheachta ionas gur féidir leat freagairt nuair a fheiceann tú é i dteachtaireacht earráide. Sna
+cásanna sin, beidh ort an patrún nó an tógáil a bhfuil tú ag
+úsáid an phatrúin leis a athrú, ag brath ar an iompar atá beartaithe don chód.</p>
+<p>Féachfaimid ar shampla de na rudaí a tharlaíonn nuair a dhéanaimid iarracht patrún inbhréagnaithe a úsáid
+i gcás ina n-éilíonn Rust patrún neamh-inbhréagnaithe agus a mhalairt. Taispeánann Liostáil 19-8 ráiteas
+<code>let</code>, ach don phatrún tá <code>Some(x)</code> sonraithe againn, patrún
+inbhréagnaithe. Mar a bheifeá ag súil leis, ní thiomsófar an cód seo.</p>
+<Listing number="19-8" caption="Attempting to use a refutable pattern with `let`">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span><span class="boring">    let some_option_value: Option&lt;i32&gt; = None;
+</span>    let Some(x) = some_option_value;
+<span class="boring">}</span></code></pre>
+</Listing>
+<p>Dá mba luach <code>None</code> é <code>some_option_value</code>, theipfeadh air an patrún <code>Some(x)</code> a mheaitseáil, rud a chiallaíonn gur féidir an patrún a bhréagnú. Mar sin féin, ní féidir leis an ráiteas <code>let</code> glacadh le patrún dochloíte amháin mar níl aon rud bailí is féidir leis an gcód a dhéanamh le luach <code>None</code>. Ag am an tiomsaithe, gearánfaidh Rust gur thriail muid patrún dochloíte a úsáid nuair a bhíonn patrún dochloíte ag teastáil:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+error[E0005]: refutable pattern in local binding
+ --&gt; src/main.rs:3:9
+  |
+3 |     let Some(x) = some_option_value;
+  |         ^^^^^^^ pattern `None` not covered
+  |
+  = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
+  = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
+  = note: the matched value is of type `Option&lt;i32&gt;`
+help: you might want to use `let else` to handle the variant that isn't matched
+  |
+3 |     let Some(x) = some_option_value else { todo!() };
+  |                                     ++++++++++++++++
+
+For more information about this error, try `rustc --explain E0005`.
+error: could not compile `patterns` (bin "patterns") due to 1 previous error
+</code></pre>
+<p>Ós rud é nár chlúdaíomar (agus nárbh fhéidir linn!) gach luach bailí a chlúdach leis an
+patrún <code>Some(x)</code>, táirgeann Rust earráid tiomsaitheora go dlisteanach.</p>
+<p>Má tá patrún inbhréagnaithe againn ina bhfuil gá le patrún dochloíte, is féidir linn
+é a shocrú tríd an gcód a úsáideann an patrún a athrú: in ionad <code>let</code> a úsáid, is féidir linn <code>if let</code> a úsáid. Ansin mura n-oireann an patrún, scipeálfaidh an cód
+an cód sna lúibíní casta, rud a thugann bealach dó leanúint ar aghaidh go bailí. Taispeánann Liostáil
+19-9 conas an cód i Liostáil 19-8 a shocrú.</p>
+<Listing number="19-9" caption="Using `if let` and a block with refutable patterns instead of `let`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let some_option_value: Option&lt;i32&gt; = None;
+</span>    if let Some(x) = some_option_value {
+        println!("{x}");
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Tá an cód curtha as againn! Tá an cód seo bailí go hiomlán anois. Mar sin féin, má thugaimid patrún dochloíte <code>if let</code> (patrún a bheidh i gcónaí ag teacht leis), amhail <code>x</code>, mar a thaispeántar i Liostáil 19-10, tabharfaidh an tiomsaitheoir rabhadh.</p>
+<Listing number="19-10" caption="Attempting to use an irrefutable pattern with `if let`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    if let x = 5 {
+        println!("{x}");
+    };
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Gearánann Rust nach bhfuil ciall le <code>if let</code> a úsáid le patrún dochloíte:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+warning: irrefutable `if let` pattern
+ --&gt; src/main.rs:2:8
+  |
+2 |     if let x = 5 {
+  |        ^^^^^^^^^
+  |
+  = note: this pattern will always match, so the `if let` is useless
+  = help: consider replacing the `if let` with a `let`
+  = note: `#[warn(irrefutable_let_patterns)]` on by default
+
+warning: `patterns` (bin "patterns") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
+     Running `target/debug/patterns`
+5
+</code></pre>
+<p>Ar an gcúis seo, ní mór do na hairm mheaitseála patrúin inbhréagnaithe a úsáid, seachas an lámh dheireanach, ar cheart di aon luachanna atá fágtha a mheaitseáil le patrún dochloíte. Ligeann Rust dúinn patrún dochloíte a úsáid i <code>match</code> le lámh amháin, ach
+níl an comhréir seo thar a bheith úsáideach agus d'fhéadfaí ráiteas <code>let</code> níos simplí a athsholáthar.</p>
+<p>Anois go bhfuil a fhios agat cá háit le patrúin a úsáid agus an difríocht idir patrúin inbhréagnaithe
+agus dochloíte, déanaimis an comhréir go léir is féidir linn a úsáid chun patrúin
+a chruthú a chlúdach.</p>
 
                     </main>
 
