@@ -35,21 +35,33 @@
         <link rel="stylesheet" href="src/css/listing.css">
 
 
-        <!-- Provide site root to javascript -->
+        <!-- Provide site root and default themes to javascript -->
         <script>
-            var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -63,7 +75,8 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            var theme;
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -76,8 +89,8 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
@@ -113,13 +126,14 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -367,7 +381,7 @@ tá athruithe sábháilte agus ceadaithe ag na rialacha iasachtaithe.</p>
 <h3 id="feidhmeanna-hashing"><a class="header" href="#feidhmeanna-hashing">Feidhmeanna Hashing</a></h3>
 <p>De réir réamhshocraithe, úsáideann <code>HashMap</code> feidhm hashing ar a dtugtar <em>SipHash</em> is féidir a sholáthar
 frithsheasmhacht in aghaidh ionsaithe diúltaithe seirbhíse (DoS) a bhaineann le hash
-táblaí<sup class="footnote-reference"><a href="#siphash">1</a></sup> <!-- neamhaird a dhéanamh -->. Ní hé seo an algartam hashing is tapúla
+táblaí<sup class="footnote-reference" id="fr-siphash-1"><a href="#footnote-siphash">1</a></sup> <!-- neamhaird a dhéanamh -->. Ní hé seo an algartam hashing is tapúla
 ar fáil, ach an trádáil-uaire le haghaidh slándála níos fearr a thagann leis an titim isteach
 feidhmíocht is fiú é. Má tá tú próifíl do chód agus a fháil go bhfuil an réamhshocraithe
 tá feidhm hash ró-mhall chun do chuspóirí, is féidir leat aistriú go feidhm eile
@@ -377,9 +391,6 @@ Tréith <code>BuildHasher</code>. Labhróimid faoi thréithe agus conas iad a ch
 do hasher féin ón tús; <a href="https://crates.io/">crates.io</a> <!-- neamhaird -->
 tá leabharlanna roinnte ag úsáideoirí Rust eile a sholáthraíonn hashers a chuireann go leor i bhfeidhm
 halgartaim hashing coitianta.</p>
-<div class="footnote-definition" id="siphash"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://en.wikipedia.org/wiki/SipHash"> https://en.wikipedia.org/wiki/SipHash</a></p>
-</div>
 <h2 id="achoimre"><a class="header" href="#achoimre">Achoimre</a></h2>
 <p>Soláthróidh veicteoirí, teaghráin, agus léarscáileanna hash cuid mhór feidhmiúlachta
 riachtanach i gcláir nuair is gá duit sonraí a stóráil, a rochtain agus a mhodhnú. Seo iad
@@ -402,7 +413,11 @@ in ord aibítre.</li>
 agus tá léarscáileanna hash a bheidh ina gcuidiú do na cleachtaí seo!</p>
 <p>Táimid ag dul isteach i gcláir níos casta ina dteipfidh ar oibríochtaí, mar sin de
 am iontach chun láimhseáil earráidí a phlé. Déanfaimid é sin chugainn!</p>
-
+<hr>
+<ol class="footnote-definition"><li id="footnote-siphash">
+<p><a href="https://en.wikipedia.org/wiki/SipHash"> https://en.wikipedia.org/wiki/SipHash</a> <a href="#fr-siphash-1">↩</a></p>
+</li>
+</ol>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">

@@ -36,21 +36,33 @@
         <link rel="stylesheet" href="src/css/listing.css">
 
 
-        <!-- Provide site root to javascript -->
+        <!-- Provide site root and default themes to javascript -->
         <script>
-            var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -64,7 +76,8 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            var theme;
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -77,8 +90,8 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
@@ -114,13 +127,14 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -3693,7 +3707,7 @@ fn calculate_length(s: String) -&gt; (String, usize) {
 <p>Ach tá sé seo i bhfad ró-searmanas agus a lán oibre le haghaidh coincheap ba chóir a bheith
 coitianta. Go fortunately dúinn, tá gné ag Rust chun luach a úsáid gan
 úinéireacht a aistriú, ar a dtugtar <em>references</em>.</p>
-<div style="break-before: page; page-break-before: always;"></div><h2 id="tagairtí-agus-iasacht"><a class="header" href="#tagairtí-agus-iasacht">Tagairtí agus Iasacht</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="crochta-agus-tagairtí"><a class="header" href="#crochta-agus-tagairtí">Crochta agus Tagairtí</a></h2>
 <p>Is í an tsaincheist leis an gcód tuple i Liosta 4-5 ná go gcaithfimid an
 <code>String</code> don fheidhm ghlao ionas gur féidir linn fós an <code>String</code> a úsáid tar éis an
 glaoigh go <code>calculate_length</code>, mar gur aistríodh an <code>String</code> isteach
@@ -8399,7 +8413,7 @@ tá athruithe sábháilte agus ceadaithe ag na rialacha iasachtaithe.</p>
 <h3 id="feidhmeanna-hashing"><a class="header" href="#feidhmeanna-hashing">Feidhmeanna Hashing</a></h3>
 <p>De réir réamhshocraithe, úsáideann <code>HashMap</code> feidhm hashing ar a dtugtar <em>SipHash</em> is féidir a sholáthar
 frithsheasmhacht in aghaidh ionsaithe diúltaithe seirbhíse (DoS) a bhaineann le hash
-táblaí<sup class="footnote-reference"><a href="#siphash">1</a></sup> <!-- neamhaird a dhéanamh -->. Ní hé seo an algartam hashing is tapúla
+táblaí<sup class="footnote-reference" id="fr-siphash-1"><a href="#footnote-siphash">1</a></sup> <!-- neamhaird a dhéanamh -->. Ní hé seo an algartam hashing is tapúla
 ar fáil, ach an trádáil-uaire le haghaidh slándála níos fearr a thagann leis an titim isteach
 feidhmíocht is fiú é. Má tá tú próifíl do chód agus a fháil go bhfuil an réamhshocraithe
 tá feidhm hash ró-mhall chun do chuspóirí, is féidir leat aistriú go feidhm eile
@@ -8409,9 +8423,6 @@ Tréith <code>BuildHasher</code>. Labhróimid faoi thréithe agus conas iad a ch
 do hasher féin ón tús; <a href="https://crates.io/">crates.io</a> <!-- neamhaird -->
 tá leabharlanna roinnte ag úsáideoirí Rust eile a sholáthraíonn hashers a chuireann go leor i bhfeidhm
 halgartaim hashing coitianta.</p>
-<div class="footnote-definition" id="siphash"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://en.wikipedia.org/wiki/SipHash"> https://en.wikipedia.org/wiki/SipHash</a></p>
-</div>
 <h2 id="achoimre-7"><a class="header" href="#achoimre-7">Achoimre</a></h2>
 <p>Soláthróidh veicteoirí, teaghráin, agus léarscáileanna hash cuid mhór feidhmiúlachta
 riachtanach i gcláir nuair is gá duit sonraí a stóráil, a rochtain agus a mhodhnú. Seo iad
@@ -8434,7 +8445,11 @@ in ord aibítre.</li>
 agus tá léarscáileanna hash a bheidh ina gcuidiú do na cleachtaí seo!</p>
 <p>Táimid ag dul isteach i gcláir níos casta ina dteipfidh ar oibríochtaí, mar sin de
 am iontach chun láimhseáil earráidí a phlé. Déanfaimid é sin chugainn!</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="láimhseáil-earráide"><a class="header" href="#láimhseáil-earráide">Láimhseáil Earráide</a></h1>
+<hr>
+<ol class="footnote-definition"><li id="footnote-siphash">
+<p><a href="https://en.wikipedia.org/wiki/SipHash"> https://en.wikipedia.org/wiki/SipHash</a> <a href="#fr-siphash-1">↩</a></p>
+</li>
+</ol><div style="break-before: page; page-break-before: always;"></div><h1 id="láimhseáil-earráide"><a class="header" href="#láimhseáil-earráide">Láimhseáil Earráide</a></h1>
 <p>Is fíoras saoil iad earráidí i mbogearraí, mar sin tá roinnt gnéithe ag Rust le haghaidh
 láimhseáil cásanna ina dtéann rud éigin mícheart. I go leor cásanna, éilíonn Rust
 tú a admháil go bhféadfadh earráid a bheith ann agus gníomh éigin a dhéanamh roimh do
@@ -25797,8 +25812,492 @@ luach is féidir, nó ní thiomsóidh do chlár. Déanann patrúin i ráitis <co
 paraiméadair feidhme na coincheapa sin níos úsáidí, rud a chuireann ar chumas
 luachanna a athstruchtúrú i gcodanna níos lú ag an am céanna le hathróga a shannadh. Is féidir linn patrúin shimplí nó chasta a chruthú chun freastal ar ár riachtanais.</p>
 <p>Ansin, don dara caibidil dheireanach den leabhar, féachfaimid ar roinnt gnéithe ardleibhéil de ghnéithe éagsúla Rust.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-features"><a class="header" href="#advanced-features">Advanced Features</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="unsafe-rust"><a class="header" href="#unsafe-rust">Unsafe Rust</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gnéithe-ardleibhéil"><a class="header" href="#gnéithe-ardleibhéil">Gnéithe Ardleibhéil</a></h1>
+<p>Faoin am seo, tá na codanna is coitianta a úsáidtear den teanga ríomhchlárúcháin Rust foghlamtha agat. Sula ndéanaimid tionscadal eile i gCaibidil 21, féachfaimid ar chúpla gné den teanga a d'fhéadfá a fheiceáil ó am go ham, ach nach n-úsáidfeá gach lá. Is féidir leat an chaibidil seo a úsáid mar thagairt nuair a thagann tú ar aon rud anaithnid. Tá na gnéithe atá clúdaithe anseo úsáideach i gcásanna an-sonracha.
+Cé nach mbeadh tú ag baint úsáide astu go minic, ba mhaith linn a chinntiú go bhfuil tuiscint agat ar na gnéithe go léir atá le tairiscint ag Rust. Sa chaibidil seo, clúdóimid:</p>
+<ul>
+<li>Rust Neamhshábháilte: conas rogha an diúltaithe a dhéanamh ar chuid de ráthaíochtaí Rust agus freagracht a ghlacadh as na ráthaíochtaí sin a choinneáil de láimh</li>
+<li>Tréithe ardleibhéil: cineálacha gaolmhara, paraiméadair chineáil réamhshocraithe, comhréir láncháilithe, sárthréithe, agus an patrún cineál nua i ndáil le tréithe</li>
+<li>Cineálacha ardleibhéil: tuilleadh faoin patrún cineál nua, leasaithigh chineáil, an cineál riamh,
+agus cineálacha méide dinimiciúla</li>
+<li>Feidhmeanna agus dúnta ardleibhéil: pointeoirí feidhme agus dúnta fillte</li>
+<li>Macraí: bealaí chun cód a shainiú a shainíonn níos mó cóid ag am tiomsaithe</li>
+</ul>
+<p>Is réimse leathan gnéithe Rust é le rud éigin do gach duine! Déanaimis tumadh isteach!</p>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="meirg-neamhshábháilte"><a class="header" href="#meirg-neamhshábháilte">Meirg Neamhshábháilte</a></h2>
+<p>Tá ráthaíochtaí sábháilteachta cuimhne Rust curtha i bhfeidhm ag am an tiomsaithe i ngach cód a phléamar go dtí seo. Mar sin féin, tá teanga eile i bhfolach i Rust
+nach gcuireann na ráthaíochtaí sábháilteachta cuimhne seo i bhfeidhm: tugtar <em>unsafe Rust</em> air
+agus oibríonn sé díreach cosúil le Rust rialta, ach tugann sé sárchumhachtaí breise dúinn.</p>
+<p>Tá Meirg Neamhshábháilte ann toisc, de réir nádúir, go bhfuil anailís statach coimeádach. Nuair
+a dhéanann an tiomsaitheoir iarracht a chinneadh an gcomhlíonann an cód na ráthaíochtaí nó nach gcomhlíonann,
+is fearr dó roinnt clár bailí a dhiúltú ná roinnt clár neamhbhailí a ghlacadh.</p>
+<p>Cé go bhféadfadh an cód a bheith ceart go leor, mura bhfuil
+dóthain faisnéise ag tiomsaitheoir Rust le bheith muiníneach, diúltóidh sé don chód. Sna cásanna seo,
+is féidir leat cód neamhshábháilte a úsáid chun a rá leis an tiomsaitheoir, "Creid dom, tá a fhios agam cad atá á dhéanamh agam." Bí cúramach, áfach, go n-úsáideann tú Rust neamhshábháilte ar do phriacal féin: má
+úsáideann tú cód neamhshábháilte go mícheart, is féidir fadhbanna a bheith ann mar gheall ar neamhshábháilteacht cuimhne, amhail
+dí-thagairt pointeora nialasach.</p>
+<p>Cúis eile a bhfuil alter ego neamhshábháilte ag Rust ná go bhfuil an crua-earraí ríomhaireachta bunúsach neamhshábháilte ó dhúchas. Mura lig Rust duit oibríochtaí neamhshábháilte a dhéanamh, ní fhéadfá tascanna áirithe a dhéanamh. Caithfidh Rust ligean duit cláir chórais ísealleibhéil a dhéanamh, amhail idirghníomhú go díreach leis an gcóras oibriúcháin nó fiú do chóras oibriúcháin féin a scríobh. Tá obair le cláir chórais ísealleibhéil ar cheann de spriocanna na teanga. Déanaimis iniúchadh ar a bhféadfaimid a dhéanamh le Rust neamhshábháilte agus conas é a dhéanamh.</p>
+<h3 id="sárchumhachtaí-neamhshábháilte"><a class="header" href="#sárchumhachtaí-neamhshábháilte">Sárchumhachtaí Neamhshábháilte</a></h3>
+<p>Chun aistriú go Rust neamhshábháilte, bain úsáid as an eochairfhocal <code>unsafe</code> agus ansin tosaigh bloc nua ina bhfuil an cód neamhshábháilte. Is féidir leat cúig ghníomh a dhéanamh i Rust neamhshábháilte nach féidir leat a dhéanamh i Rust sábháilte, ar a dtugaimid <em>sárchumhachtaí neamhshábháilte</em>. I measc na sárchumhachtaí sin
+tá an cumas chun:</p>
+<ul>
+<li>Díthagairt a dhéanamh ar phointeoir amh</li>
+<li>Feidhm nó modh neamhshábháilte a ghlaoch</li>
+<li>Athróg statach inathraithe a rochtain nó a mhodhnú</li>
+<li>Tréith neamhshábháilte a chur i bhfeidhm</li>
+<li>Rochtain a fháil ar réimsí <code>union</code></li>
+</ul>
+<p>Tá sé tábhachtach a thuiscint nach múchann <code>unsafe</code> an seiceálaí iasachta
+ná nach ndíchumasaíonn sé aon cheann eile de sheiceálacha sábháilteachta Rust: má úsáideann tú tagairt i gcód neamhshábháilte,
+déanfar seiceáil air fós. Ní thugann an eochairfhocal <code>unsafe</code> ach rochtain duit ar
+na cúig ghné seo nach ndéanann an tiomsaitheoir seiceáil orthu ansin le haghaidh sábháilteachta
+cuimhne. Gheobhaidh tú leibhéal áirithe sábháilteachta fós taobh istigh de bhloc neamhshábháilte.</p>
+<p>Ina theannta sin, ní chiallaíonn <code>unsafe</code> go bhfuil an cód taobh istigh den bhloc contúirteach go riachtanach
+nó go mbeidh fadhbanna sábháilteachta cuimhne aige cinnte: is é an cuspóir
+go gcinnteoidh tú, mar chláraitheoir, go ndéanfaidh an cód taobh istigh de bhloc <code>unsafe</code>
+rochtain ar chuimhne ar bhealach bailí.</p>
+<p>Bíonn daoine earráideach, agus tarlóidh botúin, ach trí cheangal a chur ar na cúig oibríocht neamhshábháilte seo a bheith laistigh de bhloic a bhfuil nótaí orthu le <code>unsafe</code> beidh a fhios agat go gcaithfidh aon earráidí a bhaineann le sábháilteacht cuimhne a bheith laistigh de bhloc <code>unsafe</code>. Coinnigh
+bloic <code>unsafe</code> beag; beidh tú buíoch níos déanaí nuair a dhéanfaidh tú imscrúdú ar fhabhtanna cuimhne.</p>
+<p>Chun cód neamhshábháilte a leithlisiú a oiread agus is féidir, is fearr cód neamhshábháilte a iamh
+laistigh d'eastarraingt shábháilte agus API sábháilte a sholáthar, a phléifimid níos déanaí sa
+chaibidil nuair a scrúdóimid feidhmeanna agus modhanna neamhshábháilte. Cuirtear codanna den
+leabharlann chaighdeánach i bhfeidhm mar eastarraingtí sábháilte thar chód neamhshábháilte atá
+iniúchta. Cuireann timfhilleadh cód neamhshábháilte in eastarraingt shábháilte cosc ​​ar úsáidí <code>unsafe</code>
+ó sceitheadh ​​​​​​amach sna háiteanna go léir a bhféadfadh tú féin nó d'úsáideoirí a bheith ag iarraidh an fheidhmiúlacht a cuireadh i bhfeidhm le cód <code>unsafe</code> a úsáid, toisc go bhfuil úsáid eastarraingthe sábháilte sábháilte.</p>
+<p>Féachfaimid ar gach ceann de na cúig chumhacht mhór neamhshábháilte ina dhiaidh sin. Féachfaimid freisin ar
+roinnt teibí a sholáthraíonn comhéadan sábháilte do chód neamhshábháilte.</p>
+<h3 id="díthagairt-pointeoir-amh"><a class="header" href="#díthagairt-pointeoir-amh">Díthagairt Pointeoir Amh</a></h3>
+<p>I gCaibidil 4, sa chuid <a href="ch04-02-references-and-borrowing.html#dangling-references">“Crochta agus Tagairtí”</a><!-- ignore
+-->, luaigh muid go gcinntíonn an tiomsaitheoir go bhfuil tagairtí i gcónaí
+bailí. Tá dhá chineál nua ag Unsafe Rust ar a dtugtar <em>pointéirí</em> atá cosúil le
+tagairtí. Mar atá le tagairtí, is féidir le pointeoirí amha a bheith dochloíte nó inathraithe agus
+scríobhtar iad mar <code>*const T</code> agus <code>*mut T</code>, faoi seach. Ní hé an réalta an
+oibreoir díthagairt; is cuid den ainm cineáil é. I gcomhthéacs pointeoirí
+amha, ciallaíonn <em>immutable</em> nach féidir an pointeoir a shannadh go díreach
+tar éis é a dhíthagairt.</p>
+<p>Difriúil ó thagairtí agus pointeoirí cliste, pointeoirí amha:</p>
+<ul>
+<li>Ceadaítear dóibh neamhaird a dhéanamh de na rialacha iasachta trí phointeoirí dochloíte agus inathraithe araon a bheith acu
+nó ilphointeoirí inathraithe chuig an suíomh céanna</li>
+<li>Ní ráthaítear go bpointeoidh siad chuig cuimhne bhailí</li>
+<li>Ceadaítear dóibh a bheith nialasach</li>
+<li>Ní chuireann siad aon ghlanadh uathoibríoch i bhfeidhm</li>
+</ul>
+<p>Trí rogha a dhéanamh gan na ráthaíochtaí seo a fhorfheidhmiú ag Rust, is féidir leat sábháilteacht ráthaithe a thabhairt suas ar mhaithe le feidhmíocht níos fearr nó an cumas
+comhéadan a dhéanamh le teanga nó crua-earraí eile nach bhfuil feidhm ag ráthaíochtaí Rust.</p>
+<p>Léiríonn Liostáil 20-1 conas pointeoir amh dochloíte agus inathraithe a chruthú.</p>
+<Listing number="20-1" caption="Creating raw pointers with the raw borrow operators">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut num = 5;
+
+    let r1 = &amp;raw const num;
+    let r2 = &amp;raw mut num;
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Tabhair faoi deara nach gcuirimid an eochairfhocal <code>unsafe</code> san áireamh sa chód seo. Is féidir linn pointeoirí amha a chruthú i gcód sábháilte; ní féidir linn pointeoirí amha a dhíthagairt lasmuigh de bhloc
+unsafe, mar a fheicfidh tú i gceann tamaill.</p>
+<p>Chruthaíomar pointeoirí amha trí úsáid a bhaint as na hoibreoirí iasachta amha: cruthaíonn <code>&amp;raw const num</code> pointeoir amh dochloíte <code>*const i32</code>, agus cruthaíonn <code>&amp;raw mut num</code> pointeoir amh inathraithe <code>*mut i32</code>. Toisc gur chruthaíomar iad go díreach ó athróg
+áitiúil, tá a fhios againn go bhfuil na pointeoirí amha seo bailí, ach ní féidir linn an toimhde sin a dhéanamh faoi aon phointeoir amh.</p>
+<p>Chun seo a léiriú, ansin cruthóimid pointeoir amh nach féidir linn a bheith
+cinnte faoi a bhailíocht, ag baint úsáide as <code>as</code> chun luach a chaitheamh in ionad na n-oibreoirí
+tagartha amha a úsáid. Taispeánann Liostáil 20-2 conas pointeoir amh a chruthú chuig suíomh treallach
+sa chuimhne. Níl aon sainmhíniú ar úsáid chuimhne treallach: d'fhéadfadh sonraí a bheith ag an seoladh sin nó nach mbeadh, d'fhéadfadh an tiomsaitheoir an cód a bharrfheabhsú ionas nach mbeadh rochtain chuimhne ann, nó d'fhéadfadh earráid deighilte a bheith sa chlár.
+De ghnáth, ní bhíonn aon chúis mhaith ann cód mar seo a scríobh, go háirithe i gcásanna
+inar féidir leat oibreoir iasachta amh a úsáid ina ionad, ach is féidir é.</p>
+<Listing number="20-2" caption="Creating a raw pointer to an arbitrary memory address">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let address = 0x012345usize;
+    let r = address as *const i32;
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Cuimhnigh gur féidir linn pointeoirí amha a chruthú i gcód sábháilte, ach ní féidir linn pointeoirí amha a <em>díthreorú</em> agus na sonraí atá á dtagairt a léamh. I Liosta 20-3, úsáidimid an t-oibreoir
+díthreorú <code>*</code> ar phointeoir amh a éilíonn bloc <code>unsafe</code>.</p>
+<Listing number="20-3" caption="Dereferencing raw pointers within an `unsafe` block">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut num = 5;
+
+    let r1 = &amp;raw const num;
+    let r2 = &amp;raw mut num;
+
+    unsafe {
+        println!("r1 is: {}", *r1);
+        println!("r2 is: {}", *r2);
+    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Ní dhéanann cruthú pointeora aon dochar; ní féidir linn déileáil le luach neamhbhailí ach amháin nuair a dhéanaimid iarracht rochtain a fháil ar an luach a bhfuil sé ag pointeáil air.</p>
+<p>Tabhair faoi deara freisin gur chruthaíomar i Liosta 20-1 agus 20-3 pointeoirí amha <code>*const i32</code> agus <code>*mut i32</code> a bhí ag pointeáil chuig an suíomh cuimhne céanna, áit a bhfuil <code>num</code>
+stóráilte. Dá ndéanfaimis iarracht tagairt neamh-inathraithe agus tagairt inathraithe a chruthú chuig
+<code>num</code>, ní bheadh ​​an cód tiomsaithe mar ní cheadaíonn rialacha úinéireachta Rust
+tagairt inathraithe ag an am céanna le haon tagairtí neamh-inathraithe. Le
+pointeoirí amha, is féidir linn pointeoir inathraithe agus pointeoir neamh-inathraithe a chruthú chuig an
+suíomh céanna agus sonraí a athrú tríd an bpointeoir inathraithe, rud a d'fhéadfadh
+rás sonraí a chruthú. Bí cúramach!</p>
+<p>Leis na contúirtí seo go léir, cén fáth a n-úsáidfeá pointeoirí amha riamh? Cás úsáide mór amháin is ea nuair a bhíonn comhéadan á dhéanamh le cód C, mar a fheicfidh tú sa chéad chuid eile,
+<a href="ch20-01-unsafe-rust.html#glaoch-ar-fheidhm-n%C3%B3-modh-neamhsh%C3%A1bh%C3%A1ilte">“Glaoch ar Fheidhm nó
+Modh Neamhshábháilte.”</a><!-- neamhaird a dhéanamh --> Cás eile is ea
+nuair a bhíonn teibí sábháilte á dtógáil nach dtuigeann an seiceálaí iasachta.</p>
+<p>Tabharfaimid isteach feidhmeanna neamhshábháilte agus ansin féachfaimid ar shampla d’eibí sábháilte a úsáideann cód neamhshábháilte.</p>
+<h3 id="glaoch-ar-fheidhm-nó-modh-neamhshábháilte"><a class="header" href="#glaoch-ar-fheidhm-nó-modh-neamhshábháilte">Glaoch ar Fheidhm nó Modh Neamhshábháilte</a></h3>
+<p>Is é an dara cineál oibríochta is féidir leat a dhéanamh i mbloc neamhshábháilte ná glaoch ar
+fheidhmeanna neamhshábháilte. Breathnaíonn feidhmeanna agus modhanna neamhshábháilte díreach cosúil le feidhmeanna agus modhanna rialta,
+ach tá <code>unsafe</code> breise acu roimh an gcuid eile den
+sainmhíniú. Léiríonn an eochairfhocal <code>unsafe</code> sa chomhthéacs seo go bhfuil
+riachtanais ag an bhfeidhm a chaithfimid a chomhlíonadh nuair a ghlaoimid ar an bhfeidhm seo, mar ní féidir le Rust
+a ráthú go bhfuil na ceanglais seo comhlíonta againn. Trí fheidhm neamhshábháilte a ghlaoch laistigh de bhloc <code>unsafe</code>, táimid ag rá gur léigh muid doiciméadacht na feidhme seo agus go nglacaimid freagracht as conarthaí na feidhme a choinneáil.</p>
+<p>Seo feidhm neamhshábháilte darb ainm <code>dangerous</code> nach ndéanann aon rud ina corp:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    unsafe fn dangerous() {}
+
+    unsafe {
+        dangerous();
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>Ní mór dúinn glaoch ar an bhfeidhm <code>dangerous</code> laistigh de bhloc <code>unsafe</code> ar leithligh. Má dhéanaimid iarracht glaoch ar <code>dangerous</code> gan an bloc <code>unsafe</code>, gheobhaidh muid earráid:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling unsafe-example v0.1.0 (file:///projects/unsafe-example)
+error[E0133]: call to unsafe function `dangerous` is unsafe and requires unsafe function or block
+ --&gt; src/main.rs:4:5
+  |
+4 |     dangerous();
+  |     ^^^^^^^^^^^ call to unsafe function
+  |
+  = note: consult the function's documentation for information on how to avoid undefined behavior
+
+For more information about this error, try `rustc --explain E0133`.
+error: could not compile `unsafe-example` (bin "unsafe-example") due to 1 previous error
+</code></pre>
+<p>Leis an mbloc <code>unsafe</code>, táimid ag dearbhú do Rust gur léigh muid doiciméadacht na feidhme, go dtuigeann muid conas í a úsáid i gceart, agus gur fhíoraigh muid go bhfuilimid ag comhlíonadh chonradh na feidhme.</p>
+<p>Chun oibríochtaí neamhshábháilte a dhéanamh i gcorp feidhme neamhshábháilte, ní mór duit fós
+bloc <code>unsafe</code> a úsáid díreach mar atá laistigh de ghnáthfheidhm, agus tabharfaidh an tiomsaitheoir
+rabhadh duit má dhéanann tú dearmad. Cuidíonn sé seo le bloic <code>unsafe</code> a choinneáil chomh beag agus
+is féidir, toisc nach mbeadh gá le hoibríochtaí neamhshábháilte ar fud
+chorp iomlán na feidhme.</p>
+<h4 id="aistarraingt-shábháilte-a-chruthú-thar-chód-neamhshábháilte"><a class="header" href="#aistarraingt-shábháilte-a-chruthú-thar-chód-neamhshábháilte">Aistarraingt Shábháilte a Chruthú thar Chód Neamhshábháilte</a></h4>
+<p>Ní chiallaíonn sé go gcaithfimid an
+fheidhm iomlán a mharcáil mar neamhshábháilte díreach toisc go bhfuil cód neamhshábháilte i bhfeidhm. Déanta na fírinne, is
+aistarraingt choitianta é cód neamhshábháilte a fhilleadh i bhfeidhm shábháilte. Mar shampla, déanaimis staidéar a dhéanamh ar an bhfeidhm <code>split_at_mut</code>
+ón leabharlann chaighdeánach, a éilíonn roinnt cód neamhshábháilte. Déanfaimid iniúchadh ar conas
+a d'fhéadfaimis í a chur i bhfeidhm. Sainmhínítear an modh sábháilte seo ar shlisní inathraithe: tógann sé slisne amháin agus déanann sé dhá cheann de tríd an slisne a scoilt ag an innéacs a thugtar mar argóint. Taispeánann liostú 20-4 conas <code>split_at_mut</code> a úsáid.</p>
+<Listing number="20-4" caption="Using the safe `split_at_mut` function">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut v = vec![1, 2, 3, 4, 5, 6];
+
+    let r = &amp;mut v[..];
+
+    let (a, b) = r.split_at_mut(3);
+
+    assert_eq!(a, &amp;mut [1, 2, 3]);
+    assert_eq!(b, &amp;mut [4, 5, 6]);
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Ní féidir linn an fheidhm seo a chur i bhfeidhm ag baint úsáide as Rust sábháilte amháin. D’fhéadfadh iarracht breathnú cosúil le Liosta 20-5, nach ndéanfaidh tiomsú. Ar mhaithe le simplíocht, cuirfimid <code>split_at_mut</code> i bhfeidhm mar fheidhm seachas mar mhodh agus le haghaidh slisní de luachanna <code>i32</code> seachas le haghaidh cineál cineálach <code>T</code>.</p>
+<Listing number="20-5" caption="An attempted implementation of `split_at_mut` using only safe Rust">
+<pre><code class="language-rust ignore does_not_compile">fn split_at_mut(values: &amp;mut [i32], mid: usize) -&gt; (&amp;mut [i32], &amp;mut [i32]) {
+    let len = values.len();
+
+    assert!(mid &lt;= len);
+
+    (&amp;mut values[..mid], &amp;mut values[mid..])
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let mut vector = vec![1, 2, 3, 4, 5, 6];
+</span><span class="boring">    let (left, right) = split_at_mut(&amp;mut vector, 3);
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Faigheann an fheidhm seo fad iomlán an tslisne ar dtús. Ansin dearbhaíonn sí go bhfuil
+an t-innéacs a thugtar mar pharaiméadar laistigh den tslisne trí sheiceáil an bhfuil sé
+níos lú ná nó cothrom leis an fhad. Ciallaíonn an dearbhú má ritheann muid innéacs
+atá níos mó ná an fad chun an tslisne a roinnt ag, go mbeidh scaoll ar an bhfeidhm
+sula ndéanann sí iarracht an t-innéacs sin a úsáid.</p>
+<p>Ansin, cuirimid dhá shlisne inathraithe ar ais i dtupla: ceann ó thús an
+tslisne bhunaidh go dtí an t-innéacs <code>mid</code> agus ceann eile ó <code>mid</code> go dtí deireadh an
+tslisne.</p>
+<p>Nuair a dhéanaimid iarracht an cód i Liosta 20-5 a thiomsú, gheobhaidh muid earráid.</p>
+<pre><code class="language-console">$ cargo run
+   Compiling unsafe-example v0.1.0 (file:///projects/unsafe-example)
+error[E0499]: cannot borrow `*values` as mutable more than once at a time
+ --&gt; src/main.rs:6:31
+  |
+1 | fn split_at_mut(values: &amp;mut [i32], mid: usize) -&gt; (&amp;mut [i32], &amp;mut [i32]) {
+  |                         - let's call the lifetime of this reference `'1`
+...
+6 |     (&amp;mut values[..mid], &amp;mut values[mid..])
+  |     --------------------------^^^^^^--------
+  |     |     |                   |
+  |     |     |                   second mutable borrow occurs here
+  |     |     first mutable borrow occurs here
+  |     returning this value requires that `*values` is borrowed for `'1`
+  |
+  = help: use `.split_at_mut(position)` to obtain two mutable non-overlapping sub-slices
+
+For more information about this error, try `rustc --explain E0499`.
+error: could not compile `unsafe-example` (bin "unsafe-example") due to 1 previous error
+</code></pre>
+<p>Ní thuigfidh seiceálaí iasachta Rust go bhfuil codanna difriúla den slisne á n-iasacht againn; níl a fhios aige ach go bhfuilimid ag iasacht ón slisne céanna faoi dhó.
+Tá sé ceart go bunúsach codanna difriúla de shlisne a fháil ar iasacht toisc nach bhfuil an dá
+shlisne ag forluí, ach níl Rust cliste go leor chun é seo a fhios. Nuair a
+bheimid
+cinnte go bhfuil an cód ceart go leor, ach nach bhfuil Rust, tá sé in am dul i muinín cód neamhshábháilte.</p>
+<p>Léiríonn liostú 20-6 conas bloc <code>unsafe</code>, pointeoir amh, agus roinnt glaonna
+chuig feidhmeanna neamhshábháilte a úsáid chun cur i bhfeidhm <code>split_at_mut</code> a chur ag obair.</p>
+<Listing number="20-6" caption="Using unsafe code in the implementation of the `split_at_mut` function">
+<pre><pre class="playground"><code class="language-rust">use std::slice;
+
+fn split_at_mut(values: &amp;mut [i32], mid: usize) -&gt; (&amp;mut [i32], &amp;mut [i32]) {
+    let len = values.len();
+    let ptr = values.as_mut_ptr();
+
+    assert!(mid &lt;= len);
+
+    unsafe {
+        (
+            slice::from_raw_parts_mut(ptr, mid),
+            slice::from_raw_parts_mut(ptr.add(mid), len - mid),
+        )
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let mut vector = vec![1, 2, 3, 4, 5, 6];
+</span><span class="boring">    let (left, right) = split_at_mut(&amp;mut vector, 3);
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Meabhraigh ón alt <a href="ch04-03-slices.html#the-slice-type">“The Slice Type”</a><!-- ignore --> i
+Caibidil 4 go bhfuil slisní ina dtuairimeoir chuig sonraí áirithe agus fad na slisne.
+Úsáidimid an modh <code>len</code> chun fad slisne a fháil agus an modh <code>as_mut_ptr</code>
+chun rochtain a fháil ar an dtuairimeoir amh de shlisne. Sa chás seo, toisc go bhfuil slisne inathraithe againn go luachanna <code>i32</code>, tugann <code>as_mut_ptr</code> pointeoir amh ar ais leis an gcineál
+<code>*mut i32</code>, atá stóráilte againn san athróg <code>ptr</code>.</p>
+<p>Coinnímid an dearbhú go bhfuil an t-innéacs <code>mid</code> laistigh den slisne. Ansin tagaimid chuig
+an cód neamhshábháilte: glacann an fheidhm <code>slice::from_raw_parts_mut</code> pointeoir amh
+agus fad, agus cruthaíonn sí slisne. Úsáidimid an fheidhm seo chun slisne a chruthú
+a thosaíonn ó <code>ptr</code> agus atá ina míreanna <code>mid</code> ar fhad. Ansin glaoimid ar an modh <code>add</code> ar <code>ptr</code> le <code>mid</code> mar argóint chun pointeoir amh a fháil a thosaíonn ag
+<code>mid</code>, agus cruthaímid slisne ag baint úsáide as an pointeoir sin agus an líon atá fágtha de
+mhíreanna i ndiaidh <code>mid</code> mar an fad.</p>
+<p>Tá an fheidhm <code>slice::from_raw_parts_mut</code> neamhshábháilte mar go nglacann sí pointeoir amh agus ní mór di muinín a bheith aici go bhfuil an pointeoir seo bailí. Tá an modh <code>add</code> ar phointeoirí amha
+neamhshábháilte freisin, mar ní mór di muinín a bheith aici go bhfuil an suíomh fritháireamh ina phointeoir bailí freisin. Dá bhrí sin, b'éigean dúinn bloc <code>unsafe</code> a chur timpeall ar ár nglaonna chuig
+<code>slice::from_raw_parts_mut</code> agus <code>add</code> ionas go bhféadfaimis glaoch orthu. Trí fhéachaint ar
+an gcód agus tríd an dearbhú a chur leis go gcaithfidh <code>mid</code> a bheith níos lú ná nó cothrom le
+<code>len</code>, is féidir linn a rá go mbeidh na pointeoirí amha go léir a úsáidtear laistigh den bhloc <code>unsafe</code>
+ina dtuairimí bailí chuig sonraí laistigh den slisne. Is úsáid inghlactha agus
+iomchuí de <code>unsafe</code> é seo.</p>
+<p>Tabhair faoi deara nach gá dúinn an fheidhm <code>split_at_mut</code> mar thoradh air sin a mharcáil mar
+<code>unsafe</code>, agus is féidir linn an fheidhm seo a ghlaoch ó Rust sábháilte. Chruthaíomar teibí sábháilte chuig an gcód neamhshábháilte le cur i bhfeidhm den fheidhm a úsáideann
+cód <code>unsafe</code> ar bhealach sábháilte, toisc nach gcruthaíonn sé ach pointeoirí bailí ó na
+sonraí a bhfuil rochtain ag an bhfeidhm seo orthu.</p>
+<p>I gcodarsnacht leis sin, is dócha go dtitfeadh úsáid <code>slice::from_raw_parts_mut</code> i Liosta 20-7 nuair a úsáidtear an slisne. Glacann an cód seo suíomh cuimhne treallach
+agus cruthaíonn sé slisne 10,000 mír ar fhad.</p>
+<Listing number="20-7" caption="Creating a slice from an arbitrary memory location">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    use std::slice;
+
+    let address = 0x01234usize;
+    let r = address as *mut i32;
+
+    let values: &amp;[i32] = unsafe { slice::from_raw_parts_mut(r, 10000) };
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Ní linn an chuimhne ag an suíomh treallach seo, agus níl aon ráthaíocht ann go bhfuil luachanna bailí <code>i32</code> sa tslis a chruthaíonn an cód seo. Má dhéantar iarracht <code>values</code> a úsáid amhail is dá mba tslis bhailí í, ní bheidh aon sainmhíniú ar iompar.</p>
+<h4 id="feidhmeanna-extern-a-Úsáid-chun-cód-seachtrach-a-ghlaoch"><a class="header" href="#feidhmeanna-extern-a-Úsáid-chun-cód-seachtrach-a-ghlaoch">Feidhmeanna <code>extern</code> a Úsáid chun Cód Seachtrach a Ghlaoch</a></h4>
+<p>Uaireanta, b'fhéidir go mbeadh ar do chód Rust idirghníomhú le cód atá scríofa i dteanga eile. Chuige seo, tá an eochairfhocal <code>extern</code> ag Rust a éascaíonn cruthú
+agus úsáid <em>Foreign Function Interface (FFI)</em>. Is bealach é FFI do
+theanga ríomhchlárúcháin feidhmeanna a shainiú agus teanga ríomhchlárúcháin (eachtrannach) eile a chumasú chun na feidhmeanna sin a ghlaoch.</p>
+<p>Léiríonn Liostáil 20-8 conas comhtháthú a bhunú leis an bhfeidhm <code>abs</code>
+ón leabharlann chaighdeánach C. De ghnáth, bíonn feidhmeanna a dhearbhaítear laistigh de bhloic <code>extern</code>
+neamhshábháilte le glaoch orthu ó chód Rust, mar sin ní mór iad a mharcáil mar <code>unsafe</code> freisin. Is é an chúis atá leis ná nach gcuireann teangacha eile rialacha agus ráthaíochtaí Rust i bhfeidhm, agus ní féidir le Rust iad a sheiceáil, mar sin tá an fhreagracht ar an ríomhchláraitheoir sábháilteacht a chinntiú.</p>
+<Listing number="20-8" file-name="src/main.rs" caption="Declaring and calling an `extern` function defined in another language">
+<pre><pre class="playground"><code class="language-rust">unsafe extern "C" {
+    fn abs(input: i32) -&gt; i32;
+}
+
+fn main() {
+    unsafe {
+        println!("Absolute value of -3 according to C: {}", abs(-3));
+    }
+}</code></pre></pre>
+</Listing>
+<p>Laistigh den bhloc <code>unsafe extern "C"</code>, liostaímid ainmneacha agus sínithe feidhmeanna seachtracha ó theanga eile ar mhaith linn glaoch uirthi. Sainmhíníonn an chuid <code>"C"</code> cén <em>comhéadan dénártha feidhmchláir (ABI)</em> a úsáideann an fheidhm sheachtrach: sainmhíníonn an ABI conas glaoch ar an bhfeidhm ag leibhéal an tionóil. Is é an ABI <code>"C"</code> an ceann is coitianta agus leanann sé ABI na teanga ríomhchlárúcháin C.</p>
+<p>Níl aon bhreithnithe sábháilteachta cuimhne ag baint leis an bhfeidhm seo, áfach.
+Go deimhin, tá a fhios againn go mbeidh aon ghlao ar <code>abs</code> sábháilte i gcónaí d'aon <code>i32</code>, mar sin is féidir linn an eochairfhocal <code>safe</code> a úsáid chun a rá go bhfuil sé sábháilte glaoch ar an bhfeidhm shonrach seo cé go bhfuil sí i mbloc <code>unsafe extern</code>. Nuair a dhéanaimid an t-athrú sin, ní gá bloc <code>unsafe</code> a thuilleadh le glaoch uirthi, mar a thaispeántar i Liostáil 20-9.</p>
+<Listing number="20-9" file-name="src/main.rs" caption="Explicitly marking a function as `safe` within an `unsafe extern` block and calling it safely">
+<pre><pre class="playground"><code class="language-rust">unsafe extern "C" {
+    safe fn abs(input: i32) -&gt; i32;
+}
+
+fn main() {
+    println!("Absolute value of -3 according to C: {}", abs(-3));
+}</code></pre></pre>
+</Listing>
+<p>Ní chiallaíonn sé go bhfuil feidhm sábháilte má mharcálann tú í mar <code>safe</code>! Ina áit sin, is cosúil le gealltanas atá á thabhairt agat do Rust <em>go bhfuil sí</em> sábháilte í. Is ortsa atá an fhreagracht fós a chinntiú go gcomhlíontar an gealltanas sin!</p>
+<blockquote>
+<h4 id="ag-glaoch-ar-fheidhmeanna-rust-ó-theangacha-eile"><a class="header" href="#ag-glaoch-ar-fheidhmeanna-rust-ó-theangacha-eile">Ag Glaoch ar Fheidhmeanna Rust ó Theangacha Eile</a></h4>
+<p>Is féidir linn <code>extern</code> a úsáid freisin chun comhéadan a chruthú a ligeann do theangacha eile
+glaoch ar fheidhmeanna Rust. In ionad bloc iomlán <code>extern</code> a chruthú, cuirimid an
+eochairfhocal <code>extern</code> leis agus sonraímid an ABI le húsáid díreach roimh an eochairfhocal <code>fn</code> don
+fheidhm ábhartha. Ní mór dúinn anótáil <code>#[unsafe(no_mangle)]</code> a chur leis freisin
+chun a rá leis an tiomsaitheoir Rust gan ainm na feidhme seo a mhilleadh. Is é <em>Mhangling</em>
+ná nuair a athraíonn tiomsaitheoir an t-ainm a thugamar d'fheidhm go hainm difriúil
+ina bhfuil níos mó faisnéise do chodanna eile den phróiseas tiomsaithe le
+a úsáid ach atá níos lú inléite ag daoine. Déanann gach tiomsaitheoir teanga ríomhchlárúcháin
+ainmneacha a mhilleadh beagán difriúil, mar sin chun go mbeidh feidhm Rust inainmnithe ag
+teangacha eile, ní mór dúinn mangling ainmneacha an tiomsaitheora Rust a dhíchumasú. Tá sé seo
+neamhshábháilte mar d'fhéadfadh imbhuailtí ainmneacha a bheith ann trasna leabharlanna gan an
+mangling ionsuite, mar sin is orainne atá an fhreagracht a chinntiú go bhfuil an t-ainm atá
+easpórtáilte againn sábháilte le heaspórtáil gan mangling.</p>
+<p>Sa sampla seo a leanas, déanaimid an fheidhm <code>call_from_c</code> inrochtana ó
+chód C, tar éis í a thiomsú chuig leabharlann chomhroinnte agus a nascadh ó C:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[unsafe(no_mangle)]
+pub extern "C" fn call_from_c() {
+println!("Glaoite ar fheidhm Rust ó C díreach!");
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Ní gá <code>unsafe</code> a úsáid don úsáid seo de <code>extern</code>.</p>
+</blockquote>
+<h3 id="rochtain-ar-athróg-statach-inathraithe-nó-í-a-mhodhnú"><a class="header" href="#rochtain-ar-athróg-statach-inathraithe-nó-í-a-mhodhnú">Rochtain ar Athróg Statach Inathraithe nó í a Mhodhnú</a></h3>
+<p>Sa leabhar seo, níor phléamar <em>athróga domhanda</em> go fóill, a dtacaíonn Rust leo
+ach is féidir leo a bheith ina gcúis le rialacha úinéireachta Rust. Má tá dhá shnáithe ag
+rochtain ar an athróg dhomhanda inathraithe chéanna, is féidir leis rás sonraí a chur faoi deara.</p>
+<p>I Rust, tugtar athróga <em>statacha</em> ar athróga domhanda. Taispeánann liostáil 20-10
+sampla dearbhaithe agus úsáid athróg statach le slisne teaghráin mar
+luach.</p>
+<Listing number="20-10" file-name="src/main.rs" caption="Defining and using an immutable static variable">
+<pre><pre class="playground"><code class="language-rust">static HELLO_WORLD: &amp;str = "Hello, world!";
+
+fn main() {
+    println!("name is: {HELLO_WORLD}");
+}</code></pre></pre>
+</Listing>
+<p>Tá athróga statach cosúil le tairiseacha, a phléamar sa chuid
+<a href="ch03-01-variables-and-mutability.html#constants">“Tairiseacha”</a><!-- neamhaird -->
+i gCaibidil 3. Tá ainmneacha na n-athróg statach i <code>SCREAMING_SNAKE_CASE</code> de réir
+choinbhinsiúin. Ní féidir le hathróga statach tagairtí a stóráil ach leis an saolré <code>'static</code>, rud a chiallaíonn gur féidir leis an tiomsaitheoir Rust an saolré a ríomh agus nach bhfuil orainn é a anótáil go sainráite. Tá sé sábháilte rochtain a fháil ar athróg statach
+neamh-athraithe.</p>
+<p>Difríocht bheag idir tairiseacha agus athróga statach neamh-athraithe ná go
+bhfuil seoladh seasta sa chuimhne ag luachanna in athróg statach. Trí úsáid a bhaint as an luach
+rochtaineofar ar na sonraí céanna i gcónaí. Ar an láimh eile, ceadaítear do thairiseacha
+a gcuid sonraí a dhúbailt aon uair a úsáidtear iad. Difríocht eile is ea gur féidir le hathróga statach
+a bheith inathraithe. Tá sé
+<em>neamhshábháilte</em> rochtain a fháil ar athróga statach inathraithe agus iad a mhodhnú. Taispeánann liostú 20-11 conas athróg statach inathraithe darb ainm <code>COUNTER</code> a dhearbhú, rochtain a fháil uirthi agus í a mhodhnú.</p>
+<Listing number="20-11" file-name="src/main.rs" caption="Reading from or writing to a mutable static variable is unsafe">
+<pre><pre class="playground"><code class="language-rust">static mut COUNTER: u32 = 0;
+
+/// SAFETY: Calling this from more than a single thread at a time is undefined
+/// behavior, so you *must* guarantee you only call it from a single thread at
+/// a time.
+unsafe fn add_to_count(inc: u32) {
+    unsafe {
+        COUNTER += inc;
+    }
+}
+
+fn main() {
+    unsafe {
+        // SAFETY: This is only called from a single thread in `main`.
+        add_to_count(3);
+        println!("COUNTER: {}", *(&amp;raw const COUNTER));
+    }
+}</code></pre></pre>
+</Listing>
+<p>Mar is amhlaidh le hathróga rialta, sonraímid inathraitheacht ag baint úsáide as an eochairfhocal <code>mut</code>. Aon
+chód a léann nó a scríobhann ó <code>COUNTER</code>, ní mór dó a bheith laistigh de bhloc <code>unsafe</code>. Tiomsaíonn agus priontálann an
+cód i Liosta 20-11 <code>COUNTER: 3</code> mar a bheimid ag súil leis
+toisc go bhfuil sé snáithithe aonair. Dá mbeadh rochtain ag il-snáitheanna ar <code>COUNTER</code>, is dócha go mbeadh rásaí sonraí mar thoradh air, mar sin is iompar neamhshainithe é. Dá bhrí sin, ní mór dúinn
+an fheidhm iomlán a mharcáil mar <code>unsafe</code>, agus an teorainn sábháilteachta a dhoiciméadú, ionas
+go mbeidh a fhios ag aon duine a ghlaonn ar an bhfeidhm cad atá ceadaithe agus nach bhfuil ceadaithe dóibh a dhéanamh
+go sábháilte.</p>
+<p>Aon uair a scríobhaimid feidhm neamhshábháilte, is gnách trácht a scríobh
+ag tosú le <code>SAFETY</code> agus ag míniú cad is gá don ghlaoiteoir a dhéanamh chun an
+fheidhm a ghlaoch go sábháilte. Mar an gcéanna, aon uair a dhéanaimid oibríocht neamhshábháilte, is gnách trácht a scríobh ag tosú le <code>SAFETY</code> chun a mhíniú conas a chothaítear na
+rialacha sábháilteachta.</p>
+<p>Ina theannta sin, ní cheadóidh an tiomsaitheoir duit tagairtí a chruthú d'athróg statach inathraithe. Ní féidir leat rochtain a fháil air ach trí phointeoir amh, a cruthaíodh le ceann de na hoibreoirí iasachta amh. Áirítear leis sin cásanna ina gcruthaítear an tagairt go dofheicthe, mar nuair a úsáidtear é sa <code>println!</code> sa liostú cód seo. Cuidíonn an
+riachtanas nach féidir tagairtí d'athróga statach inathraithe a chruthú ach trí
+phointeoirí amha le riachtanais sábháilteachta a dhéanamh níos soiléire maidir lena n-úsáid.</p>
+<p>Le sonraí inathraithe atá inrochtana go domhanda, tá sé deacair a chinntiú nach bhfuil aon rásaí sonraí ann, agus is é sin an fáth a mheasann Rust go bhfuil athróga statach inathraithe neamhshábháilte. Más féidir, is fearr na teicnící comhthráthachta agus na
+pointeoirí cliste snáithe-shábháilte a phléamar i gCaibidil 16 a úsáid ionas go seiceálann an tiomsaitheoir go ndéantar sonraí a rochtaintear ó shnáitheanna éagsúla go sábháilte.</p>
+<h3 id="tréith-neamhshábháilte-a-chur-i-bhfeidhm"><a class="header" href="#tréith-neamhshábháilte-a-chur-i-bhfeidhm">Tréith Neamhshábháilte a Chur i bhFeidhm</a></h3>
+<p>Is féidir linn <code>unsafe</code> a úsáid chun tréith neamhshábháilte a chur i bhfeidhm. Tá tréith neamhshábháilte nuair a bhíonn roinnt neamhathróg ag ceann amháin ar a laghad dá modhanna nach féidir leis an tiomsaitheoir a fhíorú. Dearbhaímid go bhfuil tréith <code>unsafe</code> tríd an eochairfhocal <code>unsafe</code> a chur roimh <code>trait</code> agus cur i bhfeidhm na tréithe a mharcáil mar <code>unsafe</code> freisin, mar a thaispeántar i
+Liostú 20-12.</p>
+<Listing number="20-12" caption="Defining and implementing an unsafe trait">
+<pre><pre class="playground"><code class="language-rust">unsafe trait Foo {
+    // methods go here
+}
+
+unsafe impl Foo for i32 {
+    // method implementations go here
+}
+
+fn main() {}</code></pre></pre>
+</Listing>
+<p>Trí úsáid a bhaint as <code>unsafe impl</code>, táimid ag gealladh go gcoimeádfaimid na neamhathraithe nach féidir leis an tiomsaitheoir a fhíorú.</p>
+<p>Mar shampla, cuimhnigh ar na tréithe marcóra <code>Sync</code> agus <code>Send</code> a phléamar sa chuid
+<a href="ch16-04-extensible-concurrency-sync-and-send.html#extensible-concurrency-with-the-sync-and-send-traits">“Extensible Concurrency with the <code>Sync</code> and <code>Send</code>
+Traits”</a><!-- ignore -->
+i gCaibidil 16: cuireann an tiomsaitheoir na tréithe seo i bhfeidhm go huathoibríoch má
+tá ár gcineálacha comhdhéanta go hiomlán de chineálacha <code>Send</code> agus <code>Sync</code>. Má chuireann muid cineál i bhfeidhm
+ina bhfuil cineál nach <code>Send</code> nó <code>Sync</code> é, amhail pointeoirí amha,
+agus más mian linn an cineál sin a mharcáil mar <code>Send</code> nó <code>Sync</code>, ní mór dúinn <code>unsafe</code> a úsáid. Ní féidir le Rust
+a fhíorú go gcoimeádann ár gcineál na ráthaíochtaí gur féidir é a sheoladh go sábháilte
+trasna snáitheanna nó rochtain a fháil air ó il-snáitheanna; dá bhrí sin, ní mór dúinn na seiceálacha sin a dhéanamh de láimh agus a léiriú mar sin le <code>unsafe</code>.</p>
+<h3 id="rochtain-ar-réimsí-aontais"><a class="header" href="#rochtain-ar-réimsí-aontais">Rochtain ar Réimsí Aontais</a></h3>
+<p>Is é an gníomh deireanach nach n-oibríonn ach le <code>unsafe</code> ná rochtain a fháil ar réimsí
+<em>union</em>. Tá <code>union</code> cosúil le <code>struct</code>, ach ní úsáidtear ach réimse dearbhaithe amháin
+i gcás áirithe ag an am céanna. Úsáidtear aontais go príomha chun
+idirghníomhú le haontais i gcód C. Tá rochtain a fháil ar réimsí aontais neamhshábháilte toisc nach féidir le Rust
+cineál na sonraí atá stóráilte faoi láthair san aontais a ráthú.
+Is féidir leat tuilleadh eolais a fháil faoi aontais i <a href="../reference/items/unions.html">an Tagairt Rust</a>.</p>
+<h3 id="Úsáid-a-bhaint-as-miri-chun-cód-neamhshábháilte-a-sheiceáil"><a class="header" href="#Úsáid-a-bhaint-as-miri-chun-cód-neamhshábháilte-a-sheiceáil">Úsáid a bhaint as Miri chun cód neamhshábháilte a sheiceáil</a></h3>
+<p>Nuair atá cód neamhshábháilte á scríobh agat, b'fhéidir gur mhaith leat a sheiceáil go bhfuil an rud atá scríofa agat
+sábháilte agus ceart i ndáiríre. Ceann de na bealaí is fearr chun é sin a dhéanamh ná
+<a href="https://github.com/rust-lang/miri">Miri</a> a úsáid, uirlis oifigiúil Rust chun iompar neamhshainithe a bhrath. Cé gur uirlis <em>statach</em> é an seiceálaí iasachta a oibríonn ag am tiomsaithe, is uirlis
+<em>dinimiciúil</em> é Miri a oibríonn ag am rith. Seiceálann sé do chód trí do
+chlár, nó a shraith tástála, a rith, agus a bhrath nuair a sháraíonn tú na rialacha a thuigeann sé faoi conas ba chóir do Rust oibriú.</p>
+<p>Éilíonn úsáid Miri tógáil oíche de Rust (a labhraímid faoi níos mó i
+<a href="appendix-07-nightly-rust.html">Aguisín G: Conas a dhéantar Rust agus “Rust Oíche”</a>). Is féidir leat
+leagan oíche de Rust agus an uirlis Miri a shuiteáil trí <code>rustup +nightly component add miri</code> a chlóscríobh. Ní athraíonn sé seo cén leagan de Rust a úsáideann do thionscadal; ní chuireann sé ach an uirlis le do chóras ionas gur féidir leat é a úsáid nuair is mian leat.
+Is féidir leat Miri a rith ar thionscadal trí <code>cargo +nightly miri run</code> nó <code>cargo +nightly miri test</code> a chlóscríobh.</p>
+<p>Mar shampla de cé chomh cabhrach is féidir leis seo a bheith, smaoinigh ar a tharlaíonn nuair a ritheann muid é
+i gcoinne Liostála 20-11:</p>
+<pre><code class="language-console">$ cargo +nightly miri run
+   Compiling unsafe-example v0.1.0 (file:///projects/unsafe-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running `/Users/chris/.rustup/toolchains/nightly-aarch64-apple-darwin/bin/cargo-miri runner target/miri/aarch64-apple-darwin/debug/unsafe-example`
+warning: creating a shared reference to mutable static is discouraged
+  --&gt; src/main.rs:14:33
+   |
+14 |         println!("COUNTER: {}", COUNTER);
+   |                                 ^^^^^^^ shared reference to mutable static
+   |
+   = note: for more information, see &lt;https://doc.rust-lang.org/nightly/edition-guide/rust-2024/static-mut-references.html&gt;
+   = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+   = note: `#[warn(static_mut_refs)]` on by default
+
+COUNTER: 3
+</code></pre>
+<p>Tugann sé faoi deara go cabhrach agus go cruinn go bhfuil tagairtí comhroinnte againn do shonraí inathraithe,
+agus tugann sé rabhadh faoi. Sa chás seo, ní insíonn sé dúinn conas an
+fhadhb a réiteach,
+ach ciallaíonn sé go bhfuil a fhios againn go bhfuil fadhb fhéideartha ann agus gur féidir linn smaoineamh ar
+conas a chinntiú go bhfuil sí sábháilte. I gcásanna eile, is féidir leis a rá linn i ndáiríre go bhfuil roinnt
+cód <em>cinnte</em> a bheith mícheart agus moltaí a dhéanamh maidir le conas é a shocrú.</p>
+<p>Ní ghabhann Miri <em>gach</em> rud_ a d'fhéadfá a dhéanamh mícheart agus cód neamhshábháilte á scríobh agat.</p>
+<p>Ar an gcéad dul síos, ós rud é gur seiceáil dhinimiciúil í, ní ghabhann sé ach fadhbanna le cód
+a ritheann i ndáiríre. Ciallaíonn sé sin go mbeidh ort é a úsáid i gcomhar le
+teicnící tástála maithe chun do mhuinín faoin gcód neamhshábháilte a
+scríobh tú a mhéadú. Ar an gcéad dul síos, ní chlúdaíonn sé gach bealach is féidir a bhféadfadh do chód
+a bheith lochtach. Má <em>ghabhann</em> Miri fadhb, tá a fhios agat go bhfuil fabht ann, ach ní chiallaíonn sé nach bhfuil fadhb ann díreach toisc nach <em>ghabhann</em> Miri fabht. Is féidir le Miri
+go leor a ghabháil, áfach. Bain triail as é a rith ar na samplaí eile de chód neamhshábháilte sa
+chaibidil seo agus féach cad a deir sé!</p>
+<h3 id="cathain-is-ceart-cód-neamhshábháilte-a-Úsáid"><a class="header" href="#cathain-is-ceart-cód-neamhshábháilte-a-Úsáid">Cathain is Ceart Cód Neamhshábháilte a Úsáid</a></h3>
+<p>Níl sé mícheart ná fiú neamhaird a thabhairt ar <code>unsafe</code> a úsáid chun ceann de na cúig ghníomh (sárchumhachtaí) a pléadh díreach a dhéanamh. Ach tá sé níos deacra cód <code>unsafe</code> a fháil
+ceart mar ní féidir leis an tiomsaitheoir cabhrú le sábháilteacht cuimhne a choinneáil. Nuair a bhíonn
+cúis agat cód <code>unsafe</code> a úsáid, is féidir leat é sin a dhéanamh, agus má tá an nóta <code>unsafe</code> soiléir agat, is fusa foinse na bhfadhbanna a rianú nuair a tharlaíonn siad.
+Aon uair a scríobhann tú cód neamhshábháilte, is féidir leat Miri a úsáid chun cabhrú leat a bheith níos muiníní
+go gcomhlíonann an cód atá scríofa agat rialacha Rust.</p>
+<p>Chun iniúchadh i bhfad níos doimhne a dhéanamh ar conas oibriú go héifeachtach le Rust neamhshábháilte, léigh
+treoir oifigiúil Rust don ábhar, an <a href="https://doc.rust-lang.org/nomicon/">Rustonomicon</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-traits"><a class="header" href="#advanced-traits">Advanced Traits</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-types"><a class="header" href="#advanced-types">Advanced Types</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-functions-and-closures"><a class="header" href="#advanced-functions-and-closures">Advanced Functions and Closures</a></h1>

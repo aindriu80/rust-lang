@@ -1,4 +1,4 @@
-## Tagairtí agus Iasacht
+## Crochta agus Tagairtí
 
 Is í an tsaincheist leis an gcód tuple i Liosta 4-5 ná go gcaithfimid an
 `String` don fheidhm ghlao ionas gur féidir linn fós an `String` a úsáid tar éis an
