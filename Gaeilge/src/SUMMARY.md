@@ -25,7 +25,7 @@
 - [Úinéireacht a Thuiscint](ch04-00-understanding-ownership.md)
 
   - [Cad is Úinéireacht ann?](ch04-01-what-is-ownership.md)
-  - [Tagairtí agus Iasachtaí](ch04-02-references-and-borrowing.md)
+  - [Crochta agus Tagairtí](ch04-02-references-and-borrowing.md)
   - [An Cineál Slice](ch04-03-slices.md)
 
 - [Structs a Úsáid chun Sonraí Gaolmhara a Struchtúrú](ch05-00-structs.md)

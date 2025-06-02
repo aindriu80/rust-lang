@@ -35,21 +35,33 @@
         <link rel="stylesheet" href="src/css/listing.css">
 
 
-        <!-- Provide site root to javascript -->
+        <!-- Provide site root and default themes to javascript -->
         <script>
-            var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -63,7 +75,8 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            var theme;
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -76,8 +89,8 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
@@ -113,13 +126,14 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -159,7 +173,18 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="advanced-features"><a class="header" href="#advanced-features">Advanced Features</a></h1>
+                        <h1 id="gnéithe-ardleibhéil"><a class="header" href="#gnéithe-ardleibhéil">Gnéithe Ardleibhéil</a></h1>
+<p>Faoin am seo, tá na codanna is coitianta a úsáidtear den teanga ríomhchlárúcháin Rust foghlamtha agat. Sula ndéanaimid tionscadal eile i gCaibidil 21, féachfaimid ar chúpla gné den teanga a d'fhéadfá a fheiceáil ó am go ham, ach nach n-úsáidfeá gach lá. Is féidir leat an chaibidil seo a úsáid mar thagairt nuair a thagann tú ar aon rud anaithnid. Tá na gnéithe atá clúdaithe anseo úsáideach i gcásanna an-sonracha.
+Cé nach mbeadh tú ag baint úsáide astu go minic, ba mhaith linn a chinntiú go bhfuil tuiscint agat ar na gnéithe go léir atá le tairiscint ag Rust. Sa chaibidil seo, clúdóimid:</p>
+<ul>
+<li>Rust Neamhshábháilte: conas rogha an diúltaithe a dhéanamh ar chuid de ráthaíochtaí Rust agus freagracht a ghlacadh as na ráthaíochtaí sin a choinneáil de láimh</li>
+<li>Tréithe ardleibhéil: cineálacha gaolmhara, paraiméadair chineáil réamhshocraithe, comhréir láncháilithe, sárthréithe, agus an patrún cineál nua i ndáil le tréithe</li>
+<li>Cineálacha ardleibhéil: tuilleadh faoin patrún cineál nua, leasaithigh chineáil, an cineál riamh,
+agus cineálacha méide dinimiciúla</li>
+<li>Feidhmeanna agus dúnta ardleibhéil: pointeoirí feidhme agus dúnta fillte</li>
+<li>Macraí: bealaí chun cód a shainiú a shainíonn níos mó cóid ag am tiomsaithe</li>
+</ul>
+<p>Is réimse leathan gnéithe Rust é le rud éigin do gach duine! Déanaimis tumadh isteach!</p>
 
                     </main>
 
