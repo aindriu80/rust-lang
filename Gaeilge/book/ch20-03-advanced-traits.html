@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Ardtréithe - An Teanga Ríomhchláraithe Rust</title>
+        <title>Tréithe ardleibhéil - An Teanga Ríomhchláraithe Rust</title>
 
 
         <!-- Custom HTML head -->
@@ -173,7 +173,582 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="advanced-traits"><a class="header" href="#advanced-traits">Advanced Traits</a></h1>
+                        <h2 id="tréithe-ardleibhéil"><a class="header" href="#tréithe-ardleibhéil">Tréithe Ardleibhéil</a></h2>
+<p>Phléamar tréithe ar dtús sa chuid <a href="ch10-02-traits.html#traits-defining-shared-behavior">“Tréithe: Sainmhíniú Iompair
+Chomhroinnte”</a><!-- ignore --> de Chaibidil
+10, ach níor phléamar na sonraí níos airde. Anois go bhfuil tuilleadh eolais agat
+faoi Rust, is féidir linn dul isteach sa mhionsonraí.</p>
+<h3 id="cineálacha-Áitshealbhóirí-a-shonrú-i-sainmhínithe-tréithe-le-cineálacha-gaolmhara"><a class="header" href="#cineálacha-Áitshealbhóirí-a-shonrú-i-sainmhínithe-tréithe-le-cineálacha-gaolmhara">Cineálacha Áitshealbhóirí a Shonrú i Sainmhínithe Tréithe le Cineálacha Gaolmhara</a></h3>
+<p>Ceanglaíonn <em>cineálacha gaolmhara</em> áitshealbhóir cineáil le tréith sa chaoi is gur féidir leis na sainmhínithe
+modhanna na dtréithe na cineálacha áitshealbhóirí seo a úsáid ina sínithe. Sonróidh
+cur i bhfeidhm tréithe an cineál coincréite atá le húsáid in ionad an
+chineáil
+áitshealbhóra don chur i bhfeidhm ar leith. Ar an mbealach sin, is féidir linn
+tréith a shainiú a úsáideann cineálacha áirithe gan a bheith ar an eolas go díreach cad iad na cineálacha sin
+go dtí go gcuirtear an tréith i bhfeidhm.</p>
+<p>Tá cur síos déanta againn ar an gcuid is mó de na gnéithe ardleibhéil sa chaibidil seo mar rud nach bhfuil
+gá leo go minic. Tá cineálacha gaolmhara áit éigin sa lár: úsáidtear iad níos annamh ná gnéithe a mhínítear sa chuid eile den leabhar ach níos coitianta ná go leor de na gnéithe eile a phléitear sa chaibidil seo.</p>
+<p>Sampla amháin de thréith le cineál gaolmhar ná an tréith <code>Iterator</code> a sholáthraíonn an
+leabharlann chaighdeánach. Tugtar <code>Item</code> ar an gcineál gaolmhar agus seasann sé
+do chineál na luachanna a bhfuil an cineál a chuireann an tréith <code>Iterator</code> i bhfeidhm ag
+athrá orthu. Tá sainmhíniú an tréithe <code>Iterator</code> mar a thaispeántar i Liosta
+20-13.</p>
+<Listing number="20-13" caption="The definition of the `Iterator` trait that has an associated type `Item`">
+<pre><code class="language-rust noplayground">pub trait Iterator {
+    type Item;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+}</code></pre>
+</Listing>
+<p>Is áitchoinneálaí é an cineál <code>Item</code>, agus léiríonn sainmhíniú an mhodha <code>next</code> go dtabharfaidh sé luachanna den chineál <code>Option&lt;Self::Item&gt;</code> ar ais. Sonróidh feidhmitheoirí an tréith <code>Iterator</code> an cineál coincréite do <code>Item</code>, agus tabharfaidh an modh <code>next</code> <code>Option</code> ar ais ina bhfuil luach den chineál coincréite sin.</p>
+<p>D’fhéadfadh sé go mbeadh cuma choincheap cosúil le cineálacha comhlachaithe le cineálacha, sa mhéid is go gceadaíonn an dara ceann dúinn feidhm a shainiú gan a shonrú cé na cineálacha is féidir léi a láimhseáil. Chun an difríocht idir an dá choincheap a scrúdú, féachfaimid ar
+chur i bhfeidhm an tréith <code>Iterator</code> ar chineál darb ainm <code>Counter</code> a shonraíonn
+gurb é an cineál <code>Item</code> ná <code>u32</code>:</p>
+<Listing file-name="src/lib.rs">
+<pre><code class="language-rust ignore"><span class="boring">struct Counter {
+</span><span class="boring">    count: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Counter {
+</span><span class="boring">    fn new() -&gt; Counter {
+</span><span class="boring">        Counter { count: 0 }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        // --snip--
+<span class="boring">        if self.count &lt; 5 {
+</span><span class="boring">            self.count += 1;
+</span><span class="boring">            Some(self.count)
+</span><span class="boring">        } else {
+</span><span class="boring">            None
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Is cosúil go bhfuil an comhréir seo inchomparáide le comhréir na gcineál. Mar sin, cén fáth nach sainmhínítear an tréith <code>Iterator</code> le cinn ghinearálta, mar a thaispeántar i Liosta 20-14?</p>
+<Listing number="20-14" caption="A hypothetical definition of the `Iterator` trait using generics">
+<pre><code class="language-rust noplayground">pub trait Iterator&lt;T&gt; {
+    fn next(&amp;mut self) -&gt; Option&lt;T&gt;;
+}</code></pre>
+</Listing>
+<p>Is é an difríocht ná nuair a úsáidtear cineálacha, mar atá i Liostáil 20-14, ní mór dúinn na cineálacha i ngach cur i bhfeidhm a anótáil; toisc gur féidir linn <code>Iterator&lt;String&gt; for Counter</code> nó aon chineál eile a chur i bhfeidhm freisin, d'fhéadfaimis il-chur i bhfeidhm de <code>Iterator</code> a bheith againn le haghaidh <code>Counter</code>. I bhfocail eile, nuair a bhíonn paraiméadar cineálach ag tréith, is féidir é a chur i bhfeidhm do chineál arís agus arís eile, ag athrú
+na gcineálacha coincréiteacha de na paraiméadair chineálacha cineálacha gach uair. Nuair a úsáidimid an modh
+<code>next</code> ar <code>Counter</code>, bheadh ​​orainn anótálacha cineáil a sholáthar chun
+a léiriú cén cur i bhfeidhm de <code>Iterator</code> is mian linn a úsáid.</p>
+<p>Le cineálacha gaolmhara, ní gá dúinn cineálacha a anótáil toisc nach féidir linn
+tréith a chur i bhfeidhm ar chineál arís agus arís eile. I Liostáil 20-13 leis an
+sainmhíniú a úsáideann cineálacha gaolmhara, ní féidir linn a roghnú ach uair amháin cén cineál
+<code>Item</code> a bheidh ann, toisc nach féidir ach <code>impl Iterator for Counter</code> amháin a bheith ann. Ní gá dúinn a shonrú go dteastaíonn athrá de luachanna <code>u32</code> uainn i ngach áit
+a dtugaimid <code>next</code> air ar <code>Counter</code>.</p>
+<p>Bíonn cineálacha gaolmhara mar chuid de chonradh an tréithe freisin: ní mór do chur i bhfeidhm an
+tréithe cineál a sholáthar chun seasamh in ionad an áitchoinneálaí cineál gaolmhar.
+Is minic a bhíonn ainm ag cineálacha gaolmhara a chuireann síos ar an gcaoi a n-úsáidfear an cineál,
+agus is dea-chleachtas é an cineál gaolmhar a dhoiciméadú sa doiciméadú API.</p>
+<h3 id="paraiméadair-réamhshocraithe-cineál-ginéireach-agus-ró-ualach-oibreora"><a class="header" href="#paraiméadair-réamhshocraithe-cineál-ginéireach-agus-ró-ualach-oibreora">Paraiméadair Réamhshocraithe Cineál Ginéireach agus Ró-Ualach Oibreora</a></h3>
+<p>Nuair a úsáidimid paraiméadair chineál ginéireacha, is féidir linn cineál coincréite réamhshocraithe a shonrú don
+chineál ginéireach. Cuireann sé seo deireadh leis an ngá atá ag cur i bhfeidhm an tréithe
+cineál coincréite a shonrú má oibríonn an cineál réamhshocraithe. Sonraíonn tú cineál réamhshocraithe
+nuair a bhíonn cineál ginéireach á dhearbhú leis an gcomhréir <code>&lt;PlaceholderType=ConcreteType&gt;</code>.</p>
+<p>Sampla iontach de chás ina bhfuil an teicníc seo úsáideach ná le <em>operator
+overloading</em>, ina ndéanann tú iompar oibreora (mar shampla <code>+</code>) a shaincheapadh
+i gcásanna áirithe.</p>
+<p>Ní cheadaíonn Rust duit d’oibreoirí féin a chruthú ná ró-ualach a chur ar oibreoirí treallacha. Ach is féidir leat ró-ualach a chur ar na hoibríochtaí agus na tréithe comhfhreagracha atá liostaithe i <code>std::ops</code> trí na tréithe a bhaineann leis an oibreoir a chur i bhfeidhm. Mar shampla, i Liosta 20-15 ró-ualach a chur ar an oibreoir <code>+</code> chun dhá chás <code>Point</code> a chur le chéile. Déanaimid é seo tríd an tréith <code>Add</code> a chur i bhfeidhm ar struchtúr <code>Point</code>:</p>
+<Listing number="20-15" file-name="src/main.rs" caption="Implementing the `Add` trait to overload the `+` operator for `Point` instances">
+<pre><pre class="playground"><code class="language-rust">use std::ops::Add;
+
+#[derive(Debug, Copy, Clone, PartialEq)]
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl Add for Point {
+    type Output = Point;
+
+    fn add(self, other: Point) -&gt; Point {
+        Point {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+fn main() {
+    assert_eq!(
+        Point { x: 1, y: 0 } + Point { x: 2, y: 3 },
+        Point { x: 3, y: 3 }
+    );
+}</code></pre></pre>
+</Listing>
+<p>Cuireann an modh <code>add</code> luachanna <code>x</code> dhá chás <code>Point</code> agus luachanna <code>y</code> dhá chás <code>Point</code> le chéile chun <code>Point</code> nua a chruthú. Tá cineál gaolmhar leis an tréith <code>Add</code> darb ainm <code>Output</code> a chinneann an cineál a fhilleann an modh <code>add</code>.</p>
+<p>Tá an cineál cineálach réamhshocraithe sa chód seo laistigh den tréith <code>Add</code>. Seo a shainmhíniú:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>trait Add&lt;Rhs=Self&gt; {
+    type Output;
+
+    fn add(self, rhs: Rhs) -&gt; Self::Output;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Ba chóir go mbeadh an cód seo cosúil le rud éigin eolach: tréith le modh amháin agus
+cineál gaolmhar. Is é <code>Rhs=Self</code> an chuid nua: tugtar <em>paraiméadair
+cineáil</em> réamhshocraithe_ ar an gcomhréir seo. Sainmhíníonn an paraiméadar cineáil cineálach <code>Rhs</code> (gearr do “taobh na láimhe deise”) cineál an pharaiméadair <code>rhs</code> sa mhodh <code>add</code>. Mura
+shonraímid
+cineál coincréite do <code>Rhs</code> nuair a chuirfimid an tréith <code>Add</code> i bhfeidhm, beidh cineál
+<code>Rhs</code> réamhshocraithe go <code>Self</code>, arb é an cineál a bheidh á chur i bhfeidhm againn
+<code>Add</code> air.</p>
+<p>Nuair a chuireamar <code>Add</code> i bhfeidhm do <code>Point</code>, d'úsáideamar an réamhshocrú do <code>Rhs</code> mar gur
+theastaigh uainn dhá chás <code>Point</code> a chur leis. Féachfaimid ar shampla de chur i bhfeidhm
+na tréithe <code>Add</code> áit ar mian linn an cineál <code>Rhs</code> a shaincheapadh seachas an
+réamhshocrú a úsáid.</p>
+<p>Tá dhá struchtúr againn, <code>Millimeters</code> agus <code>Meters</code>, a bhfuil luachanna acu in aonaid
+difriúla. Tugtar an patrún <em>newtype</em> ar an bhfillteán tanaí seo de chineál atá ann cheana féin i struchtúr eile, a dhéanaimid cur síos níos mine air sa chuid <a href="ch20-02-advanced-traits.html#using-the-newtype-pattern-to-implement-external-traits-on-external-types">“Ag Úsáid an Phatrúin Newtype
+chun Tréithe Seachtracha a Chur i bhFeidhm ar Chineálacha Seachtracha”</a><!-- ignore
+-->. Ba mhaith linn luachanna i milliméadair a chur le luachanna i méadair agus go
+ndéanfadh cur i bhfeidhm <code>Add</code> an tiontú i gceart. Is féidir linn <code>Add</code> a chur i bhfeidhm
+le haghaidh <code>Millimeters</code> le <code>Meters</code> mar an <code>Rhs</code>, mar a thaispeántar i Liostáil 20-16.</p>
+<Listing number="20-16" file-name="src/lib.rs" caption="Implementing the `Add` trait on `Millimeters` to add `Millimeters` to `Meters`">
+<pre><code class="language-rust noplayground">use std::ops::Add;
+
+struct Millimeters(u32);
+struct Meters(u32);
+
+impl Add&lt;Meters&gt; for Millimeters {
+    type Output = Millimeters;
+
+    fn add(self, other: Meters) -&gt; Millimeters {
+        Millimeters(self.0 + (other.0 * 1000))
+    }
+}</code></pre>
+</Listing>
+<p>Chun <code>Millimeters</code> agus <code>Meters</code> a chur leis, sonraímid <code>impl Add&lt;Meters&gt;</code> chun luach an pharaiméadair chineáil <code>Rhs</code> a shocrú in ionad an réamhshocraithe <code>Self</code> a úsáid.</p>
+<p>Úsáidfidh tú paraiméadair chineáil réamhshocraithe ar dhá phríomhbhealach:</p>
+<ul>
+<li>Chun cineál a leathnú gan an cód atá ann cheana a bhriseadh</li>
+<li>Chun saincheapadh a cheadú i gcásanna sonracha nach mbeidh gá ag formhór na n-úsáideoirí leis</li>
+</ul>
+<p>Is sampla den dara cuspóir é tréith <code>Add</code> na leabharlainne caighdeánaí:
+de ghnáth, cuirfidh tú dhá chineál cosúil leis, ach soláthraíonn an tréith <code>Add</code> an cumas
+saincheapadh níos faide ná sin. Má úsáidtear paraiméadar cineáil réamhshocraithe sa sainmhíniú tréithe <code>Add</code>, ciallaíonn sé nach gá duit an paraiméadar breise a shonrú an chuid is mó den
+am. I bhfocail eile, níl gá le beagán cur i bhfeidhm, rud a fhágann
+go bhfuil sé níos éasca an tréith a úsáid.</p>
+<p>Tá an chéad chuspóir cosúil leis an dara ceann ach ar a mhalairt: más mian leat
+paraiméadar cineáil a chur le tréith atá ann cheana féin, is féidir leat réamhshocrú a thabhairt dó chun
+síneadh feidhmiúlacht na tréithe a cheadú gan an
+cód cur chun feidhme atá ann cheana a bhriseadh.</p>
+<h3 id="comhréir-láncháilithe-le-haghaidh-dí-athbhrí-glaoch-ar-mhodhanna-leis-an-ainm-céanna"><a class="header" href="#comhréir-láncháilithe-le-haghaidh-dí-athbhrí-glaoch-ar-mhodhanna-leis-an-ainm-céanna">Comhréir Láncháilithe le haghaidh Dí-athbhrí: Glaoch ar Mhodhanna leis an Ainm Céanna</a></h3>
+<p>Níl aon rud i Rust a chuireann cosc ​​ar thréith modh a bheith aici leis an ainm céanna
+le
+modh tréithe eile, agus ní chuireann Rust cosc ​​ort an dá thréith a chur i bhfeidhm
+ar chineál amháin. Is féidir freisin modh a chur i bhfeidhm go díreach ar an gcineál leis
+an t-ainm céanna le modhanna ó thréithe.</p>
+<p>Nuair a bhíonn tú ag glaoch ar mhodhanna leis an ainm céanna, beidh ort a insint do Rust cé acu ceann is mian leat a úsáid. Smaoinigh ar an gcód i Liostáil 20-17 áit a bhfuil dhá thréith sainmhínithe againn,
+<code>Pilot</code> agus <code>Wizard</code>, a bhfuil modh ar a dtugtar <code>fly</code> acu araon. Ansin cuirimid an dá thréith i bhfeidhm ar chineál <code>Human</code> a bhfuil modh ar a dtugtar <code>fly</code> curtha i bhfeidhm air cheana féin. Déanann gach modh <code>fly</code> rud éigin difriúil.</p>
+<Listing number="20-17" file-name="src/main.rs" caption="Two traits are defined to have a ` method and are implemented on the `Human` type, and a `fly` method is implemented on `Human` directly">
+<pre><pre class="playground"><code class="language-rust">trait Pilot {
+    fn fly(&amp;self);
+}
+
+trait Wizard {
+    fn fly(&amp;self);
+}
+
+struct Human;
+
+impl Pilot for Human {
+    fn fly(&amp;self) {
+        println!("This is your captain speaking.");
+    }
+}
+
+impl Wizard for Human {
+    fn fly(&amp;self) {
+        println!("Up!");
+    }
+}
+
+impl Human {
+    fn fly(&amp;self) {
+        println!("*waving arms furiously*");
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Nuair a ghlaonn muid <code>fly</code> ar shampla de <code>Human</code>, glaonn an tiomsaitheoir ar an modh atá curtha i bhfeidhm go díreach ar an gcineál de réir réamhshocraithe, mar a thaispeántar i Liostáil 20-18.</p>
+<Listing number="20-18" file-name="src/main.rs" caption="Calling `fly` on an instance of `Human`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">trait Pilot {
+</span><span class="boring">    fn fly(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">trait Wizard {
+</span><span class="boring">    fn fly(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Human;
+</span><span class="boring">
+</span><span class="boring">impl Pilot for Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("This is your captain speaking.");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Wizard for Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("Up!");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("*waving arms furiously*");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let person = Human;
+    person.fly();
+}</code></pre></pre>
+</Listing>
+<p>Trí an cód seo a rith, priontálfar <code>*waving arms furiously*</code>, rud a thaispeánann gur ghlaoigh Rust ar an modh <code>fly</code> a cuireadh i bhfeidhm ar <code>Human</code> go díreach.</p>
+<p>Chun na modhanna <code>fly</code> a ghlaoch ón tréith <code>Pilot</code> nó ón tréith <code>Wizard</code>,
+ní mór dúinn comhréir níos soiléire a úsáid chun a shonrú cén modh <code>fly</code> atá i gceist againn.
+Léiríonn liostú 20-19 an comhréir seo.</p>
+<Listing number="20-19" file-name="src/main.rs" caption="Specifying which trait’s `fly` method we want to call">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">trait Pilot {
+</span><span class="boring">    fn fly(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">trait Wizard {
+</span><span class="boring">    fn fly(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Human;
+</span><span class="boring">
+</span><span class="boring">impl Pilot for Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("This is your captain speaking.");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Wizard for Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("Up!");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Human {
+</span><span class="boring">    fn fly(&amp;self) {
+</span><span class="boring">        println!("*waving arms furiously*");
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let person = Human;
+    Pilot::fly(&amp;person);
+    Wizard::fly(&amp;person);
+    person.fly();
+}</code></pre></pre>
+</Listing>
+<p>Trí ainm na tréithe a shonrú roimh ainm na modha, soiléirítear do Rust cén cur i bhfeidhm de <code>fly</code> ar mhaith linn glaoch air. D’fhéadfaimis <code>Human::fly(&amp;person)</code> a scríobh freisin, atá coibhéiseach leis an <code>person.fly()</code> a d’úsáideamar i Liosta 20-19, ach tá sé seo beagán níos faide le scríobh mura gá dúinn
+díbhriú.</p>
+<p>Nuair a ritheann tú an cód seo, priontáiltear an méid seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.46s
+     Running `target/debug/traits-example`
+This is your captain speaking.
+Up!
+*waving arms furiously*
+</code></pre>
+<p>Ós rud é go nglacann an modh <code>fly</code> paraiméadar <code>self</code>, dá mbeadh dhá <em>chineál</em> againn a
+chuireann <em>trait</em> amháin i bhfeidhm, d'fhéadfadh Rust a dhéanamh amach cén cur i bhfeidhm de
+thréith le húsáid bunaithe ar an gcineál <code>self</code>.</p>
+<p>Mar sin féin, ní bhíonn paraiméadar <code>self</code> ag feidhmeanna gaolmhara nach modhanna iad. Nuair a bhíonn cineálacha nó tréithe iolracha ann a shainíonn feidhmeanna neamh-mhodhacha
+leis an ainm feidhme céanna, ní bhíonn a fhios ag Rust i gcónaí cén cineál atá i gceist agat
+mura n-úsáideann tú <em>syntax láncháilithe</em>. Mar shampla, i Liosta 20-20
+cruthaímid tréith do dhídean ainmhithe ar mian leis <em>Spot</em> a thabhairt ar gach madra óg.
+Déanaimid tréith <code>Animal</code> le feidhm neamh-mhodhach ghaolmhar <code>baby_name</code>.
+Cuirtear an tréith <code>Animal</code> i bhfeidhm don struchtúr <code>Dog</code>, ar a soláthraímid
+feidhm neamh-mhodhach ghaolmhar <code>baby_name</code> go díreach freisin.</p>
+<Listing number="20-20" file-name="src/main.rs" caption="A trait with an associated function and a type with an associated function of the same name that also implements the trait">
+<pre><pre class="playground"><code class="language-rust">trait Animal {
+    fn baby_name() -&gt; String;
+}
+
+struct Dog;
+
+impl Dog {
+    fn baby_name() -&gt; String {
+        String::from("Spot")
+    }
+}
+
+impl Animal for Dog {
+    fn baby_name() -&gt; String {
+        String::from("puppy")
+    }
+}
+
+fn main() {
+    println!("A baby dog is called a {}", Dog::baby_name());
+}</code></pre></pre>
+</Listing>
+<p>Cuirimid an cód chun ainm a thabhairt do na coileáiníní go léir Spot i bhfeidhm sa fheidhm <code>baby_name</code> a bhaineann le <code>Dog</code>. Cuireann an cineál <code>Dog</code> an tréith <code>Animal</code> i bhfeidhm freisin, a chuireann síos ar thréithe atá ag gach ainmhí. Tugtar coileáiníní ar mhadraí óga, agus léirítear é sin i gcur i bhfeidhm na tréithe <code>Animal</code> ar <code>Dog</code> sa fheidhm <code>baby_name</code> a bhaineann leis an tréith <code>Animal</code>.</p>
+<p>I <code>main</code>, glaoimid ar an bhfeidhm <code>Dog::baby_name</code>, a ghlaonn ar an bhfeidhm
+ghaolmhar a shainmhínítear ar <code>Dog</code> go díreach. Priontálann an cód seo an méid seo a leanas:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.54s
+     Running `target/debug/traits-example`
+A baby dog is called a Spot
+</code></pre>
+<p>Ní hé seo an t-aschur a theastaigh uainn. Ba mhaith linn glaoch ar an bhfeidhm <code>baby_name</code> atá mar chuid den tréith <code>Animal</code> a chuireamar i bhfeidhm ar <code>Dog</code> ionas go bpriontálann an cód <code>A baby dog is called a puppy</code>. Ní chabhraíonn an teicníc chun ainm na tréithe a shonrú a
+úsáideamar i Liostáil 20-19 anseo; má athraímid <code>main</code> go dtí an cód i
+Liostáil 20-21, gheobhaimid earráid tiomsaithe.</p>
+<Listing number="20-21" file-name="src/main.rs" caption="Attempting to call the `baby_name` function from the `Animal` trait, but Rust doesn’t know which implementation to use">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">trait Animal {
+</span><span class="boring">    fn baby_name() -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Dog;
+</span><span class="boring">
+</span><span class="boring">impl Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("Spot")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Animal for Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("puppy")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    println!("A baby dog is called a {}", Animal::baby_name());
+}</code></pre>
+</Listing>
+<p>Ós rud é nach bhfuil paraiméadar <code>self</code> ag <code>Animal::baby_name</code>, agus go bhféadfadh cineálacha eile a bheith ann a chuireann an tréith <code>Animal</code> i bhfeidhm, ní féidir le Rust a dhéanamh amach cén
+cur i bhfeidhm de <code>Animal::baby_name</code> atá uainn. Gheobhaimid an earráid tiomsaitheora seo:</p>
+<Listing number="20-22" file-name="src/main.rs" caption="Using fully qualified syntax to specify that we want to call the `baby_name` function from the `Animal` trait as implemented on `Dog`">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">trait Animal {
+</span><span class="boring">    fn baby_name() -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Dog;
+</span><span class="boring">
+</span><span class="boring">impl Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("Spot")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Animal for Dog {
+</span><span class="boring">    fn baby_name() -&gt; String {
+</span><span class="boring">        String::from("puppy")
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    println!("A baby dog is called a {}", &lt;Dog as Animal&gt;::baby_name());
+}</code></pre></pre>
+</Listing>
+<p>Táimid ag soláthar nóta cineáil do Rust laistigh de na lúibíní uillinne, rud a léiríonn gur mian linn glaoch ar an modh <code>baby_name</code> ón tréith <code>Animal</code> mar atá curtha i bhfeidhm ar <code>Dog</code> trína rá gur mian linn an cineál <code>Dog</code> a chóireáil mar <code>Animal</code> don ghlao feidhme seo. Priontálfaidh an cód seo anois an rud atá uainn:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running `target/debug/traits-example`
+A baby dog is called a puppy
+</code></pre>
+<p>Go ginearálta, sainmhínítear comhréir láncháilithe mar seo a leanas:</p>
+<pre><code class="language-rust ignore">&lt;Type as Trait&gt;::function(receiver_if_method, next_arg, ...);</code></pre>
+<p>I gcás feidhmeanna gaolmhara nach modhanna iad, ní bheadh ​​​​<code>glacadóir</code> ann:
+ní bheadh ​​​​ann ach liosta d'argóintí eile. D'fhéadfá comhréir láncháilithe a úsáid i ngach áit a nglaonn tú ar fheidhmeanna nó ar mhodhanna. Mar sin féin, ceadaítear duit
+aon chuid den chomhréir seo a fhágáil ar lár is féidir le Rust a dhéanamh amach ó fhaisnéis eile
+sa chlár. Ní gá duit an comhréir níos foclach seo a úsáid ach amháin i gcásanna ina
+bhfuil il-chur i bhfeidhm ann a úsáideann an t-ainm céanna agus go dteastaíonn cabhair ó Rust
+chun a aithint cén cur i bhfeidhm ar mhaith leat glaoch air.</p>
+<h3 id="Úsáid-a-bhaint-as-supertréithe-chun-feidhmiúlacht-tréithe-amháin-a-Éileamh-laistigh-de-thréith-eile"><a class="header" href="#Úsáid-a-bhaint-as-supertréithe-chun-feidhmiúlacht-tréithe-amháin-a-Éileamh-laistigh-de-thréith-eile">Úsáid a bhaint as Supertréithe chun Feidhmiúlacht Tréithe amháin a Éileamh laistigh de Thréith Eile</a></h3>
+<p>Uaireanta, d'fhéadfá sainmhíniú tréithe a scríobh a bhraitheann ar thréith eile:
+chun go gcuirfidh cineál an chéad tréith i bhfeidhm, ba mhaith leat a cheangal ar an gcineál sin
+an dara tréith a chur i bhfeidhm freisin. Dhéanfá é seo ionas gur féidir le do shainmhíniú tréithe
+úsáid a bhaint as míreanna gaolmhara an dara tréith. Tugtar <em>supertréith</em> de do thréith ar an tréith a bhfuil do shainmhíniú tréithe ag brath uirthi.</p>
+<p>Mar shampla, abair gur mian linn tréith <code>OutlinePrint</code> a chruthú le modh <code>outline_print</code> a phriontálfaidh luach ar leith atá formáidithe sa chaoi is go bhfuil sé
+frámaithe i réaltaí. Is é sin le rá, i gcás struchtúr <code>Point</code> a chuireann an
+tréith chaighdeánach leabharlainne <code>Display</code> i bhfeidhm chun <code>(x, y)</code> a thabhairt, nuair a ghlaonn muid <code>outline_print</code> ar shampla <code>Point</code> a bhfuil <code>1</code> aige do <code>x</code> agus <code>3</code> do <code>y</code>, ba chóir dó
+an méid seo a leanas a phriontáil:</p>
+<pre><code class="language-text">**********
+*        *
+* (1, 3) *
+*        *
+**********
+</code></pre>
+<p>Agus an modh <code>outline_print</code> á chur i bhfeidhm, ba mhaith linn feidhmiúlacht an tréithe <code>Display</code> a úsáid. Dá bhrí sin, ní mór dúinn a shonrú nach n-oibreoidh an tréith <code>OutlinePrint</code> ach amháin do chineálacha a chuireann <code>Display</code> i bhfeidhm freisin agus a sholáthraíonn an fheidhmiúlacht a theastaíonn ó <code>OutlinePrint</code>. Is féidir linn é sin a dhéanamh sa
+sainmhíniú tréithe trí <code>OutlinePrint: Display</code> a shonrú. Tá an teicníc seo
+cosúil le tréith atá ceangailte leis an tréith a chur leis. Taispeánann liostú 20-23
+cur i bhfeidhm an tréithe <code>OutlinePrint</code>.</p>
+<Listing number="20-23" file-name="src/main.rs" caption="Implementing the `OutlinePrint` trait that requires the functionality from `Display`">
+<pre><pre class="playground"><code class="language-rust">use std::fmt;
+
+trait OutlinePrint: fmt::Display {
+    fn outline_print(&amp;self) {
+        let output = self.to_string();
+        let len = output.len();
+        println!("{}", "*".repeat(len + 4));
+        println!("*{}*", " ".repeat(len + 2));
+        println!("* {output} *");
+        println!("*{}*", " ".repeat(len + 2));
+        println!("{}", "*".repeat(len + 4));
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre></pre>
+</Listing>
+<p>Ós rud é gur shonraigh muid go n-éilíonn <code>OutlinePrint</code> an tréith <code>Display</code>, is féidir linn an fheidhm <code>to_string</code> a úsáid a chuirtear i bhfeidhm go huathoibríoch d'aon chineál
+a chuireann <code>Display</code> i bhfeidhm. Dá ndéanfaimis iarracht <code>to_string</code> a úsáid gan
+colon a chur leis agus an tréith <code>Display</code> a shonrú i ndiaidh ainm na tréithe, gheobhaimis
+earráid ag rá nach bhfuarthas aon mhodh darb ainm <code>to_string</code> don chineál <code>&amp;Self</code> sa
+raon feidhme reatha.</p>
+<p>Feicfimid cad a tharlaíonn nuair a dhéanaimid iarracht <code>OutlinePrint</code> a chur i bhfeidhm ar chineál
+nach gcuireann <code>Display</code> i bhfeidhm, amhail an struchtúr <code>Point</code>:</p>
+<Listing file-name="src/main.rs">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::fmt;
+</span><span class="boring">
+</span><span class="boring">trait OutlinePrint: fmt::Display {
+</span><span class="boring">    fn outline_print(&amp;self) {
+</span><span class="boring">        let output = self.to_string();
+</span><span class="boring">        let len = output.len();
+</span><span class="boring">        println!("{}", "*".repeat(len + 4));
+</span><span class="boring">        println!("*{}*", " ".repeat(len + 2));
+</span><span class="boring">        println!("* {output} *");
+</span><span class="boring">        println!("*{}*", " ".repeat(len + 2));
+</span><span class="boring">        println!("{}", "*".repeat(len + 4));
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl OutlinePrint for Point {}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let p = Point { x: 1, y: 3 };
+</span><span class="boring">    p.outline_print();
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Faighimid earráid ag rá go bhfuil <code>Display</code> riachtanach ach nach bhfuil sé curtha i bhfeidhm:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling traits-example v0.1.0 (file:///projects/traits-example)
+error[E0277]: `Point` doesn't implement `std::fmt::Display`
+  --&gt; src/main.rs:20:23
+   |
+20 | impl OutlinePrint for Point {}
+   |                       ^^^^^ `Point` cannot be formatted with the default formatter
+   |
+   = help: the trait `std::fmt::Display` is not implemented for `Point`
+   = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
+note: required by a bound in `OutlinePrint`
+  --&gt; src/main.rs:3:21
+   |
+3  | trait OutlinePrint: fmt::Display {
+   |                     ^^^^^^^^^^^^ required by this bound in `OutlinePrint`
+
+error[E0277]: `Point` doesn't implement `std::fmt::Display`
+  --&gt; src/main.rs:24:7
+   |
+24 |     p.outline_print();
+   |       ^^^^^^^^^^^^^ `Point` cannot be formatted with the default formatter
+   |
+   = help: the trait `std::fmt::Display` is not implemented for `Point`
+   = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
+note: required by a bound in `OutlinePrint::outline_print`
+  --&gt; src/main.rs:3:21
+   |
+3  | trait OutlinePrint: fmt::Display {
+   |                     ^^^^^^^^^^^^ required by this bound in `OutlinePrint::outline_print`
+4  |     fn outline_print(&amp;self) {
+   |        ------------- required by a bound in this associated function
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `traits-example` (bin "traits-example") due to 2 previous errors
+</code></pre>
+<p>Chun seo a shocrú, cuirimid <code>Display</code> i bhfeidhm ar <code>Point</code> agus sásaímid an srian a éilíonn <code>OutlinePrint</code>, mar seo:
+<Listing file-name="src/main.rs"></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">trait OutlinePrint: fmt::Display {
+</span><span class="boring">    fn outline_print(&amp;self) {
+</span><span class="boring">        let output = self.to_string();
+</span><span class="boring">        let len = output.len();
+</span><span class="boring">        println!("{}", "*".repeat(len + 4));
+</span><span class="boring">        println!("*{}*", " ".repeat(len + 2));
+</span><span class="boring">        println!("* {output} *");
+</span><span class="boring">        println!("*{}*", " ".repeat(len + 2));
+</span><span class="boring">        println!("{}", "*".repeat(len + 4));
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Point {
+</span><span class="boring">    x: i32,
+</span><span class="boring">    y: i32,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl OutlinePrint for Point {}
+</span><span class="boring">
+</span>use std::fmt;
+
+impl fmt::Display for Point {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let p = Point { x: 1, y: 3 };
+</span><span class="boring">    p.outline_print();
+</span><span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Ansin, má chuirtear an tréith <code>OutlinePrint</code> i bhfeidhm ar <code>Point</code>, déanfar tiomsú go rathúil, agus is féidir linn glaoch ar <code>outline_print</code> ar shampla <code>Point</code> chun é a thaispeáint
+laistigh d'imlíne réaltaí.</p>
+<h3 id="ag-Úsáid-an-phatrúin-newtype-chun-tréithe-seachtracha-a-chur-i-bhfeidhm-ar-chineálacha-seachtracha"><a class="header" href="#ag-Úsáid-an-phatrúin-newtype-chun-tréithe-seachtracha-a-chur-i-bhfeidhm-ar-chineálacha-seachtracha">Ag Úsáid an Phatrúin Newtype chun Tréithe Seachtracha a Chur i bhFeidhm ar Chineálacha Seachtracha</a></h3>
+<p>I gCaibidil 10 sa chuid <a href="ch10-02-traits.html#implementing-a-trait-on-a-type">“Implementing a Trait on a
+Cineál”</a><!-- ignore -->, luaigh muid an
+riail dílleachta a deir nach gceadaítear dúinn tréith a chur i bhfeidhm ar chineál ach amháin má tá an tréith nó an cineál áitiúil dár gcliathbhosca. Is féidir an
+srian seo a sheachaint trí úsáid a bhaint as an pattern <em>newtype</em>, rud a bhaineann le cineál nua a chruthú i struchtúr tuple. (Phléamar struchtúir tupla sa chuid <a href="ch05-01-defining-structs.html#using-tuple-structs-without-named-fields-to-create-different-types">“Úsáid Struchtúir Tupla gan Réimsí Ag Úsáid le Réimsí Ag Cruthú Cineálacha Difriúla”</a><!-- ignore --> de Chaibidil 5.) Beidh réimse amháin ag an struchtúr tupla agus beidh sé ina fhillteán tanaí timpeall an chineáil ar mhaith linn tréith a chur i bhfeidhm dó. Ansin, beidh an cineál fillteáin áitiúil dár gcliathbhosca, agus is féidir linn an tréith a chur i bhfeidhm ar an bhfillteán.</p>
+<p>Is téarma é <em>Newtype</em> a thagann ón teanga ríomhchlárúcháin Haskell.
+Níl aon phionós feidhmíochta rith-ama ann as an patrún seo a úsáid, agus baintear an
+cineál fillteáin as ag am tiomsaithe.</p>
+<p>Mar shampla, abair gur mhaith linn <code>Display</code> a chur i bhfeidhm ar <code>Vec&lt;T&gt;</code>, rud a choisceann an riail dílleachta orainn a dhéanamh go díreach toisc go bhfuil an tréith <code>Display</code> agus an cineál <code>Vec&lt;T&gt;</code> sainmhínithe lasmuigh dár gcliathbhosca. Is féidir linn struchtúr <code>Wrapper</code> a dhéanamh a bhfuil sampla de <code>Vec&lt;T&gt;</code> ann; ansin is féidir linn <code>Display</code> a chur i bhfeidhm ar <code>Wrapper</code> agus an luach <code>Vec&lt;T&gt;</code> a úsáid, mar a thaispeántar i Liosta 20-24.</p>
+<Listing number="20-24" file-name="src/main.rs" caption="Creating a `Wrapper` type around `Vec<String>` to implement `Display`">
+<pre><pre class="playground"><code class="language-rust">use std::fmt;
+
+struct Wrapper(Vec&lt;String&gt;);
+
+impl fmt::Display for Wrapper {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, "[{}]", self.0.join(", "))
+    }
+}
+
+fn main() {
+    let w = Wrapper(vec![String::from("hello"), String::from("world")]);
+    println!("w = {w}");
+}</code></pre></pre>
+</Listing>
+<p>Úsáideann cur i bhfeidhm <code>Display</code> <code>self.0</code> chun rochtain a fháil ar an <code>Vec&lt;T&gt;</code> istigh,
+toisc gur struchtúr tupla é <code>Wrapper</code> agus gurb é <code>Vec&lt;T&gt;</code> an ​​mhír ag innéacs 0 sa
+tupla. Ansin is féidir linn feidhmiúlacht an tréithe <code>Display</code> a úsáid ar <code>Wrapper</code>.</p>
+<p>Is é an míbhuntáiste a bhaineann leis an teicníc seo a úsáid ná gur cineál nua é <code>Wrapper</code>, mar sin níl na modhanna den luach atá aige aige. Bheadh ​​orainn gach modh de <code>Vec&lt;T&gt;</code> a chur i bhfeidhm go díreach ar <code>Wrapper</code> sa chaoi is go dtarmligfidh na modhanna chuig <code>self.0</code>, rud a ligfeadh dúinn <code>Wrapper</code> a chóireáil díreach mar
+<code>Vec&lt;T&gt;</code>. Dá mba mhian linn go mbeadh gach modh atá ag an gcineál istigh ag an gcineál nua,
+bheadh ​​an tréith <code>Deref</code> (a phléitear i gCaibidil 15 sa rannán <a href="ch15-02-deref.html#treating-smart-pointers-like-regular-references-with-the-deref-trait">“Treating Smart
+Pointers Like Regular References with the <code>Deref</code>
+Trait”</a><!-- ignore -->) ar an <code>Wrapper</code> chun an cineál istigh a thabhairt ar ais ina réiteach. Mura mian linn go mbeadh gach modh den chineál istigh ag an gcineál <code>Wrapper</code>—mar shampla, chun iompar an chineáil <code>Wrapper</code> a shrianadh—bheadh ​​orainn na modhanna amháin atá uainn a chur i bhfeidhm de láimh.</p>
+<p>Tá an patrún cineál nua seo úsáideach fiú nuair nach bhfuil tréithe i gceist. Déanaimis an fócas a athrú agus breathnú ar roinnt bealaí chun cinn chun idirghníomhú le córas cineáil Rust.</p>
 
                     </main>
 

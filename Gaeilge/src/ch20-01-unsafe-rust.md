@@ -1,10 +1,10 @@
-## Meirg Neamhshábháilte
+## Rust Neamhshábháilte
 
 Tá ráthaíochtaí sábháilteachta cuimhne Rust curtha i bhfeidhm ag am an tiomsaithe i ngach cód a phléamar go dtí seo. Mar sin féin, tá teanga eile i bhfolach i Rust
 nach gcuireann na ráthaíochtaí sábháilteachta cuimhne seo i bhfeidhm: tugtar _unsafe Rust_ air
 agus oibríonn sé díreach cosúil le Rust rialta, ach tugann sé sárchumhachtaí breise dúinn.
 
-Tá Meirg Neamhshábháilte ann toisc, de réir nádúir, go bhfuil anailís statach coimeádach. Nuair
+Tá Rust Neamhshábháilte ann toisc, de réir nádúir, go bhfuil anailís statach coimeádach. Nuair
 a dhéanann an tiomsaitheoir iarracht a chinneadh an gcomhlíonann an cód na ráthaíochtaí nó nach gcomhlíonann,
 is fearr dó roinnt clár bailí a dhiúltú ná roinnt clár neamhbhailí a ghlacadh.
 

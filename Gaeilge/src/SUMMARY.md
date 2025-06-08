@@ -135,7 +135,7 @@
 
 - [Ardghnéithe](ch20-00-advanced-features.md)
     - [Rust neamhshábháilte](ch20-01-unsafe-rust.md)
-    - [Ardtréithe](ch20-03-advanced-traits.md)
+    - [Tréithe ardleibhéil](ch20-03-advanced-traits.md)
     - [Ardchineálacha](ch20-04-advanced-types.md)
     - [Ardfheidhmeanna agus Dúnadh](ch20-05-advanced-functions-and-closures.md)
     - [Macraí](ch20-06-macros.md)
