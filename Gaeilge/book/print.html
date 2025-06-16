@@ -26874,7 +26874,299 @@ bheadh ​​an tréith <code>Deref</code> (a phléitear i gCaibidil 15 sa rann�
 Pointers Like Regular References with the <code>Deref</code>
 Trait”</a><!-- ignore -->) ar an <code>Wrapper</code> chun an cineál istigh a thabhairt ar ais ina réiteach. Mura mian linn go mbeadh gach modh den chineál istigh ag an gcineál <code>Wrapper</code>—mar shampla, chun iompar an chineáil <code>Wrapper</code> a shrianadh—bheadh ​​orainn na modhanna amháin atá uainn a chur i bhfeidhm de láimh.</p>
 <p>Tá an patrún cineál nua seo úsáideach fiú nuair nach bhfuil tréithe i gceist. Déanaimis an fócas a athrú agus breathnú ar roinnt bealaí chun cinn chun idirghníomhú le córas cineáil Rust.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-types"><a class="header" href="#advanced-types">Advanced Types</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h2 id="cineálacha-ardleibhéil"><a class="header" href="#cineálacha-ardleibhéil">Cineálacha Ardleibhéil</a></h2>
+<p>Tá roinnt gnéithe ag córas cineáil Rust atá luaite againn go dtí seo ach nár phléamar fós. Tosaímid trí phlé a dhéanamh ar newtypes i gcoitinne agus muid ag scrúdú cén fáth
+a bhfuil newtypes úsáideach mar chineálacha. Ansin bogfaimid ar aghaidh chuig leasainmneacha cineáil, gné
+atá cosúil le newtypes ach le séimeantaic beagán difriúil. Pléifimid freisin
+an cineál <code>!</code> agus cineálacha méide dinimiciúla.</p>
+<h3 id="ag-Úsáid-an-phatrúin-newtype-le-haghaidh-sábháilteachta-agus-astarraingt-cineáil"><a class="header" href="#ag-Úsáid-an-phatrúin-newtype-le-haghaidh-sábháilteachta-agus-astarraingt-cineáil">Ag Úsáid an Phatrúin Newtype le haghaidh Sábháilteachta agus Astarraingt Cineáil</a></h3>
+<blockquote>
+<p>Nóta: Glacann an chuid seo leis gur léigh tú an chuid roimhe seo <a href="ch20-02-advanced-traits.html#using-the-newtype-pattern-to-implement-external-traits-on-external-types">“Ag Úsáid an
+Phatrúin Newtype chun Tréithe Seachtracha a Chur i bhFeidhm ar Chineálacha
+Seachtracha.”</a><!-- neamhaird --></p>
+</blockquote>
+<p>Tá an patrún newtype úsáideach freisin le haghaidh tascanna thar na cinn atá pléite againn go dtí seo, lena n-áirítear a fhorfheidhmiú go statach nach mbíonn luachanna mearbhall riamh agus
+aonaid luacha a léiriú. Chonaic tú sampla d'úsáid cineálacha nua chun
+aonaid a léiriú i Liosta 20-16: cuimhnigh gur fhill na struchtúir <code>Millimeters</code> agus <code>Meters</code> luachanna <code>u32</code> i gcineál nua. Dá scríobhfaimis feidhm le
+paraiméadar de chineál <code>Millimeters</code>, ní fhéadfaimis clár a thiomsú a
+dhéanadh iarracht trí thimpiste an fheidhm sin a ghlaoch le luach de chineál <code>Meters</code> nó
+<code>u32</code> simplí.</p>
+<p>Is féidir linn an patrún cineál nua a úsáid freisin chun roinnt sonraí cur i bhfeidhm de chineál a bhaint amach: is féidir leis an gcineál nua API poiblí a nochtadh atá difriúil ó
+API an chineáil inmheánaigh phríobháidigh.</p>
+<p>Is féidir le cineálacha nua cur i bhfeidhm inmheánach a cheilt freisin. Mar shampla, d'fhéadfaimis cineál
+<code>People</code> a sholáthar chun <code>HashMap&lt;i32, String&gt;</code> a fhilleadh a stórálann aitheantas duine
+a bhaineann lena ainm. Ní idirghníomhódh cód a úsáideann <code>People</code> ach leis an
+API poiblí a sholáthraímid, amhail modh chun teaghrán ainm a chur leis an mbailiúchán <code>People</code>; Ní bheadh ​​ar an gcód sin a fhios a bheith aige go sanntaímid ID <code>i32</code> d'ainmneacha
+go hinmheánach. Is bealach éadrom é an patrún newtype chun ionchapslú a bhaint amach
+chun sonraí cur i bhfeidhm a cheilt, rud a phléamar sa chuid <a href="ch18-01-what-is-oo.html#encapsulation-that-hides-implementation-details">“Encapsulation that
+Hides Implementation
+Details”</a><!-- ignore -->
+de Chaibidil 18.</p>
+<h3 id="comhchiallaigh-chineáil-a-chruthú-le-hailiasanna-chineáil"><a class="header" href="#comhchiallaigh-chineáil-a-chruthú-le-hailiasanna-chineáil">Comhchiallaigh Chineáil a Chruthú le hAiliasanna Chineáil</a></h3>
+<p>Soláthraíonn Rust an cumas chun <em>alias</em> cineál a dhearbhú chun ainm eile a thabhairt do chineál atá ann cheana
+. Chuige seo úsáidimid an eochairfhocal <code>type</code>. Mar shampla, is féidir linn
+an t-ailias <code>Kilometers</code> a chruthú go <code>i32</code> mar seo:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    type Kilometers = i32;
+<span class="boring">
+</span><span class="boring">    let x: i32 = 5;
+</span><span class="boring">    let y: Kilometers = 5;
+</span><span class="boring">
+</span><span class="boring">    println!("x + y = {}", x + y);
+</span><span class="boring">}</span></code></pre></pre>
+<p>Anois, is <em>comhchiallach</em> é an leasainm <code>Kilometers</code> le haghaidh <code>i32</code>; murab ionann agus na cineálacha <code>Millimeters</code> agus <code>Meters</code> a chruthaíomar i Liosta 20-16, ní cineál nua ar leithligh é <code>Kilometers</code>. Déileálfar le luachanna den chineál <code>Kilometers</code> ar an mbealach céanna le luachanna den chineál <code>i32</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    type Kilometers = i32;
+
+    let x: i32 = 5;
+    let y: Kilometers = 5;
+
+    println!("x + y = {}", x + y);
+<span class="boring">}</span></code></pre></pre>
+<p>Ós rud é gur den chineál céanna iad <code>Kilometers</code> agus <code>i32</code>, is féidir linn luachanna den dá chineál a chur leis agus is féidir linn luachanna <code>Kilometers</code> a chur ar aghaidh chuig feidhmeanna a ghlacann paraiméadair <code>i32</code>. Mar sin féin, ag baint úsáide as an modh seo, ní fhaighimid na buntáistí seiceála cineáil a fhaighimid ón patrún nuachineáil a pléadh níos luaithe. I bhfocail eile, má mheascann muid luachanna <code>Kilometers</code> agus <code>i32</code> áit éigin, ní thabharfaidh an tiomsaitheoir earráid dúinn.</p>
+<p>Is é an príomhchás úsáide le haghaidh comhchiallaigh cineáil ná athrá a laghdú. Mar shampla, d'fhéadfadh cineál fada a bheith againn mar seo:</p>
+<pre><code class="language-rust ignore">Box&lt;dyn Fn() + Send + 'static&gt;</code></pre>
+<p>Is féidir go mbeadh sé tuirsiúil agus seans maith go dtarlóidh earráidí an cineál fada seo a scríobh i sínithe feidhme agus mar anótálacha cineáil ar fud an chóid. Samhlaigh tionscadal lán de chód mar atá i Liosta 20-25.</p>
+<Listing number="20-25" caption="Using a long type in many places">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let f: Box&lt;dyn Fn() + Send + 'static&gt; = Box::new(|| println!("hi"));
+
+    fn takes_long_type(f: Box&lt;dyn Fn() + Send + 'static&gt;) {
+        // --snip--
+    }
+
+    fn returns_long_type() -&gt; Box&lt;dyn Fn() + Send + 'static&gt; {
+        // --snip--
+<span class="boring">        Box::new(|| ())
+</span>    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Déanann leasainm cineáil an cód seo níos inbhainistithe tríd an athrá a laghdú. I Liostálacha 20-26, thugamar isteach leasainm darb ainm <code>Thunk</code> don chineál focal agus is féidir leis gach úsáid den chineál a athsholáthar leis an leasainm níos giorra <code>Thunk</code>.</p>
+<Listing number="20-26" caption="Introducing a type alias `Thunk` to reduce repetition">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    type Thunk = Box&lt;dyn Fn() + Send + 'static&gt;;
+
+    let f: Thunk = Box::new(|| println!("hi"));
+
+    fn takes_long_type(f: Thunk) {
+        // --snip--
+    }
+
+    fn returns_long_type() -&gt; Thunk {
+        // --snip--
+<span class="boring">        Box::new(|| ())
+</span>    }
+<span class="boring">}</span></code></pre></pre>
+</Listing>
+<p>Tá an cód seo i bhfad níos éasca le léamh agus le scríobh! Is féidir le hainm bríoch a roghnú do
+bhréagán cineáil cabhrú le do rún a chur in iúl freisin (is focal é <em>thunk</em> do chód
+atá le meastóireacht ag tráth níos déanaí, mar sin is ainm oiriúnach é do dhúnadh a
+stóráiltear).</p>
+<p>Úsáidtear bréagáin cineáil go coitianta leis an gcineál <code>Result&lt;T, E&gt;</code> chun athrá a laghdú. Smaoinigh ar an modúl <code>std::io</code> sa leabharlann chaighdeánach. Is minic a thugann oibríochtaí ionchuir/aschur <code>Result&lt;T, E&gt;</code> ar ais chun déileáil le cásanna nuair a
+theipeann ar oibríochtaí oibriú. Tá struchtúr <code>std::io::Error</code> ag an leabharlann seo a léiríonn gach
+earráid ionchuir/aschur féideartha. Beidh go leor de na feidhmeanna i <code>std::io</code> ag filleadh
+<code>Result&lt;T, E&gt;</code> áit a bhfuil an <code>E</code> ina <code>std::io::Error</code>, amhail na feidhmeanna seo sa
+tréith <code>Write</code>:</p>
+<pre><code class="language-rust noplayground">use std::fmt;
+use std::io::Error;
+
+pub trait Write {
+    fn write(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;usize, Error&gt;;
+    fn flush(&amp;mut self) -&gt; Result&lt;(), Error&gt;;
+
+    fn write_all(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;(), Error&gt;;
+    fn write_fmt(&amp;mut self, fmt: fmt::Arguments) -&gt; Result&lt;(), Error&gt;;
+}</code></pre>
+<p>Déantar an <code>Result&lt;..., Error&gt;</code> a athdhéanamh go minic. Dá bhrí sin, tá an cineál dearbhaithe ailias seo ag <code>std::io</code>:</p>
+<pre><code class="language-rust noplayground"><span class="boring">use std::fmt;
+</span><span class="boring">
+</span>type Result&lt;T&gt; = std::result::Result&lt;T, std::io::Error&gt;;
+<span class="boring">
+</span><span class="boring">pub trait Write {
+</span><span class="boring">    fn write(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;usize&gt;;
+</span><span class="boring">    fn flush(&amp;mut self) -&gt; Result&lt;()&gt;;
+</span><span class="boring">
+</span><span class="boring">    fn write_all(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;()&gt;;
+</span><span class="boring">    fn write_fmt(&amp;mut self, fmt: fmt::Arguments) -&gt; Result&lt;()&gt;;
+</span><span class="boring">}</span></code></pre>
+<p>Ós rud é go bhfuil an dearbhú seo sa mhodúl <code>std::io</code>, is féidir linn an leasainm láncháilithe <code>std::io::Result&lt;T&gt;</code> a úsáid; is é sin, <code>Result&lt;T, E&gt;</code> leis an <code>E</code> líonta isteach mar <code>std::io::Error</code>. Seo mar a chríochnaíonn sínithe na feidhme tréithe <code>Write</code>:</p>
+<pre><code class="language-rust noplayground"><span class="boring">use std::fmt;
+</span><span class="boring">
+</span><span class="boring">type Result&lt;T&gt; = std::result::Result&lt;T, std::io::Error&gt;;
+</span><span class="boring">
+</span>pub trait Write {
+    fn write(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;usize&gt;;
+    fn flush(&amp;mut self) -&gt; Result&lt;()&gt;;
+
+    fn write_all(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;()&gt;;
+    fn write_fmt(&amp;mut self, fmt: fmt::Arguments) -&gt; Result&lt;()&gt;;
+}
+</code></pre>
+<p>Cuidíonn an cineál leasainm ar dhá bhealach: déanann sé níos éasca cód a scríobh <em>agus</em> tugann sé
+comhéadan comhsheasmhach dúinn ar fud <code>std::io</code> ar fad. Toisc gur leasainm é, níl ann
+ach <code>Result&lt;T, E&gt;</code> eile, rud a chiallaíonn gur féidir linn aon mhodhanna a oibríonn ar
+<code>Result&lt;T, E&gt;</code> a úsáid leis, chomh maith le comhréir speisialta cosúil leis an oibreoir <code>?</code>.</p>
+<h3 id="an-cineál-nár-fhill-nár-fhill-nár-fhill"><a class="header" href="#an-cineál-nár-fhill-nár-fhill-nár-fhill">An Cineál Nár Fhill Nár Fhill Nár Fhill</a></h3>
+<p>Tá cineál speisialta ag Rust darb ainm <code>!</code> ar a dtugtar i dteanga teoiric an chineáil mar an
+<em>cineál folamh</em> toisc nach bhfuil aon luachanna aige. Is fearr linn an cineál <em>náimh</em> a thabhairt air
+toisc go seasann sé in áit an chineáil fillte nuair nach bhfillfidh feidhm
+nár fhill. Seo sampla:</p>
+<pre><code class="language-rust noplayground">fn bar() -&gt; ! {
+    // --snip--
+<span class="boring">    panic!();
+</span>}</code></pre>
+<p>Léitear an cód seo mar “ní thugann an fheidhm <code>bar</code> riamh ar ais.” Tugtar <em>feidhmeanna divergacha</em> ar fheidhmeanna a thugann
+riamh ar ais. Ní féidir linn luachanna den chineál <code>!</code> a chruthú
+mar sin ní féidir le <code>bar</code> riamh ar ais.</p>
+<p>Ach cén úsáid atá i gcineál nach féidir leat luachanna a chruthú dó riamh? Cuimhnigh ar an gcód ó
+Liostú 2-5, cuid den chluiche tomhaise uimhreacha; tá cuid de atáirgthe againn
+anseo i Liostú 20-27.</p>
+<Listing number="20-27" caption="A `match` with an arm that ends in `continue`">
+<pre><code class="language-rust ignore"><span class="boring">use rand::Rng;
+</span><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::thread_rng().gen_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    loop {
+</span><span class="boring">        println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">        let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">        // --snip--
+</span><span class="boring">
+</span><span class="boring">        io::stdin()
+</span><span class="boring">            .read_line(&amp;mut guess)
+</span><span class="boring">            .expect("Failed to read line");
+</span><span class="boring">
+</span>        let guess: u32 = match guess.trim().parse() {
+            Ok(num) =&gt; num,
+            Err(_) =&gt; continue,
+        };
+<span class="boring">
+</span><span class="boring">        println!("You guessed: {guess}");
+</span><span class="boring">
+</span><span class="boring">        // --snip--
+</span><span class="boring">
+</span><span class="boring">        match guess.cmp(&amp;secret_number) {
+</span><span class="boring">            Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">            Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">            Ordering::Equal =&gt; {
+</span><span class="boring">                println!("You win!");
+</span><span class="boring">                break;
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</Listing>
+<p>Ag an am, scipeáileamar thar roinnt sonraí sa chód seo. I gCaibidil 6 sa rannóg <a href="ch06-02-match.html#the-match-control-flow-operator">“An
+<code>match</code> Control Flow Operator”</a><!-- ignore -->
+phléamar go gcaithfidh gach arm <code>match</code> an cineál céanna a thabhairt ar ais. Mar sin, mar shampla, ní oibríonn an cód seo a leanas:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span><span class="boring">    let guess = "3";
+</span>    let guess = match guess.trim().parse() {
+        Ok(_) =&gt; 5,
+        Err(_) =&gt; "hello",
+    };
+<span class="boring">}</span></code></pre>
+<p>Bheadh ​​ar an gcineál <code>guess</code> sa chód seo a bheith ina shlánuimhir <em>agus</em> teaghrán,
+agus éilíonn Rust nach mbeadh ach cineál amháin ag <code>guess</code>. Mar sin, cad a thugann <code>continue</code>
+ar ais? Conas a ceadaíodh dúinn <code>u32</code> a thabhairt ar ais ó lámh amháin agus lámh eile a bheith againn
+a chríochnaíonn le <code>continue</code> i Liosta 20-27?</p>
+<p>Mar a bheifeá ag súil leis, tá luach <code>!</code> ag <code>continue</code>. Is é sin le rá, nuair a ríomhann Rust
+an cineál <code>guess</code>, féachann sé ar an dá lámh mheaitseála, an chéad cheann le
+luach <code>u32</code> agus an dara ceann le luach <code>!</code>. Toisc nach féidir le <code>!</code> luach a bheith aige
+choíche, socraíonn Rust gurb é <code>u32</code> an cineál <code>guess</code>.</p>
+<p>Is é an bealach foirmiúil chun an t-iompar seo a chur síos ná gur féidir léirithe de chineál <code>!</code> a
+bhrú isteach in aon chineál eile. Ceadaítear dúinn an lámh <code>match</code> seo a chríochnú le
+<code>continue</code> toisc nach dtugann <code>continue</code> luach ar ais; ina ionad sin, bogann sé an rialú ar ais go barr an lúibe, mar sin i gcás <code>Err</code>, ní shanntar luach riamh do
+<code>guess</code>.</p>
+<p>Tá an cineál never úsáideach leis an macra <code>panic!</code> chomh maith. Cuimhnigh ar an bhfeidhm <code>unwrap</code>
+a nglaoimid ar luachanna <code>Option&lt;T&gt;</code> chun luach nó panic a tháirgeadh leis an
+sainmhíniú seo:</p>
+<pre><code class="language-rust ignore"><span class="boring">enum Option&lt;T&gt; {
+</span><span class="boring">    Some(T),
+</span><span class="boring">    None,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">use crate::Option::*;
+</span><span class="boring">
+</span>impl&lt;T&gt; Option&lt;T&gt; {
+    pub fn unwrap(self) -&gt; T {
+        match self {
+            Some(val) =&gt; val,
+            None =&gt; panic!("called `Option::unwrap()` on a `None` value"),
+        }
+    }
+}</code></pre>
+<p>Sa chód seo, tarlaíonn an rud céanna agus atá sa <code>match</code> i Liosta 20-27: Feiceann Rust go bhfuil an cineál <code>T</code> ag <code>val</code> agus go bhfuil an cineál <code>!</code> ag <code>panic!</code>, mar sin is é <code>T</code> toradh an abairt <code>match</code> iomláin. Oibríonn an cód seo toisc nach dtáirgeann <code>panic!</code> luach; críochnaíonn sé an clár. Sa chás <code>None</code>, ní bheimid
+ag filleadh luach ó <code>unwrap</code>, mar sin tá an cód seo bailí.</p>
+<p>Is léiriú deiridh amháin é <code>loop</code> a bhfuil an cineál <code>!</code> aige:</p>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span>    print!("forever ");
+
+    loop {
+        print!("and ever ");
+    }
+<span class="boring">}</span></code></pre>
+<p>Anseo, ní chríochnaíonn an lúb choíche, mar sin is é <code>!</code> luach an abairt. Mar sin féin, ní bheadh ​​sé seo fíor dá gcuirfimis <code>break</code> san áireamh, mar go gcríochnódh an lúb
+nuair a shroichfeadh sé an <code>break</code>.</p>
+<h3 id="cineálacha-méide-dinimiciúla-agus-an-tréith-méide"><a class="header" href="#cineálacha-méide-dinimiciúla-agus-an-tréith-méide">Cineálacha Méide Dinimiciúla agus an Tréith <code>Méide</code></a></h3>
+<p>Caithfidh Rust sonraí áirithe a bheith ar eolas aige faoina chineálacha, amhail cé mhéad spáis atá le
+leithdháileadh do luach de chineál áirithe. Fágann sé seo cúinne amháin dá chóras
+cineálacha beagán mearbhall ar dtús: coincheap na <em>cineálacha méide dinimiciúla</em>.
+Uaireanta tugtar <em>DSTanna</em> nó <em>cineálacha neamhmhéide</em> orthu, ligeann na cineálacha seo dúinn
+cód a scríobh ag baint úsáide as luachanna nach féidir linn a méid a bheith ar eolas againn ach ag am rith.</p>
+<p>Déanaimis tochailt isteach i sonraí cineál méide dinimiciúil ar a dtugtar <code>str</code>, a
+bhíomar ag úsáid ar fud an leabhair. Sin ceart, ní <code>&amp;str</code>, ach <code>str</code> leis féin, is DST é. Ní féidir linn a fháil amach cé chomh fada is atá an teaghrán go dtí go mbeidh an t-am rite ann, rud a chiallaíonn nach féidir linn athróg de chineál <code>str</code> a chruthú, ná ní féidir linn argóint de chineál <code>str</code> a ghlacadh. Smaoinigh ar an gcód seo a leanas, nach n-oibríonn:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s1: str = "Hello there!";
+    let s2: str = "How's it going?";
+<span class="boring">}</span></code></pre>
+<p>Caithfidh Rust a fhios a bheith aige cé mhéad cuimhne atá le leithdháileadh d'aon luach de chineál áirithe, agus ní mór do gach luach de chineál an méid céanna cuimhne a úsáid. Dá gceadódh Rust dúinn an cód seo a scríobh, bheadh ​​ar an dá luach <code>str</code> seo an méid céanna spáis a thógáil. Ach tá faid éagsúla acu: teastaíonn 12 bheart stórála ó <code>s1</code> agus teastaíonn 15 ó <code>s2</code>. Sin é an fáth nach féidir athróg a chruthú ina bhfuil cineál méide dinimiciúil.</p>
+<p>Mar sin, cad a dhéanaimid? Sa chás seo, tá an freagra ar eolas agat cheana féin: déanaimid na cineálacha <code>s1</code> agus <code>s2</code> ina <code>&amp;str</code> seachas ina <code>str</code>. Cuimhnigh ón rannóg <a href="ch04-03-slices.html#string-slices">“String
+Slices”</a><!-- ignore --> de Chaibidil 4 nach stórálann struchtúr sonraí an tslis ach an suíomh tosaigh agus fad an tslis. Mar sin
+cé gur luach aonair é <code>&amp;T</code> a stórálann seoladh cuimhne an áit a bhfuil an
+<code>T</code> suite, is <em>dhá</em> luach é <code>&amp;str</code>: seoladh an <code>str</code> agus a
+fhad. Dá bhrí sin, is féidir linn méid luacha <code>&amp;str</code> a fháil amach ag am tiomsaithe: tá sé
+dhá oiread fad <code>usize</code>. Is é sin le rá, bíonn a fhios againn i gcónaí méid <code>&amp;str</code>, is cuma cé chomh fada is atá an teaghrán a dtagraíonn sé dó. Go ginearálta, seo an chaoi
+a n-úsáidtear cineálacha dinimiciúla i Rust: tá píosa breise
+meiteashonraí acu a stórálann méid na faisnéise dinimiciúla. Is é an riail órga maidir le
+cineálacha dinimiciúla ná go gcaithfimid luachanna de chineálacha dinimiciúla a chur i gcónaí taobh thiar de phointeoir de chineál éigin.</p>
+<p>Is féidir linn <code>str</code> a chomhcheangal le gach cineál pointeora: mar shampla, <code>Box&lt;str&gt;</code> nó
+<code>Rc&lt;str&gt;</code>. Go deimhin, chonaic tú é seo cheana ach le cineál dinimiciúil difriúil: traits. Is cineál méide dinimiciúil é gach tréith ar féidir linn tagairt a dhéanamh dó trí
+ainm na tréithe a úsáid. I gCaibidil 18 sa chuid <a href="ch18-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types">“Úsáid Réada Tréithe a
+Ligeann Luachanna de
+Chineálacha
+Difriúla”</a><!--
+ignore -->, luaigh muid, chun tréithe a úsáid mar réada tréithe, go gcaithfimid
+iad a chur taobh thiar de phointeoir, amhail <code>&amp;dyn Trait</code> nó <code>Box&lt;dyn Trait&gt;</code> (oibreodh <code>Rc&lt;dyn Trait&gt;</code> freisin).</p>
+<p>Chun oibriú le DSTanna, soláthraíonn Rust an tréith <code>Sized</code> chun a chinneadh an bhfuil méid cineáil ar eolas ag am tiomsaithe nó nach bhfuil. Cuirtear an tréith seo i bhfeidhm go huathoibríoch
+do gach rud a bhfuil a mhéid ar eolas ag am tiomsaithe. Ina theannta sin, cuireann Rust
+teorainn ar <code>Sized</code> go hintuigthe le gach feidhm ghinearálta. Is é sin,
+sainmhíniú feidhme ghinearálta mar seo:</p>
+<pre><code class="language-rust ignore">fn generic&lt;T&gt;(t: T) {
+    // --snip--
+}</code></pre>
+<p>déantar é a láimhseáil amhail is dá mba rud é gur scríobhamar é seo:</p>
+<pre><code class="language-rust ignore">fn generic&lt;T: Sized&gt;(t: T) {
+    // --snip--
+}</code></pre>
+<p>De réir réamhshocraithe, ní oibreoidh feidhmeanna cineálacha ach ar chineálacha a bhfuil méid ar eolas acu tráth an tiomsaithe. Mar sin féin, is féidir leat an comhréir speisialta seo a leanas a úsáid chun an srian seo a mhaolú:</p>
+<pre><code class="language-rust ignore">fn generic&lt;T: ?Sized&gt;(t: &amp;T) {
+    // --snip--
+}</code></pre>
+<p>Ciallaíonn tréith atá ceangailte ar <code>?Sized</code> go bhféadfadh nó nach bhféadfadh <code>T</code> a bheith <code>Sized</code> agus go sáraíonn an nótaíocht seo an réamhshocrú go gcaithfidh méid aitheanta a bheith ag cineálacha cineálacha ag
+am an tiomsaithe. Níl an comhréir <code>?Trait</code> leis an gciall seo ar fáil ach do
+<code>Sized</code>, ní d'aon tréithe eile.</p>
+<p>Tabhair faoi deara freisin gur athraíomar cineál an pharaiméadair <code>t</code> ó <code>T</code> go <code>&amp;T</code>.
+Toisc nach bhféadfadh an cineál a bheith <code>Sized</code>, ní mór dúinn é a úsáid taobh thiar de chineál éigin pointeora. Sa chás seo, tá tagairt roghnaithe againn.</p>
+<p>Ansin, labhróimid faoi fheidhmeanna agus dúnta!</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-functions-and-closures"><a class="header" href="#advanced-functions-and-closures">Advanced Functions and Closures</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="macros"><a class="header" href="#macros">Macros</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="final-project-building-a-multithreaded-web-server"><a class="header" href="#final-project-building-a-multithreaded-web-server">Final Project: Building a Multithreaded Web Server</a></h1>
